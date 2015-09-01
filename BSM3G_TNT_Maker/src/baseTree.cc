@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/baseTree.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/baseTree.h"
 baseTree::baseTree(std::string identifier, TTree* tree, bool debug){
   identifier_  = identifier; 
   tree_        = tree;

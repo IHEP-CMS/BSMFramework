@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/BSM3G_TNT_Maker.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/BSM3G_TNT_Maker.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include <memory>

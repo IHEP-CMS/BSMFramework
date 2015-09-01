@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/EventInfoSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/EventInfoSelector.h"
 EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
   if(debug) std::cout<<"in EventInfoSelector constructor"<<std::endl;
   _is_data = iConfig.getParameter<bool>("is_data");

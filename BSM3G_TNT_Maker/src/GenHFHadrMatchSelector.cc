@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/GenHFHadrMatchSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/GenHFHadrMatchSelector.h"
 
 GenHFHadrMatchSelector::GenHFHadrMatchSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug),

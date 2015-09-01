@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/JetSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/JetSelector.h"
 JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
   jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
   _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");

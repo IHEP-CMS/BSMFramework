@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/TauSelector.h"
+ #include "BSMFramework/BSM3G_TNT_Maker/interface/TauSelector.h"
 TauSelector::TauSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):
   baseTree(name,tree,debug){
   tauToken_       = iConfig.getParameter<edm::InputTag>("taus");

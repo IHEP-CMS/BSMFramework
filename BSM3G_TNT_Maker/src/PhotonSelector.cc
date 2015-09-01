@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/PhotonSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/PhotonSelector.h"
 PhotonSelector::PhotonSelector(std::string name, TTree* tree, bool debug, const pset& iConfig): baseTree(name,tree,debug){
   SetBranches();
   _PhotonToken    = iConfig.getParameter<edm::InputTag>("photons");

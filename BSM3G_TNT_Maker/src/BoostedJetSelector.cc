@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
 BoostedJetSelector::BoostedJetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
   fatjetToken_ = iConfig.getParameter<edm::InputTag>("fatjets");
   SetBranches();

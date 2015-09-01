@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/GenParticleSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/GenParticleSelector.h"
 GenParticleSelector::GenParticleSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
   if(debug) std::cout<<"in GenParticleSelector constructor"<<std::endl;
   if(debug) std::cout<<"in pileup constructor: calling SetBrances()"<<std::endl;

@@ -1,4 +1,4 @@
-#include "NtupleMaker/BSM3G_TNT_Maker/interface/TTHJetSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/TTHJetSelector.h"
 TTHJetSelector::TTHJetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug),
   electronMediumIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronMediumIdMap")))
@@ -26,7 +26,7 @@ void TTHJetSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByLabel(_patElectronToken, electron_pat);
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByLabel(jetToken_, jets);  
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("/afs/cern.ch/work/f/fromeo/CMSSW_7_4_1/src/NtupleMaker/BSM3G_TNT_Maker/textfiles/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("BSMFramework/BSM3G_TNT_Maker/textfiles/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Prepare jet collections
   /////		

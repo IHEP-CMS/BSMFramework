@@ -11,13 +11,14 @@ JetSelector::~JetSelector(){
 }
 void JetSelector::Fill(const edm::Event& iEvent){
   Clear();
+  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../textfiles/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Recall collections
   /////  
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByLabel(jetToken_, jets);                                         
   /////
-  //   Get muon information
+  //   Get jet information
   /////  
   for(const pat::Jet &j : *jets){ 
     //Acceptance
@@ -32,6 +33,13 @@ void JetSelector::Fill(const edm::Event& iEvent){
     //ID
     Jet_bDiscriminator.push_back(j.bDiscriminator("combinedSecondaryVertexBJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
+    //Jet Uncertainties
+    float JesUncertainties=0;        
+    jecUnc->setJetEta(j.eta());
+    jecUnc->setJetPt(j.pt()); // here you must use the CORRECTED jet pt
+    JesUncertainties = jecUnc->getUncertainty(true);
+    Jet_JesUp.push_back((1+JesUncertainties));         
+    Jet_JesDown.push_back((1-JesUncertainties));  
     //Energy related variables
     if(!_super_TNT){
       //Jet_neutralHadEnergy.push_back(j.neutralHadronEnergy());                               
@@ -64,6 +72,9 @@ void JetSelector::SetBranches(){
   //ID
   AddBranch(&Jet_bDiscriminator,      "Jet_bDiscriminator");
   AddBranch(&Jet_pileupId,            "Jet_pileupId");
+  //Jet Uncertainties
+  AddBranch(&Jet_JesUp,               "Jet_JesUp");
+  AddBranch(&Jet_JesDown,             "Jet_JesDown");
   //Energy related variables
   if(!_super_TNT){
     AddBranch(&Jet_neutralHadEnergyFraction,    "Jet_neutralHadEnergyFraction");
@@ -90,6 +101,9 @@ void JetSelector::Clear(){
   //ID
   Jet_bDiscriminator.clear();
   Jet_pileupId.clear();
+  //Jet Uncertainties
+  Jet_JesUp.clear();
+  Jet_JesDown.clear();
   //Energy related variables
   Jet_neutralHadEnergyFraction.clear();
   Jet_neutralEmEmEnergyFraction.clear();

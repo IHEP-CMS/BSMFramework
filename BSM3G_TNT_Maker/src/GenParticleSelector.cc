@@ -17,8 +17,7 @@ void GenParticleSelector::Fill(const edm::Event& iEvent){
   iEvent.getByLabel("prunedGenParticles", _Gen_collection);
   /////
   //   Get gen information
-  /////  
-  std::cout<<"muons:"<<std::endl;
+  /////
   for(reco::GenParticleCollection::const_iterator genparticles = _Gen_collection->begin(); genparticles !=  _Gen_collection->end(); ++genparticles){
     //Kinematics
     Gen_pt.push_back(genparticles->pt());

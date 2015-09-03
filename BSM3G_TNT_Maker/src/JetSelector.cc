@@ -32,6 +32,8 @@ void JetSelector::Fill(const edm::Event& iEvent){
     UncorrJet_pt.push_back(j.correctedJet("Uncorrected").pt());                
     //ID
     Jet_bDiscriminator.push_back(j.bDiscriminator("combinedSecondaryVertexBJetTags"));
+    Jet_bDiscriminator1.push_back(j.bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags"));
+    Jet_bDiscriminator2.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     //Jet Uncertainties
     float JesUncertainties=0;        
@@ -71,6 +73,8 @@ void JetSelector::SetBranches(){
   AddBranch(&UncorrJet_pt,            "UncorrJet_pt");
   //ID
   AddBranch(&Jet_bDiscriminator,      "Jet_bDiscriminator");
+  AddBranch(&Jet_bDiscriminator1,     "Jet_bDiscriminator1");
+  AddBranch(&Jet_bDiscriminator2,     "Jet_bDiscriminator2");
   AddBranch(&Jet_pileupId,            "Jet_pileupId");
   //Jet Uncertainties
   AddBranch(&Jet_JesUp,               "Jet_JesUp");
@@ -100,6 +104,8 @@ void JetSelector::Clear(){
   UncorrJet_pt.clear();
   //ID
   Jet_bDiscriminator.clear();
+  Jet_bDiscriminator1.clear();
+  Jet_bDiscriminator2.clear();
   Jet_pileupId.clear();
   //Jet Uncertainties
   Jet_JesUp.clear();

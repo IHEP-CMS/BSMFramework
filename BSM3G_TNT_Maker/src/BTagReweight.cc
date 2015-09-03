@@ -5,8 +5,8 @@ BTagReweight::BTagReweight(std::string name, TTree* tree, bool debug, const pset
   if(debug) std::cout<<"in BTagReweight constructor: calling SetBrances()"<<std::endl;
   jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
 
-  std::string inputFileHF = "BSMFramework/BSM3G_TNT_Maker/csv_rwt_hf_IT_FlatSF.root";
-  std::string inputFileLF = "BSMFramework/BSM3G_TNT_Maker/csv_rwt_lf_IT_FlatSF.root";
+  std::string inputFileHF = "BSMFramework/BSM3G_TNT_Maker/files/csv_rwt_hf_IT_FlatSF_2015_07_27.root";
+  std::string inputFileLF = "BSMFramework/BSM3G_TNT_Maker/files/csv_rwt_lf_IT_FlatSF_2015_07_27.root";
   TFile* f_CSVwgt_HF = new TFile ((std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileHF).c_str());
   TFile* f_CSVwgt_LF = new TFile ((std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileLF).c_str());
   fillCSVhistos(f_CSVwgt_HF, f_CSVwgt_LF);

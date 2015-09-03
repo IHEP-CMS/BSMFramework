@@ -26,7 +26,7 @@ void TTHJetSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByLabel(_patElectronToken, electron_pat);
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByLabel(jetToken_, jets);  
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("BSMFramework/BSM3G_TNT_Maker/files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Prepare jet collections
   /////		

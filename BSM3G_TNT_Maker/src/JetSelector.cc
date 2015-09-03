@@ -11,7 +11,7 @@ JetSelector::~JetSelector(){
 }
 void JetSelector::Fill(const edm::Event& iEvent){
   Clear();
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../textfiles/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Recall collections
   /////  

@@ -17,7 +17,7 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # as a rule, find the global tag in the DAS under the Configs for given dataset
 process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
 #process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
@@ -122,20 +122,20 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     # boolean variables
     debug_ = cms.bool(False),
     filleventinfo       = cms.bool(True),
-    filltriggerinfo     = cms.bool(False),
+    filltriggerinfo     = cms.bool(True),
     fillmuoninfo        = cms.bool(True),
     fillelectronpatinfo = cms.bool(True),
-    filltauinfo         = cms.bool(False),
+    filltauinfo         = cms.bool(True),
     fillgeninfo         = cms.bool(True),
-    fillPVinfo          = cms.bool(False),
+    fillPVinfo          = cms.bool(True),
     filljetinfo         = cms.bool(True),
-    filltthjetinfo      = cms.bool(False),
+    filltthjetinfo      = cms.bool(True),
     fillBoostedJetinfo  = cms.bool(True),
     fillTopSubJetinfo   = cms.bool(True),
     fillMETinfo         = cms.bool(True),
-    fillphotoninfo      = cms.bool(False),   
-    fillBTagReweight    = cms.bool(False),
-    fillgenHFCategoryinfo = cms.bool(False),
+    fillphotoninfo      = cms.bool(True),   
+    fillBTagReweight    = cms.bool(True),
+    fillgenHFCategoryinfo = cms.bool(True),
 
     # make a super tiny ntuple, only with a few branches?
     super_TNT  = cms.bool(False),

@@ -69,9 +69,9 @@ class MuonSelector : public  baseTree{
   edm::InputTag _vertexInputTag; 
   double _Muon_pt_min;
   double _Muon_eta_max;
-  int    _Muon_vtx_ndof_min;
-  int    _Muon_vtx_rho_max;
-  double _Muon_vtx_position_z_max;
+  int    _vtx_ndof_min;
+  int    _vtx_rho_max;
+  double _vtx_position_z_max;
   bool   _super_TNT; //super tiny ntuple?
   /////
   //   BSM methods/variables

@@ -11,6 +11,9 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   _patElectronToken    = iConfig.getParameter<edm::InputTag>("patElectrons");
   _patElectron_pt_min  = iConfig.getParameter<double>("patElectron_pt_min");
   _patElectron_eta_max = iConfig.getParameter<double>("patElectron_eta_max");
+  _vtx_ndof_min        = iConfig.getParameter<int>("vtx_ndof_min");
+  _vtx_rho_max         = iConfig.getParameter<int>("vtx_rho_max");
+  _vtx_position_z_max  = iConfig.getParameter<double>("vtx_position_z_max");
   SetBranches();
 }
 ElectronPatSelector::~ElectronPatSelector(){
@@ -21,9 +24,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent){
   /////
   //   Recall collections
   /////  
-  edm::Handle<reco::VertexCollection> vtx;
-  iEvent.getByLabel(_vertexInputTag, vtx);
-  if(vtx->empty()) return;
+  edm::Handle<reco::VertexCollection> vtx_h;
+  iEvent.getByLabel(_vertexInputTag, vtx_h);
+  if(vtx_h->empty()) return;
   edm::Handle<edm::View<pat::Electron> > electron_pat;
   iEvent.getByLabel(_patElectronToken, electron_pat);
   edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
@@ -39,15 +42,13 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent){
   /////
   //   Require a good vertex 
   /////
-  reco::VertexCollection::const_iterator firstGoodVertex = vtx->end();
-  for(reco::VertexCollection::const_iterator it = vtx->begin(); it != firstGoodVertex; it++){
-    if(it->isFake())                continue;
-    if(it->ndof()<4)                continue;
-    if(it->position().Rho()>2)      continue;
-    if(fabs(it->position().Z())>24) continue;
+  reco::VertexCollection::const_iterator firstGoodVertex = vtx_h->end();
+  for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstGoodVertex; it++){
+    isGoodVertex(*it);
     firstGoodVertex = it;
     break;
   }
+  if(firstGoodVertex == vtx_h->end()) return;
   /////
   //   Get electron information 
   /////
@@ -191,4 +192,11 @@ void ElectronPatSelector::Clear(){
   patElectron_dz.clear();
   expectedMissingInnerHits.clear();
   passConversionVeto_.clear();
+}
+bool ElectronPatSelector::isGoodVertex(const reco::Vertex& vtx){
+  if(vtx.isFake())                                   return false;
+  if(vtx.ndof()<_vtx_ndof_min)                       return false;
+  if(vtx.position().Rho()>_vtx_rho_max)              return false;
+  if(fabs(vtx.position().Z()) > _vtx_position_z_max) return false;
+  return true;
 }

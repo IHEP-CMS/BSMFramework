@@ -1,13 +1,13 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/MuonSelector.h"
 MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
-  _muonToken               = iConfig.getParameter<edm::InputTag>("muons");
-  _vertexInputTag          = iConfig.getParameter<edm::InputTag>("vertices");
-  _Muon_pt_min             = iConfig.getParameter<double>("Muon_pt_min");
-  _Muon_eta_max            = iConfig.getParameter<double>("Muon_eta_max");
-  _Muon_vtx_ndof_min       = iConfig.getParameter<int>("Muon_vtx_ndof_min");
-  _Muon_vtx_rho_max        = iConfig.getParameter<int>("Muon_vtx_rho_max");
-  _Muon_vtx_position_z_max = iConfig.getParameter<double>("Muon_vtx_position_z_max");
-  _super_TNT               = iConfig.getParameter<bool>("super_TNT");
+  _muonToken          = iConfig.getParameter<edm::InputTag>("muons");
+  _vertexInputTag     = iConfig.getParameter<edm::InputTag>("vertices");
+  _Muon_pt_min        = iConfig.getParameter<double>("Muon_pt_min");
+  _Muon_eta_max       = iConfig.getParameter<double>("Muon_eta_max");
+  _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
+  _vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
+  _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
+  _super_TNT          = iConfig.getParameter<bool>("super_TNT");
   SetBranches();
 }
 MuonSelector::~MuonSelector(){
@@ -171,9 +171,9 @@ void MuonSelector::Clear(){
   Muon_isoPU.clear();
 }
 bool MuonSelector::isGoodVertex(const reco::Vertex& vtx){
-  if(vtx.isFake())                                        return false;
-  if(vtx.ndof()<_Muon_vtx_ndof_min)                       return false;
-  if(vtx.position().Rho()>_Muon_vtx_rho_max)              return false;
-  if(fabs(vtx.position().Z()) > _Muon_vtx_position_z_max) return false;
+  if(vtx.isFake())                                   return false;
+  if(vtx.ndof()<_vtx_ndof_min)                       return false;
+  if(vtx.position().Rho()>_vtx_rho_max)              return false;
+  if(fabs(vtx.position().Z()) > _vtx_position_z_max) return false;
   return true;
 }

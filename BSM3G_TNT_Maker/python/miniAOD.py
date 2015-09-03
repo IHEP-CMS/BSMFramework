@@ -166,9 +166,11 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     # muon cuts
     Muon_pt_min              = cms.double(10.0),
     Muon_eta_max             = cms.double(2.4),
-    Muon_vtx_ndof_min        = cms.int32(4),
-    Muon_vtx_rho_max         = cms.int32(2),
-    Muon_vtx_position_z_max  = cms.double(24.),
+
+    # vertex cuts
+    vtx_ndof_min        = cms.int32(4),
+    vtx_rho_max         = cms.int32(2),
+    vtx_position_z_max  = cms.double(24.),
 
     # electron cuts
     patElectron_pt_min       = cms.double(10.0),

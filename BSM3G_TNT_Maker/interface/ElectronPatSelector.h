@@ -63,6 +63,7 @@ class ElectronPatSelector : public  baseTree{
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void Clear();
+  bool isGoodVertex(const reco::Vertex& vtx);
  private:
   ElectronPatSelector(){};
   /////
@@ -72,6 +73,9 @@ class ElectronPatSelector : public  baseTree{
   edm::InputTag _vertexInputTag;
   double _patElectron_pt_min;
   double _patElectron_eta_max;
+  int    _vtx_ndof_min;
+  int    _vtx_rho_max;
+  double _vtx_position_z_max;
   /////
   //   BSM variables
   /////

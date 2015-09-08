@@ -24,7 +24,9 @@ void JetSelector::Fill(const edm::Event& iEvent){
     //Acceptance
     if(j.pt()<_Jet_pt_min) continue;
     //Kinematics
-    Jet_pt.push_back(j.pt());         
+    Jet_pt.push_back(j.pt());  
+    Jet_px.push_back(j.px());   
+    Jet_py.push_back(j.py());          
     Jet_eta.push_back(j.eta());       
     Jet_phi.push_back(j.phi());       
     Jet_energy.push_back(j.energy());
@@ -36,12 +38,18 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_bDiscriminator2.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     //Jet Uncertainties
-    float JesUncertainties=0;        
-    jecUnc->setJetEta(j.eta());
-    jecUnc->setJetPt(j.pt()); // here you must use the CORRECTED jet pt
-    JesUncertainties = jecUnc->getUncertainty(true);
+    float JesUncertainties=0;
+    GetJESUncertainties(j, jecUnc, JesUncertainties);
     Jet_JesUp.push_back((1+JesUncertainties));         
-    Jet_JesDown.push_back((1-JesUncertainties));  
+    Jet_JesDown.push_back((1-JesUncertainties));
+    //JER scale factor and uncertainties
+    float JERScaleFactor    =1; 
+    float JERScaleFactorUP  =1;
+    float JERScaleFactorDOWN=1;
+    GetJER(j, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    Jet_JerSF.push_back(JERScaleFactor);
+    Jet_JerSFup.push_back(JERScaleFactorUP);
+    Jet_JerSFdown.push_back(JERScaleFactorDOWN);
     //Energy related variables
     if(!_super_TNT){
       //Jet_neutralHadEnergy.push_back(j.neutralHadronEnergy());                               
@@ -66,6 +74,8 @@ void JetSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
   //Kinematics
   AddBranch(&Jet_pt,                  "Jet_pt");
+  AddBranch(&Jet_px,                  "Jet_px");
+  AddBranch(&Jet_py,                  "Jet_py");
   AddBranch(&Jet_eta,                 "Jet_eta");
   AddBranch(&Jet_phi,                 "Jet_phi");
   AddBranch(&Jet_energy,              "Jet_energy");
@@ -79,6 +89,10 @@ void JetSelector::SetBranches(){
   //Jet Uncertainties
   AddBranch(&Jet_JesUp,               "Jet_JesUp");
   AddBranch(&Jet_JesDown,             "Jet_JesDown");
+  //JER scale factor and uncertainties
+  AddBranch(&Jet_JerSF,               "Jet_JerSF");
+  AddBranch(&Jet_JerSFup,             "Jet_JerSFup");
+  AddBranch(&Jet_JerSFdown,           "Jet_JerSFdown");
   //Energy related variables
   if(!_super_TNT){
     AddBranch(&Jet_neutralHadEnergyFraction,    "Jet_neutralHadEnergyFraction");
@@ -97,6 +111,8 @@ void JetSelector::SetBranches(){
 void JetSelector::Clear(){
   //Kinematics
   Jet_pt.clear();
+  Jet_px.clear();
+  Jet_py.clear();
   Jet_eta.clear();
   Jet_phi.clear();
   Jet_energy.clear();
@@ -110,6 +126,10 @@ void JetSelector::Clear(){
   //Jet Uncertainties
   Jet_JesUp.clear();
   Jet_JesDown.clear();
+  //JER scale factor and uncertainties
+  Jet_JerSF.clear();
+  Jet_JerSFup.clear();
+  Jet_JerSFdown.clear();
   //Energy related variables
   Jet_neutralHadEnergyFraction.clear();
   Jet_neutralEmEmEnergyFraction.clear();
@@ -121,4 +141,65 @@ void JetSelector::Clear(){
   //Jet constituent multiplicity
   Jet_numberOfConstituents.clear();
   Jet_chargedMultiplicity.clear();
+}
+void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){
+  jecUnc->setJetEta(jet.eta());
+  jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+  JesUncertainties = jecUnc->getUncertainty(true);
+}
+void JetSelector::GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
+  if(!jet.genJet()) return;
+  double jetEta=fabs(jet.eta());
+  double cFactorJER = 1.0; 
+  double cFactorJERdown = 1.0;
+  double cFactorJERup = 1.0;
+  //The following factors are derived from 8TeV but blessed for 13TeV, before new factors will be available
+  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
+  if( jetEta<0.5 ){ 
+    cFactorJER = 1.079; 
+    cFactorJERdown = 1.053;
+    cFactorJERup = 1.105; 
+  }
+  else if( jetEta<1.1 ){ 
+    cFactorJER = 1.099; 
+    cFactorJERdown = 1.071;
+    cFactorJERup = 1.127; 
+  }
+  else if( jetEta<1.7 ){ 
+    cFactorJER = 1.121; 
+    cFactorJERdown = 1.092;
+    cFactorJERup = 1.150; 
+  }
+  else if( jetEta<2.3 ){ 
+    cFactorJER = 1.208; 
+    cFactorJERdown = 1.162;
+    cFactorJERup = 1.254; 
+  }
+  else if( jetEta<2.8 ){ 
+    cFactorJER = 1.254; 
+    cFactorJERdown = 1.192;
+    cFactorJERup = 1.316; 
+  }
+  else if( jetEta<3.2 ){ 
+    cFactorJER = 1.395; 
+    cFactorJERdown = 1.332;
+    cFactorJERup = 1.458; 
+  }
+  else if( jetEta<5.0 ){ 
+    cFactorJER = 1.056; 
+    cFactorJERdown = 0.865;
+    cFactorJERup = 1.247; 
+  }
+  double recoJetPt = jet.pt();
+  double genJetPt  = jet.genJet()->pt();
+  double diffPt    = recoJetPt - genJetPt;
+  if(genJetPt>10.){
+    JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;
+    JERScaleFactorUP   = (std::max(0., genJetPt + cFactorJERup*diffPt))/recoJetPt;
+    JERScaleFactorDOWN = (std::max(0., genJetPt + cFactorJERdown*diffPt))/recoJetPt;
+  } else {
+    JERScaleFactor     = 1.;
+    JERScaleFactorUP   = 1.;
+    JERScaleFactorDOWN = 1.;
+  } 
 }

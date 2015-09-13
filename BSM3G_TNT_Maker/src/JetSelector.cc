@@ -63,10 +63,12 @@ void JetSelector::Fill(const edm::Event& iEvent){
       //Jet_muonEnergy.push_back(j.muonEnergy());                                  
       Jet_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
       Jet_electronEnergy.push_back(j.electronEnergy());                               
-      Jet_photonEnergy.push_back(j.photonEnergy());                              
+      Jet_photonEnergy.push_back(j.photonEnergy());                    
+      Jet_emEnergyFraction.push_back(j.emEnergyFraction());                          
       //Jet constituent multiplicity
       Jet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
       Jet_chargedMultiplicity.push_back(j.chargedMultiplicity());
+      Jet_isPFJet.push_back(j.isPFJet());
     }
   } 
 }
@@ -102,9 +104,11 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_muonEnergyFraction,          "Jet_muonEnergyFraction");
     AddBranch(&Jet_electronEnergy,      "Jet_electronEnergy");
     AddBranch(&Jet_photonEnergy,        "Jet_photonEnergy");
+    AddBranch(&Jet_emEnergyFraction,    "Jet_emEnergyFraction");
     //Jet constituent multiplicity
     AddBranch(&Jet_numberOfConstituents,"Jet_numberOfConstituents");
     AddBranch(&Jet_chargedMultiplicity, "Jet_chargedMultiplicity");
+    AddBranch(&Jet_isPFJet,             "Jet_isPFJet");
   }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
@@ -138,9 +142,11 @@ void JetSelector::Clear(){
   Jet_muonEnergyFraction.clear();
   Jet_electronEnergy.clear();
   Jet_photonEnergy.clear();
+  Jet_emEnergyFraction.clear();
   //Jet constituent multiplicity
   Jet_numberOfConstituents.clear();
   Jet_chargedMultiplicity.clear();
+  Jet_isPFJet.clear();
 }
 void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){
   jecUnc->setJetEta(jet.eta());

@@ -84,10 +84,9 @@ class JetSelector : public  baseTree{
   /////
   vector <double> Jet_pt,Jet_px,Jet_py,Jet_eta,Jet_phi,Jet_energy,Jet_bDiscriminator,Jet_bDiscriminator1,Jet_bDiscriminator2,Jet_mass,JetParton,JetjetId;
   vector <double> Jet_pileupId,JetIDPU,Jetpass_pileupJetId,Jet_neutralHadEnergyFraction,Jet_neutralEmEmEnergyFraction; 
-  vector <double> Jet_chargedHadronEnergyFraction,Jet_chargedEmEnergyFraction,Jet_muonEnergyFraction; 
+  vector <double> Jet_chargedHadronEnergyFraction,Jet_chargedEmEnergyFraction,Jet_muonEnergyFraction,Jet_emEnergyFraction; 
   vector <double> Jet_electronEnergy,Jet_photonEnergy,UncorrJet_pt,Jet_JesUp,Jet_JesDown,Jet_JerSF,Jet_JerSFup,Jet_JerSFdown; 
-  vector <int> Jet_numberOfConstituents;
-  vector <int> Jet_chargedMultiplicity;
+  vector <int> Jet_numberOfConstituents,Jet_chargedMultiplicity,Jet_isPFJet;
   bool _super_TNT;
 };
 #endif

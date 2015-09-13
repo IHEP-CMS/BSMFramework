@@ -39,6 +39,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(electronMediumIdMapToken_,medium_id_decisions);
   iEvent.getByToken(electronTightIdMapToken_,tight_id_decisions);  
   iEvent.getByToken(eleHEEPIdMapToken_, heep_id_decisions);
+  edm::Handle<double> rhoHandle;
+  iEvent.getByLabel("fixedGridRhoFastjetAll",rhoHandle);
+  double rho = *rhoHandle;
   /////
   //   Require a good vertex 
   /////
@@ -90,9 +93,19 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent){
     double SumChargedHadronPt = el->pfIsolationVariables().sumChargedHadronPt;
     double SumNeutralEt       = el->pfIsolationVariables().sumNeutralHadronEt + el->pfIsolationVariables().sumPhotonEt;
     double SumPU              = 0.5*el->pfIsolationVariables().sumPUPt;
-    double SumNeutralCorrEt   = std::max( 0.0, SumNeutralEt - SumPU );
-    double relIso = (SumChargedHadronPt + SumNeutralCorrEt)/el->pt();
-    patElectron_relIso.push_back(relIso);
+    double SumNeutralCorrEtDeltaBeta   = std::max( 0.0, SumNeutralEt - SumPU );
+    double relIsoDeltaBeta = (SumChargedHadronPt + SumNeutralCorrEtDeltaBeta)/el->pt();
+    patElectron_relIsoDeltaBeta.push_back(relIsoDeltaBeta);
+    double eleEta = fabs(el->eta());
+    double EffArea=0;
+    if (eleEta >= 0. && eleEta < 0.8)        EffArea = 0.1013;
+    else if (eleEta >= 0.8 && eleEta < 1.3)  EffArea = 0.0988;
+    else if (eleEta >= 1.3 && eleEta < 2.0)  EffArea = 0.0572;
+    else if (eleEta >= 2.0 && eleEta < 2.2)  EffArea = 0.0842;
+    else if (eleEta >= 2.2 && eleEta <= 2.5) EffArea = 0.1530;
+    double SumNeutralCorrEtRhoEA = std::max( 0.0, SumNeutralEt - rho*EffArea );
+    double relIsoRhoEA = (SumChargedHadronPt + SumNeutralCorrEtRhoEA)/el->pt();
+    patElectron_relIsoRhoEA.push_back(relIsoRhoEA);
     //Shape
     double absEleSCeta = fabs(el->superCluster()->position().eta());
     bool inCrack  = (absEleSCeta>1.4442 && absEleSCeta<1.5660);
@@ -142,7 +155,8 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&isoPhotons_              ,"patElectron_isoPhotons");
   AddBranch(&isoPU_                   ,"patElectron_isoPU");
   //Relative isolation 
-  AddBranch(&patElectron_relIso                  ,"patElectron_relIso");
+  AddBranch(&patElectron_relIsoDeltaBeta ,"patElectron_relIsoDeltaBeta");
+  AddBranch(&patElectron_relIsoRhoEA     ,"patElectron_relIsoRhoEA");
   //Shape
   AddBranch(&patElectron_inCrack                 ,"patElectron_inCrack");
   AddBranch(&patElectron_dEtaIn                  ,"patElectron_dEtaIn");
@@ -179,7 +193,8 @@ void ElectronPatSelector::Clear(){
   isoPhotons_.clear();
   isoPU_.clear();
   //Relative isolation 
-  patElectron_relIso.clear();
+  patElectron_relIsoDeltaBeta.clear();
+  patElectron_relIsoRhoEA.clear();
   //Shape
   patElectron_inCrack.clear();
   patElectron_dEtaIn.clear();

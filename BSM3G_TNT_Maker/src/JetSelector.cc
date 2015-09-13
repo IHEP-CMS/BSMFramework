@@ -64,7 +64,8 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
       Jet_electronEnergy.push_back(j.electronEnergy());                               
       Jet_photonEnergy.push_back(j.photonEnergy());                    
-      Jet_emEnergyFraction.push_back(j.emEnergyFraction());                          
+      if(j.isCaloJet()) Jet_emEnergyFraction.push_back(j.emEnergyFraction());
+      else              Jet_emEnergyFraction.push_back(99);
       //Jet constituent multiplicity
       Jet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
       Jet_chargedMultiplicity.push_back(j.chargedMultiplicity());

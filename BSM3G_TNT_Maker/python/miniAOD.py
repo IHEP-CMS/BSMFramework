@@ -17,12 +17,16 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # as a rule, find the global tag in the DAS under the Configs for given dataset
 process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
 #process.GlobalTag.globaltag = 'PHYS14_25_V2::All'
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
       #TPrime b -> tZb (M=1.0TeV)
       '/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1036477B-3A3A-E511-B6B8-002590593920.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1889D979-3A3A-E511-B60D-008CFA111294.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1A2EF284-DE39-E511-BEA8-0025905A611E.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/406B9572-3A3A-E511-8AD3-AC162DAB0B08.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/44642142-E239-E511-9301-001CC4A6DC20.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/44BA374E-143A-E511-AF1D-00259029E7FC.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/64128582-DE39-E511-B997-0025905A6090.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/9A98F77E-3A3A-E511-846E-002590D9D89C.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/A0CFE576-3A3A-E511-885B-002354EF3BDF.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/C4489C32-3A3A-E511-AE83-009C029C1160.root',
+      #tth
+      #'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root',
+      #ttjets
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root',
 	)
 )
 
@@ -43,8 +47,8 @@ process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
 # Each of these two example IDs contains all four standard
 # cut-based ID working points (only two WP of the PU20bx25 are actually used here).
 # define which IDs we want to produce
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',#cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff']#heepElectronID_HEEPV51_cff']
 #Add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
@@ -125,17 +129,17 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     filltriggerinfo     = cms.bool(True),
     fillmuoninfo        = cms.bool(True),
     fillelectronpatinfo = cms.bool(True),
-    filltauinfo         = cms.bool(True),
+    filltauinfo         = cms.bool(False),
     fillgeninfo         = cms.bool(True),
     fillPVinfo          = cms.bool(False),
     filljetinfo         = cms.bool(True),
-    filltthjetinfo      = cms.bool(True),
+    filltthjetinfo      = cms.bool(False),
     fillBoostedJetinfo  = cms.bool(True),
     fillTopSubJetinfo   = cms.bool(True),
     fillMETinfo         = cms.bool(True),
-    fillphotoninfo      = cms.bool(True),   
-    fillBTagReweight    = cms.bool(True),
-    fillgenHFCategoryinfo = cms.bool(True),
+    fillphotoninfo      = cms.bool(False),   
+    fillBTagReweight    = cms.bool(False),
+    fillgenHFCategoryinfo = cms.bool(False),
 
     # make a super tiny ntuple, only with a few branches?
     super_TNT  = cms.bool(False),
@@ -157,11 +161,11 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     bits                = cms.InputTag("TriggerResults","","HLT"),
     prescales           = cms.InputTag("patTrigger"),
     objects             = cms.InputTag("selectedPatTrigger"),  
-    electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
-    electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
-    electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
-    electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
-    eleHEEPIdMap        = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51"),
+    electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),#cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
+    electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),#cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
+    electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),#cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
+    electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),#cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
+    eleHEEPIdMap        = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),#heepElectronID-HEEPV51"),
 
     # muon cuts
     Muon_pt_min              = cms.double(10.0),
@@ -210,5 +214,24 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     genCHadBHadronId = cms.InputTag("matchGenCHadron", "genCHadBHadronId"),
 )
 
-process.p = cms.Path(process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
+#####
+##   Trigger
+#####
+process.hltFilter = cms.EDFilter('HLTHighLevel',
+ TriggerResultsTag = cms.InputTag('TriggerResults','','HLT'),
+ HLTPaths          = cms.vstring(
+  'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
+  'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*',
+  'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*',
+  'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
+  'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
+  'HLT_Ele27_eta2p1_WP85_Gsf_HT200_v*',
+  'HLT_IsoMu24_eta2p1_v*',
+ ),
+ eventSetupPathsKey = cms.string(''),
+ andOr              = cms.bool(True), #---- True = OR, False = AND between the HLT paths
+ throw              = cms.bool(False)
+)
+
+process.p = cms.Path(process.hltFilter*process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
 #process.p = cms.Path(process.TNT)

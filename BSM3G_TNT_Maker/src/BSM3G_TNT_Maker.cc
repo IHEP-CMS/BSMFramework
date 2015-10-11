@@ -20,6 +20,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   _filltthjetinfo        = iConfig.getParameter<bool>("filltthjetinfo"); 
   _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo"); 
   _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
+  _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
   _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
   _fillMETinfo           = iConfig.getParameter<bool>("fillMETinfo");
   _fillphotoninfo        = iConfig.getParameter<bool>("fillphotoninfo");
@@ -39,6 +40,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_filltthjetinfo)        tthjetselector     = new TTHJetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
+  if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig);
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);
@@ -58,22 +60,29 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   using namespace pat;
   using namespace reco;
 
-  if(_fillgeninfo)           genselector->Fill(iEvent); 
-  if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
-  if(_filleventinfo)         eventinfoselector->Fill(iEvent);
-  if(_filltriggerinfo)       trselector->Fill(iEvent, iSetup);
-  if(_fillPVinfo)            pvselector->Fill(iEvent); 
-  if(_fillmuoninfo)          muselector->Fill(iEvent);
-  if(_fillelectronpatinfo)   elpatselector->Fill(iEvent); 
-  if(_filltauinfo)           tauselector->Fill(iEvent); 
-  if(_filljetinfo)           jetselector->Fill(iEvent);
-  if(_filltthjetinfo)        tthjetselector->Fill(iEvent, iSetup);
-  if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
-  if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
-  if(_fillBTagReweight)      btagreweight->Fill(iEvent);
-  if(_fillMETinfo)           metselector->Fill(iEvent);
-  if(_fillphotoninfo)        photonselector->Fill(iEvent);
-  tree_->Fill();
+  int savebjetnessevt = 0;
+
+  if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup, savebjetnessevt);
+  if(savebjetnessevt == 1){
+    //cout<<"savebjetnessevt is"<<setw(20)<<savebjetnessevt<<endl;
+    if(_fillgeninfo)           genselector->Fill(iEvent); 
+    if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
+    if(_filleventinfo)         eventinfoselector->Fill(iEvent);
+    if(_filltriggerinfo)       trselector->Fill(iEvent, iSetup);
+    if(_fillPVinfo)            pvselector->Fill(iEvent); 
+    if(_fillmuoninfo)          muselector->Fill(iEvent);
+    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent); 
+    if(_filltauinfo)           tauselector->Fill(iEvent); 
+    if(_filljetinfo)           jetselector->Fill(iEvent);
+    if(_filltthjetinfo)        tthjetselector->Fill(iEvent, iSetup);
+    if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
+    if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
+  
+    if(_fillBTagReweight)      btagreweight->Fill(iEvent);
+    if(_fillMETinfo)           metselector->Fill(iEvent);
+    if(_fillphotoninfo)        photonselector->Fill(iEvent);
+    tree_->Fill();
+  }
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
   Handle<ExampleData> pIn;
   iEvent.getByLabel("example",pIn);

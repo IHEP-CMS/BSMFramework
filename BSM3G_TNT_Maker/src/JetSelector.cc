@@ -11,7 +11,7 @@ JetSelector::~JetSelector(){
 }
 void JetSelector::Fill(const edm::Event& iEvent){
   Clear();
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+  //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("/afs/cern.ch/work/f/fromeo/CMSSW_7_4_7/src/BSMFramework/BSM3G_TNT_Maker/files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Recall collections
   /////  
@@ -38,11 +38,12 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_bDiscriminator2.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     //Jet Uncertainties
-    float JesUncertainties=0;
-    GetJESUncertainties(j, jecUnc, JesUncertainties);
-    Jet_JesUp.push_back((1+JesUncertainties));         
-    Jet_JesDown.push_back((1-JesUncertainties));
+    //float JesUncertainties=0;
+    //GetJESUncertainties(j, jecUnc, JesUncertainties);
+    //Jet_JesUp.push_back((1+JesUncertainties));         
+    //Jet_JesDown.push_back((1-JesUncertainties));
     //JER scale factor and uncertainties
+    /*
     float JERScaleFactor    =1; 
     float JERScaleFactorUP  =1;
     float JERScaleFactorDOWN=1;
@@ -50,6 +51,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
+    */
     //Energy related variables
     if(!_super_TNT){
       //Jet_neutralHadEnergy.push_back(j.neutralHadronEnergy());                               
@@ -142,6 +144,7 @@ void JetSelector::Clear(){
   Jet_numberOfConstituents.clear();
   Jet_chargedMultiplicity.clear();
 }
+/*
 void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){
   jecUnc->setJetEta(jet.eta());
   jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
@@ -203,3 +206,4 @@ void JetSelector::GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFac
     JERScaleFactorDOWN = 1.;
   } 
 }
+*/

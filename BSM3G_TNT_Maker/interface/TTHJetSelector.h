@@ -90,7 +90,7 @@ class TTHJetSelector : public baseTree{
   std::vector<pat::Jet> RemoveMuons(const std::vector<pat::Muon>& Muons, const std::vector<pat::Jet>& UncleanedJets, edm::Handle<reco::VertexCollection> vtx_h);
   std::vector<pat::Jet> RemoveElectrons(edm::Handle< vector< pat::Electron > > Electrons, const std::vector<pat::Jet>& UncleanedJets, const edm::Event& iEvent);
   std::vector<pat::Jet> GetCorrectedJets(const std::vector<pat::Jet>& inputJets, const edm::Event& event, const edm::EventSetup& setup);
-  void GetJetUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
+  //void GetJetUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
   vector<double> TTHJet_pt, TTHJet_eta, TTHJet_phi, TTHJet_energy,  TTHJet_bDiscriminator;
   vector<double> TTHJet_bDiscriminator1,  TTHJet_bDiscriminator2;
   vector<double> TTHJet_ptJesUp, TTHJet_ptJesDown;

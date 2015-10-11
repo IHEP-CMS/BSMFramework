@@ -1,8 +1,8 @@
 #!/bin/bash
 #Specify needed variables
 varType=double
-varList=(Muon_isTracker Muon_isMedium)
-varLast=Muon_eta
+varList=(BJetness_num_pdgid_eles BJetness_num_pdgid_mus BJetness_num_soft_leps BJetness_num_soft_eles BJetness_num_soft_mus BJetness_num_vetonoipnoiso_leps BJetness_num_vetonoipnoiso_eles BJetness_num_loosenoipnoiso_leps BJetness_num_loosenoipnoiso_eles BJetness_num_loose_mus)
+varLast=BJetness_npvPtOVcollPt
 varCount=p
 #Print info
 echo " "

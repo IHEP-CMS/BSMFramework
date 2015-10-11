@@ -69,7 +69,7 @@ class JetSelector : public  baseTree{
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void Clear();
-  void GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
+  //void GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
   void GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};

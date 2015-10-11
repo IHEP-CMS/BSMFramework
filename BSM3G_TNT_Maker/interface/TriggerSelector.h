@@ -1,18 +1,21 @@
 // 
-// Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//          kaur amandeepkalsi: Panjab University, India. 
+//  Authors:  Andres Florez: Universidad de los Andes, Colombia. 
+//  kaur amandeepkalsi: Panjab University, India. 
 // 
+
 #ifndef __TRIGGER_H_ 
+
 #define __TRIGGER_H_
-/////
-//   Include files and namespaces
-/////
+
 #include <memory>
+
+// user include files                                                                      
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -39,12 +42,12 @@
 #include <stdlib.h>
 #include "baseTree.h"
 #include <TBranch.h>
+
 using namespace std;
 using namespace edm;
-/////
-//   Class declaration
-/////
+
 class TriggerSelector : public baseTree{
+
  public:
   TriggerSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
   ~TriggerSelector();
@@ -52,17 +55,15 @@ class TriggerSelector : public baseTree{
   void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   void SetBranches();
   void Clear();
+
  private:
   TriggerSelector(){};
-  /////
-  //   Config variables
-  /////
+  vector <int> Trigger_decision;
+  vector <string> Trigger_names;
   HLTConfigProvider hltConfig_;
   edm::InputTag triggerResultsTag_;
-  /////
-  //   BSM methods/variables
-  /////
-  vector<int> Trigger_decision;
-  vector<string> Trigger_names;
+  int triggerSL,triggerDL;
 };
+
 #endif
+

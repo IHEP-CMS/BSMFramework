@@ -11,7 +11,7 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 500 
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 # NOTE: the pick the right global tag!
 # for PHYS14 scenario PU20bx25: global tag is PHYS14_25_V1
@@ -68,42 +68,24 @@ process.source = cms.Source("PoolSource",
       #'/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1036477B-3A3A-E511-B6B8-002590593920.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1889D979-3A3A-E511-B60D-008CFA111294.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1A2EF284-DE39-E511-BEA8-0025905A611E.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/406B9572-3A3A-E511-8AD3-AC162DAB0B08.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/44642142-E239-E511-9301-001CC4A6DC20.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/44BA374E-143A-E511-AF1D-00259029E7FC.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/64128582-DE39-E511-B997-0025905A6090.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/9A98F77E-3A3A-E511-846E-002590D9D89C.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/A0CFE576-3A3A-E511-885B-002354EF3BDF.root','/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/C4489C32-3A3A-E511-AE83-009C029C1160.root',
       #TTHbb
       #'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root',
-#'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/1440BF72-A308-E511-9812-90B11C1453E1.root',
-      #12570 to see how jet csv is nan
+      #'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/1440BF72-A308-E511-9812-90B11C1453E1.root',
       #TT
-      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root'
-      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0CB01C19-BB0C-E511-860B-0025905A60A8.root'
-      #24397 to see how IP1D can fail
-      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root'
+      '/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0CB01C19-BB0C-E511-860B-0025905A60A8.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0E389719-BB0C-E511-A233-0025905A60F2.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/10590823-AA0C-E511-A3BC-00259073E388.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/121AE819-BB0C-E511-AF99-0025905A60B8.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/185E830A-BD0C-E511-89B0-0025905A6136.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/2895081D-BB0C-E511-8DD1-0025905A7786.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/2C20CFB5-A90C-E511-A2F5-00259073E516.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/3224EC18-BB0C-E511-9161-0025905A6076.root',
+      #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/34F08099-B40C-E511-AE64-002590CB0B5A.root'
       #DYJetsToLL
       #'/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root'
-      #SUSYGluGluToHToTauTau_M-160
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root'
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2CC6C6BD-5303-E511-9F70-0025905964CC.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/3E63FBB6-5303-E511-8CA0-485B39800C17.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/64BC29B9-5303-E511-8991-0CC47A4D99B0.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/68CF82BC-5303-E511-AF77-0025905B8572.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/7AED07BC-5303-E511-8B68-00259074AE6A.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/94113BB9-5303-E511-BCE6-002590D0AFAA.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/9E3DE5BA-5303-E511-889C-0025905A613C.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/A2E90ABD-5303-E511-9365-0025905A60B6.root',
-      #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/C051CCBB-5303-E511-A8BB-0025905A60B2.root'
-      #Zprime
-      '/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/20773840-892F-E511-A40C-002590AC4BF8.root',
-      '/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/54D69603-4C30-E511-BB98-02163E014637.root',
-      '/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/6EA45871-BB35-E511-B1D0-20CF3027A5B8.root',
-      '/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/7220D848-C82E-E511-97BB-20CF3027A600.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/7A7E9D0B-6F30-E511-9F66-008CFA197D74.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/8434566B-C92F-E511-A71E-782BCB407CF7.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/8C690EF0-862F-E511-81BE-003048F5B69A.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/FA5253A2-1430-E511-877B-002590775158.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/40000/161DB58C-D92E-E511-A70A-0CC47A4DEDC4.root',
-     #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/40000/7A1A2AF1-5C2F-E511-993B-008CFA197E90.root'
     ),
  skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 #
 # START ELECTRON ID SECTION
 #
@@ -203,18 +185,18 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     filltriggerinfo     = cms.bool(True),
     fillmuoninfo        = cms.bool(True),
     fillelectronpatinfo = cms.bool(True),
-    filltauinfo         = cms.bool(True),
-    fillgeninfo         = cms.bool(True),
+    filltauinfo         = cms.bool(False),
+    fillgeninfo         = cms.bool(False),
     fillPVinfo          = cms.bool(False),
     filljetinfo         = cms.bool(True),
     filltthjetinfo      = cms.bool(False),
     fillBoostedJetinfo  = cms.bool(False),
     fillTopSubJetinfo   = cms.bool(False),
-    fillBJetnessinfo    = cms.bool(False),
+    fillBJetnessinfo    = cms.bool(True),
     fillMETinfo         = cms.bool(True),
     fillphotoninfo      = cms.bool(False),   
     fillBTagReweight    = cms.bool(False),
-    fillgenHFCategoryinfo = cms.bool(False),
+    fillgenHFCategoryinfo = cms.bool(True),
 
     # make a super tiny ntuple, only with a few branches?
     super_TNT  = cms.bool(False),
@@ -288,7 +270,6 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
 )
 
 #process.p = cms.Path(process.printGenParticleList)
-process.p = cms.Path(process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
-#process.p = cms.Path(process.hltFilter*process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
+process.p = cms.Path(process.hltFilter*process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
 #process.p = cms.Path(process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*process.egmGsfElectronIDSequence * process.TNT)
 #process.p = cms.Path(process.TNT)

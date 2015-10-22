@@ -81,7 +81,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   bool _fillMETinfo;
   bool _fillphotoninfo;
   /////
-  //   BSM methods/variables
+  //   All 
   /////
   TFile* file;
   TTree* tree_;

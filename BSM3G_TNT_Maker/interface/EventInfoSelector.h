@@ -104,8 +104,10 @@ class EventInfoSelector : public baseTree{
   void SetBranches();
  private:
   EventInfoSelector(){};
+  void Initialise();
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
   double EVENT_genWeight_;
-  bool _is_data;
+  bool _is_data; 
+  double EVENT_rhopog_, EVENT_rhotth_; 
 };
 #endif

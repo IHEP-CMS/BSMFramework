@@ -69,7 +69,7 @@ class JetSelector : public  baseTree{
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void Clear();
-  //void GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
+  void GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
   void GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};
@@ -77,17 +77,38 @@ class JetSelector : public  baseTree{
   //   Config variables
   /////
   edm::InputTag jetToken_;
+  edm::InputTag puppi_jetToken_;
   edm::InputTag _vertexInputTag;
   double _Jet_pt_min;
+  bool _super_TNT;
   /////
   //   BSM variables
   /////
-  vector <double> Jet_pt,Jet_px,Jet_py,Jet_eta,Jet_phi,Jet_energy,Jet_bDiscriminator,Jet_bDiscriminator1,Jet_bDiscriminator2,Jet_mass,JetParton,JetjetId;
-  vector <double> Jet_pileupId,JetIDPU,Jetpass_pileupJetId,Jet_neutralHadEnergyFraction,Jet_neutralEmEmEnergyFraction; 
-  vector <double> Jet_chargedHadronEnergyFraction,Jet_chargedEmEnergyFraction,Jet_muonEnergyFraction; 
-  vector <double> Jet_electronEnergy,Jet_photonEnergy,UncorrJet_pt,Jet_JesUp,Jet_JesDown,Jet_JerSF,Jet_JerSFup,Jet_JerSFdown; 
-  vector <int> Jet_numberOfConstituents;
-  vector <int> Jet_chargedMultiplicity;
-  bool _super_TNT;
+  ////slimmedJets
+  //Kinematics
+  vector<double> Jet_pt, Jet_eta, Jet_phi, Jet_energy, Jet_mass, Jet_px, Jet_py, Jet_pz, Jet_Uncorr_pt;
+  //ID
+  vector<double> Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_pfCombinedMVABJetTags, Jet_pfJetProbabilityBJetTags, Jet_pileupId, Jet_isPFJet, Jet_isCaloJet;
+  //Energy
+  vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction;
+  //Other prop
+  vector<double> Jet_numberOfConstituents, Jet_chargedMultiplicity, Jet_vtxMass, Jet_vtxNtracks, Jet_vtx3DVal, Jet_vtx3DSig;
+  //Corrections/Systematics
+  vector<double> Jet_JesUp, Jet_JesDown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
+  //MC 
+  vector<double> Jet_partonFlavour, Jet_hadronFlavour;
+  ////slimmedJetsPuppi
+  //Kinematics
+  vector<double> Jet_puppi_pt, Jet_puppi_eta, Jet_puppi_phi, Jet_puppi_energy, Jet_puppi_mass, Jet_puppi_px, Jet_puppi_py, Jet_puppi_pz, Jet_puppi_Uncorr_pt;
+  //ID
+  vector<double> Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_puppi_pfCombinedMVABJetTags, Jet_puppi_pfJetProbabilityBJetTags, Jet_puppi_pileupId, Jet_puppi_isPFJet, Jet_puppi_isCaloJet;
+  //Energy
+  vector<double> Jet_puppi_neutralHadEnergyFraction, Jet_puppi_neutralEmEnergyFraction, Jet_puppi_chargedHadronEnergyFraction, Jet_puppi_chargedEmEnergyFraction, Jet_puppi_muonEnergyFraction, Jet_puppi_electronEnergy, Jet_puppi_photonEnergy, Jet_puppi_emEnergyFraction;
+  //Other prop
+  vector<double> Jet_puppi_numberOfConstituents, Jet_puppi_chargedMultiplicity, Jet_puppi_vtxMass, Jet_puppi_vtxNtracks, Jet_puppi_vtx3DVal, Jet_puppi_vtx3DSig;
+  //Corrections/Systematics
+  vector<double> Jet_puppi_JesUp, Jet_puppi_JesDown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown; 
+  //MC 
+  vector<double> Jet_puppi_partonFlavour, Jet_puppi_hadronFlavour;
 };
 #endif

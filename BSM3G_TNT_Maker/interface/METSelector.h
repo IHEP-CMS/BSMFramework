@@ -110,11 +110,25 @@ class METSelector : public baseTree{
   //   Config variables
   /////
   edm::InputTag metToken_;
-  /////
-  //   BSM methods/variables
-  /////
-  double Met_pt, Met_px,Met_py,Met_pz,Met_phi, Met_sumEt, Gen_Met,Met_shiftedPtUp, Met_shiftedPtDown;
+  edm::InputTag puppi_metToken_;
   bool _is_data;
   bool _super_TNT; 
+  /////
+  //   BSM 
+  /////
+  //Variables
+  ////slimmedMETs
+  //Kinematic
+  double Met_type1PF_pt, Met_type1PF_px, Met_type1PF_py, Met_type1PF_pz, Met_type1PF_phi, Met_type1PF_sumEt;
+  //Corrections/Systematics
+  double Met_type1PF_shiftedPtUp, Met_type1PF_shiftedPtDown;
+  //MC
+  double Gen_type1PF_Met;
+  ////slimmedMETsPUPPI
+  double Met_puppi_pt, Met_puppi_px, Met_puppi_py, Met_puppi_pz, Met_puppi_phi, Met_puppi_sumEt;
+  //Corrections/Systematics
+  double Met_puppi_shiftedPtUp, Met_puppi_shiftedPtDown;
+  //MC
+  double Gen_puppi_Met;
 };
 #endif

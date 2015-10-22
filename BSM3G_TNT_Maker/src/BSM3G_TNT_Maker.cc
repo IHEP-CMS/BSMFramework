@@ -33,7 +33,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_filleventinfo)         eventinfoselector  = new EventInfoSelector("miniAOD", tree_, debug_, iConfig);
   if(_filltriggerinfo)       trselector         = new TriggerSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillPVinfo)            pvselector         = new PVSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillmuoninfo)          muselector         = new MuonSelector("miniAOD", tree_, debug_, iConfig);
+  if(_fillmuoninfo)          muselector         = new MuonSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillelectronpatinfo)   elpatselector      = new ElectronPatSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_filltauinfo)           tauselector        = new TauSelector("miniAOD", tree_, debug_, iConfig);
   if(_filljetinfo)           jetselector        = new JetSelector("miniAOD", tree_, debug_, iConfig);
@@ -61,23 +61,20 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   using namespace reco;
 
   int savebjetnessevt = 0;
-
-  if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup, savebjetnessevt);
-  if(savebjetnessevt == 1){
-    //cout<<"savebjetnessevt is"<<setw(20)<<savebjetnessevt<<endl;
+  if(_fillBJetnessinfo) BJetnessselector->Fill(iEvent, iSetup, savebjetnessevt);
+  if((_fillBJetnessinfo && savebjetnessevt==1) || !_fillBJetnessinfo){
     if(_fillgeninfo)           genselector->Fill(iEvent); 
     if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
     if(_filleventinfo)         eventinfoselector->Fill(iEvent);
-    if(_filltriggerinfo)       trselector->Fill(iEvent, iSetup);
+    if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
     if(_fillPVinfo)            pvselector->Fill(iEvent); 
-    if(_fillmuoninfo)          muselector->Fill(iEvent);
-    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent); 
-    if(_filltauinfo)           tauselector->Fill(iEvent); 
+    if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
+    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
+    if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
     if(_filljetinfo)           jetselector->Fill(iEvent);
-    if(_filltthjetinfo)        tthjetselector->Fill(iEvent, iSetup);
+    if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
     if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
-  
     if(_fillBTagReweight)      btagreweight->Fill(iEvent);
     if(_fillMETinfo)           metselector->Fill(iEvent);
     if(_fillphotoninfo)        photonselector->Fill(iEvent);

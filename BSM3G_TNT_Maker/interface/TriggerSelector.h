@@ -2,20 +2,15 @@
 //  Authors:  Andres Florez: Universidad de los Andes, Colombia. 
 //  kaur amandeepkalsi: Panjab University, India. 
 // 
-
 #ifndef __TRIGGER_H_ 
-
 #define __TRIGGER_H_
-
 #include <memory>
-
 // user include files                                                                      
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -42,20 +37,16 @@
 #include <stdlib.h>
 #include "baseTree.h"
 #include <TBranch.h>
-
 using namespace std;
 using namespace edm;
-
 class TriggerSelector : public baseTree{
-
  public:
   TriggerSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
   ~TriggerSelector();
-  virtual void startTrigger (edm::EventSetup const& , edm::Run const &);
+  virtual void startTrigger(edm::EventSetup const& , edm::Run const &);
   void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   void SetBranches();
   void Clear();
-
  private:
   TriggerSelector(){};
   vector <int> Trigger_decision;
@@ -64,6 +55,4 @@ class TriggerSelector : public baseTree{
   edm::InputTag triggerResultsTag_;
   int triggerSL,triggerDL;
 };
-
 #endif
-

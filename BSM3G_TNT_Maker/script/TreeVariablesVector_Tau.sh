@@ -1,8 +1,8 @@
 #!/bin/bash
 #Specify needed variables
-obj=Jet_
-varType=double
-varList=(vtxMass vtxNtracks vtx3DVal vtx3DSig puppi_vtxMass puppi_vtxNtracks puppi_vtx3DVal puppi_vtx3DSig)
+obj=Tau_
+varType=int
+varList=(byLoosePileupWeightedIsolation3Hits byMediumPileupWeightedIsolation3Hits byPhotonPtSumOutsideSignalCone byPileupWeightedIsolationRaw3Hits byTightPileupWeightedIsolation3Hits footprintCorrection neutralIsoPtSumWeight photonPtSumOutsideSignalCone)
 varLast=
 varCount=p
 #Print info
@@ -25,7 +25,7 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo "    $obj${varList[$pos]}.push_back();"
+  echo "      $obj${varList[$pos]}.push_back(tau->tauID(\"${varList[$pos]}\"));"
   let pos=pos+1
 done
 echo " "

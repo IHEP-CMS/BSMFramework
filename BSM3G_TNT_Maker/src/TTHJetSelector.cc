@@ -49,7 +49,7 @@ void TTHJetSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if(j->chargedHadronEnergyFraction() <= 0.0)  continue;
     if(j->chargedMultiplicity()         <= 0.0)  continue;
     //Kinematics	  
-    float JesUncertainties=0;
+    //float JesUncertainties=0;
     /*
     GetJetUncertainties(*j, jecUnc, JesUncertainties);
     TTHJet_pt.push_back(j->pt());

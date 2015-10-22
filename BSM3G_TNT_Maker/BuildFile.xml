@@ -6,6 +6,7 @@
 <use name="FWCore/MessageService"/>
 <use name="DataFormats/EgammaCandidates"/>
 <use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Framework"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="CommonTools/Utils"/>
 <use name="CondFormats/JetMETObjects"/>

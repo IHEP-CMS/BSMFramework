@@ -31,20 +31,24 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   iEvent.getByLabel(_beamSpot, beamSpotHandle);
   edm::ESHandle<TransientTrackBuilder> theB;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
-  edm::Handle<reco::VertexCollection> vtx;
-  iEvent.getByLabel(_vertexInputTag, vtx);
+  edm::Handle<reco::VertexCollection> vtx_h;
+  iEvent.getByLabel(_vertexInputTag, vtx_h);
   /////
   //   Require a good vertex 
   /////
-  reco::VertexCollection::const_iterator firstGoodVertex = vtx->end();
-  for(reco::VertexCollection::const_iterator it = vtx->begin(); it != vtx->end(); it++){
-    if(isGoodVertex(*it)){
-      firstGoodVertex = it;
-      break;
-    }
-  }
-  if(firstGoodVertex == vtx->end()) return; // skip event if there are no good PVs
-  GlobalPoint thepv(firstGoodVertex->position().x(),firstGoodVertex->position().y(),firstGoodVertex->position().z());
+  //reco::VertexCollection::const_iterator firstGoodVertex = vtx->end();
+  //for(reco::VertexCollection::const_iterator it = vtx->begin(); it != vtx->end(); it++){
+  //  if(isGoodVertex(*it)){
+  //    firstGoodVertex = it;
+  //    break;
+  //  }
+  //}
+  //if(firstGoodVertex == vtx->end()) return; // skip event if there are no good PVs
+  if(vtx_h->empty()) return; // skip the event if no PV found
+  const reco::Vertex &firstGoodVertex = vtx_h->front();
+  bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  if(!isgoodvtx) return;
+  GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z());
   /////
   //   Get tau information 
   /////
@@ -194,8 +198,8 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
       GlobalPoint tauLeadTrack_pca_bs = tauTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
       GlobalPoint tauLeadTrack_pca_pv = tauTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
-      Tau_leadChargedCandDz_pv.push_back(leadTrack->dz(firstGoodVertex->position()));
-      Tau_leadChargedCandDxy_pv.push_back(leadTrack->dxy(firstGoodVertex->position()));
+      Tau_leadChargedCandDz_pv.push_back(leadTrack->dz(firstGoodVertex.position()));
+      Tau_leadChargedCandDxy_pv.push_back(leadTrack->dxy(firstGoodVertex.position()));
       Tau_leadChargedCandDz_bs.push_back(leadTrack->dz(point));
       Tau_leadChargedCandDxy_bs.push_back(-1.*(leadTrack->dxy(point)));
       Tau_leadChargedCandDzError.push_back(leadTrack->dzError());

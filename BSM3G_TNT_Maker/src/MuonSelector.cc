@@ -49,6 +49,8 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //if(firstGoodVertex == vtx_h->end()) return;
   if(vtx_h->empty()) return; // skip the event if no PV found
   const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  if(!isgoodvtx) return;
   ////
   //   Get muon information
   /////

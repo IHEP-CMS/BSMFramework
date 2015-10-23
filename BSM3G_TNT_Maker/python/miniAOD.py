@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1 
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000 
 #process.load("Configuration.StandardSequences.Geometry_cff")
 ##process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -222,7 +222,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   fillMETinfo           = cms.bool(True),
   fillphotoninfo        = cms.bool(False),   
   # Choose format 
-  MiniAODv2 = cms.bool(True),
+  MiniAODv2 = cms.bool(False),
   is_data   = cms.bool(False),
   debug_    = cms.bool(False),
   super_TNT = cms.bool(False),

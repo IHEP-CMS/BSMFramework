@@ -66,6 +66,8 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   //if(firstGoodVertex == vtx_h->end()) return;
   if(vtx_h->empty()) return; // skip the event if no PV found
   const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  if(!isgoodvtx) return;
   /////
   //   Get electron information 
   /////

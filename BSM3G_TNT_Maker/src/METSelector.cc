@@ -6,6 +6,7 @@ METSelector::METSelector(std::string name, TTree* tree, bool debug, const pset& 
   if(debug) std::cout<<"in pileup constructor: calling SetBrances()"<<std::endl;
   _is_data   = iConfig.getParameter<bool>("is_data");
   _super_TNT = iConfig.getParameter<bool>("super_TNT");
+  _MiniAODv2 = iConfig.getParameter<bool>("MiniAODv2");
   SetBranches();
 }
 METSelector::~METSelector(){
@@ -49,8 +50,13 @@ void METSelector::Fill(const edm::Event& iEvent){
   Met_puppi_phi   = puppimet.phi();
   Met_puppi_sumEt = puppimet.sumEt();  
   //Corrections/Systematics
-  Met_puppi_shiftedPtUp   = puppimet.shiftedPt(pat::MET::JetEnUp);
-  Met_puppi_shiftedPtDown = puppimet.shiftedPt(pat::MET::JetEnDown);
+  if(_MiniAODv2){
+    Met_puppi_shiftedPtUp   = puppimet.shiftedPt(pat::MET::JetEnUp);
+    Met_puppi_shiftedPtDown = puppimet.shiftedPt(pat::MET::JetEnDown);
+  }else{
+    Met_puppi_shiftedPtUp   = -999;
+    Met_puppi_shiftedPtDown = -999;
+  }
   //MC
   if(!_is_data) Gen_puppi_Met = puppimet.genMET()->pt();
   if(debug_) std::cout<<"got MET info"<<std::endl;

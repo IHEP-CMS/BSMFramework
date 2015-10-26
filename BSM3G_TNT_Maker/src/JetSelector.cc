@@ -3,6 +3,7 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
   puppi_jetToken_ = iConfig.getParameter<edm::InputTag>("jetsPUPPI");
   _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");
+  jecfile_        = iConfig.getParameter<edm::FileInPath>("jecfile");   
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
   SetBranches();
@@ -61,7 +62,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
     Jet_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
     //Corrections/Systematics
-    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("/afs/cern.ch/work/f/fromeo/CMSSW_7_4_7/src/BSMFramework/BSM3G_TNT_Maker/files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
     //Jet Uncertainties
     float JesUncertainties = 0;
     GetJESUncertainties(j, jecUnc, JesUncertainties);
@@ -75,6 +76,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
+    delete jecUnc;
     //MC
     Jet_partonFlavour.push_back(j.partonFlavour());
     Jet_hadronFlavour.push_back(j.hadronFlavour());
@@ -118,7 +120,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_puppi_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
     Jet_puppi_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
     //Corrections/Systematics
-    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("/afs/cern.ch/work/f/fromeo/CMSSW_7_4_7/src/BSMFramework/BSM3G_TNT_Maker/files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
     //Jet Uncertainties
     float JesUncertainties = 0;
     GetJESUncertainties(j, jecUnc, JesUncertainties);
@@ -132,6 +134,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_puppi_JerSF.push_back(JERScaleFactor);
     Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
     Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
+    delete jecUnc;
     //MC
     Jet_puppi_partonFlavour.push_back(j.partonFlavour());
     Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());

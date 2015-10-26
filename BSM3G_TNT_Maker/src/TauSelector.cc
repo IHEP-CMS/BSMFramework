@@ -275,9 +275,9 @@ void TauSelector::SetBranches(){
   //Against Muon
   if(!_MiniAODv2){
     AddBranch(&Tau_againstMuonLoose2 ,"Tau_againstMuonLoose2");
-    AddBranch(&Tau_againstMuonLoose3 ,"Tau_againstMuonLoose3");
+    AddBranch(&Tau_againstMuonTight2 ,"Tau_againstMuonTight2");
   }
-  AddBranch(&Tau_againstMuonTight2 ,"Tau_againstMuonTight2");
+  AddBranch(&Tau_againstMuonLoose3 ,"Tau_againstMuonLoose3");
   AddBranch(&Tau_againstMuonTight3 ,"Tau_againstMuonTight3");
   //Against Electron
   if(!_MiniAODv2){
@@ -393,9 +393,9 @@ void TauSelector::Clear(){
   //Against Muon
   if(!_MiniAODv2){
     Tau_againstMuonLoose2.clear();
-    Tau_againstMuonLoose3.clear();
+    Tau_againstMuonTight2.clear();
   }
-  Tau_againstMuonTight2.clear();
+  Tau_againstMuonLoose3.clear();
   Tau_againstMuonTight3.clear();
   //Against Electron
   if(!_MiniAODv2){

@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000 
+process.MessageLogger.cerr.FwkReport.reportEvery = 10 
 #process.load("Configuration.StandardSequences.Geometry_cff")
 ##process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -35,16 +35,19 @@ process.source = cms.Source("PoolSource",
     #SUSYGluGluToHToTauTau_M-160
     #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root'
     #Zprime
-    #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/20773840-892F-E511-A40C-002590AC4BF8.root',
+    #v1
+    '/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/20773840-892F-E511-A40C-002590AC4BF8.root',
+    #v2
+    #'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring15MiniAODv2/ZprimeToTauTau_M_2000_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/80000/9E637F69-DC74-E511-A619-00259074AE98.root'
     #TTHLep
     #v2
-    '/store/mc/RunIISpring15MiniAODv2/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/02FE2DB6-D06D-E511-8BC7-0025905C431C.root'
+    #'/store/mc/RunIISpring15MiniAODv2/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/02FE2DB6-D06D-E511-8BC7-0025905C431C.root'
     #v1
     #'/store/mc/RunIISpring15DR74/ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/088378DB-3D24-E511-8B0E-20CF3027A589.root'
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 #####
 ##   Trigger
 #####
@@ -250,6 +253,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   metsPUPPI           = cms.InputTag("slimmedMETsPuppi"),
   photons             = cms.InputTag("slimmedPhotons"),
   packedPFCandidates  = cms.InputTag("packedPFCandidates"), 
+  #JEC
+  jecfile             = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/Summer13_V5_MC_Uncertainty_AK5PFchs.txt"),
   #### Object selection
   # Primary vertex cuts
   Pvtx_ndof_min   = cms.double(4.),

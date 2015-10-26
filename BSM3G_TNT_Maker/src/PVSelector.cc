@@ -28,9 +28,7 @@ void PVSelector::Fill(const edm::Event& iEvent){
   /////
   //   Get vertex information
   /////  
-  pvertex_notempty = 0; 
   if(!vtx->empty()) pvertex_notempty = 1; 
-  nBestVtx = 0; 
   for(reco::VertexCollection::const_iterator vtxIt = vtx->begin(); vtxIt!= vtx->end(); ++vtxIt){
     if((vtxIt->isValid()) && !(vtxIt->isFake())){
       //if(vtxIt->ndof() < _Pvtx_ndof_min) continue; 
@@ -52,11 +50,6 @@ void PVSelector::Fill(const edm::Event& iEvent){
   //   Get pileup information
   /////   
   std::vector<PileupSummaryInfo>::const_iterator PVI;
-  npuVertices      = 0;
-  ootnpuVertices   = 0;
-  npuVerticesm1    = 0;
-  npuVerticesp1    = 0;
-  trueInteractions = 0;
   if(!_is_data){
     Handle<std::vector< PileupSummaryInfo > >  PupInfo;
     string pileupinfo;
@@ -117,6 +110,15 @@ void PVSelector::SetBranches(){
   if(debug_)    std::cout<<"set branches"<<std::endl;
 }
 void PVSelector::Clear(){
+  pvertex_notempty = 0; 
+  nBestVtx         = 0; 
+  npuVertices      = 0;
+  ootnpuVertices   = 0;
+  npuVerticesm1    = 0;
+  npuVerticesp1    = 0;
+  trueInteractions = 0;
+  pvertex_ndof.clear();
+  pvertex_dxy.clear();
   pvertex_x.clear();
   pvertex_y.clear();
   pvertex_z.clear(); 

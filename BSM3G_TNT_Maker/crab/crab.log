@@ -1,0 +1,86 @@
+DEBUG 2015-10-24 10:53:08,845: 	 Executing command: 'status'
+DEBUG 2015-10-24 10:53:08,846: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2015-10-24 10:53:08,858: 	 Checking credentials
+DEBUG 2015-10-24 10:53:08,859: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2015-10-24 10:53:08,859: 	 Getting proxy life time left
+DEBUG 2015-10-24 10:53:09,466: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 32894
+
+ error: 
+ retcode : 0
+DEBUG 2015-10-24 10:53:09,971: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 32894
+
+ error: 
+ retcode : 0
+DEBUG 2015-10-24 10:53:09,972: 	 Proxy valid for 09:08:14 hours
+ERROR 2015-10-24 10:53:09,973: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/ZprimeToTauTau_M2000_MiniAODv1
+ERROR 2015-10-24 10:53:09,973: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 317, in __init__
+    self.loadLocalCache(proxyOptsSetPlace)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 427, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/ClientUtilities.py", line 445, in loadCache
+    raise CachefileNotFoundException(msg)
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/ZprimeToTauTau_M2000_MiniAODv1
+ERROR 2015-10-24 10:53:09,980: 	 Unhandled Exception!
+ERROR 2015-10-24 10:53:09,980: 	 'NoneType' object has no attribute 'terminate'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 213, in <module>
+    client.cmd.terminate( exitcode )
+AttributeError: 'NoneType' object has no attribute 'terminate'
+ERROR 2015-10-24 10:53:09,980: 	 ERROR: AttributeError: 'NoneType' object has no attribute 'terminate'
+ERROR 2015-10-24 10:53:09,980: 	 
+	Please email hn-cms-computing-tools@cern.ch for support with the crab.log file or crab.log URL.
+ERROR 2015-10-24 10:53:09,981: 	 	Client Version: 3.3.1510
+ERROR 2015-10-24 10:53:09,981: 	 	Please use 'crab uploadlog' to upload the log file /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/crab.log to the CRAB cache.
+DEBUG 2015-10-25 09:29:04,247: 	 Executing command: 'status'
+DEBUG 2015-10-25 09:29:04,248: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2015-10-25 09:29:04,261: 	 Checking credentials
+DEBUG 2015-10-25 09:29:04,262: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2015-10-25 09:29:04,262: 	 Getting proxy life time left
+DEBUG 2015-10-25 09:29:04,868: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 78679
+
+ error: 
+ retcode : 0
+DEBUG 2015-10-25 09:29:05,373: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 78678
+
+ error: 
+ retcode : 0
+DEBUG 2015-10-25 09:29:05,373: 	 Proxy valid for 21:51:19 hours
+ERROR 2015-10-25 09:29:05,374: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/ZprimeToTauTau_M2000_MiniAODv2_NoMu
+ERROR 2015-10-25 09:29:05,375: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 159, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 145, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 317, in __init__
+    self.loadLocalCache(proxyOptsSetPlace)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/Commands/SubCommand.py", line 427, in loadLocalCache
+    self.cachedinfo, self.logfile = loadCache(self.requestarea, self.logger)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/lib/python2.6/site-packages/CRABClient/ClientUtilities.py", line 445, in loadCache
+    raise CachefileNotFoundException(msg)
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/ZprimeToTauTau_M2000_MiniAODv2_NoMu
+ERROR 2015-10-25 09:29:05,380: 	 Unhandled Exception!
+ERROR 2015-10-25 09:29:05,380: 	 'NoneType' object has no attribute 'terminate'
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/cms/crabclient/3.3.1510/bin/crab", line 213, in <module>
+    client.cmd.terminate( exitcode )
+AttributeError: 'NoneType' object has no attribute 'terminate'
+ERROR 2015-10-25 09:29:05,380: 	 ERROR: AttributeError: 'NoneType' object has no attribute 'terminate'
+ERROR 2015-10-25 09:29:05,380: 	 
+	Please email hn-cms-computing-tools@cern.ch for support with the crab.log file or crab.log URL.
+ERROR 2015-10-25 09:29:05,380: 	 	Client Version: 3.3.1510
+ERROR 2015-10-25 09:29:05,380: 	 	Please use 'crab uploadlog' to upload the log file /afs/cern.ch/work/f/fromeo/CMSSW_7_4_12_patch4/src/BSMFramework/BSM3G_TNT_Maker/crab/crab.log to the CRAB cache.

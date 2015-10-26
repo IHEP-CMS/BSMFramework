@@ -495,8 +495,10 @@ void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterat
   }
  }
  //Get info
- double L2L3_SF = elejet.p4().E()/elejet.correctedJet(1).p4().E();
- elejet.setP4(((elejet.correctedJet(1).p4()-ele->p4())*L2L3_SF)+ele->p4());
+ if(elejet.jecSetsAvailable()){
+   double L2L3_SF = elejet.p4().E()/elejet.correctedJet(1).p4().E();
+   elejet.setP4(((elejet.correctedJet(1).p4()-ele->p4())*L2L3_SF)+ele->p4());
+ }
  elejet_pt       = elejet.pt();
  eleptOVelejetpt = min(ele->pt()/elejet.pt(), 1.5);
  elejet_btagdisc = max(double(elejet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);

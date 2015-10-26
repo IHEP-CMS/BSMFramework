@@ -49,6 +49,24 @@ BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 {
   //do anything here that needs to be done at desctruction time
   //(e.g. close files, deallocate resources etc.)
+  /*
+  delete genselector; 
+  delete genhfselector;
+  delete eventinfoselector; 
+  delete trselector;  
+  delete pvselector; 
+  delete muselector; 
+  delete elpatselector; 
+  delete tauselector; 
+  delete jetselector; 
+  delete tthjetselector; 
+  delete BoostedJetselector; 
+  delete TopSubJetselector; 
+  delete BJetnessselector; 
+  delete btagreweight; 
+  delete metselector; 
+  delete photonselector; 
+  */
 }
 /////
 //   Member functions

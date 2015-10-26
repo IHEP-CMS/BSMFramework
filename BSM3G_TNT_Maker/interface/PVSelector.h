@@ -121,10 +121,10 @@ class PVSelector : public baseTree{
   int pvertex_notempty;
   int nBestVtx;
   int npuVertices, ootnpuVertices, npuVerticesm1, npuVerticesp1;
+  double trueInteractions;
   vector<double> pvertex_x, pvertex_y, pvertex_z;
   vector<double> pvertex_xError, pvertex_yError, pvertex_zError;
   vector<double> pvertex_ndof, pvertex_dxy;
   vector<double> beamSpot_x0, beamSpot_y0, beamSpot_z0, beamSpot_xWidth, beamSpot_yWidth;
-  double trueInteractions;
 };
 #endif

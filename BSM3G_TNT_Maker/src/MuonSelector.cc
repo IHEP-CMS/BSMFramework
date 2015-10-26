@@ -245,15 +245,11 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     /////
     //   TTH variables
     ///// 
-    //cout<<setw(20)<<"Event num MUON"<<setw(20)<<iEvent.id().event()<<endl;
-    //cout<<setw(20)<<"Mu kin"<<setw(20)<<mu->pt()<<setw(20)<<mu->eta()<<setw(20)<<mu->phi()<<setw(20)<<mu->energy()<<setw(20)<<mu->pdgId()<<setw(20)<<mu->charge()<<endl;  
     double miniIso      = 999;
     double miniIsoCh    = 999;
     double miniIsoNeu   = 999;
     double miniIsoPUsub = 999;
     get_muminiIso_info(*pcc,rho,*mu,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
-    //cout<<setw(20)<<"Mu iso"<<setw(20)<<miniIso/mu->pt()<<setw(20)<<miniIsoCh/mu->pt()<<setw(20)<<miniIsoNeu/mu->pt()<<endl;
-    //cout<<setw(20)<<"Mu iso"<<setw(20)<<miniIso/mu->pt()<<setw(20)<<miniIsoCh<<setw(20)<<miniIsoNeu<<endl;
     double mujet_mindr    = 999;
     double mujet_pt       = -1;
     double muptOVmujetpt  = -1;
@@ -263,12 +259,6 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     double mujetz  = -999;
     double muptrel = -999;
     get_mujet_info(*mu,iEvent,iSetup,mujet_mindr,mujet_pt,muptOVmujetpt,mujet_btagdisc,mujetx,mujety,mujetz,muptrel);
-    //cout<<setw(20)<<"Jet related var"<<setw(20)<<muptrel<<setw(20)<<mujet_btagdisc<<setw(20)<<mu->pt()/mujet_pt<<endl;
-    if(mu->innerTrack().isNonnull()){
-     //cout<<setw(20)<<"Mu IP"<<setw(20)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(20)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(20)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(20)<<mu->segmentCompatibility()<<endl;
-    }else{
-     //cout<<setw(20)<<"no track for Mu IP"<<endl; 
-    }
     Muon_miniIsoRel.push_back(miniIso/mu->pt());
     Muon_miniIsoCh.push_back(miniIsoCh);
     Muon_miniIsoNeu.push_back(miniIsoNeu);
@@ -279,6 +269,15 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Muon_jetcsv.push_back(mujet_btagdisc);
     Muon_ptrel.push_back(muptrel);
     Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
+    //Print info
+    //cout<<setiosflags(ios::fixed)<<setprecision(5);
+    //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sip15D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
+    //cout<<setw(10)<<iEvent.id().event()<<setw(10)<<mu->pt()<<setw(10)<<mu->eta()<<setw(10)<<mu->phi()<<setw(10)<<mu->energy()<<setw(5)<<mu->pdgId()<<setw(5)<<mu->charge()<<setw(15)<<miniIso/mu->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<muptrel<<setw(10)<<mujet_btagdisc<<setw(10)<<mu->pt()/mujet_pt;
+    //if(mu->innerTrack().isNonnull()){
+    // cout<<setw(10)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(10)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mu->segmentCompatibility()<<endl;
+    //}else{
+    // cout<<setw(15)<<"no track for Mu IP"<<endl; 
+    //}
     //break;
   }
 }
@@ -491,7 +490,6 @@ void MuonSelector::get_muminiIso_info(const pat::PackedCandidateCollection& pcc,
   vector<const pat::PackedCandidate *> pfc_neu; pfc_neu.clear();
   vector<const pat::PackedCandidate *> pfc_pu;  pfc_pu.clear();
   get_chneupu_pcc(pcc,pfc_all,pfc_ch,pfc_neu,pfc_pu);
-  //miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.0001, 0.0, 0);
   miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.01, 0.5, 0);
   miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, 0.01, 0.5, 0);
   double effarea    = get_effarea(cand.eta());
@@ -584,9 +582,11 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
  //cout<<"Corrected (L3)"<<setw(20)<<mujet.correctedJet(3).p4().E()<<endl;
  //cout<<"Corrected Fina"<<setw(20)<<mujet.p4().E()<<endl; 
  //Get info
- double L2L3_corr = mujet.p4().E()/mujet.correctedJet(1).p4().E(); 
- //cout<<"L2L3_corr"<<setw(20)<<L2L3_corr<<endl;
- mujet.setP4(((mujet.correctedJet(1).p4()-mu.p4())*L2L3_corr)+mu.p4());
+ if(mujet.jecSetsAvailable()){
+   double L2L3_corr = mujet.p4().E()/mujet.correctedJet(1).p4().E(); 
+   //cout<<"L2L3_corr"<<setw(20)<<L2L3_corr<<endl;
+   mujet.setP4(((mujet.correctedJet(1).p4()-mu.p4())*L2L3_corr)+mu.p4());
+ }
  mujet_pt       = mujet.pt();
  muptOVmujetpt  = min(mu.pt()/mujet.pt(), 1.5);
  mujet_btagdisc = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);

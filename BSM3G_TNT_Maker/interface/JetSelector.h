@@ -25,6 +25,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ParameterSet/interface/FileInPath.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -79,6 +80,7 @@ class JetSelector : public  baseTree{
   edm::InputTag jetToken_;
   edm::InputTag puppi_jetToken_;
   edm::InputTag _vertexInputTag;
+  edm::FileInPath jecfile_;
   double _Jet_pt_min;
   bool _super_TNT;
   /////

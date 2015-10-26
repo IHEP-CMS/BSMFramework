@@ -113,6 +113,7 @@ class METSelector : public baseTree{
   edm::InputTag puppi_metToken_;
   bool _is_data;
   bool _super_TNT; 
+  bool _MiniAODv2;
   /////
   //   BSM 
   /////

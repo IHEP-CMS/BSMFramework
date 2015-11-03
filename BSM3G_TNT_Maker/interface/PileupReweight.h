@@ -40,6 +40,7 @@ class PileupReweight : public baseTree{
   //   Config variables
   /////
   bool _is_data;
+  bool _MiniAODv2;
   edm::FileInPath PUReweightfile_;
   double PUWeight;
   int nPUMax_;

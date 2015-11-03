@@ -130,10 +130,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     /////
     //   Gen info
     /////
-    BJetness_ngenbh = -999;
-    BJetness_ngenbt = -999;
-    BJetness_ngenb  = -999;
-    BJetness_ngenc  = -999;
     if(!_is_data) {
       BJetness_ngenbh = 0;
       BJetness_ngenbt = 0;
@@ -479,6 +475,11 @@ void BJetnessSelector::SetBranches(){
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void BJetnessSelector::Clear(){
+  //Gen info
+  BJetness_ngenbh = -9999;
+  BJetness_ngenbt = -9999;
+  BJetness_ngenb  = -9999;
+  BJetness_ngenc  = -9999;
   BJetness_partonFlavour.clear();
   BJetness_hadronFlavour.clear();
   BJetness_numjet.clear();

@@ -107,6 +107,9 @@ class ElectronPatSelector : public  baseTree{
   edm::EDGetTokenT<edm::ValueMap<bool> > electronMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > electronTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
+  bool _AJVar;
+  bool _tthlepVar;
+  bool _is_data;
   /////
   //   BSM 
   /////
@@ -139,6 +142,11 @@ class ElectronPatSelector : public  baseTree{
   double get_effarea(double eta);
   void get_elejet_info(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, const edm::EventSetup& iSetup, double& elejet_mindr, double& elejet_pt, double& eleptSUelejetpt, double& elejet_btagdisc, double& jx, double& jy, double& jz, double& eleptrel);
   //Variables
-  vector<double> patElectron_miniIsoRel, patElectron_miniIsoCh, patElectron_miniIsoNeu, patElectron_miniIsoPUsub, patElectron_jetdr, patElectron_jetpt, patElectron_jetptratio, patElectron_jetcsv, patElectron_ptrel, patElectron_IP3Dsig, patElectron_dxy, patElectron_eleMVASpring15NonTrig25ns;
+  vector<double> patElectron_miniIsoRel, patElectron_miniIsoCh, patElectron_miniIsoNeu, patElectron_miniIsoPUsub, patElectron_jetdr, patElectron_jetpt, patElectron_jetptratio, patElectron_jetcsv, patElectron_ptrel, patElectron_IP3Dsig, patElectron_eleMVASpring15NonTrig25ns, patElectron_eleMVASpring15NonTrig25ns_VL;
+  /////
+  //   MC
+  /////
+   vector<double> patElectron_gen_pt, patElectron_gen_eta, patElectron_gen_phi, patElectron_gen_en;
+   vector<int>    patElectron_gen_pdgId, patElectron_gen_isPromptFinalState, patElectron_gen_isDirectPromptTauDecayProductFinalState;
 };
 #endif

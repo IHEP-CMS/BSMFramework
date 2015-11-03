@@ -11,8 +11,11 @@ MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset
   _vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
   _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT          = iConfig.getParameter<bool>("super_TNT");
+  _is_data            = iConfig.getParameter<bool>("is_data");
   pfToken_            = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
   jetToken_           = iConfig.getParameter<edm::InputTag>("jets");
+  _AJVar = iConfig.getParameter<bool>("AJVar");
+  _tthlepVar = iConfig.getParameter<bool>("tthlepVar");
   SetBranches();
 }
 MuonSelector::~MuonSelector(){
@@ -54,6 +57,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   ////
   //   Get muon information
   /////
+  //bool amu = false;
   for(edm::View<pat::Muon>::const_iterator mu = muon_h->begin(); mu != muon_h->end(); mu++){
     /////
     //   BSM variables
@@ -195,90 +199,130 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       Muon_vty.push_back(-999);
       Muon_vtz.push_back(-999);
     }
-    if(beamSpotHandle.isValid() && mu->innerTrack().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
-      beamSpot = *beamSpotHandle;
-      GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
-      GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z()); 
-      TrackRef muit = mu->innerTrack();
-      TransientTrack muonTransTkPtr = ttrkbuilder->build(muit);
-      GlobalPoint mu_pca_bs = muonTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
-      GlobalPoint mu_pca_pv = muonTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
-      Muon_track_PCAx_pv.push_back(mu_pca_pv.x());
-      Muon_track_PCAy_pv.push_back(mu_pca_pv.y());
-      Muon_track_PCAz_pv.push_back(mu_pca_pv.z());
-      Muon_track_PCAx_bs.push_back(mu_pca_bs.x());
-      Muon_track_PCAy_bs.push_back(mu_pca_bs.y());
-      Muon_track_PCAz_bs.push_back(mu_pca_bs.z());
-      const float muonMass = 0.1056583715;
-      float muonSigma      = muonMass*1e-6;
-      float chi2 = 0.0;
-      float ndf  = 0.0;
-      KinematicParticleFactoryFromTransientTrack pFactory;
-      RefCountedKinematicParticle muonParticle = pFactory.particle(muonTransTkPtr, muonMass, chi2, ndf, muonSigma);
-      Muon_trackFitErrorMatrix_00.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,0));
-      Muon_trackFitErrorMatrix_01.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,1));
-      Muon_trackFitErrorMatrix_02.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,2));
-      Muon_trackFitErrorMatrix_11.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(1,1));
-      Muon_trackFitErrorMatrix_12.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(1,2));
-      Muon_trackFitErrorMatrix_22.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(2,2));
-    }else{
-      Muon_track_PCAx_bs.push_back(-999);
-      Muon_track_PCAy_bs.push_back(-999);
-      Muon_track_PCAz_bs.push_back(-999);
-      Muon_track_PCAx_pv.push_back(-999);
-      Muon_track_PCAy_pv.push_back(-999);
-      Muon_track_PCAz_pv.push_back(-999);
-      Muon_trackFitErrorMatrix_00.push_back(-999);
-      Muon_trackFitErrorMatrix_01.push_back(-999);
-      Muon_trackFitErrorMatrix_02.push_back(-999);
-      Muon_trackFitErrorMatrix_11.push_back(-999);
-      Muon_trackFitErrorMatrix_12.push_back(-999);
-      Muon_trackFitErrorMatrix_22.push_back(-999);
+    if(_AJVar){
+      if(beamSpotHandle.isValid() && mu->innerTrack().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
+	beamSpot = *beamSpotHandle;
+	GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
+	GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z()); 
+	TrackRef muit = mu->innerTrack();
+	TransientTrack muonTransTkPtr = ttrkbuilder->build(muit);
+	GlobalPoint mu_pca_bs = muonTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
+	GlobalPoint mu_pca_pv = muonTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
+	Muon_track_PCAx_pv.push_back(mu_pca_pv.x());
+	Muon_track_PCAy_pv.push_back(mu_pca_pv.y());
+	Muon_track_PCAz_pv.push_back(mu_pca_pv.z());
+	Muon_track_PCAx_bs.push_back(mu_pca_bs.x());
+	Muon_track_PCAy_bs.push_back(mu_pca_bs.y());
+	Muon_track_PCAz_bs.push_back(mu_pca_bs.z());
+	const float muonMass = 0.1056583715;
+	float muonSigma      = muonMass*1e-6;
+	float chi2 = 0.0;
+	float ndf  = 0.0;
+	KinematicParticleFactoryFromTransientTrack pFactory;
+	RefCountedKinematicParticle muonParticle = pFactory.particle(muonTransTkPtr, muonMass, chi2, ndf, muonSigma);
+	Muon_trackFitErrorMatrix_00.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,0));
+	Muon_trackFitErrorMatrix_01.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,1));
+	Muon_trackFitErrorMatrix_02.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(0,2));
+	Muon_trackFitErrorMatrix_11.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(1,1));
+	Muon_trackFitErrorMatrix_12.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(1,2));
+	Muon_trackFitErrorMatrix_22.push_back(muonParticle->stateAtPoint(mu_pca_bs).kinematicParametersError().matrix()(2,2));
+      }else{
+	Muon_track_PCAx_bs.push_back(-999);
+	Muon_track_PCAy_bs.push_back(-999);
+	Muon_track_PCAz_bs.push_back(-999);
+	Muon_track_PCAx_pv.push_back(-999);
+	Muon_track_PCAy_pv.push_back(-999);
+	Muon_track_PCAz_pv.push_back(-999);
+	Muon_trackFitErrorMatrix_00.push_back(-999);
+	Muon_trackFitErrorMatrix_01.push_back(-999);
+	Muon_trackFitErrorMatrix_02.push_back(-999);
+	Muon_trackFitErrorMatrix_11.push_back(-999);
+	Muon_trackFitErrorMatrix_12.push_back(-999);
+	Muon_trackFitErrorMatrix_22.push_back(-999);
+      }
+      if(mu->muonBestTrack().isNonnull()){
+	Muon_dz_bt.push_back(fabs(mu->muonBestTrack()->dz(firstGoodVertex.position())));
+	Muon_dxy_bt.push_back(fabs(mu->muonBestTrack()->dxy(firstGoodVertex.position())));
+      }else{
+	Muon_dz_bt.push_back(-999);
+	Muon_dxy_bt.push_back(-999);
+      } 
     }
-    if(mu->muonBestTrack().isNonnull()){
-      Muon_dz_bt.push_back(fabs(mu->muonBestTrack()->dz(firstGoodVertex.position())));
-      Muon_dxy_bt.push_back(fabs(mu->muonBestTrack()->dxy(firstGoodVertex.position())));
-    }else{
-      Muon_dz_bt.push_back(-999);
-      Muon_dxy_bt.push_back(-999);
-    } 
+    ///
+    ///   TTH variables
+    /// 
+    if(_tthlepVar){
+      double miniIso      = 999;
+      double miniIsoCh    = 999;
+      double miniIsoNeu   = 999;
+      double miniIsoPUsub = 999;
+      get_muminiIso_info(*pcc,rho,*mu,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
+      double mujet_mindr    = 999;
+      double mujet_pt       = -1;
+      double muptOVmujetpt  = -1;
+      double mujet_btagdisc = -1;
+      double mujetx  = -999;
+      double mujety  = -999;
+      double mujetz  = -999;
+      double muptrel = -999;
+      get_mujet_info(*mu,iEvent,iSetup,mujet_mindr,mujet_pt,muptOVmujetpt,mujet_btagdisc,mujetx,mujety,mujetz,muptrel);
+      Muon_miniIsoRel.push_back(miniIso/mu->pt());
+      Muon_miniIsoCh.push_back(miniIsoCh);
+      Muon_miniIsoNeu.push_back(miniIsoNeu);
+      Muon_miniIsoPUsub.push_back(miniIsoPUsub);
+      Muon_jetdr.push_back(mujet_mindr);
+      Muon_jetpt.push_back(mujet_pt);
+      Muon_jetptratio.push_back(muptOVmujetpt);
+      Muon_jetcsv.push_back(mujet_btagdisc);
+      Muon_ptrel.push_back(muptrel);
+      Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
+      //Print info
+      /*
+	cout<<setiosflags(ios::fixed)<<setprecision(5);
+	//cout<<"Muon"<<endl;
+	if(!amu && mu->innerTrack().isNonnull()
+	&& mu->pt()>5 && fabs(mu->eta())<2.4
+	&& fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<0.1
+	&& miniIso/mu->pt()<0.4 && fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<8 && mu->isLooseMuon()
+	){
+	//cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sip3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
+	cout<<setw(10)<<iEvent.id().event()<<setw(10)<<mu->pt()<<setw(10)<<mu->eta()<<setw(10)<<mu->phi()<<setw(10)<<mu->energy()<<setw(5)<<mu->pdgId()<<setw(5)<<mu->charge()<<setw(15)<<miniIso/mu->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<muptrel<<setw(10)<<mujet_btagdisc<<setw(10)<<mu->pt()/mujet_pt;
+	//if(mu->innerTrack().isNonnull()){
+	cout<<setw(10)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(10)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mu->segmentCompatibility()<<endl;
+	//}else{
+	// cout<<setw(15)<<"no track for Mu IP"<<endl; 
+	//}
+	amu = true;
+	}
+      */
+    }
     /////
-    //   TTH variables
-    ///// 
-    double miniIso      = 999;
-    double miniIsoCh    = 999;
-    double miniIsoNeu   = 999;
-    double miniIsoPUsub = 999;
-    get_muminiIso_info(*pcc,rho,*mu,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
-    double mujet_mindr    = 999;
-    double mujet_pt       = -1;
-    double muptOVmujetpt  = -1;
-    double mujet_btagdisc = -1;
-    double mujetx  = -999;
-    double mujety  = -999;
-    double mujetz  = -999;
-    double muptrel = -999;
-    get_mujet_info(*mu,iEvent,iSetup,mujet_mindr,mujet_pt,muptOVmujetpt,mujet_btagdisc,mujetx,mujety,mujetz,muptrel);
-    Muon_miniIsoRel.push_back(miniIso/mu->pt());
-    Muon_miniIsoCh.push_back(miniIsoCh);
-    Muon_miniIsoNeu.push_back(miniIsoNeu);
-    Muon_miniIsoPUsub.push_back(miniIsoPUsub);
-    Muon_jetdr.push_back(mujet_mindr);
-    Muon_jetpt.push_back(mujet_pt);
-    Muon_jetptratio.push_back(muptOVmujetpt);
-    Muon_jetcsv.push_back(mujet_btagdisc);
-    Muon_ptrel.push_back(muptrel);
-    Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
-    //Print info
-    //cout<<setiosflags(ios::fixed)<<setprecision(5);
-    //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sip15D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
-    //cout<<setw(10)<<iEvent.id().event()<<setw(10)<<mu->pt()<<setw(10)<<mu->eta()<<setw(10)<<mu->phi()<<setw(10)<<mu->energy()<<setw(5)<<mu->pdgId()<<setw(5)<<mu->charge()<<setw(15)<<miniIso/mu->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<muptrel<<setw(10)<<mujet_btagdisc<<setw(10)<<mu->pt()/mujet_pt;
-    //if(mu->innerTrack().isNonnull()){
-    // cout<<setw(10)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(10)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mu->segmentCompatibility()<<endl;
-    //}else{
-    // cout<<setw(15)<<"no track for Mu IP"<<endl; 
-    //}
-    //break;
+    //   MC info
+    /////
+    if(!_is_data){
+      const reco::GenParticle * genpart = mu->genParticle(); 
+      if(genpart){
+        Muon_gen_pt.push_back(genpart->pt());
+        Muon_gen_eta.push_back(genpart->eta());
+        Muon_gen_phi.push_back(genpart->phi());
+        Muon_gen_en.push_back(genpart->energy());
+        Muon_gen_pdgId.push_back(genpart->pdgId());
+        Muon_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
+        Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
+        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
+        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
+        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
+        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;
+      }else{
+        Muon_gen_pt.push_back(-999);
+        Muon_gen_eta.push_back(-999);
+        Muon_gen_phi.push_back(-999);
+        Muon_gen_en.push_back(-999);
+        Muon_gen_pdgId.push_back(-999);
+        Muon_gen_isPromptFinalState.push_back(-999);
+        Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+      }
+    }
   }
 }
 void MuonSelector::SetBranches(){
@@ -352,32 +396,45 @@ void MuonSelector::SetBranches(){
   AddBranch(&Muon_vtx                    ,"Muon_vtx");
   AddBranch(&Muon_vty                    ,"Muon_vty");
   AddBranch(&Muon_vtz                    ,"Muon_vtz");
-  AddBranch(&Muon_track_PCAx_bs          ,"Muon_track_PCAx_bs");
-  AddBranch(&Muon_track_PCAy_bs          ,"Muon_track_PCAy_bs");
-  AddBranch(&Muon_track_PCAz_bs          ,"Muon_track_PCAz_bs");
-  AddBranch(&Muon_track_PCAx_pv          ,"Muon_track_PCAx_pv");
-  AddBranch(&Muon_track_PCAy_pv          ,"Muon_track_PCAy_pv");
-  AddBranch(&Muon_track_PCAz_pv          ,"Muon_track_PCAz_pv");
-  AddBranch(&Muon_trackFitErrorMatrix_00 ,"Muon_trackFitErrorMatrix_00");
-  AddBranch(&Muon_trackFitErrorMatrix_01 ,"Muon_trackFitErrorMatrix_01");
-  AddBranch(&Muon_trackFitErrorMatrix_02 ,"Muon_trackFitErrorMatrix_02");
-  AddBranch(&Muon_trackFitErrorMatrix_11 ,"Muon_trackFitErrorMatrix_11");
-  AddBranch(&Muon_trackFitErrorMatrix_12 ,"Muon_trackFitErrorMatrix_12");
-  AddBranch(&Muon_trackFitErrorMatrix_22 ,"Muon_trackFitErrorMatrix_22");
-  AddBranch(&Muon_dz_bt                  ,"Muon_dz_bt");
-  AddBranch(&Muon_dxy_bt                 ,"Muon_dxy_bt");
+  if(_AJVar){
+    AddBranch(&Muon_track_PCAx_bs          ,"Muon_track_PCAx_bs");
+    AddBranch(&Muon_track_PCAy_bs          ,"Muon_track_PCAy_bs");
+    AddBranch(&Muon_track_PCAz_bs          ,"Muon_track_PCAz_bs");
+    AddBranch(&Muon_track_PCAx_pv          ,"Muon_track_PCAx_pv");
+    AddBranch(&Muon_track_PCAy_pv          ,"Muon_track_PCAy_pv");
+    AddBranch(&Muon_track_PCAz_pv          ,"Muon_track_PCAz_pv");
+    AddBranch(&Muon_trackFitErrorMatrix_00 ,"Muon_trackFitErrorMatrix_00");
+    AddBranch(&Muon_trackFitErrorMatrix_01 ,"Muon_trackFitErrorMatrix_01");
+    AddBranch(&Muon_trackFitErrorMatrix_02 ,"Muon_trackFitErrorMatrix_02");
+    AddBranch(&Muon_trackFitErrorMatrix_11 ,"Muon_trackFitErrorMatrix_11");
+    AddBranch(&Muon_trackFitErrorMatrix_12 ,"Muon_trackFitErrorMatrix_12");
+    AddBranch(&Muon_trackFitErrorMatrix_22 ,"Muon_trackFitErrorMatrix_22");
+    AddBranch(&Muon_dz_bt                  ,"Muon_dz_bt");
+    AddBranch(&Muon_dxy_bt                 ,"Muon_dxy_bt");
+  }
   //TTH
-  AddBranch(&Muon_miniIsoRel        ,"Muon_miniIsoRel");
-  AddBranch(&Muon_miniIsoCh         ,"Muon_miniIsoCh");
-  AddBranch(&Muon_miniIsoNeu        ,"Muon_miniIsoNeu");
-  AddBranch(&Muon_miniIsoPUsub      ,"Muon_miniIsoPUsub");
-  AddBranch(&Muon_jetdr             ,"Muon_jetdr");
-  AddBranch(&Muon_jetpt             ,"Muon_jetpt");
-  AddBranch(&Muon_jetptratio        ,"Muon_jetptratio");
-  AddBranch(&Muon_jetcsv            ,"Muon_jetcsv");
-  AddBranch(&Muon_ptrel             ,"Muon_ptrel");
-  AddBranch(&Muon_IP3Dsig_it        ,"Muon_IP3Dsig_it");
-
+  if(_tthlepVar){
+    AddBranch(&Muon_miniIsoRel        ,"Muon_miniIsoRel");
+    AddBranch(&Muon_miniIsoCh         ,"Muon_miniIsoCh");
+    AddBranch(&Muon_miniIsoNeu        ,"Muon_miniIsoNeu");
+    AddBranch(&Muon_miniIsoPUsub      ,"Muon_miniIsoPUsub");
+    AddBranch(&Muon_jetdr             ,"Muon_jetdr");
+    AddBranch(&Muon_jetpt             ,"Muon_jetpt");
+    AddBranch(&Muon_jetptratio        ,"Muon_jetptratio");
+    AddBranch(&Muon_jetcsv            ,"Muon_jetcsv");
+    AddBranch(&Muon_ptrel             ,"Muon_ptrel");
+    AddBranch(&Muon_IP3Dsig_it        ,"Muon_IP3Dsig_it");
+  }
+  //MC info
+  if(!_is_data){
+    AddBranch(&Muon_gen_pt                                      ,"Muon_gen_pt");
+    AddBranch(&Muon_gen_eta                                     ,"Muon_gen_eta");
+    AddBranch(&Muon_gen_phi                                     ,"Muon_gen_phi");
+    AddBranch(&Muon_gen_en                                      ,"Muon_gen_en");
+    AddBranch(&Muon_gen_pdgId                                   ,"Muon_gen_pdgId");
+    AddBranch(&Muon_gen_isPromptFinalState                      ,"Muon_gen_isPromptFinalState");
+    AddBranch(&Muon_gen_isDirectPromptTauDecayProductFinalState ,"Muon_gen_isDirectPromptTauDecayProductFinalState");
+  }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void MuonSelector::Clear(){
@@ -450,31 +507,45 @@ void MuonSelector::Clear(){
   Muon_vtx.clear();
   Muon_vty.clear();
   Muon_vtz.clear();
-  Muon_track_PCAx_bs.clear();
-  Muon_track_PCAy_bs.clear();
-  Muon_track_PCAz_bs.clear();
-  Muon_track_PCAx_pv.clear();
-  Muon_track_PCAy_pv.clear();
-  Muon_track_PCAz_pv.clear();
-  Muon_trackFitErrorMatrix_00.clear();
-  Muon_trackFitErrorMatrix_01.clear();
-  Muon_trackFitErrorMatrix_02.clear();
-  Muon_trackFitErrorMatrix_11.clear();
-  Muon_trackFitErrorMatrix_12.clear();
-  Muon_trackFitErrorMatrix_22.clear();
-  Muon_dz_bt.clear();
-  Muon_dxy_bt.clear();
+  if(_AJVar){
+    Muon_track_PCAx_bs.clear();
+    Muon_track_PCAy_bs.clear();
+    Muon_track_PCAz_bs.clear();
+    Muon_track_PCAx_pv.clear();
+    Muon_track_PCAy_pv.clear();
+    Muon_track_PCAz_pv.clear();
+    Muon_trackFitErrorMatrix_00.clear();
+    Muon_trackFitErrorMatrix_01.clear();
+    Muon_trackFitErrorMatrix_02.clear();
+    Muon_trackFitErrorMatrix_11.clear();
+    Muon_trackFitErrorMatrix_12.clear();
+    Muon_trackFitErrorMatrix_22.clear();
+    Muon_dz_bt.clear();
+    Muon_dxy_bt.clear();
+  }
   //TTH
-  Muon_miniIsoRel.clear();
-  Muon_miniIsoCh.clear();
-  Muon_miniIsoNeu.clear();
-  Muon_miniIsoPUsub.clear();
-  Muon_jetdr.clear();
-  Muon_jetpt.clear();
-  Muon_jetptratio.clear();
-  Muon_jetcsv.clear();
-  Muon_ptrel.clear();
-  Muon_IP3Dsig_it.clear();
+  if(_tthlepVar){
+    Muon_miniIsoRel.clear();
+    Muon_miniIsoCh.clear();
+    Muon_miniIsoNeu.clear();
+    Muon_miniIsoPUsub.clear();
+    Muon_jetdr.clear();
+    Muon_jetpt.clear();
+    Muon_jetptratio.clear();
+    Muon_jetcsv.clear();
+    Muon_ptrel.clear();
+    Muon_IP3Dsig_it.clear();
+  }
+  //MC info
+  if(!_is_data){
+    Muon_gen_pt.clear();
+    Muon_gen_eta.clear();
+    Muon_gen_phi.clear();
+    Muon_gen_en.clear();
+    Muon_gen_pdgId.clear();
+    Muon_gen_isPromptFinalState.clear();
+    Muon_gen_isDirectPromptTauDecayProductFinalState.clear();
+  }
 }
 bool MuonSelector::isGoodVertex(const reco::Vertex& vtx){
   if(vtx.isFake())                                   return false;
@@ -490,7 +561,7 @@ void MuonSelector::get_muminiIso_info(const pat::PackedCandidateCollection& pcc,
   vector<const pat::PackedCandidate *> pfc_neu; pfc_neu.clear();
   vector<const pat::PackedCandidate *> pfc_pu;  pfc_pu.clear();
   get_chneupu_pcc(pcc,pfc_all,pfc_ch,pfc_neu,pfc_pu);
-  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.01, 0.5, 0);
+  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.0001, 0, 0);
   miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, 0.01, 0.5, 0);
   double effarea    = get_effarea(cand.eta());
   double correction = rho*effarea*pow((miniIsoConeSize/0.3),2);
@@ -501,7 +572,7 @@ void MuonSelector::get_chneupu_pcc(const pat::PackedCandidateCollection& pcc,vec
   for(const pat::PackedCandidate &p : pcc){
     pfc_all.push_back(&p);
     if(p.charge()==0){
-     pfc_neu.push_back(&p);
+      pfc_neu.push_back(&p);
     }else{
       if((abs(p.pdgId())==211)){// || ((abs(p.pdgId()) == 11 ) || (abs(p.pdgId()) == 13 ))){
         if(p.fromPV()>1 && fabs(p.dz())<9999){
@@ -553,49 +624,49 @@ double MuonSelector::get_effarea(double eta){
 // double miniIsoNeu = mu.pfIsolationR03().sumNeutralHadronEt + mu.pfIsolationR03().sumPhotonEt;
 // double effarea  = get_effarea(mu.eta());
 // double correction = rho*effarea;
-	// double pfIsoPUsub = std::max( 0.0, miniIsoNeu - correction);
+// double pfIsoPUsub = std::max( 0.0, miniIsoNeu - correction);
 // double iso = (miniIsoCh + pfIsoPUsub)/mu.pt();
 // return iso;
 //}
 void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup, double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt, double& mujet_btagdisc, double& jx, double& jy, double& jz, double& muptrel){
- //Look for jet associated to mu
- edm::Handle<pat::JetCollection> jets;
- iEvent.getByLabel(jetToken_, jets);
- pat::Jet mujet;
- //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );
- //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
- for(const pat::Jet &j : *jets){
-  pat::Jet jet = j;//j.correctedJet(0);
-  //double scale = corrector->correction(jet, iEvent, iSetup);
-  //jet.scaleEnergy(scale);
-  double dr = deltaR(mu.p4(),jet.p4());
-  if(dr<mujet_mindr){
-   mujet_mindr = dr;
-   mujet       = jet;
+  //Look for jet associated to mu
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByLabel(jetToken_, jets);
+  pat::Jet mujet;
+  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );
+  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+  for(const pat::Jet &j : *jets){
+    pat::Jet jet = j;//j.correctedJet(0);
+    //double scale = corrector->correction(jet, iEvent, iSetup);
+    //jet.scaleEnergy(scale);
+    double dr = deltaR(mu.p4(),jet.p4());
+    if(dr<mujet_mindr){
+      mujet_mindr = dr;
+      mujet       = jet;
+    }
   }
- }
- //Some info
- //cout<<"Jet info "<<mujet<<endl;
- //cout<<"Corrected (L0)"<<setw(20)<<mujet.correctedJet(0).p4().E()<<endl; 
- //cout<<"Corrected (L1)"<<setw(20)<<mujet.correctedJet(1).p4().E()<<endl;
- //cout<<"Corrected (L2)"<<setw(20)<<mujet.correctedJet(2).p4().E()<<endl;
- //cout<<"Corrected (L3)"<<setw(20)<<mujet.correctedJet(3).p4().E()<<endl;
- //cout<<"Corrected Fina"<<setw(20)<<mujet.p4().E()<<endl; 
- //Get info
- if(mujet.jecSetsAvailable()){
-   double L2L3_corr = mujet.p4().E()/mujet.correctedJet(1).p4().E(); 
-   //cout<<"L2L3_corr"<<setw(20)<<L2L3_corr<<endl;
-   mujet.setP4(((mujet.correctedJet(1).p4()-mu.p4())*L2L3_corr)+mu.p4());
- }
- mujet_pt       = mujet.pt();
- muptOVmujetpt  = min(mu.pt()/mujet.pt(), 1.5);
- mujet_btagdisc = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
- jx = mujet.px();
- jy = mujet.py();
- jz = mujet.pz();
- TLorentzVector mu_lv    = TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.p4().E());
- TLorentzVector mujet_lv = TLorentzVector(mujet.px(),mujet.py(),mujet.pz(),mujet.p4().E());
- muptrel = mu_lv.Perp((mujet_lv-mu_lv).Vect());
+  //Some info
+  //cout<<"Jet info "<<mujet<<endl;
+  //cout<<"Corrected (L0)"<<setw(20)<<mujet.correctedJet(0).p4().E()<<endl; 
+  //cout<<"Corrected (L1)"<<setw(20)<<mujet.correctedJet(1).p4().E()<<endl;
+  //cout<<"Corrected (L2)"<<setw(20)<<mujet.correctedJet(2).p4().E()<<endl;
+  //cout<<"Corrected (L3)"<<setw(20)<<mujet.correctedJet(3).p4().E()<<endl;
+  //cout<<"Corrected Fina"<<setw(20)<<mujet.p4().E()<<endl; 
+  //Get info
+  if(mujet.jecSetsAvailable()){
+    double L2L3_corr = mujet.p4().E()/mujet.correctedJet(1).p4().E(); 
+    //cout<<"L2L3_corr"<<setw(20)<<L2L3_corr<<endl;
+    mujet.setP4(((mujet.correctedJet(1).p4()-mu.p4())*L2L3_corr)+mu.p4());
+  }
+  mujet_pt       = mujet.pt();
+  muptOVmujetpt  = min(mu.pt()/mujet.pt(), 1.5);
+  mujet_btagdisc = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
+  jx = mujet.px();
+  jy = mujet.py();
+  jz = mujet.pz();
+  TLorentzVector mu_lv    = TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.p4().E());
+  TLorentzVector mujet_lv = TLorentzVector(mujet.px(),mujet.py(),mujet.pz(),mujet.p4().E());
+  muptrel = mu_lv.Perp((mujet_lv-mu_lv).Vect());
 }
 namespace{
   struct ByEta{

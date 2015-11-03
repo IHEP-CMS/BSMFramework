@@ -84,6 +84,7 @@ class JetSelector : public  baseTree{
   double _Jet_pt_min;
   bool _super_TNT;
   bool _PuppiVar;
+  bool _is_data;
   /////
   //   BSM variables
   /////

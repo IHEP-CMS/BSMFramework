@@ -41,6 +41,10 @@ void METSelector::Fill(const edm::Event& iEvent){
   Met_type1PF_shiftedPtDown = met.shiftedPt(pat::MET::JetEnDown);
   //MC
   if(!_is_data) Gen_type1PF_Met = met.genMET()->pt();
+  /////
+  //   TTH variables
+  /////
+  //cout<<met.pt()<<setw(20)<<met.phi()<<endl;
   ////slimmedMETsPUPPI
   if(_PuppiVar){
     const pat::MET &puppimet = puppimets->front();
@@ -93,7 +97,7 @@ void METSelector::SetBranches(){
     AddBranch(&Met_puppi_shiftedPtDown, "Met_puppi_shiftedPtDown");
     //MC
     AddBranch(&Gen_puppi_Met,           "Gen_puppi_Met");
-  }  
+  }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void METSelector::Clear(){

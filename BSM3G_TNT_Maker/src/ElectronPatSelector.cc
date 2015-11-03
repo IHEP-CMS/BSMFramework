@@ -17,6 +17,9 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   _vtx_position_z_max  = iConfig.getParameter<double>("vtx_position_z_max");
   pfToken_             = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
   jetToken_            = iConfig.getParameter<edm::InputTag>("jets");
+  _AJVar               = iConfig.getParameter<bool>("AJVar");
+  _tthlepVar           = iConfig.getParameter<bool>("tthlepVar");
+  _is_data             = iConfig.getParameter<bool>("is_data");
   SetBranches();
 }
 ElectronPatSelector::~ElectronPatSelector(){
@@ -71,6 +74,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   /////
   //   Get electron information 
   /////
+  //bool aele = false;
   for(edm::View<pat::Electron>::const_iterator el = electron_pat->begin(); el != electron_pat->end(); el++){
     //Acceptance
     if(el->pt() < _patElectron_pt_min)         continue;
@@ -81,9 +85,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_phi.push_back(el->phi());
     patElectron_energy.push_back(el->energy());
     patElectron_Et.push_back(el->caloEnergy()*sin(el->p4().theta()));
-    double absEleSCeta = el->superCluster()->position().eta();
-    patElectron_SCeta.push_back(absEleSCeta);
-    bool inCrack  = (absEleSCeta>1.4442 && absEleSCeta<1.5660);
+    double EleSCeta = el->superCluster()->position().eta();
+    patElectron_SCeta.push_back(EleSCeta);
+    bool inCrack  = 1.4442<fabs(EleSCeta) && fabs(EleSCeta)<1.5660;
     patElectron_inCrack.push_back(inCrack);
     //Charge
     patElectron_charge.push_back(el->charge());
@@ -164,51 +168,53 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_gsfTrack_vtx.push_back(el->gsfTrack()->vx());
       patElectron_gsfTrack_vty.push_back(el->gsfTrack()->vy());
       patElectron_gsfTrack_vtz.push_back(el->gsfTrack()->vz());
-      if(beamSpotHandle.isValid() && el->closestCtfTrackRef().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
-        beamSpot = *beamSpotHandle;
-        math::XYZPoint point(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
-        patElectron_gsfTrack_dz_bs.push_back(el->gsfTrack()->dz(point));
-        patElectron_gsfTrack_dxy_bs.push_back(el->gsfTrack()->dxy(point));
-        GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0()); 
-        GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z());
-        TrackRef eletr = el->closestCtfTrackRef(); 
-        TransientTrack elecTransTkPtr = ttrkbuilder->build(eletr);
-        GlobalPoint patElectron_pca_pv = elecTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
-        GlobalPoint patElectron_pca_bs = elecTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
-        patElectron_gsfTrack_PCAx_pv.push_back(patElectron_pca_pv.x());
-        patElectron_gsfTrack_PCAy_pv.push_back(patElectron_pca_pv.y());
-        patElectron_gsfTrack_PCAz_pv.push_back(patElectron_pca_pv.z());
-        patElectron_gsfTrack_PCAx_bs.push_back(patElectron_pca_bs.x());
-        patElectron_gsfTrack_PCAy_bs.push_back(patElectron_pca_bs.y());
-        patElectron_gsfTrack_PCAz_bs.push_back(patElectron_pca_bs.z());
-        const float elecMass = 0.000510998928;
-        float elecSigma      = elecMass*1e-6;
-        float chi2 = 0.0;
-        float ndf  = 0.0;
-        KinematicParticleFactoryFromTransientTrack pFactory;
-        RefCountedKinematicParticle elecParticle = pFactory.particle(elecTransTkPtr, elecMass, chi2, ndf, elecSigma);
-        patElectron_gsfTrackFitErrorMatrix_00.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,0));
-        patElectron_gsfTrackFitErrorMatrix_01.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,1));
-        patElectron_gsfTrackFitErrorMatrix_02.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,2));
-        patElectron_gsfTrackFitErrorMatrix_11.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(1,1));
-        patElectron_gsfTrackFitErrorMatrix_12.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(1,2));
-        patElectron_gsfTrackFitErrorMatrix_22.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(2,2));
-      }else{
-        patElectron_gsfTrack_dz_bs.push_back(-998);
-        patElectron_gsfTrack_dxy_bs.push_back(-998);
-        patElectron_gsfTrack_PCAx_pv.push_back(-998);
-        patElectron_gsfTrack_PCAy_pv.push_back(-998);
-        patElectron_gsfTrack_PCAz_pv.push_back(-998);
-        patElectron_gsfTrack_PCAx_bs.push_back(-998);
-        patElectron_gsfTrack_PCAy_bs.push_back(-998);
-        patElectron_gsfTrack_PCAz_bs.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_00.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_01.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_02.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_11.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_12.push_back(-998);
-        patElectron_gsfTrackFitErrorMatrix_22.push_back(-998);
-      }
+      if(_AJVar){ 
+        if(beamSpotHandle.isValid() && el->closestCtfTrackRef().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
+          beamSpot = *beamSpotHandle;
+          math::XYZPoint point(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
+          patElectron_gsfTrack_dz_bs.push_back(el->gsfTrack()->dz(point));
+          patElectron_gsfTrack_dxy_bs.push_back(el->gsfTrack()->dxy(point));
+          GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0()); 
+          GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z());
+          TrackRef eletr = el->closestCtfTrackRef(); 
+          TransientTrack elecTransTkPtr = ttrkbuilder->build(eletr);
+          GlobalPoint patElectron_pca_pv = elecTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
+          GlobalPoint patElectron_pca_bs = elecTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
+          patElectron_gsfTrack_PCAx_pv.push_back(patElectron_pca_pv.x());
+          patElectron_gsfTrack_PCAy_pv.push_back(patElectron_pca_pv.y());
+          patElectron_gsfTrack_PCAz_pv.push_back(patElectron_pca_pv.z());
+          patElectron_gsfTrack_PCAx_bs.push_back(patElectron_pca_bs.x());
+          patElectron_gsfTrack_PCAy_bs.push_back(patElectron_pca_bs.y());
+          patElectron_gsfTrack_PCAz_bs.push_back(patElectron_pca_bs.z());
+          const float elecMass = 0.000510998928;
+          float elecSigma      = elecMass*1e-6;
+          float chi2 = 0.0;
+          float ndf  = 0.0;
+          KinematicParticleFactoryFromTransientTrack pFactory;
+          RefCountedKinematicParticle elecParticle = pFactory.particle(elecTransTkPtr, elecMass, chi2, ndf, elecSigma);
+          patElectron_gsfTrackFitErrorMatrix_00.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,0));
+          patElectron_gsfTrackFitErrorMatrix_01.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,1));
+          patElectron_gsfTrackFitErrorMatrix_02.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(0,2));
+          patElectron_gsfTrackFitErrorMatrix_11.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(1,1));
+          patElectron_gsfTrackFitErrorMatrix_12.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(1,2));
+          patElectron_gsfTrackFitErrorMatrix_22.push_back(elecParticle->stateAtPoint(patElectron_pca_bs).kinematicParametersError().matrix()(2,2));
+        }else{
+          patElectron_gsfTrack_dz_bs.push_back(-998);
+          patElectron_gsfTrack_dxy_bs.push_back(-998);
+          patElectron_gsfTrack_PCAx_pv.push_back(-998);
+          patElectron_gsfTrack_PCAy_pv.push_back(-998);
+          patElectron_gsfTrack_PCAz_pv.push_back(-998);
+          patElectron_gsfTrack_PCAx_bs.push_back(-998);
+          patElectron_gsfTrack_PCAy_bs.push_back(-998);
+          patElectron_gsfTrack_PCAz_bs.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_00.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_01.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_02.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_11.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_12.push_back(-998);
+          patElectron_gsfTrackFitErrorMatrix_22.push_back(-998);
+        }
+      } 
     }else{
       patElectron_gsfTrack_dz_pv.push_back(-999);
       patElectron_gsfTrack_dxy_pv.push_back(-999);
@@ -218,33 +224,32 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_gsfTrack_vtx.push_back(-999);
       patElectron_gsfTrack_vty.push_back(-999);
       patElectron_gsfTrack_vtz.push_back(-999);
-      patElectron_gsfTrack_dz_bs.push_back(-999);
-      patElectron_gsfTrack_dxy_bs.push_back(-999);
-      patElectron_gsfTrack_PCAx_pv.push_back(-999);
-      patElectron_gsfTrack_PCAy_pv.push_back(-999);
-      patElectron_gsfTrack_PCAz_pv.push_back(-999);
-      patElectron_gsfTrack_PCAx_bs.push_back(-999);
-      patElectron_gsfTrack_PCAy_bs.push_back(-999);
-      patElectron_gsfTrack_PCAz_bs.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_00.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_01.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_02.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_11.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_12.push_back(-999);
-      patElectron_gsfTrackFitErrorMatrix_22.push_back(-999);
+      if(_AJVar){
+        patElectron_gsfTrack_dz_bs.push_back(-999);
+        patElectron_gsfTrack_dxy_bs.push_back(-999);
+        patElectron_gsfTrack_PCAx_pv.push_back(-999);
+        patElectron_gsfTrack_PCAy_pv.push_back(-999);
+        patElectron_gsfTrack_PCAz_pv.push_back(-999);
+        patElectron_gsfTrack_PCAx_bs.push_back(-999);
+        patElectron_gsfTrack_PCAy_bs.push_back(-999);
+        patElectron_gsfTrack_PCAz_bs.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_00.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_01.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_02.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_11.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_12.push_back(-999);
+        patElectron_gsfTrackFitErrorMatrix_22.push_back(-999);
+      }
     }
     /////
     //   TTH variables
     ///// 
-    //cout<<setw(20)<<"Event num ELECTRON"<<setw(20)<<iEvent.id().event()<<endl;
-    //cout<<setw(20)<<"Ele kin"<<setw(20)<<el->pt()<<setw(20)<<el->eta()<<setw(20)<<el->phi()<<setw(20)<<el->pdgId()<<setw(20)<<el->charge()<<endl;     
+    if(_tthlepVar){
     double miniIso      = 999;
     double miniIsoCh    = 999;
     double miniIsoNeu   = 999;
     double miniIsoPUsub = 999;
     get_eleminiIso_info(*pcc,rhotth,*el,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
-    //cout<<setw(20)<<"Ele iso"<<setw(20)<<miniIso/el->pt()<<setw(20)<<miniIsoCh/el->pt()<<setw(20)<<miniIsoNeu/el->pt()<<endl;
-    //cout<<setw(20)<<"Ele iso"<<setw(20)<<miniIso/el->pt()<<setw(20)<<miniIsoCh<<setw(20)<<miniIsoNeu<<endl;
     double elejet_mindr    = 9999;
     double elejet_pt       = -1;
     double eleptOVelejetpt = -1;
@@ -254,10 +259,6 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     double elejetz  = -9999;
     double eleptrel = -9999;
     get_elejet_info(el,iEvent,iSetup,elejet_mindr,elejet_pt,eleptOVelejetpt,elejet_btagdisc,elejetx,elejety,elejetz,eleptrel);
-    //cout<<setw(20)<<"Jet related var"<<setw(20)<<eleptrel<<setw(20)<<elejet_btagdisc<<setw(20)<<el->pt()/elejet_pt<<endl;
-    //cout<<setw(20)<<"Ele IP"<<setw(20)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(20)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(20)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<endl;//setw(20)<<endl;//el->segmentCompatibility()<<endl;
-    //if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) cout<<setw(20)<<"Ele MVA"<<setw(20)<<el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")<<endl;
-    //else cout<<setw(20)<<"No Ele MVA"<<endl;
     patElectron_miniIsoRel.push_back(miniIso/el->pt());
     patElectron_miniIsoCh.push_back(miniIsoCh);
     patElectron_miniIsoNeu.push_back(miniIsoNeu);
@@ -268,11 +269,67 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_jetcsv.push_back(elejet_btagdisc);
     patElectron_ptrel.push_back(eleptrel);
     patElectron_IP3Dsig.push_back(fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D));
-    patElectron_dxy.push_back(fabs(el->gsfTrack()->dxy(firstGoodVertex.position())));
     if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) patElectron_eleMVASpring15NonTrig25ns.push_back(el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"));   
     else                                                                        patElectron_eleMVASpring15NonTrig25ns.push_back(-999); 
+    /*
+    cout<<setiosflags(ios::fixed)<<setprecision(5);
+    //cout<<"Electron"<<endl;
+    bool nontrigelemva_vl = false;
+    if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")){
+      double ntelemva = el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values");
+      double eleta   = fabs(el->eta());
+      if((eleta < 0.8                   && ntelemva > -0.11) ||
+         (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.35) || 
+         (1.479 <= eleta && eleta < 500 && ntelemva > -0.55)       
+        ){
+        nontrigelemva_vl = true;
+      }
+    }
+    patElectron_eleMVASpring15NonTrig25ns_VL.push_back(nontrigelemva_vl);
+    //cout<<"Ele sel "<<distance(electron_pat->begin(),el)<<" "<<el->gsfTrack().isNonnull()<<" "<<el->pt()<<" "<<fabs(el->eta())<<" "<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<" "<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<" "<<miniIso/el->pt()<<" "<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<" "<<nontrigelemva_vl<<" "<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<" "<<el->passConversionVeto()<<endl;    
+    if(!aele && el->gsfTrack().isNonnull()
+       && el->pt()>7 && fabs(el->eta())<2.5
+       && fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<0.1
+       && miniIso/el->pt()<0.4 && fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<8
+       && nontrigelemva_vl 
+       && el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1 && el->passConversionVeto() 
+      ){
+      //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sipi3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
+      cout<<setw(10)<<iEvent.id().event()<<setw(10)<<el->pt()<<setw(10)<<el->eta()<<setw(10)<<el->phi()<<setw(10)<<el->energy()<<setw(5)<<el->pdgId()<<setw(5)<<el->charge()<<setw(15)<<miniIso/el->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<eleptrel<<setw(10)<<elejet_btagdisc<<setw(10)<<el->pt()/elejet_pt<<setw(10)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(10)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()));
+      if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) cout<<setw(21)<<el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")<<endl;
+      else cout<<setw(21)<<"No Ele MVA"<<endl;
+      aele = true;
+    }
+    */
+    }//End if TTHLep
+    /////
+    //   MC info
+    /////
+    if(!_is_data){
+      const reco::GenParticle * genpart = el->genParticle();
+      if(genpart){
+        patElectron_gen_pt.push_back(genpart->pt());
+        patElectron_gen_eta.push_back(genpart->eta());
+        patElectron_gen_phi.push_back(genpart->phi());
+        patElectron_gen_en.push_back(genpart->energy());
+        patElectron_gen_pdgId.push_back(genpart->pdgId());
+        patElectron_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
+        patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
+        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
+        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
+        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
+        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;
+      }else{
+        patElectron_gen_pt.push_back(-999);
+        patElectron_gen_eta.push_back(-999);
+        patElectron_gen_phi.push_back(-999);
+        patElectron_gen_en.push_back(-999);
+        patElectron_gen_pdgId.push_back(-999);
+        patElectron_gen_isPromptFinalState.push_back(-999);
+        patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+      }
+    }
   }
-  //cout<<endl;
 }
 void ElectronPatSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -317,22 +374,56 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&expectedMissingInnerHits          ,"patElectron_expectedMissingInnerHits");
   AddBranch(&patElectron_gsfTrack_ndof         ,"patElectron_gsfTrack_ndof");
   AddBranch(&patElectron_gsfTrack_normChi2     ,"patElectron_gsfTrack_normChi2");
-  //Vertex compatibility
-  AddBranch(&patElectron_d0             ,"patElectron_d0");
-  AddBranch(&patElectron_gsfTrack_dz_pv ,"patElectron_gsfTrack_dz_pv");
+  //IP
+  AddBranch(&patElectron_gsfTrack_dz_pv  ,"patElectron_gsfTrack_dz_pv");
+  AddBranch(&patElectron_gsfTrack_dxy_pv ,"patElectron_gsfTrack_dxy_pv");
+  AddBranch(&patElectron_d0              ,"patElectron_d0");
+  AddBranch(&patElectron_dzError         ,"patElectron_dzError");
+  AddBranch(&patElectron_dxyError        ,"patElectron_dxyError");
+  AddBranch(&patElectron_gsfTrack_vtx    ,"patElectron_gsfTrack_vtx");
+  AddBranch(&patElectron_gsfTrack_vty    ,"patElectron_gsfTrack_vty");
+  AddBranch(&patElectron_gsfTrack_vtz    ,"patElectron_gsfTrack_vtz");
+  if(_AJVar){
+    AddBranch(&patElectron_gsfTrack_dz_bs            ,"patElectron_gsfTrack_dz_bs");
+    AddBranch(&patElectron_gsfTrack_dxy_bs           ,"patElectron_gsfTrack_dxy_bs");
+    AddBranch(&patElectron_gsfTrack_PCAx_pv          ,"patElectron_gsfTrack_PCAx_pv");
+    AddBranch(&patElectron_gsfTrack_PCAy_pv          ,"patElectron_gsfTrack_PCAy_pv");
+    AddBranch(&patElectron_gsfTrack_PCAz_pv          ,"patElectron_gsfTrack_PCAz_pv");
+    AddBranch(&patElectron_gsfTrack_PCAx_bs          ,"patElectron_gsfTrack_PCAx_bs");
+    AddBranch(&patElectron_gsfTrack_PCAy_bs          ,"patElectron_gsfTrack_PCAy_bs");
+    AddBranch(&patElectron_gsfTrack_PCAz_bs          ,"patElectron_gsfTrack_PCAz_bs");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_00 ,"patElectron_gsfTrackFitErrorMatrix_00");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_01 ,"patElectron_gsfTrackFitErrorMatrix_01");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_02 ,"patElectron_gsfTrackFitErrorMatrix_02");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_11 ,"patElectron_gsfTrackFitErrorMatrix_11");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_12 ,"patElectron_gsfTrackFitErrorMatrix_12");
+    AddBranch(&patElectron_gsfTrackFitErrorMatrix_22 ,"patElectron_gsfTrackFitErrorMatrix_22");
+  }
   //TTH
-  AddBranch(&patElectron_miniIsoRel                ,"patElectron_miniIsoRel");
-  AddBranch(&patElectron_miniIsoCh                 ,"patElectron_miniIsoCh");
-  AddBranch(&patElectron_miniIsoNeu                ,"patElectron_miniIsoNeu");
-  AddBranch(&patElectron_miniIsoPUsub              ,"patElectron_miniIsoPUsub");
-  AddBranch(&patElectron_jetdr                     ,"patElectron_jetdr");
-  AddBranch(&patElectron_jetpt                     ,"patElectron_jetpt");
-  AddBranch(&patElectron_jetptratio                ,"patElectron_jetptratio");
-  AddBranch(&patElectron_jetcsv                    ,"patElectron_jetcsv");
-  AddBranch(&patElectron_ptrel                     ,"patElectron_ptrel");
-  AddBranch(&patElectron_IP3Dsig                   ,"patElectron_IP3Dsig");
-  AddBranch(&patElectron_dxy                       ,"patElectron_dxy");
-  AddBranch(&patElectron_eleMVASpring15NonTrig25ns ,"patElectron_eleMVASpring15NonTrig25ns");
+  if(_tthlepVar){
+    AddBranch(&patElectron_miniIsoRel                   ,"patElectron_miniIsoRel");
+    AddBranch(&patElectron_miniIsoCh                    ,"patElectron_miniIsoCh");
+    AddBranch(&patElectron_miniIsoNeu                   ,"patElectron_miniIsoNeu");
+    AddBranch(&patElectron_miniIsoPUsub                 ,"patElectron_miniIsoPUsub");
+    AddBranch(&patElectron_jetdr                        ,"patElectron_jetdr");
+    AddBranch(&patElectron_jetpt                        ,"patElectron_jetpt");
+    AddBranch(&patElectron_jetptratio                   ,"patElectron_jetptratio");
+    AddBranch(&patElectron_jetcsv                       ,"patElectron_jetcsv");
+    AddBranch(&patElectron_ptrel                        ,"patElectron_ptrel");
+    AddBranch(&patElectron_IP3Dsig                      ,"patElectron_IP3Dsig");
+    AddBranch(&patElectron_eleMVASpring15NonTrig25ns    ,"patElectron_eleMVASpring15NonTrig25ns");
+    AddBranch(&patElectron_eleMVASpring15NonTrig25ns_VL ,"patElectron_eleMVASpring15NonTrig25ns_VL");
+  }
+  //MC info
+  if(!_is_data){
+    AddBranch(&patElectron_gen_pt                                      ,"patElectron_gen_pt");
+    AddBranch(&patElectron_gen_eta                                     ,"patElectron_gen_eta");
+    AddBranch(&patElectron_gen_phi                                     ,"patElectron_gen_phi");
+    AddBranch(&patElectron_gen_en                                      ,"patElectron_gen_en");
+    AddBranch(&patElectron_gen_pdgId                                   ,"patElectron_gen_pdgId");
+    AddBranch(&patElectron_gen_isPromptFinalState                      ,"patElectron_gen_isPromptFinalState");
+    AddBranch(&patElectron_gen_isDirectPromptTauDecayProductFinalState ,"patElectron_gen_isDirectPromptTauDecayProductFinalState");
+  }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void ElectronPatSelector::Clear(){
@@ -364,7 +455,7 @@ void ElectronPatSelector::Clear(){
   patElectron_dr03EcalRecHitSumEt.clear();
   patElectron_dr03HcalDepth1TowerSumEt.clear();
   patElectron_isolPtTracks.clear();
-  //Shape
+  //Shape, Track related variables, other prop
   patElectron_dEtaIn.clear();
   patElectron_dPhiIn.clear();
   patElectron_full5x5_sigmaIetaIeta.clear();
@@ -377,22 +468,56 @@ void ElectronPatSelector::Clear(){
   expectedMissingInnerHits.clear();
   patElectron_gsfTrack_ndof.clear();
   patElectron_gsfTrack_normChi2.clear();
-  //Vertex compatibility
-  patElectron_d0.clear();
+  //IP
   patElectron_gsfTrack_dz_pv.clear();
+  patElectron_gsfTrack_dxy_pv.clear();
+  patElectron_d0.clear();
+  patElectron_dzError.clear();
+  patElectron_dxyError.clear();
+  patElectron_gsfTrack_vtx.clear();
+  patElectron_gsfTrack_vty.clear();
+  patElectron_gsfTrack_vtz.clear();
+  if(_AJVar){
+    patElectron_gsfTrack_dz_bs.clear();
+    patElectron_gsfTrack_dxy_bs.clear();
+    patElectron_gsfTrack_PCAx_pv.clear();
+    patElectron_gsfTrack_PCAy_pv.clear();
+    patElectron_gsfTrack_PCAz_pv.clear();
+    patElectron_gsfTrack_PCAx_bs.clear();
+    patElectron_gsfTrack_PCAy_bs.clear();
+    patElectron_gsfTrack_PCAz_bs.clear();
+    patElectron_gsfTrackFitErrorMatrix_00.clear();
+    patElectron_gsfTrackFitErrorMatrix_01.clear();
+    patElectron_gsfTrackFitErrorMatrix_02.clear();
+    patElectron_gsfTrackFitErrorMatrix_11.clear();
+    patElectron_gsfTrackFitErrorMatrix_12.clear();
+    patElectron_gsfTrackFitErrorMatrix_22.clear();
+  }
   //TTH
-  patElectron_miniIsoRel.clear();
-  patElectron_miniIsoCh.clear();
-  patElectron_miniIsoNeu.clear();
-  patElectron_miniIsoPUsub.clear();
-  patElectron_jetdr.clear();
-  patElectron_jetpt.clear();
-  patElectron_jetptratio.clear();
-  patElectron_jetcsv.clear();
-  patElectron_ptrel.clear();
-  patElectron_IP3Dsig.clear();
-  patElectron_dxy.clear();
-  patElectron_eleMVASpring15NonTrig25ns.clear();
+  if(_tthlepVar){
+    patElectron_miniIsoRel.clear();
+    patElectron_miniIsoCh.clear();
+    patElectron_miniIsoNeu.clear();
+    patElectron_miniIsoPUsub.clear();
+    patElectron_jetdr.clear();
+    patElectron_jetpt.clear();
+    patElectron_jetptratio.clear();
+    patElectron_jetcsv.clear();
+    patElectron_ptrel.clear();
+    patElectron_IP3Dsig.clear();
+    patElectron_eleMVASpring15NonTrig25ns.clear();
+    patElectron_eleMVASpring15NonTrig25ns_VL.clear();
+  }
+  //MC info
+  if(!_is_data){
+    patElectron_gen_pt.clear();
+    patElectron_gen_eta.clear();
+    patElectron_gen_phi.clear();
+    patElectron_gen_en.clear();
+    patElectron_gen_pdgId.clear();
+    patElectron_gen_isPromptFinalState.clear();
+    patElectron_gen_isDirectPromptTauDecayProductFinalState.clear();
+  }
 }
 bool ElectronPatSelector::isGoodVertex(const reco::Vertex& vtx){
   if(vtx.isFake())                                   return false;

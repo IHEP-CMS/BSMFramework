@@ -96,8 +96,11 @@ class MuonSelector : public  baseTree{
   int    _vtx_rho_max;
   double _vtx_position_z_max;
   bool   _super_TNT; //super tiny ntuple?
+  bool   _is_data;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
   edm::InputTag jetToken_;
+  bool _AJVar;
+  bool _tthlepVar;
   /////
   //   BSM 
   /////
@@ -129,5 +132,10 @@ class MuonSelector : public  baseTree{
   void get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup, double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt, double& mujet_btagdisc, double& jx, double& jy, double& jz, double& muptrel);
   //Variables
   vector<double> Muon_miniIsoRel, Muon_miniIsoCh, Muon_miniIsoNeu, Muon_miniIsoPUsub, Muon_jetdr, Muon_jetpt, Muon_jetptratio, Muon_jetcsv, Muon_ptrel, Muon_IP3Dsig_it;
+  /////
+  //   MC
+  /////
+  vector<double> Muon_gen_pt, Muon_gen_eta, Muon_gen_phi, Muon_gen_en;
+  vector<int> Muon_gen_pdgId, Muon_gen_isPromptFinalState, Muon_gen_isDirectPromptTauDecayProductFinalState;
 };
 #endif

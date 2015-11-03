@@ -2,6 +2,7 @@
 PileupReweight::PileupReweight(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug)
 {
   if(debug) std::cout<<"in PileupReweight constructor"<<std::endl;
+  _MiniAODv2       = iConfig.getParameter<bool>("MiniAODv2");
   _is_data   = iConfig.getParameter<bool>("is_data");
   PUReweightfile_ = iConfig.getParameter<edm::FileInPath>("PUReweightfile");
 
@@ -61,7 +62,10 @@ void PileupReweight::Fill(const edm::Event& iEvent){
   double w = 1.;
   if(!_is_data) {
     Handle<std::vector< PileupSummaryInfo > >  PupInfo;
-    iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
+    string pileupinfo;
+    if(!_MiniAODv2) pileupinfo = "addPileupInfo";
+    if(_MiniAODv2)  pileupinfo = "slimmedAddPileupInfo";
+    iEvent.getByLabel(pileupinfo, PupInfo); 
     std::vector<PileupSummaryInfo>::const_iterator PVI;
     float nPU = -1;
     for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {

@@ -6,6 +6,7 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jecfile_        = iConfig.getParameter<edm::FileInPath>("jecfile");   
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
+  _is_data = iConfig.getParameter<bool>("is_data");
   _PuppiVar = iConfig.getParameter<bool>("PuppiVar");
   SetBranches();
 }
@@ -24,6 +25,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
   /////
   //   Get jet information
   /////  
+  //bool ajet = false;
   ////slimmedJets
   for(const pat::Jet &j : *jets){ 
     //Acceptance
@@ -79,8 +81,18 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
     delete jecUnc;
     //MC
-    Jet_partonFlavour.push_back(j.partonFlavour());
-    Jet_hadronFlavour.push_back(j.hadronFlavour());
+    if(!_is_data) {
+      Jet_partonFlavour.push_back(j.partonFlavour());
+      Jet_hadronFlavour.push_back(j.hadronFlavour());
+    }
+    /////
+    //   TTH variables
+    /////
+    //cout<<setiosflags(ios::fixed)<<setprecision(5);
+    //if(!ajet){
+    //  cout<<setw(20)<<iEvent.id().event()<<setw(20)<<j.pt()<<setw(20)<<j.eta()<<setw(20)<<j.phi()<<setw(20)<<j.energy()<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20);
+    //  ajet = true;
+    //}
   } 
   ////slimmedJetsPuppi
   if(_PuppiVar){
@@ -138,9 +150,11 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
       delete jecUnc;
       //MC
-      Jet_puppi_partonFlavour.push_back(j.partonFlavour());
-      Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());
-    } 
+      if(!_is_data) {
+	Jet_puppi_partonFlavour.push_back(j.partonFlavour());
+	Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());
+      } 
+    }
   }
 }
 void JetSelector::SetBranches(){
@@ -186,8 +200,10 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_JerSFup              ,"Jet_JerSFup");
   AddBranch(&Jet_JerSFdown            ,"Jet_JerSFdown");
   //MC
-  AddBranch(&Jet_partonFlavour        ,"Jet_partonFlavour");
-  AddBranch(&Jet_hadronFlavour        ,"Jet_hadronFlavour");
+  if(!_is_data) {
+    AddBranch(&Jet_partonFlavour        ,"Jet_partonFlavour");
+    AddBranch(&Jet_hadronFlavour        ,"Jet_hadronFlavour");
+  }
   ////slimmedJetsPuppi
   if(_PuppiVar){
     //Kinematics
@@ -230,8 +246,10 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_puppi_JerSFup              ,"Jet_puppi_JerSFup");
     AddBranch(&Jet_puppi_JerSFdown            ,"Jet_puppi_JerSFdown");
     //MC
-    AddBranch(&Jet_puppi_partonFlavour        ,"Jet_puppi_partonFlavour");
-    AddBranch(&Jet_puppi_hadronFlavour        ,"Jet_puppi_hadronFlavour");
+    if(!_is_data) {
+      AddBranch(&Jet_puppi_partonFlavour        ,"Jet_puppi_partonFlavour");
+      AddBranch(&Jet_puppi_hadronFlavour        ,"Jet_puppi_hadronFlavour");
+    }
   }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
@@ -277,8 +295,10 @@ void JetSelector::Clear(){
   Jet_JerSFup.clear();
   Jet_JerSFdown.clear(); 
   //MC
-  Jet_partonFlavour.clear();
-  Jet_hadronFlavour.clear();
+  if(!_is_data) {
+    Jet_partonFlavour.clear();
+    Jet_hadronFlavour.clear();
+  }
   ////slimmedJetsPuppi
   if(_PuppiVar){
     //Kinematics
@@ -321,8 +341,10 @@ void JetSelector::Clear(){
     Jet_puppi_JerSFup.clear();
     Jet_puppi_JerSFdown.clear(); 
     //MC
-    Jet_puppi_partonFlavour.clear();
-    Jet_puppi_hadronFlavour.clear();
+    if(!_is_data) {
+      Jet_puppi_partonFlavour.clear();
+      Jet_puppi_hadronFlavour.clear();
+    }
   }
 }
 void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){

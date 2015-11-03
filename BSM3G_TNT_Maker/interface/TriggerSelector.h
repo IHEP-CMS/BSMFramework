@@ -62,17 +62,21 @@ class TriggerSelector : public baseTree{
   vector <string> Trigger_names;
   HLTConfigProvider hltConfig_;
   edm::InputTag triggerResultsTag_;
+  int triggerSL,triggerDL;
   int HLT_Ele105_CaloIdVT_GsfTrkIdT;
   int HLT_Ele27_eta2p1_WP75_Gsf;
+  int HLT_Ele27_WP85_Gsf;
   int HLT_Ele27_eta2p1_WPLoose_Gsf;
   int HLT_Mu50;
   int HLT_IsoMu20;
+  int HLT_IsoMu17_eta2p1;
   int HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
-  int HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVLT;
+  int HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
   int HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL;
   int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
   int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
   int HLT_IsoMu24_eta2p1;
+  int HLT_IsoMu18;
 };
 
 #endif

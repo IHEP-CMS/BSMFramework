@@ -1,5 +1,5 @@
-#ifndef __BTAGREWEIGHT_HE_H_ 
-#define __BTAGREWEIGHT_HE_H_
+#ifndef __PILEUPREWEIGHT_HE_H_ 
+#define __PILEUPREWEIGHT_HE_H_
 /////
 //   Include files and namespaces
 /////
@@ -21,34 +21,28 @@
 #include <TTree.h>
 #include <Math/VectorUtil.h>
 #include "baseTree.h"
+#include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 using namespace std;
 using namespace edm;
 /////
 //   Class declaration
 /////
-class BTagReweight : public baseTree{
+class PileupReweight : public baseTree{
  public:
-  BTagReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
-  ~BTagReweight();
+  PileupReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  ~PileupReweight();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
  private:
-  BTagReweight(){};
+  PileupReweight(){};
   /////
   //   Config variables
   /////
-  double bWeight;
-  edm::InputTag jetToken_;
-  /////
-  //   IHEP methods/variables
-  /////
-  edm::FileInPath BTAGReweightfile1_;
-  edm::FileInPath BTAGReweightfile2_;
-  void fillCSVhistos(TFile *fileHF, TFile *fileLF);
-  double get_csv_wgt( std::vector<double> jetPts, std::vector<double> jetEtas, std::vector<double> jetCSVs, std::vector<int> jetFlavors, int iSys, double &csvWgtHF, double &csvWgtLF, double &csvWgtCF );
-  // CSV reweighting
-  TH1D* h_csv_wgt_hf[9][6];
-  TH1D* c_csv_wgt_hf[9][6];
-  TH1D* h_csv_wgt_lf[9][4][3];
+  bool _is_data;
+  edm::FileInPath PUReweightfile_;
+  double PUWeight;
+  int nPUMax_;
+  std::vector<double> puWeigths_;
 };
 #endif

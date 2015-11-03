@@ -4,11 +4,15 @@ BTagReweight::BTagReweight(std::string name, TTree* tree, bool debug, const pset
   if(debug) std::cout<<"in BTagReweight constructor"<<std::endl;
   if(debug) std::cout<<"in BTagReweight constructor: calling SetBrances()"<<std::endl;
   jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
+  BTAGReweightfile1_ = iConfig.getParameter<edm::FileInPath>("BTAGReweightfile1");
+  BTAGReweightfile2_ = iConfig.getParameter<edm::FileInPath>("BTAGReweightfile2");
 
   std::string inputFileHF = "BSMFramework/BSM3G_TNT_Maker/files/csv_rwt_hf_IT_FlatSF_2015_07_27.root";
   std::string inputFileLF = "BSMFramework/BSM3G_TNT_Maker/files/csv_rwt_lf_IT_FlatSF_2015_07_27.root";
-  TFile* f_CSVwgt_HF = new TFile ((std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileHF).c_str());
-  TFile* f_CSVwgt_LF = new TFile ((std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileLF).c_str());
+  const char *filePathHF = BTAGReweightfile1_.fullPath().c_str();
+  const char *filePathLF = BTAGReweightfile2_.fullPath().c_str();
+  TFile* f_CSVwgt_HF = new TFile (filePathHF);//(std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileHF).c_str());
+  TFile* f_CSVwgt_LF = new TFile (filePathLF);//(std::string(getenv("CMSSW_BASE")) + "/src/" + inputFileLF).c_str());
   fillCSVhistos(f_CSVwgt_HF, f_CSVwgt_LF);
 	
   SetBranches();

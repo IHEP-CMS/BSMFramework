@@ -92,6 +92,7 @@ class BJetnessSelector : public  baseTree{
     /////
     //   Config variables
     /////
+    bool _is_data;
     edm::InputTag _muonToken;
     edm::InputTag _patElectronToken;
     edm::InputTag jetToken_;

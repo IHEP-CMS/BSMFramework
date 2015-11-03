@@ -26,6 +26,7 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
   baseTree(name,tree,debug),
   electronLooseIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronLooseIdMap")))
   {
+    _is_data = iConfig.getParameter<bool>("is_data");
   _muonToken        = iConfig.getParameter<edm::InputTag>("muons");
   _patElectronToken = iConfig.getParameter<edm::InputTag>("patElectrons");
   jetToken_         = iConfig.getParameter<edm::InputTag>("jets");
@@ -39,9 +40,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   Clear();
   /////
   //   Recall collections
-  /////  
-  Handle< reco::GenParticleCollection > pruned;
-  iEvent.getByLabel("prunedGenParticles", pruned);
+  ///// 
   edm::Handle<reco::VertexCollection> vtx_h;
   iEvent.getByLabel(_vertexInputTag, vtx_h);
   edm::Handle<edm::View<pat::Muon> > muon_h;
@@ -101,7 +100,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     jet_num++;
   }
   sort(jet_csv_pos.rbegin(), jet_csv_pos.rend());
-  if(jet_num>=6 && (*jets)[jet_csv_pos[0].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[1].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[2].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89) savebjetnessevt = 1;
+  /*if(jet_num>=6 && (*jets)[jet_csv_pos[0].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[1].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[2].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89) */savebjetnessevt = 1;
   if(savebjetnessevt==1){
   if(jet_num!=0){
     //cout<<"Num of jet is"<<setw(20)<<savebjetnessevt<<endl;
@@ -131,24 +130,32 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     /////
     //   Gen info
     /////
-    BJetness_ngenbh = 0;
-    BJetness_ngenbt = 0;
-    BJetness_ngenb  = 0;
-    BJetness_ngenc  = 0;
-    for(size_t i=0; i<pruned->size(); i++){
-      if(abs((*pruned)[i].pdgId())==5){// && (*pruned)[i].pt()>15)
-        const Candidate * bquark = &(*pruned)[i];
-        if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())==25)BJetness_ngenbh++;
-        if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())==6) BJetness_ngenbt++;
-        if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())!=5) BJetness_ngenb++; 
+    BJetness_ngenbh = -999;
+    BJetness_ngenbt = -999;
+    BJetness_ngenb  = -999;
+    BJetness_ngenc  = -999;
+    if(!_is_data) {
+      BJetness_ngenbh = 0;
+      BJetness_ngenbt = 0;
+      BJetness_ngenb  = 0;
+      BJetness_ngenc  = 0;
+      Handle< reco::GenParticleCollection > pruned;
+      iEvent.getByLabel("prunedGenParticles", pruned);
+      for(size_t i=0; i<pruned->size(); i++){
+	if(abs((*pruned)[i].pdgId())==5){// && (*pruned)[i].pt()>15)
+	  const Candidate * bquark = &(*pruned)[i];
+	  if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())==25)BJetness_ngenbh++;
+	  if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())==6) BJetness_ngenbt++;
+	  if(bquark->mother(0)!=0 && abs(bquark->mother(0)->pdgId())!=5) BJetness_ngenb++; 
+	}
+	if(abs((*pruned)[i].pdgId())==4){// && (*pruned)[i].pt()>15)
+	  const Candidate * cquark = &(*pruned)[i];
+	  if(cquark->mother(0)!=0 && abs(cquark->mother(0)->pdgId())!=4) BJetness_ngenc++; 
+	}   
       }
-      if(abs((*pruned)[i].pdgId())==4){// && (*pruned)[i].pt()>15)
-        const Candidate * cquark = &(*pruned)[i];
-        if(cquark->mother(0)!=0 && abs(cquark->mother(0)->pdgId())!=4) BJetness_ngenc++; 
-      }   
+      //cout<<setw(20)<<"BJetness_ngenbh"<<setw(20)<<"BJetness_ngenbt"<<setw(20)<<"BJetness_ngenb"<<setw(20)<<"BJetness_ngenc"<<endl;
+      //cout<<setw(20)<<BJetness_ngenbh<<setw(20)<<BJetness_ngenbt<<setw(20)<<BJetness_ngenb<<setw(20)<<BJetness_ngenc<<endl;
     }
-    //cout<<setw(20)<<"BJetness_ngenbh"<<setw(20)<<"BJetness_ngenbt"<<setw(20)<<"BJetness_ngenb"<<setw(20)<<"BJetness_ngenc"<<endl;
-    //cout<<setw(20)<<BJetness_ngenbh<<setw(20)<<BJetness_ngenbt<<setw(20)<<BJetness_ngenb<<setw(20)<<BJetness_ngenc<<endl;
     //Access info jet by jet 
     vector<Track> jetschtrks; jetschtrks.clear();
     vector<Track> jetschtrkspv; jetschtrkspv.clear();

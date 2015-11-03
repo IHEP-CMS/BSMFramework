@@ -83,6 +83,7 @@ class JetSelector : public  baseTree{
   edm::FileInPath jecfile_;
   double _Jet_pt_min;
   bool _super_TNT;
+  bool _PuppiVar;
   /////
   //   BSM variables
   /////

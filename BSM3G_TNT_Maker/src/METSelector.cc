@@ -7,6 +7,7 @@ METSelector::METSelector(std::string name, TTree* tree, bool debug, const pset& 
   _is_data   = iConfig.getParameter<bool>("is_data");
   _super_TNT = iConfig.getParameter<bool>("super_TNT");
   _MiniAODv2 = iConfig.getParameter<bool>("MiniAODv2");
+  _PuppiVar = iConfig.getParameter<bool>("PuppiVar");
   SetBranches();
 }
 METSelector::~METSelector(){
@@ -41,24 +42,26 @@ void METSelector::Fill(const edm::Event& iEvent){
   //MC
   if(!_is_data) Gen_type1PF_Met = met.genMET()->pt();
   ////slimmedMETsPUPPI
-  const pat::MET &puppimet = puppimets->front();
-  //Kinematic
-  Met_puppi_pt = puppimet.pt();
-  Met_puppi_px = puppimet.px();
-  Met_puppi_py = puppimet.py();
-  Met_puppi_pz = puppimet.pz();
-  Met_puppi_phi   = puppimet.phi();
-  Met_puppi_sumEt = puppimet.sumEt();  
-  //Corrections/Systematics
-  if(_MiniAODv2){
-    Met_puppi_shiftedPtUp   = puppimet.shiftedPt(pat::MET::JetEnUp);
-    Met_puppi_shiftedPtDown = puppimet.shiftedPt(pat::MET::JetEnDown);
-  }else{
-    Met_puppi_shiftedPtUp   = -999;
-    Met_puppi_shiftedPtDown = -999;
+  if(_PuppiVar){
+    const pat::MET &puppimet = puppimets->front();
+    //Kinematic
+    Met_puppi_pt = puppimet.pt();
+    Met_puppi_px = puppimet.px();
+    Met_puppi_py = puppimet.py();
+    Met_puppi_pz = puppimet.pz();
+    Met_puppi_phi   = puppimet.phi();
+    Met_puppi_sumEt = puppimet.sumEt();  
+    //Corrections/Systematics
+    if(_MiniAODv2){
+      Met_puppi_shiftedPtUp   = puppimet.shiftedPt(pat::MET::JetEnUp);
+      Met_puppi_shiftedPtDown = puppimet.shiftedPt(pat::MET::JetEnDown);
+    }else{
+      Met_puppi_shiftedPtUp   = -999;
+      Met_puppi_shiftedPtDown = -999;
+    }
+    //MC
+    if(!_is_data) Gen_puppi_Met = puppimet.genMET()->pt();
   }
-  //MC
-  if(!_is_data) Gen_puppi_Met = puppimet.genMET()->pt();
   if(debug_) std::cout<<"got MET info"<<std::endl;
 }
 void METSelector::SetBranches(){
@@ -77,18 +80,20 @@ void METSelector::SetBranches(){
   //MC
   AddBranch(&Gen_type1PF_Met,           "Gen_type1PF_Met");
   ////slimmedMETsPUPPI
-  //Kinematic  
-  AddBranch(&Met_puppi_pt,            "Met_puppi_pt");
-  AddBranch(&Met_puppi_px,            "Met_puppi_px");
-  AddBranch(&Met_puppi_py,            "Met_puppi_py");
-  AddBranch(&Met_puppi_pz,            "Met_puppi_pz");
-  AddBranch(&Met_puppi_phi,           "Met_puppi_phi");
-  AddBranch(&Met_puppi_sumEt,         "Met_puppi_sumEt");
-  //Corrections/Systematics
-  AddBranch(&Met_puppi_shiftedPtUp,   "Met_puppi_shiftedPtUp");
-  AddBranch(&Met_puppi_shiftedPtDown, "Met_puppi_shiftedPtDown");
-  //MC
-  AddBranch(&Gen_puppi_Met,           "Gen_puppi_Met");
+  if(_PuppiVar){
+    //Kinematic  
+    AddBranch(&Met_puppi_pt,            "Met_puppi_pt");
+    AddBranch(&Met_puppi_px,            "Met_puppi_px");
+    AddBranch(&Met_puppi_py,            "Met_puppi_py");
+    AddBranch(&Met_puppi_pz,            "Met_puppi_pz");
+    AddBranch(&Met_puppi_phi,           "Met_puppi_phi");
+    AddBranch(&Met_puppi_sumEt,         "Met_puppi_sumEt");
+    //Corrections/Systematics
+    AddBranch(&Met_puppi_shiftedPtUp,   "Met_puppi_shiftedPtUp");
+    AddBranch(&Met_puppi_shiftedPtDown, "Met_puppi_shiftedPtDown");
+    //MC
+    AddBranch(&Gen_puppi_Met,           "Gen_puppi_Met");
+  }  
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void METSelector::Clear(){
@@ -106,16 +111,18 @@ void METSelector::Clear(){
   //MC
   Gen_type1PF_Met           = -9999;
   ////slimmedMETsPUPPI
-  //Kinematic  
-  Met_puppi_pt            = -9999;
-  Met_puppi_px            = -9999;
-  Met_puppi_py            = -9999;
-  Met_puppi_pz            = -9999;
-  Met_puppi_phi           = -9999;
-  Met_puppi_sumEt         = -9999; 
-  //Corrections/Systematics
-  Met_puppi_shiftedPtUp   = -9999;
-  Met_puppi_shiftedPtDown = -9999;
-  //MC
-  Gen_puppi_Met           = -9999;
+  if(_PuppiVar){
+    //Kinematic  
+    Met_puppi_pt            = -9999;
+    Met_puppi_px            = -9999;
+    Met_puppi_py            = -9999;
+    Met_puppi_pz            = -9999;
+    Met_puppi_phi           = -9999;
+    Met_puppi_sumEt         = -9999; 
+    //Corrections/Systematics
+    Met_puppi_shiftedPtUp   = -9999;
+    Met_puppi_shiftedPtDown = -9999;
+    //MC
+    Gen_puppi_Met           = -9999;
+  }
 }

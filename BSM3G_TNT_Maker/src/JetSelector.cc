@@ -6,6 +6,7 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jecfile_        = iConfig.getParameter<edm::FileInPath>("jecfile");   
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
+  _PuppiVar = iConfig.getParameter<bool>("PuppiVar");
   SetBranches();
 }
 JetSelector::~JetSelector(){
@@ -82,63 +83,65 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_hadronFlavour.push_back(j.hadronFlavour());
   } 
   ////slimmedJetsPuppi
-  for(const pat::Jet &j : *puppijets){ 
-    //Acceptance
-    if(j.pt() < _Jet_pt_min) continue;
-    //Kinematics
-    Jet_puppi_pt.push_back(j.pt());  
-    Jet_puppi_eta.push_back(j.eta());       
-    Jet_puppi_phi.push_back(j.phi());       
-    Jet_puppi_energy.push_back(j.energy());
-    Jet_puppi_mass.push_back(j.mass()); 
-    Jet_puppi_px.push_back(j.px());   
-    Jet_puppi_py.push_back(j.py());          
-    Jet_puppi_pz.push_back(j.pz());          
-    Jet_puppi_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
-    //ID
-    Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-    Jet_puppi_pfCombinedMVABJetTags.push_back(j.bDiscriminator("pfCombinedMVABJetTags"));
-    Jet_puppi_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
-    Jet_puppi_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
-    Jet_puppi_isPFJet.push_back(j.isPFJet());
-    Jet_puppi_isCaloJet.push_back(j.isCaloJet());
-    //Energy
-    Jet_puppi_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
-    Jet_puppi_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
-    Jet_puppi_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());                               
-    Jet_puppi_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());                              
-    Jet_puppi_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
-    Jet_puppi_electronEnergy.push_back(j.electronEnergy());                               
-    Jet_puppi_photonEnergy.push_back(j.photonEnergy());                                 
-    if(j.isCaloJet()) Jet_puppi_emEnergyFraction.push_back(j.emEnergyFraction());
-    else              Jet_puppi_emEnergyFraction.push_back(-999);
-    //Other prop
-    Jet_puppi_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
-    Jet_puppi_chargedMultiplicity.push_back(j.chargedMultiplicity());
-    Jet_puppi_vtxMass.push_back(j.userFloat("vtxMass"));
-    Jet_puppi_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
-    Jet_puppi_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
-    Jet_puppi_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
-    //Corrections/Systematics
-    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
-    //Jet Uncertainties
-    float JesUncertainties = 0;
-    GetJESUncertainties(j, jecUnc, JesUncertainties);
-    Jet_puppi_JesUp.push_back((1+JesUncertainties));         
-    Jet_puppi_JesDown.push_back((1-JesUncertainties));
-    //JER scale factor and uncertainties
-    float JERScaleFactor     = 1; 
-    float JERScaleFactorUP   = 1;
-    float JERScaleFactorDOWN = 1;
-    GetJER(j, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
-    Jet_puppi_JerSF.push_back(JERScaleFactor);
-    Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
-    Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
-    delete jecUnc;
-    //MC
-    Jet_puppi_partonFlavour.push_back(j.partonFlavour());
-    Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());
-  } 
+  if(_PuppiVar){
+    for(const pat::Jet &j : *puppijets){ 
+      //Acceptance
+      if(j.pt() < _Jet_pt_min) continue;
+      //Kinematics
+      Jet_puppi_pt.push_back(j.pt());  
+      Jet_puppi_eta.push_back(j.eta());       
+      Jet_puppi_phi.push_back(j.phi());       
+      Jet_puppi_energy.push_back(j.energy());
+      Jet_puppi_mass.push_back(j.mass()); 
+      Jet_puppi_px.push_back(j.px());   
+      Jet_puppi_py.push_back(j.py());          
+      Jet_puppi_pz.push_back(j.pz());          
+      Jet_puppi_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
+      //ID
+      Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      Jet_puppi_pfCombinedMVABJetTags.push_back(j.bDiscriminator("pfCombinedMVABJetTags"));
+      Jet_puppi_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
+      Jet_puppi_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
+      Jet_puppi_isPFJet.push_back(j.isPFJet());
+      Jet_puppi_isCaloJet.push_back(j.isCaloJet());
+      //Energy
+      Jet_puppi_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
+      Jet_puppi_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
+      Jet_puppi_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());                               
+      Jet_puppi_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());                              
+      Jet_puppi_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
+      Jet_puppi_electronEnergy.push_back(j.electronEnergy());                               
+      Jet_puppi_photonEnergy.push_back(j.photonEnergy());                                 
+      if(j.isCaloJet()) Jet_puppi_emEnergyFraction.push_back(j.emEnergyFraction());
+      else              Jet_puppi_emEnergyFraction.push_back(-999);
+      //Other prop
+      Jet_puppi_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
+      Jet_puppi_chargedMultiplicity.push_back(j.chargedMultiplicity());
+      Jet_puppi_vtxMass.push_back(j.userFloat("vtxMass"));
+      Jet_puppi_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
+      Jet_puppi_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
+      Jet_puppi_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
+      //Corrections/Systematics
+      JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
+      //Jet Uncertainties
+      float JesUncertainties = 0;
+      GetJESUncertainties(j, jecUnc, JesUncertainties);
+      Jet_puppi_JesUp.push_back((1+JesUncertainties));         
+      Jet_puppi_JesDown.push_back((1-JesUncertainties));
+      //JER scale factor and uncertainties
+      float JERScaleFactor     = 1; 
+      float JERScaleFactorUP   = 1;
+      float JERScaleFactorDOWN = 1;
+      GetJER(j, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      Jet_puppi_JerSF.push_back(JERScaleFactor);
+      Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
+      Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
+      delete jecUnc;
+      //MC
+      Jet_puppi_partonFlavour.push_back(j.partonFlavour());
+      Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());
+    } 
+  }
 }
 void JetSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -186,48 +189,50 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_partonFlavour        ,"Jet_partonFlavour");
   AddBranch(&Jet_hadronFlavour        ,"Jet_hadronFlavour");
   ////slimmedJetsPuppi
-  //Kinematics
-  AddBranch(&Jet_puppi_pt        ,"Jet_puppi_pt");
-  AddBranch(&Jet_puppi_eta       ,"Jet_puppi_eta");
-  AddBranch(&Jet_puppi_phi       ,"Jet_puppi_phi");
-  AddBranch(&Jet_puppi_energy    ,"Jet_puppi_energy");
-  AddBranch(&Jet_puppi_mass      ,"Jet_puppi_mass");
-  AddBranch(&Jet_puppi_px        ,"Jet_puppi_px");
-  AddBranch(&Jet_puppi_py        ,"Jet_puppi_py");
-  AddBranch(&Jet_puppi_pz        ,"Jet_puppi_pz");
-  AddBranch(&Jet_puppi_Uncorr_pt ,"Jet_puppi_Uncorr_pt");
-  //ID
-  AddBranch(&Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags");
-  AddBranch(&Jet_puppi_pfCombinedMVABJetTags                        ,"Jet_puppi_pfCombinedMVABJetTags");
-  AddBranch(&Jet_puppi_pfJetProbabilityBJetTags                     ,"Jet_puppi_pfJetProbabilityBJetTags");
-  AddBranch(&Jet_puppi_pileupId                                     ,"Jet_puppi_pileupId");
-  AddBranch(&Jet_puppi_isPFJet                                      ,"Jet_puppi_isPFJet");
-  AddBranch(&Jet_puppi_isCaloJet                                    ,"Jet_puppi_isCaloJet");
-  //Energy
-  AddBranch(&Jet_puppi_neutralHadEnergyFraction    ,"Jet_puppi_neutralHadEnergyFraction");
-  AddBranch(&Jet_puppi_neutralEmEnergyFraction     ,"Jet_puppi_neutralEmEnergyFraction");
-  AddBranch(&Jet_puppi_chargedHadronEnergyFraction ,"Jet_puppi_chargedHadronEnergyFraction");
-  AddBranch(&Jet_puppi_chargedEmEnergyFraction     ,"Jet_puppi_chargedEmEnergyFraction");
-  AddBranch(&Jet_puppi_muonEnergyFraction          ,"Jet_puppi_muonEnergyFraction");
-  AddBranch(&Jet_puppi_electronEnergy              ,"Jet_puppi_electronEnergy");
-  AddBranch(&Jet_puppi_photonEnergy                ,"Jet_puppi_photonEnergy");
-  AddBranch(&Jet_puppi_emEnergyFraction            ,"Jet_puppi_emEnergyFraction");
-  //Other prop
-  AddBranch(&Jet_puppi_numberOfConstituents ,"Jet_puppi_numberOfConstituents");
-  AddBranch(&Jet_puppi_chargedMultiplicity  ,"Jet_puppi_chargedMultiplicity");
-  AddBranch(&Jet_puppi_vtxMass              ,"Jet_puppi_vtxMass");
-  AddBranch(&Jet_puppi_vtxNtracks           ,"Jet_puppi_vtxNtracks");
-  AddBranch(&Jet_puppi_vtx3DVal             ,"Jet_puppi_vtx3DVal");
-  AddBranch(&Jet_puppi_vtx3DSig             ,"Jet_puppi_vtx3DSig");
-  //Corrections/Systematics
-  AddBranch(&Jet_puppi_JesUp                ,"Jet_puppi_JesUp");
-  AddBranch(&Jet_puppi_JesDown              ,"Jet_puppi_JesDown");
-  AddBranch(&Jet_puppi_JerSF                ,"Jet_puppi_JerSF");
-  AddBranch(&Jet_puppi_JerSFup              ,"Jet_puppi_JerSFup");
-  AddBranch(&Jet_puppi_JerSFdown            ,"Jet_puppi_JerSFdown");
-  //MC
-  AddBranch(&Jet_puppi_partonFlavour        ,"Jet_puppi_partonFlavour");
-  AddBranch(&Jet_puppi_hadronFlavour        ,"Jet_puppi_hadronFlavour");
+  if(_PuppiVar){
+    //Kinematics
+    AddBranch(&Jet_puppi_pt        ,"Jet_puppi_pt");
+    AddBranch(&Jet_puppi_eta       ,"Jet_puppi_eta");
+    AddBranch(&Jet_puppi_phi       ,"Jet_puppi_phi");
+    AddBranch(&Jet_puppi_energy    ,"Jet_puppi_energy");
+    AddBranch(&Jet_puppi_mass      ,"Jet_puppi_mass");
+    AddBranch(&Jet_puppi_px        ,"Jet_puppi_px");
+    AddBranch(&Jet_puppi_py        ,"Jet_puppi_py");
+    AddBranch(&Jet_puppi_pz        ,"Jet_puppi_pz");
+    AddBranch(&Jet_puppi_Uncorr_pt ,"Jet_puppi_Uncorr_pt");
+    //ID
+    AddBranch(&Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    AddBranch(&Jet_puppi_pfCombinedMVABJetTags                        ,"Jet_puppi_pfCombinedMVABJetTags");
+    AddBranch(&Jet_puppi_pfJetProbabilityBJetTags                     ,"Jet_puppi_pfJetProbabilityBJetTags");
+    AddBranch(&Jet_puppi_pileupId                                     ,"Jet_puppi_pileupId");
+    AddBranch(&Jet_puppi_isPFJet                                      ,"Jet_puppi_isPFJet");
+    AddBranch(&Jet_puppi_isCaloJet                                    ,"Jet_puppi_isCaloJet");
+    //Energy
+    AddBranch(&Jet_puppi_neutralHadEnergyFraction    ,"Jet_puppi_neutralHadEnergyFraction");
+    AddBranch(&Jet_puppi_neutralEmEnergyFraction     ,"Jet_puppi_neutralEmEnergyFraction");
+    AddBranch(&Jet_puppi_chargedHadronEnergyFraction ,"Jet_puppi_chargedHadronEnergyFraction");
+    AddBranch(&Jet_puppi_chargedEmEnergyFraction     ,"Jet_puppi_chargedEmEnergyFraction");
+    AddBranch(&Jet_puppi_muonEnergyFraction          ,"Jet_puppi_muonEnergyFraction");
+    AddBranch(&Jet_puppi_electronEnergy              ,"Jet_puppi_electronEnergy");
+    AddBranch(&Jet_puppi_photonEnergy                ,"Jet_puppi_photonEnergy");
+    AddBranch(&Jet_puppi_emEnergyFraction            ,"Jet_puppi_emEnergyFraction");
+    //Other prop
+    AddBranch(&Jet_puppi_numberOfConstituents ,"Jet_puppi_numberOfConstituents");
+    AddBranch(&Jet_puppi_chargedMultiplicity  ,"Jet_puppi_chargedMultiplicity");
+    AddBranch(&Jet_puppi_vtxMass              ,"Jet_puppi_vtxMass");
+    AddBranch(&Jet_puppi_vtxNtracks           ,"Jet_puppi_vtxNtracks");
+    AddBranch(&Jet_puppi_vtx3DVal             ,"Jet_puppi_vtx3DVal");
+    AddBranch(&Jet_puppi_vtx3DSig             ,"Jet_puppi_vtx3DSig");
+    //Corrections/Systematics
+    AddBranch(&Jet_puppi_JesUp                ,"Jet_puppi_JesUp");
+    AddBranch(&Jet_puppi_JesDown              ,"Jet_puppi_JesDown");
+    AddBranch(&Jet_puppi_JerSF                ,"Jet_puppi_JerSF");
+    AddBranch(&Jet_puppi_JerSFup              ,"Jet_puppi_JerSFup");
+    AddBranch(&Jet_puppi_JerSFdown            ,"Jet_puppi_JerSFdown");
+    //MC
+    AddBranch(&Jet_puppi_partonFlavour        ,"Jet_puppi_partonFlavour");
+    AddBranch(&Jet_puppi_hadronFlavour        ,"Jet_puppi_hadronFlavour");
+  }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void JetSelector::Clear(){
@@ -275,48 +280,50 @@ void JetSelector::Clear(){
   Jet_partonFlavour.clear();
   Jet_hadronFlavour.clear();
   ////slimmedJetsPuppi
-  //Kinematics
-  Jet_puppi_pt.clear();
-  Jet_puppi_eta.clear();
-  Jet_puppi_phi.clear();
-  Jet_puppi_energy.clear();
-  Jet_puppi_mass.clear();
-  Jet_puppi_px.clear();
-  Jet_puppi_py.clear();
-  Jet_puppi_pz.clear();
-  Jet_puppi_Uncorr_pt.clear();
-  //ID
-  Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
-  Jet_puppi_pfCombinedMVABJetTags.clear();
-  Jet_puppi_pfJetProbabilityBJetTags.clear();
-  Jet_puppi_pileupId.clear();
-  Jet_puppi_isPFJet.clear();
-  Jet_puppi_isCaloJet.clear();
-  //Energy
-  Jet_puppi_neutralHadEnergyFraction.clear();
-  Jet_puppi_neutralEmEnergyFraction.clear();
-  Jet_puppi_chargedHadronEnergyFraction.clear();
-  Jet_puppi_chargedEmEnergyFraction.clear();
-  Jet_puppi_muonEnergyFraction.clear();
-  Jet_puppi_electronEnergy.clear();
-  Jet_puppi_photonEnergy.clear();
-  Jet_puppi_emEnergyFraction.clear();
-  //Other prop
-  Jet_puppi_numberOfConstituents.clear();
-  Jet_puppi_chargedMultiplicity.clear();
-  Jet_puppi_vtxMass.clear();
-  Jet_puppi_vtxNtracks.clear();
-  Jet_puppi_vtx3DVal.clear();
-  Jet_puppi_vtx3DSig.clear();
-  //Corrections/Systematics
-  Jet_puppi_JesUp.clear();
-  Jet_puppi_JesDown.clear();
-  Jet_puppi_JerSF.clear();
-  Jet_puppi_JerSFup.clear();
-  Jet_puppi_JerSFdown.clear(); 
-  //MC
-  Jet_puppi_partonFlavour.clear();
-  Jet_puppi_hadronFlavour.clear();
+  if(_PuppiVar){
+    //Kinematics
+    Jet_puppi_pt.clear();
+    Jet_puppi_eta.clear();
+    Jet_puppi_phi.clear();
+    Jet_puppi_energy.clear();
+    Jet_puppi_mass.clear();
+    Jet_puppi_px.clear();
+    Jet_puppi_py.clear();
+    Jet_puppi_pz.clear();
+    Jet_puppi_Uncorr_pt.clear();
+    //ID
+    Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
+    Jet_puppi_pfCombinedMVABJetTags.clear();
+    Jet_puppi_pfJetProbabilityBJetTags.clear();
+    Jet_puppi_pileupId.clear();
+    Jet_puppi_isPFJet.clear();
+    Jet_puppi_isCaloJet.clear();
+    //Energy
+    Jet_puppi_neutralHadEnergyFraction.clear();
+    Jet_puppi_neutralEmEnergyFraction.clear();
+    Jet_puppi_chargedHadronEnergyFraction.clear();
+    Jet_puppi_chargedEmEnergyFraction.clear();
+    Jet_puppi_muonEnergyFraction.clear();
+    Jet_puppi_electronEnergy.clear();
+    Jet_puppi_photonEnergy.clear();
+    Jet_puppi_emEnergyFraction.clear();
+    //Other prop
+    Jet_puppi_numberOfConstituents.clear();
+    Jet_puppi_chargedMultiplicity.clear();
+    Jet_puppi_vtxMass.clear();
+    Jet_puppi_vtxNtracks.clear();
+    Jet_puppi_vtx3DVal.clear();
+    Jet_puppi_vtx3DSig.clear();
+    //Corrections/Systematics
+    Jet_puppi_JesUp.clear();
+    Jet_puppi_JesDown.clear();
+    Jet_puppi_JerSF.clear();
+    Jet_puppi_JerSFup.clear();
+    Jet_puppi_JerSFdown.clear(); 
+    //MC
+    Jet_puppi_partonFlavour.clear();
+    Jet_puppi_hadronFlavour.clear();
+  }
 }
 void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){
   jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt

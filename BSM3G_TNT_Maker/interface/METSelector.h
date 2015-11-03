@@ -114,6 +114,7 @@ class METSelector : public baseTree{
   bool _is_data;
   bool _super_TNT; 
   bool _MiniAODv2;
+  bool _PuppiVar;
   /////
   //   BSM 
   /////

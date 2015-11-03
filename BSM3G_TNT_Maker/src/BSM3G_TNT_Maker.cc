@@ -22,12 +22,12 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
   _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
   _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
+  _fillPileupReweight    = iConfig.getParameter<bool>("fillPileupReweight");
   _fillMETinfo           = iConfig.getParameter<bool>("fillMETinfo");
   _fillphotoninfo        = iConfig.getParameter<bool>("fillphotoninfo");
 
   edm::Service<TFileService> fs;
   tree_ = fs->make<TTree>("BOOM","BOOM");
-
   if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillgenHFCategoryinfo) genhfselector      = new GenHFHadrMatchSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_filleventinfo)         eventinfoselector  = new EventInfoSelector("miniAOD", tree_, debug_, iConfig);
@@ -42,6 +42,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig);
+  if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig);
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);
 }
@@ -94,6 +95,7 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
     if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
     if(_fillBTagReweight)      btagreweight->Fill(iEvent);
+    if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
     if(_fillMETinfo)           metselector->Fill(iEvent);
     if(_fillphotoninfo)        photonselector->Fill(iEvent);
     tree_->Fill();

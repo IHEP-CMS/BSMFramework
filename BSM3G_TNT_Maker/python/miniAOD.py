@@ -272,7 +272,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   Tau_vtx_rho_max         = cms.int32(2),
   Tau_vtx_position_z_max  = cms.double(24.),
   # Jet cuts
-  Jet_pt_min = cms.double(25.),
+  Jet_pt_min = cms.double(20.),
   # Photon cuts 
   Photon_pt_min   = cms.double(5.0),
   Photon_eta_max  = cms.double(5.0),    

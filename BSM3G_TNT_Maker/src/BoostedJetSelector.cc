@@ -1,6 +1,17 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
 BoostedJetSelector::BoostedJetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
   fatjetToken_ = iConfig.getParameter<edm::InputTag>("fatjets");
+  _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");
+  jecPayloadNamesAK8PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC1");
+  jecPayloadNamesAK8PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC2");
+  jecPayloadNamesAK8PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC3");
+  jecPayloadNamesAK8PFchsMCUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMCUnc");
+  jecPayloadNamesAK8PFchsDATA1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA1");
+  jecPayloadNamesAK8PFchsDATA2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA2");
+  jecPayloadNamesAK8PFchsDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA3");
+  jecPayloadNamesAK8PFchsDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATAUnc");
+  _is_data = iConfig.getParameter<bool>("is_data");
+  JECInitialization();
   SetBranches();
 }
 BoostedJetSelector::~BoostedJetSelector(){
@@ -12,7 +23,12 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
   //   Recall collections
   /////  
   edm::Handle<pat::JetCollection> fatjets;                                       
-  iEvent.getByLabel(fatjetToken_, fatjets);                                         
+  iEvent.getByLabel(fatjetToken_, fatjets); 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByLabel("fixedGridRhoFastjetAll",rhoHandle);
+  double rho = *rhoHandle;
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByLabel(_vertexInputTag, vertices);                                        
   /////
   //   Get fatjet information
   /////  
@@ -46,6 +62,43 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_trimmed_mass.push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
     BoostedJet_pruned_mass.push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
     BoostedJet_filtered_mass.push_back(j.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
+    //Jet Energy Corrections and Uncertainties
+    double corrAK8PFchs     = 1;
+    double corrUpAK8PFchs   = 1;
+    double corrDownAK8PFchs = 1;
+    reco::Candidate::LorentzVector uncorrJetAK8PFchs = j.correctedP4(0);
+    if(!_is_data){
+      jecAK8PFchsMC_->setJetEta( uncorrJetAK8PFchs.eta()    );
+      jecAK8PFchsMC_->setJetPt ( uncorrJetAK8PFchs.pt()     );
+      jecAK8PFchsMC_->setJetE  ( uncorrJetAK8PFchs.energy() );
+      jecAK8PFchsMC_->setRho	( rho  );
+      jecAK8PFchsMC_->setNPV	( vertices->size()  );
+      jecAK8PFchsMC_->setJetA  ( j.jetArea()	     );
+      corrAK8PFchs = jecAK8PFchsMC_->getCorrection();
+      jecAK8PFchsMCUnc_->setJetEta( uncorrJetAK8PFchs.eta() );
+      jecAK8PFchsMCUnc_->setJetPt( corrAK8PFchs * uncorrJetAK8PFchs.pt() );
+      corrUpAK8PFchs = corrAK8PFchs * (1 + fabs(jecAK8PFchsMCUnc_->getUncertainty(1)));
+      jecAK8PFchsMCUnc_->setJetEta( uncorrJetAK8PFchs.eta() );
+      jecAK8PFchsMCUnc_->setJetPt( corrAK8PFchs * uncorrJetAK8PFchs.pt() );
+      corrDownAK8PFchs = corrAK8PFchs * ( 1 - fabs(jecAK8PFchsMCUnc_->getUncertainty(-1)) );
+    } else {
+      jecAK8PFchsDATA_->setJetEta( uncorrJetAK8PFchs.eta()    );
+      jecAK8PFchsDATA_->setJetPt ( uncorrJetAK8PFchs.pt()     );
+      jecAK8PFchsDATA_->setJetE  ( uncorrJetAK8PFchs.energy() );
+      jecAK8PFchsDATA_->setRho	( rho  );
+      jecAK8PFchsDATA_->setNPV	( vertices->size()  );
+      jecAK8PFchsDATA_->setJetA  ( j.jetArea()	     );
+      corrAK8PFchs = jecAK8PFchsDATA_->getCorrection();
+      jecAK8PFchsDATAUnc_->setJetEta( uncorrJetAK8PFchs.eta() );
+      jecAK8PFchsDATAUnc_->setJetPt( corrAK8PFchs * uncorrJetAK8PFchs.pt() );
+      corrUpAK8PFchs = corrAK8PFchs * (1 + fabs(jecAK8PFchsDATAUnc_->getUncertainty(1)));
+      jecAK8PFchsDATAUnc_->setJetEta( uncorrJetAK8PFchs.eta() );
+      jecAK8PFchsDATAUnc_->setJetPt( corrAK8PFchs * uncorrJetAK8PFchs.pt() );
+      corrDownAK8PFchs = corrAK8PFchs * ( 1 - fabs(jecAK8PFchsDATAUnc_->getUncertainty(-1)) );
+    }
+    BoostedJet_JesSF.push_back(corrAK8PFchs);
+    BoostedJet_JesSFup.push_back(corrUpAK8PFchs);
+    BoostedJet_JesSFdown.push_back(corrDownAK8PFchs);
     //Variables for top-tagging
     double TopMass = -10.;
     double MinMass = -10.;
@@ -64,7 +117,34 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     TopTagging_nSubJets.push_back(NSubJets);
   } 
 }
-
+void BoostedJetSelector::JECInitialization(){
+  //AK8chs - MC: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK8PFchsMC_;
+  jecPayloadNamesAK8PFchsMC_.push_back(jecPayloadNamesAK8PFchsMC1_.fullPath());
+  jecPayloadNamesAK8PFchsMC_.push_back(jecPayloadNamesAK8PFchsMC2_.fullPath());
+  jecPayloadNamesAK8PFchsMC_.push_back(jecPayloadNamesAK8PFchsMC3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK8PFchsMC;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK8PFchsMC_.begin(),
+	  payloadEnd = jecPayloadNamesAK8PFchsMC_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK8PFchsMC.push_back(pars);
+  }
+  jecAK8PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK8PFchsMC) );
+  jecAK8PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsMCUnc_.fullPath()) );
+  //AK8chs - DATA: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK8PFchsDATA_;
+  jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA1_.fullPath());
+  jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA2_.fullPath());
+  jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK8PFchsDATA;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK8PFchsDATA_.begin(),
+	  payloadEnd = jecPayloadNamesAK8PFchsDATA_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK8PFchsDATA.push_back(pars);
+  }
+  jecAK8PFchsDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK8PFchsDATA) );
+  jecAK8PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsDATAUnc_.fullPath()) );
+}
 void BoostedJetSelector::SetBranches(){
   if(debug_)    std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
   //Kinematic
@@ -95,6 +175,10 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_trimmed_mass,   "BoostedJet_trimmed_mass");
   AddBranch(&BoostedJet_pruned_mass,    "BoostedJet_pruned_mass");
   AddBranch(&BoostedJet_filtered_mass,  "BoostedJet_filtered_mass");
+  //Jet Energy Corrections and Uncertainties
+  AddBranch(&BoostedJet_JesSF                ,"BoostedJet_JesSF");
+  AddBranch(&BoostedJet_JesSFup              ,"BoostedJet_JesSFup");
+  AddBranch(&BoostedJet_JesSFdown            ,"BoostedJet_JesSFdown");
   //Variables for top-tagging
   AddBranch(&TopTagging_topMass,  "TopTagging_topMass");
   AddBranch(&TopTagging_minMass,  "TopTagging_minMass");
@@ -131,6 +215,10 @@ void BoostedJetSelector::Clear(){
   BoostedJet_trimmed_mass.clear();
   BoostedJet_pruned_mass.clear();
   BoostedJet_filtered_mass.clear();
+  //Jet Energy Corrections and Uncertainties
+  BoostedJet_JesSF.clear();
+  BoostedJet_JesSFup.clear();
+  BoostedJet_JesSFdown.clear();
   //Variables for top-tagging
   TopTagging_topMass.clear();
   TopTagging_minMass.clear();

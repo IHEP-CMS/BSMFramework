@@ -42,6 +42,7 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -69,8 +70,8 @@ class JetSelector : public  baseTree{
   ~JetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
+  void JECInitialization();
   void Clear();
-  void GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties);
   void GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};
@@ -80,11 +81,37 @@ class JetSelector : public  baseTree{
   edm::InputTag jetToken_;
   edm::InputTag puppi_jetToken_;
   edm::InputTag _vertexInputTag;
-  edm::FileInPath jecfile_;
+  edm::FileInPath jecPayloadNamesAK4PFchsMC1_;
+  edm::FileInPath jecPayloadNamesAK4PFchsMC2_;
+  edm::FileInPath jecPayloadNamesAK4PFchsMC3_;
+  edm::FileInPath jecPayloadNamesAK4PFchsMCUnc_;
+  edm::FileInPath jecPayloadNamesAK4PFchsDATA1_;
+  edm::FileInPath jecPayloadNamesAK4PFchsDATA2_;
+  edm::FileInPath jecPayloadNamesAK4PFchsDATA3_;
+  edm::FileInPath jecPayloadNamesAK4PFchsDATAUnc_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiMC1_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiMC2_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiMC3_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiMCUnc_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiDATA1_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiDATA2_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiDATA3_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiDATAUnc_;
   double _Jet_pt_min;
   bool _super_TNT;
   bool _PuppiVar;
   bool _is_data;
+  /////
+  //   JEC
+  /////
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsMC_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_;
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsDATA_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_;
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFPuppiMC_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiMCUnc_;
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFPuppiDATA_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiDATAUnc_;
   /////
   //   BSM variables
   /////
@@ -97,8 +124,8 @@ class JetSelector : public  baseTree{
   vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction;
   //Other prop
   vector<double> Jet_numberOfConstituents, Jet_chargedMultiplicity, Jet_vtxMass, Jet_vtxNtracks, Jet_vtx3DVal, Jet_vtx3DSig;
-  //Corrections/Systematics
-  vector<double> Jet_JesUp, Jet_JesDown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
+  //Jet Energy Corrections and Uncertainties
+  vector<double> Jet_JesSF, Jet_JesSFup, Jet_JesSFdown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
   //MC 
   vector<double> Jet_partonFlavour, Jet_hadronFlavour;
   ////slimmedJetsPuppi
@@ -110,8 +137,8 @@ class JetSelector : public  baseTree{
   vector<double> Jet_puppi_neutralHadEnergyFraction, Jet_puppi_neutralEmEnergyFraction, Jet_puppi_chargedHadronEnergyFraction, Jet_puppi_chargedEmEnergyFraction, Jet_puppi_muonEnergyFraction, Jet_puppi_electronEnergy, Jet_puppi_photonEnergy, Jet_puppi_emEnergyFraction;
   //Other prop
   vector<double> Jet_puppi_numberOfConstituents, Jet_puppi_chargedMultiplicity, Jet_puppi_vtxMass, Jet_puppi_vtxNtracks, Jet_puppi_vtx3DVal, Jet_puppi_vtx3DSig;
-  //Corrections/Systematics
-  vector<double> Jet_puppi_JesUp, Jet_puppi_JesDown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown; 
+  //Jet Energy Corrections and Uncertainties
+  vector<double> Jet_puppi_JesSF, Jet_puppi_JesSFup, Jet_puppi_JesSFdown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown; 
   //MC 
   vector<double> Jet_puppi_partonFlavour, Jet_puppi_hadronFlavour;
 };

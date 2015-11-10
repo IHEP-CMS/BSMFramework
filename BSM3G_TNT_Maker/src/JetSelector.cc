@@ -3,11 +3,27 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
   puppi_jetToken_ = iConfig.getParameter<edm::InputTag>("jetsPUPPI");
   _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");
-  jecfile_        = iConfig.getParameter<edm::FileInPath>("jecfile");   
+  jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
+  jecPayloadNamesAK4PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC2");
+  jecPayloadNamesAK4PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC3");
+  jecPayloadNamesAK4PFchsMCUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMCUnc");
+  jecPayloadNamesAK4PFchsDATA1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsDATA1");
+  jecPayloadNamesAK4PFchsDATA2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsDATA2");
+  jecPayloadNamesAK4PFchsDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsDATA3");
+  jecPayloadNamesAK4PFchsDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsDATAUnc");
+  jecPayloadNamesAK4PFPuppiMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiMC1");
+  jecPayloadNamesAK4PFPuppiMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiMC2");
+  jecPayloadNamesAK4PFPuppiMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiMC3");
+  jecPayloadNamesAK4PFPuppiMCUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiMCUnc");
+  jecPayloadNamesAK4PFPuppiDATA1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA1");
+  jecPayloadNamesAK4PFPuppiDATA2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA2");
+  jecPayloadNamesAK4PFPuppiDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA3");
+  jecPayloadNamesAK4PFPuppiDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATAUnc");
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
   _is_data = iConfig.getParameter<bool>("is_data");
   _PuppiVar = iConfig.getParameter<bool>("PuppiVar");
+  JECInitialization();
   SetBranches();
 }
 JetSelector::~JetSelector(){
@@ -22,6 +38,11 @@ void JetSelector::Fill(const edm::Event& iEvent){
   iEvent.getByLabel(jetToken_, jets);                                         
   edm::Handle<pat::JetCollection> puppijets;                                       
   iEvent.getByLabel(puppi_jetToken_, puppijets); 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByLabel("fixedGridRhoFastjetAll",rhoHandle);
+  double rho = *rhoHandle;
+  edm::Handle<reco::VertexCollection> vertices;
+  iEvent.getByLabel(_vertexInputTag, vertices);
   /////
   //   Get jet information
   /////  
@@ -64,13 +85,43 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
     Jet_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
     Jet_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
-    //Corrections/Systematics
-    JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
-    //Jet Uncertainties
-    float JesUncertainties = 0;
-    GetJESUncertainties(j, jecUnc, JesUncertainties);
-    Jet_JesUp.push_back((1+JesUncertainties));         
-    Jet_JesDown.push_back((1-JesUncertainties));
+    //Jet Energy Corrections and Uncertainties
+    double corrAK4PFchs     = 1;
+    double corrUpAK4PFchs   = 1;
+    double corrDownAK4PFchs = 1;
+    reco::Candidate::LorentzVector uncorrJetAK4PFchs = j.correctedP4(0);
+    if(!_is_data){
+      jecAK4PFchsMC_->setJetEta( uncorrJetAK4PFchs.eta()    );
+      jecAK4PFchsMC_->setJetPt ( uncorrJetAK4PFchs.pt()     );
+      jecAK4PFchsMC_->setJetE  ( uncorrJetAK4PFchs.energy() );
+      jecAK4PFchsMC_->setRho	( rho  );
+      jecAK4PFchsMC_->setNPV	( vertices->size()  );
+      jecAK4PFchsMC_->setJetA  ( j.jetArea()	     );
+      corrAK4PFchs = jecAK4PFchsMC_->getCorrection();
+      jecAK4PFchsMCUnc_->setJetEta( uncorrJetAK4PFchs.eta() );
+      jecAK4PFchsMCUnc_->setJetPt( corrAK4PFchs * uncorrJetAK4PFchs.pt() );
+      corrUpAK4PFchs = corrAK4PFchs * (1 + fabs(jecAK4PFchsMCUnc_->getUncertainty(1)));
+      jecAK4PFchsMCUnc_->setJetEta( uncorrJetAK4PFchs.eta() );
+      jecAK4PFchsMCUnc_->setJetPt( corrAK4PFchs * uncorrJetAK4PFchs.pt() );
+      corrDownAK4PFchs = corrAK4PFchs * ( 1 - fabs(jecAK4PFchsMCUnc_->getUncertainty(-1)) );
+    } else {
+      jecAK4PFchsDATA_->setJetEta( uncorrJetAK4PFchs.eta()    );
+      jecAK4PFchsDATA_->setJetPt ( uncorrJetAK4PFchs.pt()     );
+      jecAK4PFchsDATA_->setJetE  ( uncorrJetAK4PFchs.energy() );
+      jecAK4PFchsDATA_->setRho	( rho  );
+      jecAK4PFchsDATA_->setNPV	( vertices->size()  );
+      jecAK4PFchsDATA_->setJetA  ( j.jetArea()	     );
+      corrAK4PFchs = jecAK4PFchsDATA_->getCorrection();
+      jecAK4PFchsDATAUnc_->setJetEta( uncorrJetAK4PFchs.eta() );
+      jecAK4PFchsDATAUnc_->setJetPt( corrAK4PFchs * uncorrJetAK4PFchs.pt() );
+      corrUpAK4PFchs = corrAK4PFchs * (1 + fabs(jecAK4PFchsDATAUnc_->getUncertainty(1)));
+      jecAK4PFchsDATAUnc_->setJetEta( uncorrJetAK4PFchs.eta() );
+      jecAK4PFchsDATAUnc_->setJetPt( corrAK4PFchs * uncorrJetAK4PFchs.pt() );
+      corrDownAK4PFchs = corrAK4PFchs * ( 1 - fabs(jecAK4PFchsDATAUnc_->getUncertainty(-1)) );
+    }
+    Jet_JesSF.push_back(corrAK4PFchs);
+    Jet_JesSFup.push_back(corrUpAK4PFchs);
+    Jet_JesSFdown.push_back(corrDownAK4PFchs);
     //JER scale factor and uncertainties
     float JERScaleFactor     = 1; 
     float JERScaleFactorUP   = 1;
@@ -79,7 +130,6 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
-    delete jecUnc;
     //MC
     if(!_is_data) {
       Jet_partonFlavour.push_back(j.partonFlavour());
@@ -133,13 +183,43 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
       Jet_puppi_vtx3DVal.push_back(j.userFloat("vtx3DVal"));
       Jet_puppi_vtx3DSig.push_back(j.userFloat("vtx3DSig"));
-      //Corrections/Systematics
-      JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(jecfile_.fullPath());
-      //Jet Uncertainties
-      float JesUncertainties = 0;
-      GetJESUncertainties(j, jecUnc, JesUncertainties);
-      Jet_puppi_JesUp.push_back((1+JesUncertainties));         
-      Jet_puppi_JesDown.push_back((1-JesUncertainties));
+      //Jet Energy Corrections and Uncertainties
+      double corrAK4PFPuppi     = 1;
+      double corrUpAK4PFPuppi   = 1;
+      double corrDownAK4PFPuppi = 1;
+      reco::Candidate::LorentzVector uncorrJetAK4PFPuppi = j.correctedP4(0);
+      if(!_is_data){
+	jecAK4PFPuppiMC_->setJetEta( uncorrJetAK4PFPuppi.eta()    );
+	jecAK4PFPuppiMC_->setJetPt ( uncorrJetAK4PFPuppi.pt()     );
+	jecAK4PFPuppiMC_->setJetE  ( uncorrJetAK4PFPuppi.energy() );
+	jecAK4PFPuppiMC_->setRho	( rho  );
+	jecAK4PFPuppiMC_->setNPV	( vertices->size()  );
+	jecAK4PFPuppiMC_->setJetA  ( j.jetArea()	     );
+	corrAK4PFPuppi = jecAK4PFPuppiMC_->getCorrection();
+	jecAK4PFPuppiMCUnc_->setJetEta( uncorrJetAK4PFPuppi.eta() );
+	jecAK4PFPuppiMCUnc_->setJetPt( corrAK4PFPuppi * uncorrJetAK4PFPuppi.pt() );
+	corrUpAK4PFPuppi = corrAK4PFPuppi * (1 + fabs(jecAK4PFPuppiMCUnc_->getUncertainty(1)));
+	jecAK4PFPuppiMCUnc_->setJetEta( uncorrJetAK4PFPuppi.eta() );
+	jecAK4PFPuppiMCUnc_->setJetPt( corrAK4PFPuppi * uncorrJetAK4PFPuppi.pt() );
+	corrDownAK4PFPuppi = corrAK4PFPuppi * ( 1 - fabs(jecAK4PFPuppiMCUnc_->getUncertainty(-1)) );
+      } else {
+	jecAK4PFPuppiDATA_->setJetEta( uncorrJetAK4PFPuppi.eta()    );
+	jecAK4PFPuppiDATA_->setJetPt ( uncorrJetAK4PFPuppi.pt()     );
+	jecAK4PFPuppiDATA_->setJetE  ( uncorrJetAK4PFPuppi.energy() );
+	jecAK4PFPuppiDATA_->setRho	( rho  );
+	jecAK4PFPuppiDATA_->setNPV	( vertices->size()  );
+	jecAK4PFPuppiDATA_->setJetA  ( j.jetArea()	     );
+	corrAK4PFPuppi = jecAK4PFPuppiDATA_->getCorrection();
+	jecAK4PFPuppiDATAUnc_->setJetEta( uncorrJetAK4PFPuppi.eta() );
+	jecAK4PFPuppiDATAUnc_->setJetPt( corrAK4PFPuppi * uncorrJetAK4PFPuppi.pt() );
+	corrUpAK4PFPuppi = corrAK4PFPuppi * (1 + fabs(jecAK4PFPuppiDATAUnc_->getUncertainty(1)));
+	jecAK4PFPuppiDATAUnc_->setJetEta( uncorrJetAK4PFPuppi.eta() );
+	jecAK4PFPuppiDATAUnc_->setJetPt( corrAK4PFPuppi * uncorrJetAK4PFPuppi.pt() );
+	corrDownAK4PFPuppi = corrAK4PFPuppi * ( 1 - fabs(jecAK4PFPuppiDATAUnc_->getUncertainty(-1)) );
+      }
+      Jet_puppi_JesSF.push_back(corrAK4PFPuppi);
+      Jet_puppi_JesSFup.push_back(corrUpAK4PFPuppi);
+      Jet_puppi_JesSFdown.push_back(corrDownAK4PFPuppi);
       //JER scale factor and uncertainties
       float JERScaleFactor     = 1; 
       float JERScaleFactorUP   = 1;
@@ -148,7 +228,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
-      delete jecUnc;
+      //delete jecUnc;
       //MC
       if(!_is_data) {
 	Jet_puppi_partonFlavour.push_back(j.partonFlavour());
@@ -156,6 +236,60 @@ void JetSelector::Fill(const edm::Event& iEvent){
       } 
     }
   }
+}
+void JetSelector::JECInitialization(){
+  //AK4chs - MC: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK4PFchsMC_;
+  jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC1_.fullPath());
+  jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC2_.fullPath());
+  jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK4PFchsMC;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFchsMC_.begin(),
+	  payloadEnd = jecPayloadNamesAK4PFchsMC_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK4PFchsMC.push_back(pars);
+  }
+  jecAK4PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsMC) );
+  jecAK4PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsMCUnc_.fullPath()) );
+  //AK4chs - DATA: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK4PFchsDATA_;
+  jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA1_.fullPath());
+  jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA2_.fullPath());
+  jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK4PFchsDATA;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFchsDATA_.begin(),
+	  payloadEnd = jecPayloadNamesAK4PFchsDATA_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK4PFchsDATA.push_back(pars);
+  }
+  jecAK4PFchsDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsDATA) );
+  jecAK4PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsDATAUnc_.fullPath()) );
+  //AK4Puppi - MC: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK4PFPuppiMC_;
+  jecPayloadNamesAK4PFPuppiMC_.push_back(jecPayloadNamesAK4PFPuppiMC1_.fullPath());
+  jecPayloadNamesAK4PFPuppiMC_.push_back(jecPayloadNamesAK4PFPuppiMC2_.fullPath());
+  jecPayloadNamesAK4PFPuppiMC_.push_back(jecPayloadNamesAK4PFPuppiMC3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK4PFPuppiMC;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFPuppiMC_.begin(),
+	  payloadEnd = jecPayloadNamesAK4PFPuppiMC_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK4PFPuppiMC.push_back(pars);
+  }
+  jecAK4PFPuppiMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFPuppiMC) );
+  jecAK4PFPuppiMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFPuppiMCUnc_.fullPath()) );
+  //AK4Puppi - DATA: Get the factorized jet corrector parameters. 
+  std::vector<std::string> jecPayloadNamesAK4PFPuppiDATA_;
+  jecPayloadNamesAK4PFPuppiDATA_.push_back(jecPayloadNamesAK4PFPuppiDATA1_.fullPath());
+  jecPayloadNamesAK4PFPuppiDATA_.push_back(jecPayloadNamesAK4PFPuppiDATA2_.fullPath());
+  jecPayloadNamesAK4PFPuppiDATA_.push_back(jecPayloadNamesAK4PFPuppiDATA3_.fullPath());
+  std::vector<JetCorrectorParameters> vParAK4PFPuppiDATA;
+  for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFPuppiDATA_.begin(),
+	  payloadEnd = jecPayloadNamesAK4PFPuppiDATA_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+    JetCorrectorParameters pars(*ipayload);
+    vParAK4PFPuppiDATA.push_back(pars);
+  }
+  jecAK4PFPuppiDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFPuppiDATA) );
+  jecAK4PFPuppiDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFPuppiDATAUnc_.fullPath()) );
 }
 void JetSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -193,9 +327,10 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_vtxNtracks           ,"Jet_vtxNtracks");
   AddBranch(&Jet_vtx3DVal             ,"Jet_vtx3DVal");
   AddBranch(&Jet_vtx3DSig             ,"Jet_vtx3DSig");
-  //Corrections/Systematics
-  AddBranch(&Jet_JesUp                ,"Jet_JesUp");
-  AddBranch(&Jet_JesDown              ,"Jet_JesDown");
+  //Jet Energy Corrections and Uncertainties
+  AddBranch(&Jet_JesSF                ,"Jet_JesSF");
+  AddBranch(&Jet_JesSFup              ,"Jet_JesSFup");
+  AddBranch(&Jet_JesSFdown            ,"Jet_JesSFdown");
   AddBranch(&Jet_JerSF                ,"Jet_JerSF");
   AddBranch(&Jet_JerSFup              ,"Jet_JerSFup");
   AddBranch(&Jet_JerSFdown            ,"Jet_JerSFdown");
@@ -239,9 +374,10 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_puppi_vtxNtracks           ,"Jet_puppi_vtxNtracks");
     AddBranch(&Jet_puppi_vtx3DVal             ,"Jet_puppi_vtx3DVal");
     AddBranch(&Jet_puppi_vtx3DSig             ,"Jet_puppi_vtx3DSig");
-    //Corrections/Systematics
-    AddBranch(&Jet_puppi_JesUp                ,"Jet_puppi_JesUp");
-    AddBranch(&Jet_puppi_JesDown              ,"Jet_puppi_JesDown");
+    //Jet Energy Corrections and Uncertainties
+    AddBranch(&Jet_puppi_JesSF                ,"Jet_puppi_JesSF");
+    AddBranch(&Jet_puppi_JesSFup              ,"Jet_puppi_JesSFup");
+    AddBranch(&Jet_puppi_JesSFdown            ,"Jet_puppi_JesSFdown");
     AddBranch(&Jet_puppi_JerSF                ,"Jet_puppi_JerSF");
     AddBranch(&Jet_puppi_JerSFup              ,"Jet_puppi_JerSFup");
     AddBranch(&Jet_puppi_JerSFdown            ,"Jet_puppi_JerSFdown");
@@ -288,9 +424,10 @@ void JetSelector::Clear(){
   Jet_vtxNtracks.clear();
   Jet_vtx3DVal.clear();
   Jet_vtx3DSig.clear();
-  //Corrections/Systematics
-  Jet_JesUp.clear();
-  Jet_JesDown.clear();
+  //Jet Energy Corrections and Uncertainties
+  Jet_JesSF.clear();
+  Jet_JesSFup.clear();
+  Jet_JesSFdown.clear();
   Jet_JerSF.clear();
   Jet_JerSFup.clear();
   Jet_JerSFdown.clear(); 
@@ -335,8 +472,9 @@ void JetSelector::Clear(){
     Jet_puppi_vtx3DVal.clear();
     Jet_puppi_vtx3DSig.clear();
     //Corrections/Systematics
-    Jet_puppi_JesUp.clear();
-    Jet_puppi_JesDown.clear();
+    Jet_puppi_JesSF.clear();
+    Jet_puppi_JesSFup.clear();
+    Jet_puppi_JesSFdown.clear();
     Jet_puppi_JerSF.clear();
     Jet_puppi_JerSFup.clear();
     Jet_puppi_JerSFdown.clear(); 
@@ -346,11 +484,6 @@ void JetSelector::Clear(){
       Jet_puppi_hadronFlavour.clear();
     }
   }
-}
-void JetSelector::GetJESUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc, float &JesUncertainties){
-  jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-  jecUnc->setJetEta(jet.eta());
-  JesUncertainties = jecUnc->getUncertainty(true);
 }
 void JetSelector::GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;

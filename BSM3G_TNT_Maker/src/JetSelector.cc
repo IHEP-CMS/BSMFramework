@@ -126,7 +126,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     float JERScaleFactor     = 1; 
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
-    GetJER(j, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    GetJER(j, corrAK4PFchs, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -224,7 +224,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       float JERScaleFactor     = 1; 
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
-      GetJER(j, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      GetJER(j, corrAK4PFPuppi, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -485,7 +485,7 @@ void JetSelector::Clear(){
     }
   }
 }
-void JetSelector::GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
+void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
   double cFactorJER = 1.0; 
@@ -528,7 +528,7 @@ void JetSelector::GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFac
     cFactorJERdown = 0.865;
     cFactorJERup = 1.247; 
   }
-  double recoJetPt = jet.pt();
+  double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();
   double diffPt    = recoJetPt - genJetPt;
   if(genJetPt>10.){

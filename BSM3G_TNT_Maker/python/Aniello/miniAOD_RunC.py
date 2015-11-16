@@ -42,14 +42,14 @@ process.hltFilter = cms.EDFilter('HLTHighLevel',
     'HLT_Ele27_eta2p1_WPLoose_Gsf_v*',
     'HLT_Mu50_v*',
     'HLT_IsoMu20_v*',
-    ##'HLT_IsoMu17_eta2p1_v*',
-    ##'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-    ##'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*',
-    ##'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*',
-    ##'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
-    ##'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
-    ##'HLT_IsoMu24_eta2p1_v*',
-    ##'HLT_IsoMu18_v*',
+    'HLT_IsoMu17_eta2p1_v*',
+    'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
+    'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*',
+    'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*',
+    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
+    'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
+    'HLT_IsoMu24_eta2p1_v*',
+    'HLT_IsoMu18_v*',
   ),
   eventSetupPathsKey = cms.string(''),
   andOr              = cms.bool(True), #---- True = OR, False = AND between the HLT paths
@@ -62,17 +62,15 @@ process.hltFilter = cms.EDFilter('HLTHighLevel',
 # add the ValueMaps with ID decisions into the event data stream
 # Load tools and function definitions
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
-# overwrite a default parameter: for miniAOD, the collection name is a slimmed one
-process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('slimmedElectrons')
-from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
-process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
-# Define which IDs we want to produce
-# Each of these two example IDs contains all four standard
-# cut-based ID working points (only two WP of the PU20bx25 are actually used here).
-# define which IDs we want to produce
+#process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+#process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
+#process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('slimmedElectrons')
+#from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
+#process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
+switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff']
+                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff']
 # Add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
@@ -233,6 +231,9 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
   electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
   electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
+  eleMVATrigIdMap     = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80"),
+  elemvaValuesMap     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
+  elemvaCategoriesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   eleHEEPIdMap        = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
   taus                = cms.InputTag("slimmedTaus"),
   #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),

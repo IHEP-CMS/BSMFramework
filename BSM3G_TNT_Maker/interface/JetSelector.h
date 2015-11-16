@@ -72,7 +72,7 @@ class JetSelector : public  baseTree{
   void SetBranches();
   void JECInitialization();
   void Clear();
-  void GetJER(pat::Jet jet, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};
   /////

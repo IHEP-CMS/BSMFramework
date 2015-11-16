@@ -5,7 +5,10 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   electronLooseIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronLooseIdMap"))),
   electronMediumIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronMediumIdMap"))),
   electronTightIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronTightIdMap"))),
-  eleHEEPIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap")))
+  eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
+  eleHEEPIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap"))),
+  elemvaValuesMapToken_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap"))),
+  elemvaCategoriesMapToken_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap")))
 {
   _vertexInputTag      = iConfig.getParameter<edm::InputTag>("vertices");
   _beamSpot            = iConfig.getParameter<edm::InputTag>("beamSpot");
@@ -43,12 +46,18 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
   edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
   edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+  edm::Handle<edm::ValueMap<bool> > mvatrig_id_decisions;
   edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
   iEvent.getByToken(electronVetoIdMapToken_,veto_id_decisions);
   iEvent.getByToken(electronLooseIdMapToken_,loose_id_decisions);
   iEvent.getByToken(electronMediumIdMapToken_,medium_id_decisions);
   iEvent.getByToken(electronTightIdMapToken_,tight_id_decisions);  
+  iEvent.getByToken(eleMVATrigIdMapToken_,mvatrig_id_decisions);  
   iEvent.getByToken(eleHEEPIdMapToken_, heep_id_decisions);
+  edm::Handle<edm::ValueMap<float> > elemvaValues;
+  edm::Handle<edm::ValueMap<int> > elemvaCategories;
+  iEvent.getByToken(elemvaValuesMapToken_,elemvaValues);
+  iEvent.getByToken(elemvaCategoriesMapToken_,elemvaCategories);
   edm::Handle<double> rhopogHandle;
   iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
   double rhopog = *rhopogHandle;
@@ -93,16 +102,20 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_charge.push_back(el->charge());
     //ID
     const Ptr<pat::Electron> elPtr(electron_pat, el - electron_pat->begin() );
-    bool isPassVeto   = (*veto_id_decisions)  [ elPtr ];
-    bool isPassLoose  = (*loose_id_decisions) [ elPtr ];
-    bool isPassMedium = (*medium_id_decisions)[ elPtr ];
-    bool isPassTight  = (*tight_id_decisions) [ elPtr ];
-    bool isHEEPId     = (*heep_id_decisions)  [ elPtr ];
-    passVetoId_.push_back  ( isPassVeto   );
-    passLooseId_.push_back ( isPassLoose  );
-    passMediumId_.push_back( isPassMedium );
-    passTightId_.push_back ( isPassTight  );
-    passHEEPId_.push_back  ( isHEEPId     );   
+    bool isPassVeto    = (*veto_id_decisions)    [ elPtr ];
+    bool isPassLoose   = (*loose_id_decisions)   [ elPtr ];
+    bool isPassMedium  = (*medium_id_decisions)  [ elPtr ];
+    bool isPassTight   = (*tight_id_decisions)   [ elPtr ];
+    bool isPassMvatrig = (*mvatrig_id_decisions) [ elPtr ];
+    bool isHEEPId      = (*heep_id_decisions)    [ elPtr ];
+    passVetoId_.push_back   ( isPassVeto    );
+    passLooseId_.push_back  ( isPassLoose   );
+    passMediumId_.push_back ( isPassMedium  );
+    passTightId_.push_back  ( isPassTight   );
+    passMvatrigId_.push_back( isPassMvatrig );
+    passHEEPId_.push_back   ( isHEEPId      );  
+    patElectron_mvaValue_.push_back((*elemvaValues)[ elPtr ]);
+    patElectron_mvaCategory_.push_back((*elemvaCategories)[ elPtr ]);
     patElectron_pdgId.push_back(el->pdgId());
     patElectron_isEcalDriven.push_back(el->ecalDriven());
     //Isolation
@@ -131,6 +144,8 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_dr03EcalRecHitSumEt.push_back(el->dr03EcalRecHitSumEt());
     patElectron_dr03HcalDepth1TowerSumEt.push_back(el->dr03HcalDepth1TowerSumEt());
     patElectron_isolPtTracks.push_back(el->dr03TkSumPt());
+    patElectron_ecalPFClusterIso.push_back(el->ecalPFClusterIso());
+    patElectron_hcalPFClusterIso.push_back(el->hcalPFClusterIso());
     //Shape, Track related variables, other prop
     double dEtaIn = el->deltaEtaSuperClusterTrackAtVtx();
     double dPhiIn = el->deltaPhiSuperClusterTrackAtVtx();
@@ -348,7 +363,10 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&passLooseId_             ,"patElectron_isPassLoose");
   AddBranch(&passMediumId_            ,"patElectron_isPassMedium");
   AddBranch(&passTightId_             ,"patElectron_isPassTight");
+  AddBranch(&passMvatrigId_           ,"patElectron_isPassMvatrig");
   AddBranch(&passHEEPId_              ,"patElectron_isPassHEEPId");
+  AddBranch(&patElectron_mvaValue_    ,"patElectron_mvaValue");
+  AddBranch(&patElectron_mvaCategory_ ,"patElectron_mvaCategory");
   AddBranch(&patElectron_pdgId        ,"patElectron_pdgId");
   AddBranch(&patElectron_isEcalDriven ,"patElectron_isEcalDriven");
   //Isolation
@@ -361,6 +379,8 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&patElectron_dr03EcalRecHitSumEt      ,"patElectron_dr03EcalRecHitSumEt");
   AddBranch(&patElectron_dr03HcalDepth1TowerSumEt ,"patElectron_dr03HcalDepth1TowerSumEt");
   AddBranch(&patElectron_isolPtTracks             ,"patElectron_isolPtTracks");
+  AddBranch(&patElectron_ecalPFClusterIso         ,"patElectron_ecalPFClusterIso");
+  AddBranch(&patElectron_hcalPFClusterIso         ,"patElectron_hcalPFClusterIso");
   //Shape, Track related variables, other prop
   AddBranch(&patElectron_dEtaIn                ,"patElectron_dEtaIn");
   AddBranch(&patElectron_dPhiIn                ,"patElectron_dPhiIn");
@@ -442,7 +462,10 @@ void ElectronPatSelector::Clear(){
   passLooseId_.clear();
   passMediumId_.clear();
   passTightId_.clear();  
+  passMvatrigId_.clear();
   passHEEPId_.clear();
+  patElectron_mvaValue_.clear();
+  patElectron_mvaCategory_.clear();
   patElectron_pdgId.clear();
   patElectron_isEcalDriven.clear();
   //Isolation
@@ -455,6 +478,8 @@ void ElectronPatSelector::Clear(){
   patElectron_dr03EcalRecHitSumEt.clear();
   patElectron_dr03HcalDepth1TowerSumEt.clear();
   patElectron_isolPtTracks.clear();
+  patElectron_ecalPFClusterIso.clear();
+  patElectron_hcalPFClusterIso.clear();
   //Shape, Track related variables, other prop
   patElectron_dEtaIn.clear();
   patElectron_dPhiIn.clear();

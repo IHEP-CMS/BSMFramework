@@ -171,10 +171,10 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
   if(HLT_IsoMu18_v5 < trigResults->size()) HLT_IsoMu18 = trigResults->accept(HLT_IsoMu18_v5);
 
   //Single/double leptonic for ttHbb analysis
-  if(HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL || HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL || 
-     HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ) triggerDL = 1;
+  if(HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ==1 || HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL==1 || HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL==1 || 
+     HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ==1 || HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ==1) triggerDL = 1;
   else triggerDL = 0;
-  if(HLT_Ele27_eta2p1_WPLoose_Gsf || HLT_IsoMu18 || HLT_Ele27_WP85_Gsf || HLT_IsoMu17_eta2p1) triggerSL = 1;
+  if(HLT_Ele27_eta2p1_WPLoose_Gsf==1 || HLT_IsoMu18==1 || HLT_Ele27_WP85_Gsf==1 || HLT_IsoMu17_eta2p1==1) triggerSL = 1;
   else triggerSL = 0;
 }
 

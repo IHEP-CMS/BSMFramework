@@ -38,13 +38,13 @@ void GenParticleSelector::Fill(const edm::Event& iEvent){
     Gen_numDaught.push_back(genparticles->numberOfDaughters());
     Gen_numMother.push_back(genparticles->numberOfMothers());
     int idx = -1;
-    for(reco::GenParticleCollection::const_iterator mit = _Gen_collection->begin();mit != _Gen_collection->end(); ++mit){
+    for(reco::GenParticleCollection::const_iterator mit = _Gen_collection->begin(); mit != _Gen_collection->end(); ++mit){
       if(genparticles->mother() == &(*mit)){
 	idx = std::distance(_Gen_collection->begin(),mit);
 	break;
       }
     }
-    Gen_BmotherIndex = idx;
+    Gen_BmotherIndex.push_back(idx);
     for(size_t j = 0; j < genparticles->numberOfMothers(); ++j){
       const reco::Candidate* m = genparticles->mother(j);
       for(reco::GenParticleCollection::const_iterator mit = _Gen_collection->begin();  mit != _Gen_collection->end(); ++mit){
@@ -112,7 +112,7 @@ void GenParticleSelector::Clear(){
   Gen_motherpdg_id.clear();
   Gen_numDaught.clear();
   Gen_numMother.clear();
-  Gen_BmotherIndex = 0;
+  Gen_BmotherIndex.clear();
   Gen_BmotherIndices.clear();
   Gen_BdaughtIndices.clear();
 }

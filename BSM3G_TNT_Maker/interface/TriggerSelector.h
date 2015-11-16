@@ -1,18 +1,21 @@
 // 
-// Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//          kaur amandeepkalsi: Panjab University, India. 
+//  Authors:  Andres Florez: Universidad de los Andes, Colombia. 
+//  kaur amandeepkalsi: Panjab University, India. 
 // 
+
 #ifndef __TRIGGER_H_ 
+
 #define __TRIGGER_H_
-/////
-//   Include files and namespaces
-/////
+
 #include <memory>
+
+// user include files                                                                      
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -39,12 +42,12 @@
 #include <stdlib.h>
 #include "baseTree.h"
 #include <TBranch.h>
+
 using namespace std;
 using namespace edm;
-/////
-//   Class declaration
-/////
+
 class TriggerSelector : public baseTree{
+
  public:
   TriggerSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
   ~TriggerSelector();
@@ -52,17 +55,29 @@ class TriggerSelector : public baseTree{
   void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   void SetBranches();
   void Clear();
+
  private:
   TriggerSelector(){};
-  /////
-  //   Config variables
-  /////
+  vector <int> Trigger_decision;
+  vector <string> Trigger_names;
   HLTConfigProvider hltConfig_;
   edm::InputTag triggerResultsTag_;
-  /////
-  //   BSM methods/variables
-  /////
-  vector<int> Trigger_decision;
-  vector<string> Trigger_names;
+  int triggerSL,triggerDL;
+  int HLT_Ele105_CaloIdVT_GsfTrkIdT;
+  int HLT_Ele27_eta2p1_WP75_Gsf;
+  int HLT_Ele27_WP85_Gsf;
+  int HLT_Ele27_eta2p1_WPLoose_Gsf;
+  int HLT_Mu50;
+  int HLT_IsoMu20;
+  int HLT_IsoMu17_eta2p1;
+  int HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+  int HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
+  int HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL;
+  int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
+  int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
+  int HLT_IsoMu24_eta2p1;
+  int HLT_IsoMu18;
 };
+
 #endif
+

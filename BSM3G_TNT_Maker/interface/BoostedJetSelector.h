@@ -41,6 +41,7 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -69,6 +70,7 @@ class BoostedJetSelector : public  baseTree{
   ~BoostedJetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
+  void JECInitialization();
   void Clear();
  private:
   BoostedJetSelector(){};
@@ -76,6 +78,23 @@ class BoostedJetSelector : public  baseTree{
   //   Config variables
   /////
   edm::InputTag fatjetToken_; 
+  edm::InputTag _vertexInputTag;
+  edm::FileInPath jecPayloadNamesAK8PFchsMC1_;
+  edm::FileInPath jecPayloadNamesAK8PFchsMC2_;
+  edm::FileInPath jecPayloadNamesAK8PFchsMC3_;
+  edm::FileInPath jecPayloadNamesAK8PFchsMCUnc_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATA1_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATA2_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATA3_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATAUnc_;
+  bool _is_data;
+  /////
+  //   JEC
+  /////
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK8PFchsMC_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK8PFchsMCUnc_;
+  boost::shared_ptr<FactorizedJetCorrector>   jecAK8PFchsDATA_;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK8PFchsDATAUnc_;
   /////
   //   IHEP methods/variables
   /////
@@ -87,5 +106,7 @@ class BoostedJetSelector : public  baseTree{
   vector <double> BoostedJet_softdrop_mass, BoostedJet_trimmed_mass, BoostedJet_pruned_mass, BoostedJet_filtered_mass;
   vector <double> TopTagging_topMass, TopTagging_minMass, TopTagging_wMass;
   vector <int>    TopTagging_nSubJets;
+  //Jet Energy Corrections and Uncertainties
+  vector<double> BoostedJet_JesSF, BoostedJet_JesSFup, BoostedJet_JesSFdown; 
 };
 #endif

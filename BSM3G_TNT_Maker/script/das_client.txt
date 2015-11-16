@@ -1,5 +1,5 @@
 #Find dataset 
-./das_client.py --query="dataset=/TTJets*/Phys14DR*/MINIAODSIM | grep dataset.name"
+./das_client.py --query="dataset=/ZprimeToTauTau*/*/MINIAODSIM | grep dataset.name"
 
 #Find file/site of a dataset
 ./das_client.py --query="file dataset=/TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/MINIAODSIM"

@@ -6,6 +6,7 @@
 <use name="FWCore/MessageService"/>
 <use name="DataFormats/EgammaCandidates"/>
 <use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Framework"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="CommonTools/Utils"/>
 <use name="CondFormats/JetMETObjects"/>
@@ -14,6 +15,15 @@
 <use name="HLTrigger/HLTcore"/>
 <use name="DataFormats/Candidate"/>
 <use name="DataFormats/HepMCCandidate"/>
+<use name="PhysicsTools/SelectorUtils"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="TrackingTools/Records"/>
+<use name="RecoVertex/KalmanVertexFit"/>
+<use name="DataFormats/TrackReco"/>
+<use name="TrackingTools/PatternTools"/>
+<use name="RecoVertex/KinematicFitPrimitives"/>
+<use name="TrackingTools/IPTools"/>
+<use name="RecoBTag/BTagTools"/>
 <use name="clhep"/>
 <use name="root"/>
 <use name="rootmath"/>

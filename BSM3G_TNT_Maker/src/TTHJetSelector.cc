@@ -26,7 +26,7 @@ void TTHJetSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByLabel(_patElectronToken, electron_pat);
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByLabel(jetToken_, jets);  
-  JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("../files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
+  //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("/afs/cern.ch/work/f/fromeo/CMSSW_7_4_7/src/BSMFramework/BSM3G_TNT_Maker/files/Summer13_V5_MC_Uncertainty_AK5PFchs.txt");
   /////
   //   Prepare jet collections
   /////		
@@ -49,11 +49,13 @@ void TTHJetSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetu
     if(j->chargedHadronEnergyFraction() <= 0.0)  continue;
     if(j->chargedMultiplicity()         <= 0.0)  continue;
     //Kinematics	  
-    float JesUncertainties=0;
+    //float JesUncertainties=0;
+    /*
     GetJetUncertainties(*j, jecUnc, JesUncertainties);
     TTHJet_pt.push_back(j->pt());
     TTHJet_ptJesUp.push_back((1+JesUncertainties));         
     TTHJet_ptJesDown.push_back((1-JesUncertainties));         
+    */
     TTHJet_eta.push_back(j->eta());       
     TTHJet_phi.push_back(j->phi());       
     TTHJet_energy.push_back(j->energy());
@@ -221,6 +223,7 @@ std::vector<pat::Jet> TTHJetSelector::GetCorrectedJets(const std::vector<pat::Je
   return outputJets;
 }
 //Get the jet uncertainties for the systematics
+/*
 void TTHJetSelector::GetJetUncertainties(pat::Jet jet, JetCorrectionUncertainty *jecUnc_, float &JesUncertainties){
   jecUnc_->setJetEta(jet.eta());
   jecUnc_->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
@@ -230,6 +233,7 @@ void TTHJetSelector::GetJetUncertainties(pat::Jet jet, JetCorrectionUncertainty 
   //float uncDown = jecUnc_->getUncertainty(false);
   //JesDown = 1 - uncDown;
 }
+*/
 /*
 //Alignement for TTHLep analysis
 const reco::Vertex &PV = vtx_h->front();

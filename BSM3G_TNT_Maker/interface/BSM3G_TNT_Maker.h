@@ -30,7 +30,9 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TTHJetSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TopSubJetSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/BJetnessSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BTagReweight.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/PileupReweight.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/METSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/PhotonSelector.h"
 #include "baseTree.h"
@@ -75,11 +77,13 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   bool _filltthjetinfo;
   bool _fillBoostedJetinfo;
   bool _fillTopSubJetinfo;
+  bool _fillBJetnessinfo;
   bool _fillBTagReweight;
+  bool _fillPileupReweight;
   bool _fillMETinfo;
   bool _fillphotoninfo;
   /////
-  //   BSM methods/variables
+  //   All 
   /////
   TFile* file;
   TTree* tree_;
@@ -97,7 +101,9 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   TTHJetSelector         *tthjetselector;
   BoostedJetSelector     *BoostedJetselector;
   TopSubJetSelector      *TopSubJetselector;
+  BJetnessSelector       *BJetnessselector;
   BTagReweight           *btagreweight;
+  PileupReweight         *pileupreweight;
   METSelector            *metselector;
   PhotonSelector         *photonselector;
 };

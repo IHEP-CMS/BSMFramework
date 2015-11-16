@@ -107,13 +107,17 @@ class GenParticleSelector : public baseTree{
  private:
   GenParticleSelector(){};
   /////
-  //   BSM methods/variables
+  //   BSM 
   /////
-  //variables which would become branches
-  vector<double> Gen_pt, Gen_eta, Gen_phi, Gen_status, Gen_pdg_id, Gen_motherpdg_id;
-  vector<double> Gen_p, Gen_energy, Gen_vx, Gen_vy, Gen_vz; 
-  vector<double> Gen_charge, Gen_numDaught, Gen_numMother;
-  vector<int>    Gen_BmotherIndices, Gen_BdaughtIndices;
-  int Gen_BmotherIndex;
+  //Variables
+  //Kinematics
+  vector<double> Gen_pt, Gen_eta, Gen_phi, Gen_p, Gen_energy;
+  //Charge
+  vector<double> Gen_charge;
+  //Vertex
+  vector<double> Gen_vx, Gen_vy, Gen_vz;
+  //Origin
+  vector<double> Gen_status, Gen_pdg_id, Gen_motherpdg_id, Gen_numDaught, Gen_numMother;
+  vector<int>    Gen_BmotherIndex, Gen_BmotherIndices, Gen_BdaughtIndices;
 };
 #endif

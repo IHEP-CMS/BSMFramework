@@ -1,8 +1,9 @@
 #!/bin/bash
 #Specify needed variables
+obj=Jet_
 varType=double
-varList=(Muon_isTracker Muon_isMedium)
-varLast=Muon_eta
+varList=(vtxMass vtxNtracks vtx3DVal vtx3DSig puppi_vtxMass puppi_vtxNtracks puppi_vtx3DVal puppi_vtx3DSig)
+varLast=
 varCount=p
 #Print info
 echo " "
@@ -13,9 +14,9 @@ for count in ${varList[@]};
 do
   if [ "${varList[$pos]}" != "$varLast" ] 
   then
-   echo -e "${varList[$pos]}, \c"
+   echo -e "$obj${varList[$pos]}, \c"
   else
-   echo "${varList[$pos]};"
+   echo "$obj${varList[$pos]};"
   fi
   let pos=pos+1
 done
@@ -24,7 +25,7 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo " ${varList[$pos]}.push_back();"
+  echo "    $obj${varList[$pos]}.push_back();"
   let pos=pos+1
 done
 echo " "
@@ -32,7 +33,7 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo " AddBranch(&${varList[$pos]}               ,\"${varList[$pos]}\");"
+  echo "  AddBranch(&$obj${varList[$pos]}               ,\"$obj${varList[$pos]}\");"
   let pos=pos+1
 done
 echo " "
@@ -40,7 +41,7 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo " ${varList[$pos]}.clear();"
+  echo "  $obj${varList[$pos]}.clear();"
   let pos=pos+1
 done
 echo " "

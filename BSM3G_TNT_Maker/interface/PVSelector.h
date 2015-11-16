@@ -113,15 +113,18 @@ class PVSelector : public baseTree{
   double _Pvtx_vtxdxy_max;
   bool   _is_data;
   bool   _super_TNT;
+  bool   _MiniAODv2;
   /////
-  //   BSM methods/variables
+  //   BSM 
   /////
-  //variables which would become branches
+  //Variables
+  int pvertex_notempty;
   int nBestVtx;
-  int ootnpuVertices,npuVertices, npuVerticesm1, npuVerticesp1;
-  vector<float> pvertex_x, pvertex_y, pvertex_z;
-  vector<float> pvertex_xError, pvertex_yError, pvertex_zError;
-  vector<float> beamSpot_x0, beamSpot_y0, beamSpot_z0;
-  float trueInteractions;
+  int npuVertices, ootnpuVertices, npuVerticesm1, npuVerticesp1;
+  double trueInteractions;
+  vector<double> pvertex_x, pvertex_y, pvertex_z;
+  vector<double> pvertex_xError, pvertex_yError, pvertex_zError;
+  vector<double> pvertex_ndof, pvertex_dxy;
+  vector<double> beamSpot_x0, beamSpot_y0, beamSpot_z0, beamSpot_xWidth, beamSpot_yWidth;
 };
 #endif

@@ -528,10 +528,10 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float
     cFactorJERdown = 0.865;
     cFactorJERup = 1.247; 
   }
-  double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
+  double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();
   double diffPt    = recoJetPt - genJetPt;
-  if(genJetPt>10.){
+  if(genJetPt>0.){
     JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;
     JERScaleFactorUP   = (std::max(0., genJetPt + cFactorJERup*diffPt))/recoJetPt;
     JERScaleFactorDOWN = (std::max(0., genJetPt + cFactorJERdown*diffPt))/recoJetPt;

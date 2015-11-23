@@ -34,4 +34,6 @@ do
 	bsub -q $queue run_$j.sh
     done
     cd ..
+    echo "hadd $datasetName.root $datasetName/*root" >> HADD
 done
+chmod 777 HADD

@@ -1,4 +1,26 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/MuonSelector.h"
+//Track builder infos
+#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexUpdator.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexTrackCompatibilityEstimator.h"
+#include "RecoVertex/KalmanVertexFit/interface/KalmanVertexSmoother.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/TrackReco/interface/TrackExtra.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "TrackingTools/PatternTools/interface/TwoTrackMinimumDistance.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
+#include "TrackingTools/IPTools/interface/IPTools.h"
+#include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
+#include "TMath.h"
+KalmanVertexFitter vertexfitter(true);
+using namespace std;
+using namespace pat;
+using namespace edm;
+using namespace reco;
 MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug)
 {
@@ -14,6 +36,8 @@ MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset
   _is_data            = iConfig.getParameter<bool>("is_data");
   pfToken_            = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
   jetToken_           = iConfig.getParameter<edm::InputTag>("jets");
+  jetsToken           = ic.consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jets"));
+  qgToken             = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _AJVar = iConfig.getParameter<bool>("AJVar");
   _tthlepVar = iConfig.getParameter<bool>("tthlepVar");
   SetBranches();
@@ -40,20 +64,24 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   double rho = *rhoHandle;
   edm::Handle<pat::PackedCandidateCollection> pcc;
   iEvent.getByToken(pfToken_, pcc);
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByLabel(jetToken_, jets);
   /////
   //   Require a good vertex 
   ///// 
-  //reco::VertexCollection::const_iterator firstGoodVertex = vtx_h->end();
-  //for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstGoodVertex; it++){
-  //  isGoodVertex(*it);
-  //  firstGoodVertex = it;
-  //  break;
-  //}
-  //if(firstGoodVertex == vtx_h->end()) return;
-  if(vtx_h->empty()) return; // skip the event if no PV found
-  const reco::Vertex &firstGoodVertex = vtx_h->front();  
-  bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  if(!isgoodvtx) return;
+  reco::VertexCollection::const_iterator firstgoodVertex = vtx_h->end();
+  for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstgoodVertex; it++){
+    if(isGoodVertex(*it)){
+      firstgoodVertex = it;
+      break;
+    }
+  }
+  if(firstgoodVertex == vtx_h->end()) return;
+  const reco::Vertex &firstGoodVertex = *firstgoodVertex;
+  //if(vtx_h->empty()) return; // skip the event if no PV found
+  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  //if(!isgoodvtx) return;
   ////
   //   Get muon information
   /////
@@ -142,6 +170,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Muon_trackIso.push_back(mu->trackIso());
     Muon_ecalIso.push_back(mu->ecalIso());
     Muon_hcalIso.push_back(mu->hcalIso());
+    Muon_caloIso.push_back(mu->caloIso());
     Muon_isoSum.push_back((mu->trackIso() + mu->ecalIso() + mu->hcalIso()));
     Muon_pfEcalEnergy.push_back(mu->pfEcalEnergy());
     //Track related variables 
@@ -248,53 +277,179 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Muon_dxy_bt.push_back(-999);
       } 
     }
-    ///
+    //////
     ///   TTH variables
-    /// 
+    ////// 
     if(_tthlepVar){
+      //Isolation
       double miniIso      = 999;
       double miniIsoCh    = 999;
       double miniIsoNeu   = 999;
       double miniIsoPUsub = 999;
       get_muminiIso_info(*pcc,rho,*mu,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
-      double mujet_mindr    = 999;
-      double mujet_pt       = -1;
-      double muptOVmujetpt  = -1;
-      double mujet_btagdisc = -1;
-      double mujetx  = -999;
-      double mujety  = -999;
-      double mujetz  = -999;
-      double muptrel = -999;
-      get_mujet_info(*mu,iEvent,iSetup,mujet_mindr,mujet_pt,muptOVmujetpt,mujet_btagdisc,mujetx,mujety,mujetz,muptrel);
       Muon_miniIsoRel.push_back(miniIso/mu->pt());
       Muon_miniIsoCh.push_back(miniIsoCh);
       Muon_miniIsoNeu.push_back(miniIsoNeu);
       Muon_miniIsoPUsub.push_back(miniIsoPUsub);
+      //Other
+      double mujet_mindr    = 999;
+      double mujet_pt       = -1;
+      double muptOVmujetpt  = -1;
+      double mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags = -1;
+      double mujet_pfJetProbabilityBJetTag = -1;
+      double mujet_pfCombinedMVABJetTags = -1;
+      double mujet_qgl = -3;
+      double mujetx  = -999;
+      double mujety  = -999;
+      double mujetz  = -999;
+      double muptrel = -999;
+      int lepjetidx = -1;
+      get_mujet_info(*mu,iEvent,iSetup,
+                     mujet_mindr,mujet_pt,muptOVmujetpt,
+                     mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags,mujet_pfJetProbabilityBJetTag,mujet_pfCombinedMVABJetTags,mujet_qgl,
+                     mujetx,mujety,mujetz,muptrel,lepjetidx);
       Muon_jetdr.push_back(mujet_mindr);
       Muon_jetpt.push_back(mujet_pt);
       Muon_jetptratio.push_back(muptOVmujetpt);
-      Muon_jetcsv.push_back(mujet_btagdisc);
+      Muon_jetcsv.push_back(mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags);
       Muon_ptrel.push_back(muptrel);
       Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
-      //Print info
-      /*
-	cout<<setiosflags(ios::fixed)<<setprecision(5);
-	//cout<<"Muon"<<endl;
-	if(!amu && mu->innerTrack().isNonnull()
-	&& mu->pt()>5 && fabs(mu->eta())<2.4
-	&& fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<0.1
-	&& miniIso/mu->pt()<0.4 && fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<8 && mu->isLooseMuon()
-	){
-	//cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sip3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
-	cout<<setw(10)<<iEvent.id().event()<<setw(10)<<mu->pt()<<setw(10)<<mu->eta()<<setw(10)<<mu->phi()<<setw(10)<<mu->energy()<<setw(5)<<mu->pdgId()<<setw(5)<<mu->charge()<<setw(15)<<miniIso/mu->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<muptrel<<setw(10)<<mujet_btagdisc<<setw(10)<<mu->pt()/mujet_pt;
-	//if(mu->innerTrack().isNonnull()){
-	cout<<setw(10)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(10)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mu->segmentCompatibility()<<endl;
-	//}else{
-	// cout<<setw(15)<<"no track for Mu IP"<<endl; 
-	//}
-	amu = true;
-	}
-      */
+      int pvass = pvassociation(*mu,*pcc);
+      const math::XYZVector& lepton_momentum = mu->momentum(); 
+      const math::XYZVector axis(mujetx,mujety,mujetz);
+      double etarel = relativeEta(lepton_momentum,axis);
+      Muon_pvass.push_back(pvass);
+      Muon_etarel.push_back(etarel);
+      Muon_ptOVen.push_back(mu->pt()/mu->energy());
+      Muon_mujet_pfJetProbabilityBJetTag.push_back(mujet_pfJetProbabilityBJetTag);
+      Muon_mujet_pfCombinedMVABJetTags.push_back(mujet_pfCombinedMVABJetTags);
+      Muon_mujet_qgl.push_back(mujet_qgl);      
+      GlobalVector mujetgv(mujetx,mujety,mujetz);
+      double muwmass = get_lepWmass(*mu,iEvent,lepjetidx);
+      double mutopmass = get_lepTopmass(*mu,iEvent,lepjetidx);
+      double muwtopmass = get_lepWTopmass(*mu,iEvent,lepjetidx);
+      Muon_mumass.push_back(mu->p4().M());
+      if(lepjetidx!=-1){
+        const pat::Jet & lepjet = (*jets)[lepjetidx];
+        Muon_mujetmass.push_back(lepjet.p4().M());
+      }else{
+        Muon_mujetmass.push_back(0);
+      }
+      Muon_mujetWmass.push_back(muwmass);
+      Muon_mujetTopmass.push_back(mutopmass);
+      Muon_mujetWTopmass.push_back(muwtopmass);
+      //Mu IP 
+      double IP3D_val  = -9999;
+      double IP3D_err  = -9999;
+      double IP3D_sig  = -9999;
+      double IP2D_val  = -9999;
+      double IP2D_err  = -9999;
+      double IP2D_sig  = -9999;
+      double sIP3D_val = -9999;
+      double sIP3D_err = -9999;
+      double sIP3D_sig = -9999;
+      double sIP2D_val = -9999;
+      double sIP2D_err = -9999;
+      double sIP2D_sig = -9999;
+      double IP1D_val  = -9999;
+      double IP1D_err  = -9999;
+      double IP1D_sig  = -9999;
+      double sIP1D_val = -9999;
+      double sIP1D_err = -9999;
+      double sIP1D_sig = -9999;
+      //Lep jet IP
+      double lepjetMaxIP3D_val  = -999; //M(|IP3D/IP3Derr|(jettrks,PV)): the maximum significance of the 3D IP for a tracks of the jet and the PV 
+      double lepjetMaxIP3D_sig  = -999; 
+      double lepjetMaxsIP3D_val = -999; 
+      double lepjetMaxsIP3D_sig = -999; 
+      double lepjetMaxIP2D_val  = -999; 
+      double lepjetMaxIP2D_sig  = -999; 
+      double lepjetMaxsIP2D_val = -999; 
+      double lepjetMaxsIP2D_sig = -999; 
+      double lepjetMaxIP1D_val  = -999; 
+      double lepjetMaxIP1D_sig  = -999; 
+      double lepjetMaxsIP1D_val = -999; 
+      double lepjetMaxsIP1D_sig = -999; 
+      double lepjetAvIP3D_val  = 0; 
+      double lepjetAvIP3D_sig  = 0; 
+      double lepjetAvsIP3D_val = 0; 
+      double lepjetAvsIP3D_sig = 0; 
+      double lepjetAvIP2D_val  = 0; 
+      double lepjetAvIP2D_sig  = 0; 
+      double lepjetAvsIP2D_val = 0; 
+      double lepjetAvsIP2D_sig = 0; 
+      double lepjetAvIP1D_val  = 0; 
+      double lepjetAvIP1D_sig  = 0; 
+      double lepjetAvsIP1D_val = 0; 
+      double lepjetAvsIP1D_sig = 0; 
+      double lepjetchtrks      = 0;
+      double lepjetpvchtrks    = 0;
+      double lepjetnonpvchtrks = 0;
+      double lepjetndaus       = 0;
+      double lepjetpvchi2      = 0;
+      double lepjetnumno2trk   = 0;
+      if(mu->innerTrack().isNonnull()){
+        TrackRef muit = mu->innerTrack();
+        TransientTrack muttrk = ttrkbuilder->build(muit);
+        IP3D2D(muttrk,firstGoodVertex,mujetgv,IP3D_val,IP3D_err,IP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+        zIP1D(muttrk,firstGoodVertex,mujetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+        if(lepjetidx!=-1){ const pat::Jet & lepjet = (*jets)[lepjetidx]; 
+          lepjetIPtrks(lepjet,firstGoodVertex,mujetgv,*ttrkbuilder,
+                   lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
+                   lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
+                   lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus,
+                   lepjetpvchi2, lepjetnumno2trk  
+                  );                                                                    
+        }
+      }
+      Muon_IP3D_val.push_back(IP3D_val);
+      Muon_IP3D_err.push_back(IP3D_err);
+      Muon_IP3D_sig.push_back(IP3D_sig);
+      Muon_IP2D_val.push_back(IP2D_val);
+      Muon_IP2D_err.push_back(IP2D_err);
+      Muon_IP2D_sig.push_back(IP2D_sig);
+      Muon_sIP3D_val.push_back(sIP3D_val);
+      Muon_sIP3D_err.push_back(sIP3D_err);
+      Muon_sIP3D_sig.push_back(sIP3D_sig);
+      Muon_sIP2D_val.push_back(sIP2D_val);
+      Muon_sIP2D_err.push_back(sIP2D_err);
+      Muon_sIP2D_sig.push_back(sIP2D_sig);
+      Muon_IP1D_val.push_back(IP1D_val);
+      Muon_IP1D_err.push_back(IP1D_err);
+      Muon_IP1D_sig.push_back(IP1D_sig);
+      Muon_sIP1D_val.push_back(sIP1D_val);
+      Muon_sIP1D_err.push_back(sIP1D_err);
+      Muon_sIP1D_sig.push_back(sIP1D_sig);
+      Muon_lepjetMaxIP3D_val.push_back(lepjetMaxIP3D_val);
+      Muon_lepjetMaxIP3D_sig.push_back(lepjetMaxIP3D_sig);
+      Muon_lepjetMaxsIP3D_val.push_back(lepjetMaxsIP3D_val);
+      Muon_lepjetMaxsIP3D_sig.push_back(lepjetMaxsIP3D_sig);
+      Muon_lepjetMaxIP2D_val.push_back(lepjetMaxIP2D_val);
+      Muon_lepjetMaxIP2D_sig.push_back(lepjetMaxIP2D_sig);
+      Muon_lepjetMaxsIP2D_val.push_back(lepjetMaxsIP2D_val);
+      Muon_lepjetMaxsIP2D_sig.push_back(lepjetMaxsIP2D_sig);
+      Muon_lepjetMaxIP1D_val.push_back(lepjetMaxIP1D_val);
+      Muon_lepjetMaxIP1D_sig.push_back(lepjetMaxIP1D_sig);
+      Muon_lepjetMaxsIP1D_val.push_back(lepjetMaxsIP1D_val);
+      Muon_lepjetMaxsIP1D_sig.push_back(lepjetMaxsIP1D_sig);
+      Muon_lepjetAvIP3D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP3D_val  : -999);
+      Muon_lepjetAvIP3D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP3D_sig  : -999);
+      Muon_lepjetAvsIP3D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP3D_val : -999);
+      Muon_lepjetAvsIP3D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP3D_sig : -999);
+      Muon_lepjetAvIP2D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP2D_val  : -999);
+      Muon_lepjetAvIP2D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP2D_sig  : -999);
+      Muon_lepjetAvsIP2D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP2D_val : -999);
+      Muon_lepjetAvsIP2D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP2D_sig : -999);
+      Muon_lepjetAvIP1D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP1D_val  : -999);
+      Muon_lepjetAvIP1D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP1D_sig  : -999);
+      Muon_lepjetAvsIP1D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP1D_val : -999);
+      Muon_lepjetAvsIP1D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP1D_sig : -999);
+      Muon_lepjetchtrks.push_back(lepjetchtrks);
+      Muon_lepjetpvchtrks.push_back(lepjetpvchtrks);
+      Muon_lepjetnonpvchtrks.push_back(lepjetnonpvchtrks);
+      Muon_lepjetndaus.push_back(lepjetndaus);
+      Muon_lepjetpvchi2.push_back(lepjetpvchi2);
+      Muon_lepjetnumno2trk.push_back(lepjetnumno2trk);
     }
     /////
     //   MC info
@@ -309,10 +464,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         Muon_gen_pdgId.push_back(genpart->pdgId());
         Muon_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
         Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
-        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
-        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
-        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
-        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;
+
       }else{
         Muon_gen_pt.push_back(-999);
         Muon_gen_eta.push_back(-999);
@@ -371,6 +523,7 @@ void MuonSelector::SetBranches(){
   AddBranch(&Muon_trackIso            ,"Muon_trackIso");
   AddBranch(&Muon_ecalIso             ,"Muon_ecalIso");
   AddBranch(&Muon_hcalIso             ,"Muon_hcalIso");
+  AddBranch(&Muon_caloIso             ,"Muon_caloIso");
   AddBranch(&Muon_isoSum              ,"Muon_isoSum");
   AddBranch(&Muon_pfEcalEnergy        ,"Muon_pfEcalEnergy");
   //Track related variables and neutral part isolation
@@ -424,6 +577,66 @@ void MuonSelector::SetBranches(){
     AddBranch(&Muon_jetcsv            ,"Muon_jetcsv");
     AddBranch(&Muon_ptrel             ,"Muon_ptrel");
     AddBranch(&Muon_IP3Dsig_it        ,"Muon_IP3Dsig_it");
+    AddBranch(&Muon_pvass             ,"Muon_pvass");
+    AddBranch(&Muon_etarel            ,"Muon_etarel");
+    AddBranch(&Muon_ptOVen            ,"Muon_ptOVen");
+    AddBranch(&Muon_mujet_pfJetProbabilityBJetTag ,"Muon_mujet_pfJetProbabilityBJetTag");
+    AddBranch(&Muon_mujet_pfCombinedMVABJetTags   ,"Muon_mujet_pfCombinedMVABJetTags");
+    AddBranch(&Muon_mujet_qgl         ,"Muon_mujet_qgl");
+    AddBranch(&Muon_mumass            ,"Muon_mumass");
+    AddBranch(&Muon_mujetmass         ,"Muon_mujetmass");
+    AddBranch(&Muon_mujetWmass        ,"Muon_mujetWmass");
+    AddBranch(&Muon_mujetTopmass      ,"Muon_mujetTopmass");
+    AddBranch(&Muon_mujetWTopmass     ,"Muon_mujetWTopmass");
+    //Lep jet IP ntrks
+    AddBranch(&Muon_IP3D_val           ,"Muon_IP3D_val");
+    AddBranch(&Muon_IP3D_err           ,"Muon_IP3D_err");
+    AddBranch(&Muon_IP3D_sig           ,"Muon_IP3D_sig");
+    AddBranch(&Muon_IP2D_val           ,"Muon_IP2D_val");
+    AddBranch(&Muon_IP2D_err           ,"Muon_IP2D_err");
+    AddBranch(&Muon_IP2D_sig           ,"Muon_IP2D_sig");
+    AddBranch(&Muon_sIP3D_val          ,"Muon_sIP3D_val");
+    AddBranch(&Muon_sIP3D_err          ,"Muon_sIP3D_err");
+    AddBranch(&Muon_sIP3D_sig          ,"Muon_sIP3D_sig");
+    AddBranch(&Muon_sIP2D_val          ,"Muon_sIP2D_val");
+    AddBranch(&Muon_sIP2D_err          ,"Muon_sIP2D_err");
+    AddBranch(&Muon_sIP2D_sig          ,"Muon_sIP2D_sig");
+    AddBranch(&Muon_IP1D_val           ,"Muon_IP1D_val");
+    AddBranch(&Muon_IP1D_err           ,"Muon_IP1D_err");
+    AddBranch(&Muon_IP1D_sig           ,"Muon_IP1D_sig");
+    AddBranch(&Muon_sIP1D_val          ,"Muon_sIP1D_val");
+    AddBranch(&Muon_sIP1D_err          ,"Muon_sIP1D_err");
+    AddBranch(&Muon_sIP1D_sig          ,"Muon_sIP1D_sig");
+    AddBranch(&Muon_lepjetMaxIP3D_val  ,"Muon_lepjetMaxIP3D_val");
+    AddBranch(&Muon_lepjetMaxIP3D_sig  ,"Muon_lepjetMaxIP3D_sig");
+    AddBranch(&Muon_lepjetMaxsIP3D_val ,"Muon_lepjetMaxsIP3D_val");
+    AddBranch(&Muon_lepjetMaxsIP3D_sig ,"Muon_lepjetMaxsIP3D_sig");
+    AddBranch(&Muon_lepjetMaxIP2D_val  ,"Muon_lepjetMaxIP2D_val");
+    AddBranch(&Muon_lepjetMaxIP2D_sig  ,"Muon_lepjetMaxIP2D_sig");
+    AddBranch(&Muon_lepjetMaxsIP2D_val ,"Muon_lepjetMaxsIP2D_val");
+    AddBranch(&Muon_lepjetMaxsIP2D_sig ,"Muon_lepjetMaxsIP2D_sig");
+    AddBranch(&Muon_lepjetMaxIP1D_val  ,"Muon_lepjetMaxIP1D_val");
+    AddBranch(&Muon_lepjetMaxIP1D_sig  ,"Muon_lepjetMaxIP1D_sig");
+    AddBranch(&Muon_lepjetMaxsIP1D_val ,"Muon_lepjetMaxsIP1D_val");
+    AddBranch(&Muon_lepjetMaxsIP1D_sig ,"Muon_lepjetMaxsIP1D_sig");
+    AddBranch(&Muon_lepjetAvIP3D_val   ,"Muon_lepjetAvIP3D_val");
+    AddBranch(&Muon_lepjetAvIP3D_sig   ,"Muon_lepjetAvIP3D_sig");
+    AddBranch(&Muon_lepjetAvsIP3D_val  ,"Muon_lepjetAvsIP3D_val");
+    AddBranch(&Muon_lepjetAvsIP3D_sig  ,"Muon_lepjetAvsIP3D_sig");
+    AddBranch(&Muon_lepjetAvIP2D_val   ,"Muon_lepjetAvIP2D_val");
+    AddBranch(&Muon_lepjetAvIP2D_sig   ,"Muon_lepjetAvIP2D_sig");
+    AddBranch(&Muon_lepjetAvsIP2D_val  ,"Muon_lepjetAvsIP2D_val");
+    AddBranch(&Muon_lepjetAvsIP2D_sig  ,"Muon_lepjetAvsIP2D_sig");
+    AddBranch(&Muon_lepjetAvIP1D_val   ,"Muon_lepjetAvIP1D_val");
+    AddBranch(&Muon_lepjetAvIP1D_sig   ,"Muon_lepjetAvIP1D_sig");
+    AddBranch(&Muon_lepjetAvsIP1D_val  ,"Muon_lepjetAvsIP1D_val");
+    AddBranch(&Muon_lepjetAvsIP1D_sig  ,"Muon_lepjetAvsIP1D_sig");
+    AddBranch(&Muon_lepjetchtrks       ,"Muon_lepjetchtrks");
+    AddBranch(&Muon_lepjetpvchtrks     ,"Muon_lepjetpvchtrks");
+    AddBranch(&Muon_lepjetnonpvchtrks  ,"Muon_lepjetnonpvchtrks");
+    AddBranch(&Muon_lepjetndaus        ,"Muon_lepjetndaus");
+    AddBranch(&Muon_lepjetpvchi2       ,"Muon_lepjetpvchi2");
+    AddBranch(&Muon_lepjetnumno2trk    ,"Muon_lepjetnumno2trk");
   }
   //MC info
   if(!_is_data){
@@ -482,6 +695,7 @@ void MuonSelector::Clear(){
   Muon_trackIso.clear();
   Muon_ecalIso.clear();
   Muon_hcalIso.clear(); 
+  Muon_caloIso.clear();
   Muon_isoSum.clear();
   Muon_pfEcalEnergy.clear();
   //Track related variables
@@ -535,6 +749,66 @@ void MuonSelector::Clear(){
     Muon_jetcsv.clear();
     Muon_ptrel.clear();
     Muon_IP3Dsig_it.clear();
+    Muon_pvass.clear();
+    Muon_etarel.clear();
+    Muon_ptOVen.clear();
+    Muon_mujet_pfJetProbabilityBJetTag.clear();
+    Muon_mujet_pfCombinedMVABJetTags.clear();
+    Muon_mujet_qgl.clear();
+    Muon_mumass.clear();
+    Muon_mujetmass.clear();
+    Muon_mujetWmass.clear();
+    Muon_mujetTopmass.clear();
+    Muon_mujetWTopmass.clear();
+    //Lep jet IP ntrks
+    Muon_IP3D_val.clear();
+    Muon_IP3D_err.clear();
+    Muon_IP3D_sig.clear();
+    Muon_IP2D_val.clear();
+    Muon_IP2D_err.clear();
+    Muon_IP2D_sig.clear();
+    Muon_sIP3D_val.clear();
+    Muon_sIP3D_err.clear();
+    Muon_sIP3D_sig.clear();
+    Muon_sIP2D_val.clear();
+    Muon_sIP2D_err.clear();
+    Muon_sIP2D_sig.clear();
+    Muon_IP1D_val.clear();
+    Muon_IP1D_err.clear();
+    Muon_IP1D_sig.clear();
+    Muon_sIP1D_val.clear();
+    Muon_sIP1D_err.clear();
+    Muon_sIP1D_sig.clear();
+    Muon_lepjetMaxIP3D_val.clear();
+    Muon_lepjetMaxIP3D_sig.clear();
+    Muon_lepjetMaxsIP3D_val.clear();
+    Muon_lepjetMaxsIP3D_sig.clear();
+    Muon_lepjetMaxIP2D_val.clear();
+    Muon_lepjetMaxIP2D_sig.clear();
+    Muon_lepjetMaxsIP2D_val.clear();
+    Muon_lepjetMaxsIP2D_sig.clear();
+    Muon_lepjetMaxIP1D_val.clear();
+    Muon_lepjetMaxIP1D_sig.clear();
+    Muon_lepjetMaxsIP1D_val.clear();
+    Muon_lepjetMaxsIP1D_sig.clear();
+    Muon_lepjetAvIP3D_val.clear();
+    Muon_lepjetAvIP3D_sig.clear();
+    Muon_lepjetAvsIP3D_val.clear();
+    Muon_lepjetAvsIP3D_sig.clear();
+    Muon_lepjetAvIP2D_val.clear();
+    Muon_lepjetAvIP2D_sig.clear();
+    Muon_lepjetAvsIP2D_val.clear();
+    Muon_lepjetAvsIP2D_sig.clear();
+    Muon_lepjetAvIP1D_val.clear();
+    Muon_lepjetAvIP1D_sig.clear();
+    Muon_lepjetAvsIP1D_val.clear();
+    Muon_lepjetAvsIP1D_sig.clear();
+    Muon_lepjetchtrks.clear();
+    Muon_lepjetpvchtrks.clear();
+    Muon_lepjetnonpvchtrks.clear();
+    Muon_lepjetndaus.clear();
+    Muon_lepjetpvchi2.clear();
+    Muon_lepjetnumno2trk.clear();
   }
   //MC info
   if(!_is_data){
@@ -628,45 +902,350 @@ double MuonSelector::get_effarea(double eta){
 // double iso = (miniIsoCh + pfIsoPUsub)/mu.pt();
 // return iso;
 //}
-void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup, double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt, double& mujet_btagdisc, double& jx, double& jy, double& jz, double& muptrel){
+void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,
+                                  double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt,
+                                  double& mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& mujet_pfJetProbabilityBJetTags, double& mujet_pfCombinedMVABJetTags, double& mujet_qgl,
+                                  double& jx, double& jy, double& jz, double& muptrel, int& lepjetidx){
   //Look for jet associated to mu
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByLabel(jetToken_, jets);
   pat::Jet mujet;
-  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );
-  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+  int currjetpos = 0;
   for(const pat::Jet &j : *jets){
-    pat::Jet jet = j;//j.correctedJet(0);
-    //double scale = corrector->correction(jet, iEvent, iSetup);
-    //jet.scaleEnergy(scale);
+    pat::Jet jet = j;
     double dr = deltaR(mu.p4(),jet.p4());
     if(dr<mujet_mindr){
       mujet_mindr = dr;
       mujet       = jet;
+      lepjetidx = currjetpos;
     }
+    currjetpos++;
   }
-  //Some info
-  //cout<<"Jet info "<<mujet<<endl;
-  //cout<<"Corrected (L0)"<<setw(20)<<mujet.correctedJet(0).p4().E()<<endl; 
-  //cout<<"Corrected (L1)"<<setw(20)<<mujet.correctedJet(1).p4().E()<<endl;
-  //cout<<"Corrected (L2)"<<setw(20)<<mujet.correctedJet(2).p4().E()<<endl;
-  //cout<<"Corrected (L3)"<<setw(20)<<mujet.correctedJet(3).p4().E()<<endl;
-  //cout<<"Corrected Fina"<<setw(20)<<mujet.p4().E()<<endl; 
-  //Get info
+  //Get the other info
   if(mujet.jecSetsAvailable()){
     double L2L3_corr = mujet.p4().E()/mujet.correctedJet(1).p4().E(); 
-    //cout<<"L2L3_corr"<<setw(20)<<L2L3_corr<<endl;
     mujet.setP4(((mujet.correctedJet(1).p4()-mu.p4())*L2L3_corr)+mu.p4());
   }
   mujet_pt       = mujet.pt();
   muptOVmujetpt  = min(mu.pt()/mujet.pt(), 1.5);
-  mujet_btagdisc = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
+  mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
+  if(mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags!=mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags) mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags = -996;
+  mujet_pfJetProbabilityBJetTags = mujet.bDiscriminator("pfJetProbabilityBJetTags");
+  if(mujet_pfJetProbabilityBJetTags!=mujet_pfJetProbabilityBJetTags) mujet_pfJetProbabilityBJetTags = -996;
+  mujet_pfCombinedMVABJetTags    = mujet.bDiscriminator("pfCombinedMVABJetTags"); 
+  if(mujet_pfCombinedMVABJetTags!=mujet_pfCombinedMVABJetTags) mujet_pfCombinedMVABJetTags = -996;
+  edm::Handle<edm::View<pat::Jet>> jets_QGL;
+  iEvent.getByToken(jetsToken,jets_QGL);
+  edm::Handle<edm::ValueMap<float>> qgHandle;
+  iEvent.getByToken(qgToken, qgHandle);
+  for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
+    if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
+    edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
+    mujet_qgl = (*qgHandle)[jetRef];
+    break;
+  }
   jx = mujet.px();
   jy = mujet.py();
   jz = mujet.pz();
   TLorentzVector mu_lv    = TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.p4().E());
   TLorentzVector mujet_lv = TLorentzVector(mujet.px(),mujet.py(),mujet.pz(),mujet.p4().E());
   muptrel = mu_lv.Perp((mujet_lv-mu_lv).Vect());
+}
+double MuonSelector::get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx){
+  double lepWmass = 0;
+  double minchi2  = 999;
+  //Take lepjet lv 
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByLabel(jetToken_, jets);
+  TLorentzVector lepjet;
+  if(lepjetidx!=-1){
+    const pat::Jet & jet = (*jets)[lepjetidx];
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
+  }else{
+    lepjet.SetPtEtaPhiE(mu.pt(),mu.eta(),mu.phi(),mu.energy());
+  }
+  //Start combinatorial with other jets
+  for(const pat::Jet &j : *jets){
+    pat::Jet jet = j;
+    if(!(j.pt()>25 && fabs(j.eta())<2.4 && deltaR(j.p4(),mu.p4())>0.4)) continue;
+    if(!(j.neutralHadronEnergyFraction()<0.99 && j.neutralEmEnergyFraction()<0.99 && (j.chargedMultiplicity() + j.neutralMultiplicity())>1
+       && j.chargedHadronEnergyFraction()>0 && j.chargedEmEnergyFraction()<0.99 && j.chargedMultiplicity()>0
+       && j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89)//0.605)
+      ) continue;
+    TLorentzVector jet_lv = TLorentzVector(j.px(),j.py(),j.pz(),j.p4().E());
+    double currmass = (lepjet+jet_lv).M();
+    double currchi2 = pow((currmass-80.385)/25,2); 
+    if(currchi2<minchi2){
+      minchi2 = currchi2;
+      lepWmass = currmass;
+    }
+  }
+  return lepWmass;
+};
+double MuonSelector::get_lepTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx){
+  double lepTopmass = 0;
+  double minchi2  = 999;
+  //Take lepjet lv 
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByLabel(jetToken_, jets);
+  TLorentzVector lepjet;
+  if(lepjetidx!=-1){
+    const pat::Jet & jet = (*jets)[lepjetidx];
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
+  }else{
+    lepjet.SetPtEtaPhiE(mu.pt(),mu.eta(),mu.phi(),mu.energy());
+  }
+  //Start combinatorial with other jets (you can assume any type of jets. Instead asking non b jet would favor the case where lepjet is a b)
+  for(uint j1 = 0; j1 < jets->size(); j1++){
+    const pat::Jet & jet1 = (*jets)[j1];
+    if(!(jet1.pt()>25 && fabs(jet1.eta())<2.4 && deltaR(jet1.p4(),mu.p4())>0.4)) continue;
+    if(!(jet1.neutralHadronEnergyFraction()<0.99 && jet1.neutralEmEnergyFraction()<0.99 && (jet1.chargedMultiplicity() + jet1.neutralMultiplicity())>1
+       && jet1.chargedHadronEnergyFraction()>0 && jet1.chargedEmEnergyFraction()<0.99 && jet1.chargedMultiplicity()>0
+       && jet1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89
+        )
+      ) continue;
+    for(uint j2 = j1+1; j2 < jets->size(); j2++){
+      const pat::Jet & jet2 = (*jets)[j2];
+      if(!(jet2.pt()>25 && fabs(jet2.eta())<2.4 && deltaR(jet2.p4(),mu.p4())>0.4)) continue;
+      if(!(jet2.neutralHadronEnergyFraction()<0.99 && jet2.neutralEmEnergyFraction()<0.99 && (jet2.chargedMultiplicity() + jet2.neutralMultiplicity())>1
+         && jet2.chargedHadronEnergyFraction()>0 && jet2.chargedEmEnergyFraction()<0.99 && jet2.chargedMultiplicity()>0
+         && jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89
+          )
+        ) continue;
+      TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());      
+      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());      
+      TLorentzVector W_lv   = jet1_lv+jet2_lv;
+      TLorentzVector Top_lv = W_lv+lepjet;    
+      double currmassw   = W_lv.M();  
+      double currmasstop = Top_lv.M(); 
+      double currchi2 = pow((currmassw-80.385)/25,2) + pow((currmasstop-173.34)/50,2);
+      if(currchi2<minchi2){
+        minchi2 = currchi2;
+        lepTopmass = currmasstop;
+      }    
+    }
+  }
+  return lepTopmass;
+};
+double MuonSelector::get_lepWTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx){
+  double lepWTopmass = 0;
+  double minchi2  = 999;
+  //Take lepjet lv 
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByLabel(jetToken_, jets);
+  TLorentzVector lepjet;
+  if(lepjetidx!=-1){
+    const pat::Jet & jet = (*jets)[lepjetidx];
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
+  }else{
+    lepjet.SetPtEtaPhiE(mu.pt(),mu.eta(),mu.phi(),mu.energy());
+  }
+  //Start combinatorial with other jets (you can assume any type of jets. Instead asking non b jet would favor the case where lepjet is a b)
+  for(uint j1 = 0; j1 < jets->size(); j1++){
+    const pat::Jet & jet1 = (*jets)[j1];
+    if(!(jet1.pt()>25 && fabs(jet1.eta())<2.4 && deltaR(jet1.p4(),mu.p4())>0.4)) continue;
+    if(!(jet1.neutralHadronEnergyFraction()<0.99 && jet1.neutralEmEnergyFraction()<0.99 && (jet1.chargedMultiplicity() + jet1.neutralMultiplicity())>1
+       && jet1.chargedHadronEnergyFraction()>0 && jet1.chargedEmEnergyFraction()<0.99 && jet1.chargedMultiplicity()>0
+       && jet1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89
+        )
+      ) continue;
+    TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());         
+    TLorentzVector W_lv    = jet1_lv+lepjet;
+    for(uint j2 = j1+1; j2 < jets->size(); j2++){
+      const pat::Jet & jet2 = (*jets)[j2];
+      if(!(jet2.pt()>25 && fabs(jet2.eta())<2.4 && deltaR(jet2.p4(),mu.p4())>0.4)) continue;
+      if(!(jet2.neutralHadronEnergyFraction()<0.99 && jet2.neutralEmEnergyFraction()<0.99 && (jet2.chargedMultiplicity() + jet2.neutralMultiplicity())>1
+         && jet2.chargedHadronEnergyFraction()>0 && jet2.chargedEmEnergyFraction()<0.99 && jet2.chargedMultiplicity()>0
+         && jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.605
+          )
+        ) continue;
+      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());      
+      TLorentzVector Top_lv = W_lv+jet2_lv;    
+      double currmassw   = W_lv.M();  
+      double currmasstop = Top_lv.M(); 
+      double currchi2 = pow((currmassw-80.385)/25,2) + pow((currmasstop-173.34)/50,2);
+      if(currchi2<minchi2){
+        minchi2 = currchi2;
+        lepWTopmass = currmassw;
+      }    
+    }
+  }
+  return lepWTopmass;
+};
+int MuonSelector::pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc){
+  int pvass = -1;
+  double mindr = 0.3;
+  for(const pat::PackedCandidate &cpf : pcc){ 
+    if(deltaR(mu.p4(),cpf.p4())<mindr             //dR is the standard geometrical way to associate 
+       && (fabs(mu.pt()-cpf.pt())/mu.pt())<0.05   //Check in pT, because ele,tau are usually faked by jets (many trks) and dR may not be enough
+       && cpf.charge()!=0 && cpf.numberOfHits()>0 //Leptons are charged and built from tracks, also to be consistent with PV tracks  
+    ){
+      mindr = deltaR(mu.p4(),cpf.p4());
+      pvass = cpf.fromPV();
+    }
+  }
+  return pvass;  
+}
+double MuonSelector::relativeEta(const math::XYZVector& vector, const math::XYZVector& axis){
+  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+  double mag = vector.r() * axis.r();
+  double dot = vector.Dot(axis);
+  if(mag!=dot && (mag+dot)!=0) etarel = -log((mag - dot)/(mag + dot)) / 2;
+  return etarel;  
+}
+void MuonSelector::IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP3D_val,double& IP3D_err,double& IP3D_sig,  double& IP2D_val,double& IP2D_err,double& IP2D_sig, double& sIP3D_val,double& sIP3D_err,double& sIP3D_sig,  double& sIP2D_val,double& sIP2D_err,double& sIP2D_sig){
+ pair<bool, Measurement1D> currIP;
+ //3D
+ currIP = IPTools::absoluteImpactParameter3D(ttrk,vtx);
+ if(currIP.first){
+   if(currIP.second.value()==currIP.second.value())               IP3D_val = currIP.second.value();
+   if(currIP.second.error()==currIP.second.error())               IP3D_err = currIP.second.error();
+   if(currIP.second.significance()==currIP.second.significance()) IP3D_sig = currIP.second.significance();
+ }
+ //s3D
+ currIP = IPTools::signedImpactParameter3D(ttrk,gv,vtx);
+ if(currIP.first){
+   if(currIP.second.value()==currIP.second.value())               sIP3D_val = currIP.second.value();
+   if(currIP.second.error()==currIP.second.error())               sIP3D_err = currIP.second.error();
+   if(currIP.second.significance()==currIP.second.significance()) sIP3D_sig = currIP.second.significance();
+ }
+ //2D 
+ currIP = IPTools::absoluteTransverseImpactParameter(ttrk,vtx);
+ if(currIP.first){
+   if(currIP.second.value()==currIP.second.value())               IP2D_val = currIP.second.value();
+   if(currIP.second.error()==currIP.second.error())               IP2D_err = currIP.second.error();
+   if(currIP.second.significance()==currIP.second.significance()) IP2D_sig = currIP.second.significance();
+ }
+ //s2D 
+ currIP = IPTools::signedTransverseImpactParameter(ttrk,gv,vtx);
+ if(currIP.first){
+   if(currIP.second.value()==currIP.second.value())               sIP2D_val = currIP.second.value();
+   if(currIP.second.error()==currIP.second.error())               sIP2D_err = currIP.second.error();
+   if(currIP.second.significance()==currIP.second.significance()) sIP2D_sig = currIP.second.significance();
+ }
+}
+void MuonSelector::zIP1D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP1D_val,double& IP1D_err,double& IP1D_sig, double& sIP1D_val,double& sIP1D_err,double& sIP1D_sig){
+ SignedTransverseImpactParameter stip;
+ pair<bool, Measurement1D> currIP = stip.zImpactParameter(ttrk,gv,vtx);
+ if(currIP.first){
+   if(currIP.second.value()==currIP.second.value())               IP1D_val = fabs(currIP.second.value());
+   if(currIP.second.error()==currIP.second.error())               IP1D_err = fabs(currIP.second.error());
+   if(currIP.second.significance()==currIP.second.significance()) IP1D_sig = fabs(currIP.second.significance());
+   if(currIP.second.value()==currIP.second.value())               sIP1D_val = currIP.second.value();
+   if(currIP.second.error()==currIP.second.error())               sIP1D_err = currIP.second.error();
+   if(currIP.second.significance()==currIP.second.significance()) sIP1D_sig = currIP.second.significance();
+ }
+}
+void MuonSelector::lepjetIPtrks(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
+                    double& lepjetMaxIP3D_val, double& lepjetMaxIP3D_sig, double& lepjetMaxsIP3D_val, double& lepjetMaxsIP3D_sig, double& lepjetMaxIP2D_val, double& lepjetMaxIP2D_sig, double& lepjetMaxsIP2D_val, double& lepjetMaxsIP2D_sig, double& lepjetMaxIP1D_val, double& lepjetMaxIP1D_sig, double& lepjetMaxsIP1D_val, double& lepjetMaxsIP1D_sig,
+                    double& lepjetAvIP3D_val, double& lepjetAvIP3D_sig, double& lepjetAvsIP3D_val, double& lepjetAvsIP3D_sig, double& lepjetAvIP2D_val, double& lepjetAvIP2D_sig, double& lepjetAvsIP2D_val, double& lepjetAvsIP2D_sig, double& lepjetAvIP1D_val, double& lepjetAvIP1D_sig, double& lepjetAvsIP1D_val, double& lepjetAvsIP1D_sig,
+                    double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus,
+                    double& lepjetpvchi2, double& lepjetnumno2tr
+){
+ //Access jet daughters
+ vector<TransientTrack> jetttrks;
+ vector<CandidatePtr> jdaus(jet.daughterPtrVector());
+ sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
+ for(uint jd=0; jd<jdaus.size(); jd++){
+  const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
+  if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
+  Track trk = Track(jcand.pseudoTrack());
+  bool isgoodtrk = is_goodtrk(trk,vtx);
+  //Minimal conditions for a track 
+  if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
+    TransientTrack ttrk = ttrkbuilder.build(&trk);
+    jetttrks.push_back(ttrk);
+    //Get max values
+    double IP3D_val  = -9999;
+    double IP3D_err  = -9999;
+    double IP3D_sig  = -9999;
+    double IP2D_val  = -9999;
+    double IP2D_err  = -9999;
+    double IP2D_sig  = -9999;
+    double sIP3D_val = -9999;
+    double sIP3D_err = -9999;
+    double sIP3D_sig = -9999;
+    double sIP2D_val = -9999;
+    double sIP2D_err = -9999;
+    double sIP2D_sig = -9999;
+    IP3D2D(ttrk,vtx,lepjetgv,IP3D_val,IP3D_err,IP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+    double IP1D_val  = -9999;
+    double IP1D_err  = -9999;
+    double IP1D_sig  = -9999;
+    double sIP1D_val = -9999;
+    double sIP1D_err = -9999;
+    double sIP1D_sig = -9999;
+    zIP1D(ttrk,vtx,lepjetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+    if(IP3D_val!=-9999  && IP3D_val>lepjetMaxIP3D_val)   lepjetMaxIP3D_val  = IP3D_val;
+    if(IP3D_sig!=-9999  && IP3D_sig>lepjetMaxIP3D_sig)   lepjetMaxIP3D_sig  = IP3D_sig;
+    if(sIP3D_val!=-9999 && sIP3D_val>lepjetMaxsIP3D_val) lepjetMaxsIP3D_val = sIP3D_val;
+    if(sIP3D_sig!=-9999 && sIP3D_sig>lepjetMaxsIP3D_sig) lepjetMaxsIP3D_sig = sIP3D_sig;
+    if(IP2D_val!=-9999  && IP2D_val>lepjetMaxIP2D_val)   lepjetMaxIP2D_val  = IP2D_val;
+    if(IP2D_sig!=-9999  && IP2D_sig>lepjetMaxIP2D_sig)   lepjetMaxIP2D_sig  = IP2D_sig;
+    if(sIP2D_val!=-9999 && sIP2D_val>lepjetMaxsIP2D_val) lepjetMaxsIP2D_val = sIP2D_val;
+    if(sIP2D_sig!=-9999 && sIP2D_sig>lepjetMaxsIP2D_sig) lepjetMaxsIP2D_sig = sIP2D_sig;
+    if(IP1D_val!=-9999  && IP1D_val>lepjetMaxIP1D_val)   lepjetMaxIP1D_val  = IP1D_val;
+    if(IP1D_sig!=-9999  && IP1D_sig>lepjetMaxIP1D_sig)   lepjetMaxIP1D_sig  = IP1D_sig;
+    if(sIP1D_val!=-9999 && sIP1D_val>lepjetMaxsIP1D_val) lepjetMaxsIP1D_val = sIP1D_val;
+    if(sIP1D_sig!=-9999 && sIP1D_sig>lepjetMaxsIP1D_sig) lepjetMaxsIP1D_sig = sIP1D_sig;
+    //Get av values
+    if(IP3D_val!=-9999 ) lepjetAvIP3D_val  += IP3D_val;
+    if(IP3D_sig!=-9999 ) lepjetAvIP3D_sig  += IP3D_sig;
+    if(sIP3D_val!=-9999) lepjetAvsIP3D_val += sIP3D_val;
+    if(sIP3D_sig!=-9999) lepjetAvsIP3D_sig += sIP3D_sig;
+    if(IP2D_val!=-9999 ) lepjetAvIP2D_val  += IP2D_val;
+    if(IP2D_sig!=-9999 ) lepjetAvIP2D_sig  += IP2D_sig;
+    if(sIP2D_val!=-9999) lepjetAvsIP2D_val += sIP2D_val;
+    if(sIP2D_sig!=-9999) lepjetAvsIP2D_sig += sIP2D_sig;
+    if(IP1D_val!=-9999 ) lepjetAvIP1D_val  += IP1D_val;
+    if(IP1D_sig!=-9999 ) lepjetAvIP1D_sig  += IP1D_sig;
+    if(sIP1D_val!=-9999) lepjetAvsIP1D_val += sIP1D_val;
+    if(sIP1D_sig!=-9999) lepjetAvsIP1D_sig += sIP1D_sig;
+    //Get jet trk num
+    lepjetchtrks++;
+    if(jcand.fromPV()==pat::PackedCandidate::PVUsedInFit){
+      lepjetpvchtrks++;
+    }else{
+      lepjetnonpvchtrks++;
+    }
+  }//Ch trks 
+ }//Loop on jet daus
+ lepjetndaus = jdaus.size();
+ //LepJet vertex chi2
+ TransientVertex tv;
+ if(jetttrks.size()>=2) tv = vertexfitter.vertex(jetttrks);
+ if(tv.isValid()) lepjetpvchi2 = tv.totalChiSquared()/tv.degreesOfFreedom();
+ double num2v = 0; double numno2v = 0; 
+ get_2trksinfo(jetttrks,  num2v,  numno2v);
+ if((numno2v+num2v)!=0) lepjetnumno2tr = numno2v/(numno2v+num2v); 
+ else                   lepjetnumno2tr = 0;
+}
+void MuonSelector::get_2trksinfo(vector<TransientTrack> ttrks, double& num2v, double& numno2v){
+ for(uint t=0; t<ttrks.size(); t++){
+  for(uint t2=t+1; t2<ttrks.size(); t2++){
+   vector<TransientTrack> twotrks;
+   twotrks.push_back(ttrks[t]);
+   twotrks.push_back(ttrks[t2]);
+   TransientVertex tv;
+   if(ttrks.size()>=2) tv = vertexfitter.vertex(ttrks);
+   if(tv.isValid() && TMath::Prob(tv.totalChiSquared(),tv.degreesOfFreedom())>0.05){
+    num2v++;
+   }else{
+    numno2v++;
+   }
+  }
+ }
+}
+bool MuonSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
+ bool isgoodtrk = false;
+ if(trk.pt()>1 &&
+   trk.hitPattern().numberOfValidHits()>=8 &&
+   trk.hitPattern().numberOfValidPixelHits()>=2 &&
+   trk.normalizedChi2()<5 &&
+   std::abs(trk.dxy(vtx.position()))<0.2 &&
+   std::abs(trk.dz(vtx.position()))<17
+   ) isgoodtrk = true;
+ return isgoodtrk;
 }
 namespace{
   struct ByEta{
@@ -681,4 +1260,41 @@ namespace{
     }
   };
 }
-
+  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );
+  //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
+  //  pat::Jet jet = j;//j.correctedJet(0);
+    //double scale = corrector->correction(jet, iEvent, iSetup);
+    //jet.scaleEnergy(scale);
+  //Some info
+  //cout<<"Jet info "<<mujet<<endl;
+  //cout<<"Corrected (L0)"<<setw(20)<<mujet.correctedJet(0).p4().E()<<endl; 
+  //cout<<"Corrected (L1)"<<setw(20)<<mujet.correctedJet(1).p4().E()<<endl;
+  //cout<<"Corrected (L2)"<<setw(20)<<mujet.correctedJet(2).p4().E()<<endl;
+  //cout<<"Corrected (L3)"<<setw(20)<<mujet.correctedJet(3).p4().E()<<endl;
+  //cout<<"Corrected Fina"<<setw(20)<<mujet.p4().E()<<endl; 
+//GenPart
+        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
+        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
+        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
+        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;
+//Synch TTHLep
+      //Print info
+      //cout<<setiosflags(ios::fixed)<<setprecision(5);
+      /*
+      if(!amu &&
+        mu->innerTrack().isNonnull()
+        && mu->pt()>5 && fabs(mu->eta())<2.4
+        && fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<0.1
+        && miniIso/mu->pt()<0.4 && fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<8 && mu->isLooseMuon()
+      )
+      //if(1)
+      {
+        //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sip3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
+	cout<<"Mu"<<setw(10)<<iEvent.id().event()<<setw(10)<<mu->pt()<<setw(10)<<mu->eta()<<setw(10)<<mu->phi()<<setw(10)<<mu->energy()<<setw(5)<<mu->pdgId()<<setw(5)<<mu->charge()<<setw(15)<<miniIso/mu->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoPUsub<<setw(10)<<muptrel<<setw(10)<<mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags<<setw(10)<<mu->pt()/mujet_pt;
+	if(mu->innerTrack().isNonnull()){
+	cout<<setw(10)<<fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D)<<setw(10)<<fabs(mu->innerTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(mu->innerTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mu->segmentCompatibility()<<endl;
+	}else{
+	 cout<<setw(15)<<"no track for Mu IP"<<endl; 
+	}
+	amu = true;
+      }*/

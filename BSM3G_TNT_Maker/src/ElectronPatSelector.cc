@@ -7,8 +7,10 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   electronTightIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronTightIdMap"))),
   eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
   eleHEEPIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap"))),
-  elemvaValuesMapToken_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap"))),
-  elemvaCategoriesMapToken_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap")))
+  elemvaValuesMapToken_nonTrig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_nonTrig"))),
+  elemvaCategoriesMapToken_nonTrig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_nonTrig"))),
+  elemvaValuesMapToken_Trig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_Trig"))),
+  elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig")))
 {
   _vertexInputTag      = iConfig.getParameter<edm::InputTag>("vertices");
   _beamSpot            = iConfig.getParameter<edm::InputTag>("beamSpot");
@@ -42,22 +44,26 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByLabel(_beamSpot, beamSpotHandle);
   edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
-  edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > mvatrig_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
-  iEvent.getByToken(electronVetoIdMapToken_,veto_id_decisions);
-  iEvent.getByToken(electronLooseIdMapToken_,loose_id_decisions);
-  iEvent.getByToken(electronMediumIdMapToken_,medium_id_decisions);
-  iEvent.getByToken(electronTightIdMapToken_,tight_id_decisions);  
-  iEvent.getByToken(eleMVATrigIdMapToken_,mvatrig_id_decisions);  
-  iEvent.getByToken(eleHEEPIdMapToken_, heep_id_decisions);
-  edm::Handle<edm::ValueMap<float> > elemvaValues;
-  edm::Handle<edm::ValueMap<int> > elemvaCategories;
-  iEvent.getByToken(elemvaValuesMapToken_,elemvaValues);
-  iEvent.getByToken(elemvaCategoriesMapToken_,elemvaCategories);
+  edm::Handle<edm::ValueMap<bool>  > veto_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > loose_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > medium_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > tight_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > heep_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
+  edm::Handle<edm::ValueMap<float> > elemvaValues_nonTrig;
+  edm::Handle<edm::ValueMap<int> >   elemvaCategories_nonTrig;
+  edm::Handle<edm::ValueMap<float> > elemvaValues_Trig;
+  edm::Handle<edm::ValueMap<int> >   elemvaCategories_Trig;
+  iEvent.getByToken(electronVetoIdMapToken_,   veto_id_decisions);
+  iEvent.getByToken(electronLooseIdMapToken_,  loose_id_decisions);
+  iEvent.getByToken(electronMediumIdMapToken_, medium_id_decisions);
+  iEvent.getByToken(electronTightIdMapToken_,  tight_id_decisions);  
+  iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);  
+  iEvent.getByToken(eleHEEPIdMapToken_,        heep_id_decisions);
+  iEvent.getByToken(elemvaValuesMapToken_nonTrig_,     elemvaValues_nonTrig);
+  iEvent.getByToken(elemvaCategoriesMapToken_nonTrig_, elemvaCategories_nonTrig);
+  iEvent.getByToken(elemvaValuesMapToken_Trig_,        elemvaValues_Trig);
+  iEvent.getByToken(elemvaCategoriesMapToken_Trig_,    elemvaCategories_Trig);
   edm::Handle<double> rhopogHandle;
   iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
   double rhopog = *rhopogHandle;
@@ -69,21 +75,22 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   /////
   //   Require a good vertex 
   /////
-  //reco::VertexCollection::const_iterator firstGoodVertex = vtx_h->end();
-  //for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstGoodVertex; it++){
-  //  isGoodVertex(*it);
-  //  firstGoodVertex = it;
-  //  break;
-  //}
-  //if(firstGoodVertex == vtx_h->end()) return;
-  if(vtx_h->empty()) return; // skip the event if no PV found
-  const reco::Vertex &firstGoodVertex = vtx_h->front();  
-  bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  if(!isgoodvtx) return;
+  reco::VertexCollection::const_iterator firstgoodVertex = vtx_h->end();
+  for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstgoodVertex; it++){
+    if(isGoodVertex(*it)){
+      firstgoodVertex = it;
+      break;
+    }
+  }
+  if(firstgoodVertex == vtx_h->end()) return;
+  const reco::Vertex &firstGoodVertex = *firstgoodVertex;
+  //if(vtx_h->empty()) return; // skip the event if no PV found
+  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  //if(!isgoodvtx) return;
   /////
   //   Get electron information 
   /////
-  //bool aele = false;
   for(edm::View<pat::Electron>::const_iterator el = electron_pat->begin(); el != electron_pat->end(); el++){
     //Acceptance
     if(el->pt() < _patElectron_pt_min)         continue;
@@ -102,20 +109,26 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_charge.push_back(el->charge());
     //ID
     const Ptr<pat::Electron> elPtr(electron_pat, el - electron_pat->begin() );
-    bool isPassVeto    = (*veto_id_decisions)    [ elPtr ];
-    bool isPassLoose   = (*loose_id_decisions)   [ elPtr ];
-    bool isPassMedium  = (*medium_id_decisions)  [ elPtr ];
-    bool isPassTight   = (*tight_id_decisions)   [ elPtr ];
+    bool isPassVeto    = (*veto_id_decisions)  [ elPtr ];
+    bool isPassLoose   = (*loose_id_decisions) [ elPtr ];
+    bool isPassMedium  = (*medium_id_decisions)[ elPtr ];
+    bool isPassTight   = (*tight_id_decisions) [ elPtr ];
     bool isPassMvatrig = (*mvatrig_id_decisions) [ elPtr ];
-    bool isHEEPId      = (*heep_id_decisions)    [ elPtr ];
-    passVetoId_.push_back   ( isPassVeto    );
-    passLooseId_.push_back  ( isPassLoose   );
-    passMediumId_.push_back ( isPassMedium  );
-    passTightId_.push_back  ( isPassTight   );
+    bool isHEEPId      = (*heep_id_decisions)  [ elPtr ];
+    float mvaval_nonTrig  = (*elemvaValues_nonTrig)[ elPtr ];
+    float mvacat_nonTrig  = (*elemvaCategories_nonTrig)[ elPtr ];
+    float mvaval_Trig     = (*elemvaValues_Trig)[ elPtr ];
+    float mvacat_Trig     = (*elemvaCategories_Trig)[ elPtr ];
+    passVetoId_.push_back  ( isPassVeto   );
+    passLooseId_.push_back ( isPassLoose  );
+    passMediumId_.push_back( isPassMedium );
+    passTightId_.push_back ( isPassTight  );
     passMvatrigId_.push_back( isPassMvatrig );
-    passHEEPId_.push_back   ( isHEEPId      );  
-    patElectron_mvaValue_.push_back((*elemvaValues)[ elPtr ]);
-    patElectron_mvaCategory_.push_back((*elemvaCategories)[ elPtr ]);
+    passHEEPId_.push_back  ( isHEEPId     );   
+    patElectron_mvaValue_nonTrig_.push_back(mvaval_nonTrig);
+    patElectron_mvaCategory_nonTrig_.push_back(mvacat_nonTrig);
+    patElectron_mvaValue_Trig_.push_back(mvaval_Trig);
+    patElectron_mvaCategory_Trig_.push_back(mvacat_Trig);
     patElectron_pdgId.push_back(el->pdgId());
     patElectron_isEcalDriven.push_back(el->ecalDriven());
     //Isolation
@@ -260,62 +273,42 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     //   TTH variables
     ///// 
     if(_tthlepVar){
-    double miniIso      = 999;
-    double miniIsoCh    = 999;
-    double miniIsoNeu   = 999;
-    double miniIsoPUsub = 999;
-    get_eleminiIso_info(*pcc,rhotth,*el,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
-    double elejet_mindr    = 9999;
-    double elejet_pt       = -1;
-    double eleptOVelejetpt = -1;
-    double elejet_btagdisc = -1;
-    double elejetx  = -9999;
-    double elejety  = -9999;
-    double elejetz  = -9999;
-    double eleptrel = -9999;
-    get_elejet_info(el,iEvent,iSetup,elejet_mindr,elejet_pt,eleptOVelejetpt,elejet_btagdisc,elejetx,elejety,elejetz,eleptrel);
-    patElectron_miniIsoRel.push_back(miniIso/el->pt());
-    patElectron_miniIsoCh.push_back(miniIsoCh);
-    patElectron_miniIsoNeu.push_back(miniIsoNeu);
-    patElectron_miniIsoPUsub.push_back(miniIsoPUsub);
-    patElectron_jetdr.push_back(elejet_mindr);
-    patElectron_jetpt.push_back(elejet_pt);
-    patElectron_jetptratio.push_back(eleptOVelejetpt);
-    patElectron_jetcsv.push_back(elejet_btagdisc);
-    patElectron_ptrel.push_back(eleptrel);
-    patElectron_IP3Dsig.push_back(fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D));
-    if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) patElectron_eleMVASpring15NonTrig25ns.push_back(el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"));   
-    else                                                                        patElectron_eleMVASpring15NonTrig25ns.push_back(-999); 
-    /*
-    cout<<setiosflags(ios::fixed)<<setprecision(5);
-    //cout<<"Electron"<<endl;
-    bool nontrigelemva_vl = false;
-    if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")){
-      double ntelemva = el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values");
-      double eleta   = fabs(el->eta());
-      if((eleta < 0.8                   && ntelemva > -0.11) ||
-         (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.35) || 
-         (1.479 <= eleta && eleta < 500 && ntelemva > -0.55)       
+      double miniIso      = 999;
+      double miniIsoCh    = 999;
+      double miniIsoNeu   = 999;
+      double miniIsoPUsub = 999;
+      get_eleminiIso_info(*pcc,rhotth,*el,miniIso,miniIsoCh,miniIsoNeu,miniIsoPUsub);
+      double elejet_mindr      = 9999;
+      double elejet_pt         = -1;
+      double eleptOVelejetpt = -1;
+      double elejet_btagdisc = -1;
+      double elejetx  = -9999;
+      double elejety  = -9999;
+      double elejetz  = -9999;
+      double eleptrel = -9999;
+      get_elejet_info(el,iEvent,iSetup,elejet_mindr,elejet_pt,eleptOVelejetpt,elejet_btagdisc,elejetx,elejety,elejetz,eleptrel);
+      patElectron_miniIsoRel.push_back(miniIso/el->pt());
+      patElectron_miniIsoCh.push_back(miniIsoCh);
+      patElectron_miniIsoNeu.push_back(miniIsoNeu);
+      patElectron_miniIsoPUsub.push_back(miniIsoPUsub);
+      patElectron_jetdr.push_back(elejet_mindr);
+      patElectron_jetpt.push_back(elejet_pt);
+      patElectron_jetptratio.push_back(eleptOVelejetpt);
+      patElectron_jetcsv.push_back(elejet_btagdisc);
+      patElectron_ptrel.push_back(eleptrel);
+      patElectron_IP3Dsig.push_back(fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D));
+      if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) patElectron_eleMVASpring15NonTrig25ns.push_back(el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"));   
+      else                                                                                                            patElectron_eleMVASpring15NonTrig25ns.push_back(-999); 
+      bool nontrigelemva_vl = false;
+      double ntelemva = mvaval_nonTrig; 
+      double eleta   = fabs(el->superCluster()->position().eta());
+      if((eleta < 0.8                   && ntelemva > -0.70) ||
+         (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.83) || 
+         (1.479 <= eleta && eleta < 500 && ntelemva > -0.92)         
         ){
         nontrigelemva_vl = true;
       }
-    }
-    patElectron_eleMVASpring15NonTrig25ns_VL.push_back(nontrigelemva_vl);
-    //cout<<"Ele sel "<<distance(electron_pat->begin(),el)<<" "<<el->gsfTrack().isNonnull()<<" "<<el->pt()<<" "<<fabs(el->eta())<<" "<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<" "<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<" "<<miniIso/el->pt()<<" "<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<" "<<nontrigelemva_vl<<" "<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<" "<<el->passConversionVeto()<<endl;    
-    if(!aele && el->gsfTrack().isNonnull()
-       && el->pt()>7 && fabs(el->eta())<2.5
-       && fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<0.1
-       && miniIso/el->pt()<0.4 && fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<8
-       && nontrigelemva_vl 
-       && el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1 && el->passConversionVeto() 
-      ){
-      //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sipi3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
-      cout<<setw(10)<<iEvent.id().event()<<setw(10)<<el->pt()<<setw(10)<<el->eta()<<setw(10)<<el->phi()<<setw(10)<<el->energy()<<setw(5)<<el->pdgId()<<setw(5)<<el->charge()<<setw(15)<<miniIso/el->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoNeu<<setw(10)<<eleptrel<<setw(10)<<elejet_btagdisc<<setw(10)<<el->pt()/elejet_pt<<setw(10)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(10)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()));
-      if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) cout<<setw(21)<<el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")<<endl;
-      else cout<<setw(21)<<"No Ele MVA"<<endl;
-      aele = true;
-    }
-    */
+      patElectron_eleMVASpring15NonTrig25ns_VL.push_back(nontrigelemva_vl);
     }//End if TTHLep
     /////
     //   MC info
@@ -330,10 +323,6 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
         patElectron_gen_pdgId.push_back(genpart->pdgId());
         patElectron_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
         patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
-        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
-        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
-        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
-        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;
       }else{
         patElectron_gen_pt.push_back(-999);
         patElectron_gen_eta.push_back(-999);
@@ -363,12 +352,14 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&passLooseId_             ,"patElectron_isPassLoose");
   AddBranch(&passMediumId_            ,"patElectron_isPassMedium");
   AddBranch(&passTightId_             ,"patElectron_isPassTight");
-  AddBranch(&passMvatrigId_           ,"patElectron_isPassMvatrig");
   AddBranch(&passHEEPId_              ,"patElectron_isPassHEEPId");
-  AddBranch(&patElectron_mvaValue_    ,"patElectron_mvaValue");
-  AddBranch(&patElectron_mvaCategory_ ,"patElectron_mvaCategory");
+  AddBranch(&passMvatrigId_           ,"patElectron_isPassMvatrig");
   AddBranch(&patElectron_pdgId        ,"patElectron_pdgId");
   AddBranch(&patElectron_isEcalDriven ,"patElectron_isEcalDriven");
+  AddBranch(&patElectron_mvaValue_nonTrig_    ,"patElectron_mvaValue_nonTrig");
+  AddBranch(&patElectron_mvaCategory_nonTrig_ ,"patElectron_mvaCategory_nonTrig");
+  AddBranch(&patElectron_mvaValue_Trig_    ,"patElectron_mvaValue_Trig");
+  AddBranch(&patElectron_mvaCategory_Trig_ ,"patElectron_mvaCategory_Trig");
   //Isolation
   AddBranch(&patElectron_isoChargedHadrons        ,"patElectron_isoChargedHadrons");
   AddBranch(&patElectron_isoNeutralHadrons        ,"patElectron_isoNeutralHadrons");
@@ -462,12 +453,14 @@ void ElectronPatSelector::Clear(){
   passLooseId_.clear();
   passMediumId_.clear();
   passTightId_.clear();  
-  passMvatrigId_.clear();
   passHEEPId_.clear();
-  patElectron_mvaValue_.clear();
-  patElectron_mvaCategory_.clear();
+  passMvatrigId_.clear();
   patElectron_pdgId.clear();
   patElectron_isEcalDriven.clear();
+  patElectron_mvaValue_nonTrig_.clear();
+  patElectron_mvaCategory_nonTrig_.clear();
+  patElectron_mvaValue_Trig_.clear();
+  patElectron_mvaCategory_Trig_.clear();
   //Isolation
   patElectron_isoChargedHadrons.clear();
   patElectron_isoNeutralHadrons.clear();
@@ -567,9 +560,9 @@ void ElectronPatSelector::get_eleminiIso_info(const pat::PackedCandidateCollecti
     innerR_ch  = 0.015;
     innerR_neu = 0.08;
   }
-  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, innerR_ch,  0.5, 0);
-  miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, innerR_neu, 0.5, 0);
-  double effarea    = get_effarea(cand.eta());
+  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, innerR_ch,  0, 0);
+  miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, innerR_neu, 0, 22)+get_isosumraw(pfc_neu, cand, miniIsoConeSize, 0, 0, 130);
+  double effarea    = get_effarea(cand.superCluster()->position().eta());
   double correction = rhotth*effarea*pow((miniIsoConeSize/0.3),2);
   miniIsoPUsub = std::max(0.0, miniIsoNeu-correction);
   miniIso = miniIsoCh+miniIsoPUsub;
@@ -580,7 +573,7 @@ void ElectronPatSelector::get_chneupu_pcc(const pat::PackedCandidateCollection& 
     if(p.charge()==0){
      pfc_neu.push_back(&p);
     }else{
-      if(1){//(abs(p.pdgId())==211)){// || ((abs(p.pdgId()) == 11 ) || (abs(p.pdgId()) == 13 )) )
+      if(1){//(abs(p.pdgId())==211) || ((abs(p.pdgId()) == 11 ) || (abs(p.pdgId()) == 13 )) ){
         if(p.fromPV()>1 && fabs(p.dz())<9999){
           pfc_ch.push_back(&p);
         }else{
@@ -672,4 +665,37 @@ namespace{
     }
   };
 }
-
+//TTHLep synch
+/*
+    //cout<<"Ele sel "<<distance(electron_pat->begin(),el)<<" "<<el->gsfTrack().isNonnull()<<" "<<el->pt()<<" "<<fabs(el->eta())<<" "<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<" "<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<" "<<miniIso/el->pt()<<" "<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<" "<<nontrigelemva_vl<<" "<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<" "<<el->passConversionVeto()<<endl;    
+    //if(el->pt()>7) cout<<"Ele"<<setw(20)<<iEvent.id().event()<<setw(20)<<distance(electron_pat->begin(),el)<<setw(20)<<el->pt()<<setw(20)<<fabs(el->eta())<<setw(20)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(20)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<setw(20)<<miniIso/el->pt()<<setw(20)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(20)<<nontrigelemva_vl<<setw(20)<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<setw(20)<<el->passConversionVeto()<<setw(20)<<miniIso<<setw(20)<<miniIsoCh<<setw(20)<<miniIsoPUsub<<endl;
+    if(!aele && el->gsfTrack().isNonnull()
+       && el->pt()>7 && fabs(el->eta())<2.5
+       && fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<0.1
+       && miniIso/el->pt()<0.4 && fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<8
+       && nontrigelemva_vl 
+       && el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1 && el->passConversionVeto() 
+      ){
+      //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sipi3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
+      cout<<"El"<<setw(10)<<iEvent.id().event()<<setw(10)<<el->pt()<<setw(10)<<el->eta()<<setw(10)<<el->phi()<<setw(10)<<el->energy()<<setw(5)<<el->pdgId()<<setw(5)<<el->charge()<<setw(15)<<miniIso/el->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoPUsub<<setw(10)<<eleptrel<<setw(10)<<elejet_btagdisc<<setw(10)<<el->pt()/elejet_pt<<setw(10)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(10)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mvaval_nonTrig<<endl;
+      //if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) cout<<setw(21)<<el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")<<endl;
+      //else cout<<setw(21)<<"No Ele MVA"<<endl;
+      aele = true;
+      //trigelemva from miniAOD (to be used at some point) 
+      //bool nontrigelemva_vl = false;
+      //if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")){
+      //  double ntelemva = el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values");
+      //  double eleta   = fabs(el->eta());
+      //  if((eleta < 0.8                           && ntelemva > -0.11) ||
+      //       (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.35) || 
+      //       (1.479 <= eleta && eleta < 500 && ntelemva > -0.55)         
+      //      ){
+      //      nontrigelemva_vl = true;
+      //  }
+      //}
+*/
+//Gen info
+        //cout<<setw(20)<<"pT"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<endl;
+        //cout<<setw(20)<<genpart->pt()<<setw(20)<<genpart->eta()<<setw(20)<<genpart->phi()<<setw(20)<<genpart->energy()<<endl;
+        //cout<<setw(20)<<"isPrompt"<<setw(20)<<"isfromtau"<<setw(20)<<"pdgId"<<endl;
+        //cout<<setw(20)<<genpart->isPromptFinalState()<<setw(20)<<genpart->isDirectPromptTauDecayProductFinalState()<<setw(20)<<genpart->pdgId()<<endl;

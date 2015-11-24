@@ -107,6 +107,10 @@ class GenParticleSelector : public baseTree{
  private:
   GenParticleSelector(){};
   /////
+  //   Config variables
+  /////
+  bool _tthlepVar;
+  /////
   //   BSM 
   /////
   //Variables
@@ -119,5 +123,9 @@ class GenParticleSelector : public baseTree{
   //Origin
   vector<double> Gen_status, Gen_pdg_id, Gen_motherpdg_id, Gen_numDaught, Gen_numMother;
   vector<int>    Gen_BmotherIndex, Gen_BmotherIndices, Gen_BdaughtIndices;
+  /////
+  //   TTHLep
+  /////
+  int HiggsDecay;
 };
 #endif

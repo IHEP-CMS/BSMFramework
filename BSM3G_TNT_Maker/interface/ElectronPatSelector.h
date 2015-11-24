@@ -102,14 +102,16 @@ class ElectronPatSelector : public  baseTree{
   double _vtx_position_z_max;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
   edm::InputTag jetToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > electronVetoIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > electronLooseIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > electronMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > electronTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleMVATrigIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<int> >   elemvaCategoriesMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > electronVetoIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > electronLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > electronMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > electronTightIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleHEEPIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_nonTrig_;
+  edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_nonTrig_;
+  edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;
+  edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_Trig_;
   bool _AJVar;
   bool _tthlepVar;
   bool _is_data;
@@ -122,14 +124,14 @@ class ElectronPatSelector : public  baseTree{
   //Charge
   vector<double> patElectron_charge;
   //ID
-  vector<int>  passVetoId_, passLooseId_, passMediumId_, passTightId_, passMvatrigId_, passHEEPId_, patElectron_mvaCategory_, patElectron_pdgId, patElectron_isEcalDriven;
-  vector<float> patElectron_mvaValue_;
+  vector<int>  passVetoId_, passLooseId_, passMediumId_, passTightId_, passHEEPId_, passMvatrigId_, patElectron_mvaCategory_, patElectron_pdgId, patElectron_isEcalDriven;
+  vector<float> patElectron_mvaValue_nonTrig_, patElectron_mvaCategory_nonTrig_, patElectron_mvaValue_Trig_, patElectron_mvaCategory_Trig_;
   //Isolation
   vector<double> patElectron_isoChargedHadrons, patElectron_isoNeutralHadrons, patElectron_isoPhotons, patElectron_isoPU, patElectron_relIsoDeltaBeta, patElectron_relIsoRhoEA, patElectron_dr03EcalRecHitSumEt, patElectron_dr03HcalDepth1TowerSumEt, patElectron_isolPtTracks, patElectron_ecalPFClusterIso, patElectron_hcalPFClusterIso;
   //Shape, Track related variables, other prop
   vector<double> patElectron_dEtaIn, patElectron_dPhiIn, 
                  patElectron_full5x5_sigmaIetaIeta, patElectron_full5x5_e2x5Max, patElectron_full5x5_e5x5, patElectron_full5x5_e1x5,
-                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2;
+                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2; 
   //IP
   vector<double> patElectron_gsfTrack_dz_pv, patElectron_gsfTrack_dxy_pv, patElectron_d0, patElectron_gsfTrack_dz_bs, patElectron_gsfTrack_dxy_bs, patElectron_dzError, patElectron_dxyError, patElectron_gsfTrack_vtx, patElectron_gsfTrack_vty, patElectron_gsfTrack_vtz;
   vector<double> patElectron_gsfTrack_PCAx_pv, patElectron_gsfTrack_PCAy_pv, patElectron_gsfTrack_PCAz_pv,

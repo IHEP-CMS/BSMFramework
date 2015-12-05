@@ -84,7 +84,7 @@ class BJetnessSelector : public  baseTree{
   public:
     BJetnessSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
     ~BJetnessSelector();
-    void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup, int& ngoodjets);
+    void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
     void SetBranches();
     void Clear();
   private:

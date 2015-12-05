@@ -40,10 +40,11 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_phi.push_back(j.phi());       
     BoostedJet_energy.push_back(j.energy());
     BoostedJet_mass.push_back(j.mass()); 
+    BoostedJet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());    
     //ID
-    BoostedJet_Btag0.push_back(j.bDiscriminator("combinedSecondaryVertexBJetTags"));              
-    BoostedJet_Btag1.push_back(j.bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"));              
-    BoostedJet_Btag2.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));              
+    BoostedJet_combinedSecondaryVertexBJetTags.push_back(j.bDiscriminator("combinedSecondaryVertexBJetTags"));              
+    BoostedJet_pfCombinedSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"));              
+    BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));              
     //Energy related variables
     BoostedJet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
     BoostedJet_neutralEmEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
@@ -153,10 +154,11 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_phi,                         "BoostedJet_phi");
   AddBranch(&BoostedJet_energy,                      "BoostedJet_energy");
   AddBranch(&BoostedJet_mass,                        "BoostedJet_mass");
+  AddBranch(&BoostedJet_Uncorr_pt ,                  "BoostedJet_Uncorr_pt");
   //ID
-  AddBranch(&BoostedJet_Btag0,                       "BoostedJet_Btag0");
-  AddBranch(&BoostedJet_Btag2,                       "BoostedJet_Btag1");
-  AddBranch(&BoostedJet_Btag2,                       "BoostedJet_Btag2");
+  AddBranch(&BoostedJet_combinedSecondaryVertexBJetTags,              "BoostedJet_combinedSecondaryVertexBJetTags");
+  AddBranch(&BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, "BoostedJet_pfCombinedSecondaryVertexV2BJetTags");
+  AddBranch(&BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, "BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
   //Energy related variables
   AddBranch(&BoostedJet_neutralHadEnergyFraction,    "BoostedJet_neutralHadEnergyFraction");
   AddBranch(&BoostedJet_neutralEmEmEnergyFraction,   "BoostedJet_neutralEmEmEnergyFraction");
@@ -193,10 +195,11 @@ void BoostedJetSelector::Clear(){
   BoostedJet_phi.clear();
   BoostedJet_energy.clear();
   BoostedJet_mass.clear();
+  BoostedJet_Uncorr_pt.clear();
   //ID
-  BoostedJet_Btag0.clear();
-  BoostedJet_Btag1.clear();
-  BoostedJet_Btag2.clear();
+  BoostedJet_combinedSecondaryVertexBJetTags.clear();
+  BoostedJet_pfCombinedSecondaryVertexV2BJetTags.clear();
+  BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
   //Energy related variables
   BoostedJet_neutralHadEnergyFraction.clear();
   BoostedJet_neutralEmEmEnergyFraction.clear();

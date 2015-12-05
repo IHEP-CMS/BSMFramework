@@ -1,35 +1,16 @@
 #!/bin/bash
 #Specify needed variables
-#int
-#varType=int
-#varTYPE=INT
-#capLetter=I
-#varList=(rtau_pt rtau_eta rtau_phi rtau_en)
-#varLast=jet_chtrksnpvtt
-#varNum=jn
-#varCount=jn
-#double
-obj=Muon_
-varType=double
-varTYPE=DOUBLE
-capLetter=D
-varList=(p)
-varLast=
-varNum=ele_num
-varCount=gl
+varType=int 
+varList=(Common Electron HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ Muon HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ HLT_IsoMu20 HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL TTHbb Electron HLT_Ele105_CaloIdVT_GsfTrkIdT HLT_Ele27_eta2p1_WP75_Gsf HLT_Ele27_WP85_Gsf HLT_Ele27_eta2p1_WPLoose_Gsf Muon HLT_Mu45_eta2p1 HLT_Mu50 HLT_IsoMu17_eta2p1 HLT_IsoMu24_eta2p1 HLT_IsoMu18 TTHLep Electron HLT_Ele23_WPLoose_Gsf Data HLT_Ele23_CaloIdL_TrackIdL_IsoVL MC Muon HLT_IsoTkMu20 CrossEle-Mu HLT_DiMu9_Ele9_CaloIdL_TrackIdL HLT_Mu8_DiEle12_CaloIdL_TrackIdL HLT_TripleMu_12_10_5 HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL Analysis TTHbb_SL TTHbb_DL TTHLep_2Mu TTHLep_2Ele TTHLep_MuEle TTHLep_3L4L)
 #Print info
 echo " "
 #Declare variables
-echo -e " $varType \c"
+#echo -e " $varType \c"
 pos=0
 for count in ${varList[@]}; 
 do
-  if [ "${varList[$pos]}" != "$varLast" ] 
-  then
-   echo -e "$obj${varList[$pos]}, \c"
-  else
-   echo "$obj${varList[$pos]};"
-  fi
+  #echo " ${varList[$pos]}, \c"
+  echo "  $varType ${varList[$pos]};"
   let pos=pos+1
 done
 echo " "
@@ -37,7 +18,9 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo "  $obj${varList[$pos]} = DEF_VAL_$varTYPE;"
+  #echo "    ${varList[$pos]} = "
+  echo "    uint "${varList[$pos]}"_v(trigNames.triggerIndex(("\"${varList[$pos]}"_v\"+string(buffer)).c_str()));"
+  echo "    if("${varList[$pos]}"_v<triggerBits->size()) "${varList[$pos]}" = trigResults->accept("${varList[$pos]}"_v);"  
   let pos=pos+1
 done
 echo " "
@@ -45,35 +28,15 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo "  tree->Branch(\"$obj${varList[$pos]}\", &$obj${varList[$pos]}, \"$obj${varList[$pos]}/$capLetter\");"
+  echo "  AddBranch(&${varList[$pos]}               ,\"${varList[$pos]}\");"
   let pos=pos+1
 done
 echo " "
-#Set branch address
+#Set clear 
 pos=0
 for count in ${varList[@]}; 
 do
-  echo "  tree->SetBranchAddress(\"$obj${varList[$pos]}\", &$obj${varList[$pos]});"
+  echo "  ${varList[$pos]} = -9999;"
   let pos=pos+1
 done
 echo " "
-#Analyzer
-pos=0
-for count in ${varList[@]}; 
-do
-  echo "tree->$obj${varList[$pos]} = ;"
-  let pos=pos+1
-done
-echo " "
-#pftauchhads_AEIP1D_x_val_trk0 pftauchhads_AEIP1D_y_val_trk0 pftauchhads_IP3DvalAE_trk0 pftauchhads_IP3DvalTE_trk0 pftauchhads_IP2DvalAE_trk0 pftauchhads_IP2DvalTE_trk0 pftauchhads_IP1DvalAE_trk0 pftauchhads_IP1DvalTE_trk0)
-#dR_tautrk_recojettau_trk0 dR_tautrk_recojettau_trk1 dR_tautrk_recojettau_trk2)
-#tau_pt_DIV_recojettau_pt tau_pt_DIV_recojettau_en tau_trk0_pt_DIV_recojettau_pt tau_trk1_pt_DIV_recojettau_pt tau_trk2_pt_DIV_recojettau_pt tau_trk0_pt_DIV_recojettau_en tau_trk1_pt_DIV_recojettau_en tau_trk2_pt_DIV_recojettau_en)
-#pftauchhads_AEIP1D_val_trk0 pftauchhads_AEIP1D_val_trk1 pftauchhads_AEIP1D_val_trk2 pftauchhads_AEIP1D_sig_trk0 pftauchhads_AEIP1D_sig_trk1 pftauchhads_AEIP1D_sig_trk2 pftauchhads_sAEIP1D_val_trk0 pftauchhads_sAEIP1D_val_trk1 pftauchhads_sAEIP1D_val_trk2 pftauchhads_sAEIP1D_sig_trk0 pftauchhads_sAEIP1D_sig_trk1 pftauchhads_sAEIP1D_sig_trk2)
-#pv_avfbs_nchi2 unbpv_avfbs_nchi2 diff_pv_avfbs_nchi2_unbpv_avfbs_nchi2)
-#pvsv_dist3d_val pvsv_dist2d_val pvsv_dist3d_sig pvsv_dist2d_sig)
-#recojettau_pt recojettau_eta recojettau_phi recojettau_en)
-#unbpv_KVF_nv unbpv_KVFbs_nv unbpv_AVF_nv unbpv_AVFbs_nv)
-#vtxKVF_x vtxKVF_y vtxKVF_z vtxKVFbs_x vtxKVFbs_y vtxKVFbs_z vtxAVF_x vtxAVF_y vtxAVF_z vtxAVFbs_x vtxAVFbs_y vtxAVFbs_z)
-#genditauvtx_x genditauvtx_y genditauvtx_z)
-#pvtauvtx_genditauvtx_x pvtauvtx_genditauvtx_y pvtauvtx_genditauvtx_z unbpv_genditauvtx_x unbpv_genditauvtx_y unbpv_genditauvtx_z)
-

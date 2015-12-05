@@ -1,8 +1,9 @@
 ####################################################
 
-Code developed by: Andres Florez (Los Andes), Alfredo Gurrola (Vanderbilt) and Amandeep Kalsi (Panjab). 
-See https://github.com/florez/NtupleMaker_740
+This code is based on a preliminary version of the BSM3G code initiated by:
+Andres Florez (Los Andes), Alfredo Gurrola (Vanderbilt) and Amandeep Kalsi (Panjab) 
+(See https://github.com/florez/NtupleMaker_740)
 
-And modified by Francesco Romeo (IHEP) and Aniello Spiezia (IHEP).
+It has been extended and further developed by Francesco Romeo (IHEP) and Aniello Spiezia (IHEP).
 
 ####################################################

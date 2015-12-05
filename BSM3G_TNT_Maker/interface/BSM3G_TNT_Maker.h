@@ -3,10 +3,6 @@
 //Package: MiniAOD/BSM3G_TNT_Maker
 //Class:   BSM3G_TNT_Maker
 // 
-//
-//Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//         kaur amandeepkalsi: Panjab University, India. 
-//
 #ifndef  TREE_MAKER_H                                                                                                                          
 #define  TREE_MAKER_H
 /////
@@ -65,6 +61,11 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   /////
   //   Config variables
   /////
+  edm::EDGetTokenT<edm::TriggerResults> triggerBits_;
+  edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjects_;
+  edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescales_;
+  bool _ifevtriggers;
+  vector<string> _evtriggers;
   bool _fillgeninfo;
   bool _fillgenHFCategoryinfo;
   bool _filleventinfo;
@@ -86,6 +87,8 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   //   All 
   /////
   TFile* file;
+  TTree* evtree_;
+  int eventnum;
   TTree* tree_;
   const size_t MaxN;
   bool debug_;

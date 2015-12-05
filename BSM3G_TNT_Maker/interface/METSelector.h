@@ -1,7 +1,3 @@
-// 
-//Authors: Andres Florez: Universidad de los Andes, Colombia. 
-//         kaur amandeepkalsi: Panjab University, India. 
-// 
 #ifndef __MET_HE_H_ 
 #define __MET_HE_H_
 /////

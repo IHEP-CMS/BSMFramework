@@ -1,8 +1,8 @@
 #!/bin/bash
 #Specify needed variables
-obj=Jet_
+obj=Muon_
 varType=double
-varList=(vtxMass vtxNtracks vtx3DVal vtx3DSig puppi_vtxMass puppi_vtxNtracks puppi_vtx3DVal puppi_vtx3DSig)
+varList=(TrackerIso)
 varLast=
 varCount=p
 #Print info

@@ -16,7 +16,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   edm::Handle<GenEventInfoProduct> genEvtInfo;
   iEvent.getByLabel("generator",genEvtInfo);
   if(!_is_data){
-    EVENT_genWeight_ = genEvtInfo.product()->weight();
+    EVENT_genWeight_ = genEvtInfo->weight();
   }
   edm::Handle<double> rhopogHandle;
   iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);

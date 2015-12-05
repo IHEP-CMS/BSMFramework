@@ -1,7 +1,3 @@
-// 
-// Authors:  Andres Florez:      Universidad de los Andes, Colombia. 
-//           kaur amandeepkalsi: Panjab University, India. 
-//
 #ifndef __PHOTON_H_
 #define __PHOTON_H_
 /////

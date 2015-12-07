@@ -17,41 +17,18 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.GlobalTag.globaltag = '74X_dataRun2_v5'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
-process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+#process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 #####
 ##   Input files
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-    #TPrime b -> tZb (M=1.0TeV)
-    #'/store/mc/RunIISpring15DR74/TprimeBToTZ_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/1036477B-3A3A-E511-B6B8-002590593920.root',
-    #TTHbb
-    #'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/141B9915-1F08-E511-B9FF-001E675A6AB3.root',
-#'/store/mc/RunIISpring15DR74/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/1440BF72-A308-E511-9812-90B11C1453E1.root',
-    #TT
-    #'/store/mc/RunIISpring15DR74/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/00000/0AB045B5-BB0C-E511-81FD-0025905A60B8.root'
-    #DYJetsToLL
-    #'/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root'
-    #SUSYGluGluToHToTauTau_M-160
-    #'/store/mc/RunIISpring15DR74/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/10000/2A3929AE-5303-E511-9EFE-0025905A48C0.root'
-    #Zprime
-    #v1
-    #'/store/mc/RunIISpring15DR74/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/20773840-892F-E511-A40C-002590AC4BF8.root',
-    #v2
-    #'root://eoscms.cern.ch//eos/cms/store/mc/RunIISpring15MiniAODv2/ZprimeToTauTau_M_2000_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/80000/9E637F69-DC74-E511-A619-00259074AE98.root'
-    #HN
-    #'/store/mc/RunIISpring15MiniAODv2/ExtendedWeakIsospinModel_mumujj_L15000_M3500_CalcHEP/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/20000/0CE3AC18-1B80-E511-BD72-44A842B2D631.root'
-    #TT v2
-    #'/store/mc/RunIISpring15MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/40000/00087FEB-236E-E511-9ACB-003048FF86CA.root'
-    #TTHLep
-    #v2
-    '/store/mc/RunIISpring15MiniAODv2/ttHToNonbb_M125_13TeV_powheg_pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/10000/02FE2DB6-D06D-E511-8BC7-0025905C431C.root'
-    #v1
-    #'/store/mc/RunIISpring15DR74/ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/30000/088378DB-3D24-E511-8B0E-20CF3027A589.root'
+    #/SingleMuon/Run2015D-PromptReco-v4/MINIAOD
+    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/258/159/00000/6CA1C627-246C-E511-8A6A-02163E014147.root'
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -227,8 +204,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v',
   ),
   # Choose which information you want to use
-  fillgeninfo           = cms.bool(True),
-  fillgenHFCategoryinfo = cms.bool(True),
+  fillgeninfo           = cms.bool(False),
+  fillgenHFCategoryinfo = cms.bool(False),
   filleventinfo         = cms.bool(True),
   filltriggerinfo       = cms.bool(True),
   fillPVinfo            = cms.bool(True),

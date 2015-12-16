@@ -1,13 +1,23 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BSM3G_TNT_Maker.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+//Trigger
+#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include <memory>
-#include <string>
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream>      // std::stringstream, std::stringbuf
 BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
+  triggerBits_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("bits"))),
   //now do what ever initialization is needed
   MaxN(200)
 {
   debug_                 = iConfig.getParameter<bool>("debug_");
+  _ifevtriggers          = iConfig.getParameter<bool>("ifevtriggers"); 
+  _evtriggers            = iConfig.getParameter<vector<string> >("evtriggers");
   _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo"); 
   _fillgenHFCategoryinfo = iConfig.getParameter<bool>("fillgenHFCategoryinfo");
   _filleventinfo         = iConfig.getParameter<bool>("filleventinfo"); 
@@ -27,7 +37,9 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   _fillphotoninfo        = iConfig.getParameter<bool>("fillphotoninfo");
 
   edm::Service<TFileService> fs;
-  tree_ = fs->make<TTree>("BOOM","BOOM");
+  evtree_ = fs->make<TTree>("evtree","evtree");
+  evtree_->Branch("eventnum",&eventnum,"eventnum/I");
+  tree_   = fs->make<TTree>("BOOM","BOOM");
   if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillgenHFCategoryinfo) genhfselector      = new GenHFHadrMatchSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_filleventinfo)         eventinfoselector  = new EventInfoSelector("miniAOD", tree_, debug_, iConfig);
@@ -50,24 +62,6 @@ BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 {
   //do anything here that needs to be done at desctruction time
   //(e.g. close files, deallocate resources etc.)
-  /*
-  delete genselector; 
-  delete genhfselector;
-  delete eventinfoselector; 
-  delete trselector;  
-  delete pvselector; 
-  delete muselector; 
-  delete elpatselector; 
-  delete tauselector; 
-  delete jetselector; 
-  delete tthjetselector; 
-  delete BoostedJetselector; 
-  delete TopSubJetselector; 
-  delete BJetnessselector; 
-  delete btagreweight; 
-  delete metselector; 
-  delete photonselector; 
-  */
 }
 /////
 //   Member functions
@@ -75,13 +69,31 @@ BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 // ------------ method called for each event  ------------
 void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  //Namespace
   using namespace edm;
   using namespace pat;
   using namespace reco;
-
-  int savebjetnessevt = 0;
-  if(_fillBJetnessinfo) BJetnessselector->Fill(iEvent, iSetup, savebjetnessevt);
-  if((_fillBJetnessinfo && savebjetnessevt==1) || !_fillBJetnessinfo){
+  //Event info for all the events you read
+  eventnum = -1;
+  eventnum = iEvent.id().event();
+  evtree_->Fill();
+  //Require trigger on the event
+  bool evtriggered = false;
+  if(_ifevtriggers){
+    edm::Handle<edm::TriggerResults> triggerBits;
+    iEvent.getByToken(triggerBits_, triggerBits);
+    const edm::TriggerNames &trigNames = iEvent.triggerNames(*triggerBits);
+    for(uint tb = 0; tb<triggerBits->size(); tb++){
+      for(uint tn = 0; tn<_evtriggers.size(); tn++){
+        if(strstr(trigNames.triggerName(tb).c_str(),_evtriggers[tn].c_str()) && triggerBits->accept(tb)){
+          evtriggered = true;
+          break;
+        } 
+      }
+    }
+  }
+  //Call classes
+  if((_ifevtriggers && evtriggered) || !_ifevtriggers){
     if(_fillgeninfo)           genselector->Fill(iEvent); 
     if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
     if(_filleventinfo)         eventinfoselector->Fill(iEvent);
@@ -94,20 +106,13 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
     if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
+    if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup);
     if(_fillBTagReweight)      btagreweight->Fill(iEvent);
     if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
     if(_fillMETinfo)           metselector->Fill(iEvent);
     if(_fillphotoninfo)        photonselector->Fill(iEvent);
     tree_->Fill();
   }
-#ifdef THIS_IS_AN_EVENT_EXAMPLE
-  Handle<ExampleData> pIn;
-  iEvent.getByLabel("example",pIn);
-#endif
-#ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
-  ESHandle<SetupData> pSetup;
-  iSetup.get<SetupRecord>().get(pSetup);
-#endif
 }
 // ------------ method called once each job just before starting event loop  ------------
 void BSM3G_TNT_Maker::beginJob()

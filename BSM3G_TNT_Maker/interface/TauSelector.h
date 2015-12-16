@@ -1,7 +1,3 @@
-// 
-//Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//         kaur amandeepkalsi: Panjab University, India. 
-//
 #ifndef __TAU_MU_H_
 #define __TAU_MU_H_
 /////
@@ -112,7 +108,7 @@ class TauSelector : public baseTree{
   //   BSM variables
   /////
   //Kinematic
-  vector<double> Tau_pt, Tau_eta, Tau_phi, Tau_energy;
+  vector<double> Tau_pt, Tau_eta, Tau_phi, Tau_energy, Tau_px, Tau_py, Tau_pz, Tau_p;
   vector<double> Tau_leadChargedCandPt, Tau_leadChargedCandEta, Tau_leadChargedCandPhi, Tau_leadChargedCandE;
   vector<double> Tau_leadChargedCandTrack_pt, Tau_leadChargedCandTrack_ptError;
   //Charge
@@ -124,7 +120,8 @@ class TauSelector : public baseTree{
   vector<int> Tau_againstMuonLoose3, Tau_againstMuonTight3; 
   //Against Electron
   vector<int> Tau_againstElectronLoose, Tau_againstElectronMedium, Tau_againstElectronTight;
-  vector<int> Tau_againstElectronVLooseMVA5, Tau_againstElectronLooseMVA5, Tau_againstElectronMediumMVA5, Tau_againstElectronTightMVA5, Tau_againstElectronVTightMVA5, Tau_againstElectronMVA5category, Tau_againstElectronMVA5raw;
+  vector<int> Tau_againstElectronVLooseMVA5, Tau_againstElectronLooseMVA5, Tau_againstElectronMediumMVA5, Tau_againstElectronTightMVA5, Tau_againstElectronVTightMVA5, Tau_againstElectronMVA5category;
+  vector<double> Tau_againstElectronMVA5raw;
   //Isolation
   //MiniAODv1
   vector<int> Tau_byLooseIsolationMVA3newDMwoLT, Tau_byLooseIsolationMVA3oldDMwoLT, Tau_byMediumIsolationMVA3newDMwoLT, Tau_byMediumIsolationMVA3oldDMwoLT, Tau_byTightIsolationMVA3newDMwoLT, Tau_byTightIsolationMVA3oldDMwoLT; 

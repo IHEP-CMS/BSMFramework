@@ -1,8 +1,8 @@
 #!/bin/bash
 #Specify needed variables
-obj=Muon_
+obj=patElectron_
 varType=double
-varList=(TrackerIso)
+varList=(eleMVASpring15NonTrig25ns_VL expectedMissingInnerHits passConversionVeto)
 varLast=
 varCount=p
 #Print info

@@ -36,7 +36,7 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
 BJetnessSelector::~BJetnessSelector(){
   delete tree_;
 }
-void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup, int& savebjetnessevt){
+void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   Clear();
   /////
   //   Recall collections
@@ -100,8 +100,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     jet_num++;
   }
   sort(jet_csv_pos.rbegin(), jet_csv_pos.rend());
-  /*if(jet_num>=6 && (*jets)[jet_csv_pos[0].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[1].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89 && (*jets)[jet_csv_pos[2].second].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.89) */savebjetnessevt = 1;
-  if(savebjetnessevt==1){
   if(jet_num!=0){
     //cout<<"Num of jet is"<<setw(20)<<savebjetnessevt<<endl;
     BJetness_numjet.push_back(jet_num);
@@ -407,7 +405,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
    BJetness_avip1d_sig.push_back(-999);
    BJetness_avsip1d_val.push_back(-999);
    BJetness_avsip1d_sig.push_back(-999);
- }
  }
 }
 void BJetnessSelector::SetBranches(){

@@ -1,7 +1,3 @@
-// 
-//Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//         kaur amandeepkalsi: Panjab University, India. 
-// 
 #ifndef __GEN_PAR_H_ 
 #define __GEN_PAR_H_
 /////

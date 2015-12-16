@@ -1,7 +1,3 @@
-// 
-//Authors: Andres Florez:      Universidad de los Andes, Colombia. 
-//         kaur amandeepkalsi: Panjab University, India. 
-// 
 #ifndef __MUON_MU_H_                                                                                                            
 #define __MUON_MU_H_
 /////
@@ -72,6 +68,11 @@ using namespace std;
 using namespace pat;
 using namespace edm;
 using namespace reco;
+namespace SelfVetoPolicyMu{
+  enum SelfVetoPolicyMu{
+    selfVetoNone=0, selfVetoAll=1, selfVetoFirst=2
+  };
+}
 /////
 //   Class declaration
 /////
@@ -109,7 +110,7 @@ class MuonSelector : public  baseTree{
   /////
   //Variables
   //Kinematics
-  vector<double> Muon_pt,  Muon_eta, Muon_phi, Muon_energy, Muon_p, Muon_dB, Muon_pt_it, Muon_ptErr_it, Muon_pt_bt, Muon_pTErrOVpT_it, Muon_ptErr_bt, Muon_pTErrOVpT_bt, Muon_pt_tunePbt;
+  vector<double> Muon_pt, Muon_eta, Muon_phi, Muon_energy, Muon_px, Muon_py, Muon_pz, Muon_p, Muon_dB, Muon_pt_it, Muon_ptErr_it, Muon_pt_bt, Muon_pTErrOVpT_it, Muon_ptErr_bt, Muon_pTErrOVpT_bt, Muon_pt_tunePbt;
   //Charge
   vector<double> Muon_charge;
   //ID
@@ -117,7 +118,7 @@ class MuonSelector : public  baseTree{
   //Isolation
   vector<double> Muon_isoR04Charged, Muon_isoR04NeutralHadron, Muon_isoR04Photon, Muon_isoR04PU, Muon_relIsoDeltaBetaR04, Muon_isoR04CharParPt, 
                  Muon_isoR03Charged, Muon_isoR03NeutralHadron, Muon_isoR03Photon, Muon_isoR03PU, Muon_relIsoDeltaBetaR03, Muon_isoR03CharParPt, 
-                 Muon_trackIso, Muon_ecalIso, Muon_hcalIso, Muon_caloIso, Muon_isoSum, Muon_pfEcalEnergy;
+                 Muon_trackIso, Muon_TrackerIso, Muon_ecalIso, Muon_hcalIso, Muon_caloIso, Muon_isoSum, Muon_pfEcalEnergy;
   //Track related variables 
   vector<double> Muon_chi2, Muon_chi2LocalPosition, Muon_matchedStat, Muon_validHits, Muon_validHitsInner, Muon_TLayers, Muon_ndof, Muon_validFraction, Muon_pixelLayersWithMeasurement, Muon_qualityhighPurity, Muon_trkKink, Muon_segmentCompatibility; 
   //IP
@@ -129,34 +130,35 @@ class MuonSelector : public  baseTree{
   //Methods
   void get_muminiIso_info(const pat::PackedCandidateCollection& pcc,double rho, const pat::Muon& mu, double& miniIso, double& miniIsoCh, double& miniIsoNeu, double& miniIsoPUsub);
   void get_chneupu_pcc(const pat::PackedCandidateCollection& pcc,vector<const pat::PackedCandidate *>& pfc_all,vector<const pat::PackedCandidate *>& pfc_ch,vector<const pat::PackedCandidate *>& pfc_neu,vector<const pat::PackedCandidate *>&pfc_pu);
-  double get_isosumraw(const std::vector<const pat::PackedCandidate *> & pcc, const pat::Muon& cand, double IsoConeSize, double innerR, double ptTh, int pdgId);
+  double get_isosumraw(const std::vector<const pat::PackedCandidate *> & pcc, const pat::Muon& cand, double IsoConeSize, double innerR, double ptTh, SelfVetoPolicyMu::SelfVetoPolicyMu selfVeto, int pdgId);
   double get_effarea(double eta);
-  //double get_iso_rho(const pat::Muon& mu, double& rho);
   void get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                       double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt,
                       double& mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& mujet_pfJetProbabilityBJetTags, double& mujet_pfCombinedMVABJetTags, double& mujet_qgl,
                       double& jx, double& jy, double& jz, double& muptrel,
                       int& lepjetidx);
+  int pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc);
+  double relativeEta(const math::XYZVector& vector, const math::XYZVector& axis);
   double get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
   double get_lepTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
   double get_lepWTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
-  int pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc);
-  double relativeEta(const math::XYZVector& vector, const math::XYZVector& axis);
-  void IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP3D_val,double& IP3D_err,double& IP3D_sig,  double& IP2D_val,double& IP2D_err,double& IP2D_sig, double& sIP3D_val,double& sIP3D_err,double& sIP3D_sig,  double& sIP2D_val,double& sIP2D_err,double& sIP2D_sig);
+  void IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP3D_val,double& IP3D_err,double& IP3D_sig, double& sIP3D_val,double& sIP3D_err,double& sIP3D_sig, double& IP2D_val,double& IP2D_err,double& IP2D_sig, double& sIP2D_val,double& sIP2D_err,double& sIP2D_sig);
   void zIP1D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP1D_val,double& IP1D_err,double& IP1D_sig, double& sIP1D_val,double& sIP1D_err,double& sIP1D_sig);
-  void lepjetIPtrks(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
+  void lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
                 double& lepjetMaxIP3D_val, double& lepjetMaxIP3D_sig, double& lepjetMaxsIP3D_val, double& lepjetMaxsIP3D_sig, double& lepjetMaxIP2D_val, double& lepjetMaxIP2D_sig, double& lepjetMaxsIP2D_val, double& lepjetMaxsIP2D_sig, double& lepjetMaxIP1D_val, double& lepjetMaxIP1D_sig, double& lepjetMaxsIP1D_val, double& lepjetMaxsIP1D_sig,
                 double& lepjetAvIP3D_val, double& lepjetAvIP3D_sig, double& lepjetAvsIP3D_val, double& lepjetAvsIP3D_sig, double& lepjetAvIP2D_val, double& lepjetAvIP2D_sig, double& lepjetAvsIP2D_val, double& lepjetAvsIP2D_sig, double& lepjetAvIP1D_val, double& lepjetAvIP1D_sig, double& lepjetAvsIP1D_val, double& lepjetAvsIP1D_sig,
-              double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus,
-              double& lepjetpvchi2, double& lepjetnumno2tr
-);
+                double& denlepjetAvIP3D_val, double& denlepjetAvIP3D_sig, double& denlepjetAvsIP3D_val, double& denlepjetAvsIP3D_sig, double& denlepjetAvIP2D_val, double& denlepjetAvIP2D_sig, double& denlepjetAvsIP2D_val, double& denlepjetAvsIP2D_sig, double& denlepjetAvIP1D_val, double& denlepjetAvIP1D_sig, double& denlepjetAvsIP1D_val, double& denlepjetAvsIP1D_sig,
+                double& Lep_IP3D_val
+               );
+  void lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus);
+  void lepjetVtxCompatibility(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr);
   void get_2trksinfo(vector<TransientTrack> ttrks, double& num2v, double& numno2v);
   bool is_goodtrk(Track trk,const reco::Vertex& vtx);
   //Variables
   vector<double> Muon_miniIsoRel, Muon_miniIsoCh, Muon_miniIsoNeu, Muon_miniIsoPUsub;
   vector<double> Muon_jetdr, Muon_jetpt, Muon_jetptratio, Muon_jetcsv, Muon_ptrel, Muon_IP3Dsig_it;
   vector<double> Muon_pvass, Muon_etarel, Muon_ptOVen, Muon_mujet_pfJetProbabilityBJetTag, Muon_mujet_pfCombinedMVABJetTags, Muon_mujet_qgl;
-  vector<double> Muon_mumass, Muon_mujetmass, Muon_mujetWmass, Muon_mujetTopmass, Muon_mujetWTopmass;
+  vector<double> Muon_mumass, Muon_mujet_mass, Muon_mujet_Wmass, Muon_mujet_Topmass, Muon_mujet_WTopmass;
   vector<double> Muon_IP3D_val, Muon_IP3D_err, Muon_IP3D_sig, Muon_IP2D_val, Muon_IP2D_err, Muon_IP2D_sig, Muon_sIP3D_val, Muon_sIP3D_err, Muon_sIP3D_sig, Muon_sIP2D_val, Muon_sIP2D_err, Muon_sIP2D_sig, Muon_IP1D_val, Muon_IP1D_err, Muon_IP1D_sig, Muon_sIP1D_val, Muon_sIP1D_err, Muon_sIP1D_sig;
   vector<double> Muon_lepjetMaxIP3D_val, Muon_lepjetMaxIP3D_sig, Muon_lepjetMaxsIP3D_val, Muon_lepjetMaxsIP3D_sig, Muon_lepjetMaxIP2D_val, Muon_lepjetMaxIP2D_sig, Muon_lepjetMaxsIP2D_val, Muon_lepjetMaxsIP2D_sig, Muon_lepjetMaxIP1D_val, Muon_lepjetMaxIP1D_sig, Muon_lepjetMaxsIP1D_val, Muon_lepjetMaxsIP1D_sig, Muon_lepjetAvIP3D_val, Muon_lepjetAvIP3D_sig, Muon_lepjetAvsIP3D_val, Muon_lepjetAvsIP3D_sig, Muon_lepjetAvIP2D_val, Muon_lepjetAvIP2D_sig, Muon_lepjetAvsIP2D_val, Muon_lepjetAvsIP2D_sig, Muon_lepjetAvIP1D_val, Muon_lepjetAvIP1D_sig, Muon_lepjetAvsIP1D_val, Muon_lepjetAvsIP1D_sig;
   vector<double> Muon_lepjetchtrks, Muon_lepjetpvchtrks, Muon_lepjetnonpvchtrks, Muon_lepjetndaus; 

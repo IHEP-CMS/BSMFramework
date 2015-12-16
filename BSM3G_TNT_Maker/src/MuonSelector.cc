@@ -16,11 +16,25 @@
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
 #include "TMath.h"
-KalmanVertexFitter vertexfitter(true);
+KalmanVertexFitter vertexfittermu(true);
 using namespace std;
 using namespace pat;
 using namespace edm;
 using namespace reco;
+namespace{
+  struct ByEta{
+    bool operator()(const pat::PackedCandidate *c1, const pat::PackedCandidate *c2) const{
+      return c1->eta()<c2->eta();
+    }
+    bool operator()(double c1eta, const pat::PackedCandidate *c2) const{
+      return c1eta<c2->eta();
+    }
+    bool operator()(const pat::PackedCandidate *c1, double c2eta) const{
+      return c1->eta()<c2eta;
+    }
+  };
+}
+
 MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug)
 {
@@ -69,23 +83,22 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   /////
   //   Require a good vertex 
   ///// 
-  reco::VertexCollection::const_iterator firstgoodVertex = vtx_h->end();
-  for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstgoodVertex; it++){
-    if(isGoodVertex(*it)){
-      firstgoodVertex = it;
-      break;
-    }
-  }
-  if(firstgoodVertex == vtx_h->end()) return;
-  const reco::Vertex &firstGoodVertex = *firstgoodVertex;
-  //if(vtx_h->empty()) return; // skip the event if no PV found
-  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
-  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  //if(!isgoodvtx) return;
-  ////
+  //reco::VertexCollection::const_iterator firstgoodVertex = vtx_h->end();
+  //for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstgoodVertex; it++){
+  //  if(isGoodVertex(*it)){
+  //    firstgoodVertex = it;
+  //    break;
+  //  }
+  //}
+  //if(firstgoodVertex == vtx_h->end()) return;
+  //const reco::Vertex &firstGoodVertex = *firstgoodVertex;
+  if(vtx_h->empty()) return; // skip the event if no PV found
+  const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  if(!isgoodvtx) return;
+  /////
   //   Get muon information
   /////
-  //bool amu = false;
   for(edm::View<pat::Muon>::const_iterator mu = muon_h->begin(); mu != muon_h->end(); mu++){
     /////
     //   BSM variables
@@ -98,6 +111,9 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Muon_eta.push_back(mu->eta());
     Muon_phi.push_back(mu->phi());
     Muon_energy.push_back(mu->energy());
+    Muon_px.push_back(mu->px());
+    Muon_py.push_back(mu->py());
+    Muon_pz.push_back(mu->pz());
     Muon_p.push_back(mu->p());
     Muon_dB.push_back(mu->dB());
     if(mu->innerTrack().isNonnull()){
@@ -168,6 +184,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Muon_relIsoDeltaBetaR03.push_back(relIsoDeltaBeta);
     Muon_isoR03CharParPt.push_back((mu->pfIsolationR03().sumChargedParticlePt));
     Muon_trackIso.push_back(mu->trackIso());
+    Muon_TrackerIso.push_back(mu->isolationR03().sumPt/mu->pt());
     Muon_ecalIso.push_back(mu->ecalIso());
     Muon_hcalIso.push_back(mu->hcalIso());
     Muon_caloIso.push_back(mu->caloIso());
@@ -313,41 +330,42 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       Muon_jetptratio.push_back(muptOVmujetpt);
       Muon_jetcsv.push_back(mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags);
       Muon_ptrel.push_back(muptrel);
-      Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
-      int pvass = pvassociation(*mu,*pcc);
-      const math::XYZVector& lepton_momentum = mu->momentum(); 
-      const math::XYZVector axis(mujetx,mujety,mujetz);
-      double etarel = relativeEta(lepton_momentum,axis);
-      Muon_pvass.push_back(pvass);
-      Muon_etarel.push_back(etarel);
-      Muon_ptOVen.push_back(mu->pt()/mu->energy());
       Muon_mujet_pfJetProbabilityBJetTag.push_back(mujet_pfJetProbabilityBJetTag);
       Muon_mujet_pfCombinedMVABJetTags.push_back(mujet_pfCombinedMVABJetTags);
       Muon_mujet_qgl.push_back(mujet_qgl);      
-      GlobalVector mujetgv(mujetx,mujety,mujetz);
+      Muon_IP3Dsig_it.push_back(fabs(mu->dB(pat::Muon::PV3D))/mu->edB(pat::Muon::PV3D));
+      int pvass = pvassociation(*mu,*pcc);
+      Muon_pvass.push_back(pvass);
+      const math::XYZVector& lepton_momentum = mu->momentum(); 
+      const math::XYZVector axis(mujetx,mujety,mujetz);
+      double etarel = relativeEta(lepton_momentum,axis);
+      Muon_etarel.push_back(etarel);
+      Muon_ptOVen.push_back(mu->pt()/mu->energy());
+      //Mass
+      Muon_mumass.push_back(mu->p4().M());
       double muwmass = get_lepWmass(*mu,iEvent,lepjetidx);
       double mutopmass = get_lepTopmass(*mu,iEvent,lepjetidx);
       double muwtopmass = get_lepWTopmass(*mu,iEvent,lepjetidx);
-      Muon_mumass.push_back(mu->p4().M());
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
-        Muon_mujetmass.push_back(lepjet.p4().M());
+        Muon_mujet_mass.push_back(lepjet.p4().M());
       }else{
-        Muon_mujetmass.push_back(0);
+        Muon_mujet_mass.push_back(0);
       }
-      Muon_mujetWmass.push_back(muwmass);
-      Muon_mujetTopmass.push_back(mutopmass);
-      Muon_mujetWTopmass.push_back(muwtopmass);
+      Muon_mujet_Wmass.push_back(muwmass);
+      Muon_mujet_Topmass.push_back(mutopmass);
+      Muon_mujet_WTopmass.push_back(muwtopmass);
       //Mu IP 
+      GlobalVector mujetgv(mujetx,mujety,mujetz);
       double IP3D_val  = -9999;
       double IP3D_err  = -9999;
       double IP3D_sig  = -9999;
-      double IP2D_val  = -9999;
-      double IP2D_err  = -9999;
-      double IP2D_sig  = -9999;
       double sIP3D_val = -9999;
       double sIP3D_err = -9999;
       double sIP3D_sig = -9999;
+      double IP2D_val  = -9999;
+      double IP2D_err  = -9999;
+      double IP2D_sig  = -9999;
       double sIP2D_val = -9999;
       double sIP2D_err = -9999;
       double sIP2D_sig = -9999;
@@ -357,60 +375,69 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double sIP1D_val = -9999;
       double sIP1D_err = -9999;
       double sIP1D_sig = -9999;
-      //Lep jet IP
-      double lepjetMaxIP3D_val  = -999; //M(|IP3D/IP3Derr|(jettrks,PV)): the maximum significance of the 3D IP for a tracks of the jet and the PV 
-      double lepjetMaxIP3D_sig  = -999; 
-      double lepjetMaxsIP3D_val = -999; 
-      double lepjetMaxsIP3D_sig = -999; 
-      double lepjetMaxIP2D_val  = -999; 
-      double lepjetMaxIP2D_sig  = -999; 
-      double lepjetMaxsIP2D_val = -999; 
-      double lepjetMaxsIP2D_sig = -999; 
-      double lepjetMaxIP1D_val  = -999; 
-      double lepjetMaxIP1D_sig  = -999; 
-      double lepjetMaxsIP1D_val = -999; 
-      double lepjetMaxsIP1D_sig = -999; 
-      double lepjetAvIP3D_val  = 0; 
-      double lepjetAvIP3D_sig  = 0; 
-      double lepjetAvsIP3D_val = 0; 
-      double lepjetAvsIP3D_sig = 0; 
-      double lepjetAvIP2D_val  = 0; 
-      double lepjetAvIP2D_sig  = 0; 
-      double lepjetAvsIP2D_val = 0; 
-      double lepjetAvsIP2D_sig = 0; 
-      double lepjetAvIP1D_val  = 0; 
-      double lepjetAvIP1D_sig  = 0; 
-      double lepjetAvsIP1D_val = 0; 
-      double lepjetAvsIP1D_sig = 0; 
-      double lepjetchtrks      = 0;
-      double lepjetpvchtrks    = 0;
-      double lepjetnonpvchtrks = 0;
-      double lepjetndaus       = 0;
-      double lepjetpvchi2      = 0;
-      double lepjetnumno2trk   = 0;
       if(mu->innerTrack().isNonnull()){
         TrackRef muit = mu->innerTrack();
         TransientTrack muttrk = ttrkbuilder->build(muit);
-        IP3D2D(muttrk,firstGoodVertex,mujetgv,IP3D_val,IP3D_err,IP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+        IP3D2D(muttrk,firstGoodVertex,mujetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
         zIP1D(muttrk,firstGoodVertex,mujetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
-        if(lepjetidx!=-1){ const pat::Jet & lepjet = (*jets)[lepjetidx]; 
-          lepjetIPtrks(lepjet,firstGoodVertex,mujetgv,*ttrkbuilder,
-                   lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
-                   lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
-                   lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus,
-                   lepjetpvchi2, lepjetnumno2trk  
-                  );                                                                    
-        }
+      }
+      //Max Lep jet IP (the maximum IP for a tracks of the lepton jet)
+      double lepjetMaxIP3D_val  = IP3D_val; 
+      double lepjetMaxIP3D_sig  = IP3D_sig; 
+      double lepjetMaxsIP3D_val = sIP3D_val; 
+      double lepjetMaxsIP3D_sig = sIP3D_sig; 
+      double lepjetMaxIP2D_val  = IP2D_val; 
+      double lepjetMaxIP2D_sig  = IP2D_sig; 
+      double lepjetMaxsIP2D_val = sIP2D_val; 
+      double lepjetMaxsIP2D_sig = sIP2D_sig; 
+      double lepjetMaxIP1D_val  = IP1D_val; 
+      double lepjetMaxIP1D_sig  = IP1D_sig; 
+      double lepjetMaxsIP1D_val = sIP1D_val; 
+      double lepjetMaxsIP1D_sig = sIP1D_sig; 
+      //Av Lep jet IP (the average IP of the lepton jet tracks)   
+      double lepjetAvIP3D_val  = 0; double denlepjetAvIP3D_val  = 0;
+      if(IP3D_val!=-9999){lepjetAvIP3D_val   = IP3D_val; denlepjetAvIP3D_val   = 1;} 
+      double lepjetAvIP3D_sig  = 0; double denlepjetAvIP3D_sig  = 0;
+      if(IP3D_sig!=-9999){lepjetAvIP3D_sig   = IP3D_sig; denlepjetAvIP3D_sig   = 1;}
+      double lepjetAvsIP3D_val = 0; double denlepjetAvsIP3D_val = 0;
+      if(sIP3D_val!=-9999){lepjetAvsIP3D_val = sIP3D_val; denlepjetAvsIP3D_val = 1;} 
+      double lepjetAvsIP3D_sig = 0; double denlepjetAvsIP3D_sig = 0;
+      if(sIP3D_sig!=-9999){lepjetAvsIP3D_sig = sIP3D_sig; denlepjetAvsIP3D_sig = 1;} 
+      double lepjetAvIP2D_val  = 0; double denlepjetAvIP2D_val  = 0;
+      if(IP2D_val!=-9999){lepjetAvIP2D_val   = IP2D_val; denlepjetAvIP2D_val   = 1;} 
+      double lepjetAvIP2D_sig  = 0; double denlepjetAvIP2D_sig  = 0;
+      if(IP2D_sig!=-9999){lepjetAvIP2D_sig   = IP2D_sig; denlepjetAvIP2D_sig   = 1;} 
+      double lepjetAvsIP2D_val = 0; double denlepjetAvsIP2D_val = 0;
+      if(sIP2D_val!=-9999){lepjetAvsIP2D_val = sIP2D_val; denlepjetAvsIP2D_val = 1;} 
+      double lepjetAvsIP2D_sig = 0; double denlepjetAvsIP2D_sig = 0;
+      if(sIP2D_sig!=-9999){lepjetAvsIP2D_sig = sIP2D_sig; denlepjetAvsIP2D_sig = 1;} 
+      double lepjetAvIP1D_val  = 0; double denlepjetAvIP1D_val  = 0;
+      if(IP1D_val!=-9999){lepjetAvIP1D_val   = IP1D_val; denlepjetAvIP1D_val   = 1;} 
+      double lepjetAvIP1D_sig  = 0; double denlepjetAvIP1D_sig  = 0;
+      if(IP1D_sig!=-9999){lepjetAvIP1D_sig   = IP1D_sig; denlepjetAvIP1D_sig   = 1;} 
+      double lepjetAvsIP1D_val = 0; double denlepjetAvsIP1D_val = 0;
+      if(sIP1D_val!=-9999){lepjetAvsIP1D_val = sIP1D_val; denlepjetAvsIP1D_val = 1;} 
+      double lepjetAvsIP1D_sig = 0; double denlepjetAvsIP1D_sig = 0;
+      if(sIP1D_sig!=-9999){lepjetAvsIP1D_sig = sIP1D_sig; denlepjetAvsIP1D_sig = 1;} 
+      //Get values of Max and Av IP
+      if(lepjetidx!=-1){
+        const pat::Jet & lepjet = (*jets)[lepjetidx]; 
+        lepjetIP(lepjet,firstGoodVertex,mujetgv,*ttrkbuilder,
+                 lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
+                 lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
+                 denlepjetAvIP3D_val, denlepjetAvIP3D_sig, denlepjetAvsIP3D_val, denlepjetAvsIP3D_sig, denlepjetAvIP2D_val, denlepjetAvIP2D_sig, denlepjetAvsIP2D_val, denlepjetAvsIP2D_sig, denlepjetAvIP1D_val, denlepjetAvIP1D_sig, denlepjetAvsIP1D_val, denlepjetAvsIP1D_sig,
+                 IP3D_val   
+                );                                                                    
       }
       Muon_IP3D_val.push_back(IP3D_val);
       Muon_IP3D_err.push_back(IP3D_err);
       Muon_IP3D_sig.push_back(IP3D_sig);
-      Muon_IP2D_val.push_back(IP2D_val);
-      Muon_IP2D_err.push_back(IP2D_err);
-      Muon_IP2D_sig.push_back(IP2D_sig);
       Muon_sIP3D_val.push_back(sIP3D_val);
       Muon_sIP3D_err.push_back(sIP3D_err);
       Muon_sIP3D_sig.push_back(sIP3D_sig);
+      Muon_IP2D_val.push_back(IP2D_val);
+      Muon_IP2D_err.push_back(IP2D_err);
+      Muon_IP2D_sig.push_back(IP2D_sig);
       Muon_sIP2D_val.push_back(sIP2D_val);
       Muon_sIP2D_err.push_back(sIP2D_err);
       Muon_sIP2D_sig.push_back(sIP2D_sig);
@@ -432,22 +459,38 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       Muon_lepjetMaxIP1D_sig.push_back(lepjetMaxIP1D_sig);
       Muon_lepjetMaxsIP1D_val.push_back(lepjetMaxsIP1D_val);
       Muon_lepjetMaxsIP1D_sig.push_back(lepjetMaxsIP1D_sig);
-      Muon_lepjetAvIP3D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP3D_val  : -999);
-      Muon_lepjetAvIP3D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP3D_sig  : -999);
-      Muon_lepjetAvsIP3D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP3D_val : -999);
-      Muon_lepjetAvsIP3D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP3D_sig : -999);
-      Muon_lepjetAvIP2D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP2D_val  : -999);
-      Muon_lepjetAvIP2D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP2D_sig  : -999);
-      Muon_lepjetAvsIP2D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP2D_val : -999);
-      Muon_lepjetAvsIP2D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP2D_sig : -999);
-      Muon_lepjetAvIP1D_val.push_back(lepjetchtrks!=0  ? lepjetAvIP1D_val  : -999);
-      Muon_lepjetAvIP1D_sig.push_back(lepjetchtrks!=0  ? lepjetAvIP1D_sig  : -999);
-      Muon_lepjetAvsIP1D_val.push_back(lepjetchtrks!=0 ? lepjetAvsIP1D_val : -999);
-      Muon_lepjetAvsIP1D_sig.push_back(lepjetchtrks!=0 ? lepjetAvsIP1D_sig : -999);
+      Muon_lepjetAvIP3D_val.push_back(denlepjetAvIP3D_val!=0   ? lepjetAvIP3D_val/denlepjetAvIP3D_val   : IP3D_val);
+      Muon_lepjetAvIP3D_sig.push_back(denlepjetAvIP3D_sig!=0   ? lepjetAvIP3D_sig/denlepjetAvIP3D_sig   : IP3D_sig);
+      Muon_lepjetAvsIP3D_val.push_back(denlepjetAvsIP3D_val!=0 ? lepjetAvsIP3D_val/denlepjetAvsIP3D_val : sIP3D_val);
+      Muon_lepjetAvsIP3D_sig.push_back(denlepjetAvsIP3D_sig!=0 ? lepjetAvsIP3D_sig/denlepjetAvsIP3D_sig : sIP3D_sig);
+      Muon_lepjetAvIP2D_val.push_back(denlepjetAvIP2D_val!=0   ? lepjetAvIP2D_val/denlepjetAvIP2D_val   : IP2D_val);
+      Muon_lepjetAvIP2D_sig.push_back(denlepjetAvIP2D_sig!=0   ? lepjetAvIP2D_sig/denlepjetAvIP2D_sig   : IP2D_sig);
+      Muon_lepjetAvsIP2D_val.push_back(denlepjetAvsIP2D_val!=0 ? lepjetAvsIP2D_val/denlepjetAvsIP2D_val : sIP2D_val);
+      Muon_lepjetAvsIP2D_sig.push_back(denlepjetAvsIP2D_sig!=0 ? lepjetAvsIP2D_sig/denlepjetAvsIP2D_sig : sIP2D_sig);
+      Muon_lepjetAvIP1D_val.push_back(denlepjetAvIP1D_val!=0   ? lepjetAvIP1D_val/denlepjetAvIP1D_val   : IP1D_val);
+      Muon_lepjetAvIP1D_sig.push_back(denlepjetAvIP1D_sig!=0   ? lepjetAvIP1D_sig/denlepjetAvIP1D_sig   : IP1D_sig);
+      Muon_lepjetAvsIP1D_val.push_back(denlepjetAvsIP1D_val!=0 ? lepjetAvsIP1D_val/denlepjetAvsIP1D_val : sIP1D_val);
+      Muon_lepjetAvsIP1D_sig.push_back(denlepjetAvsIP1D_sig!=0 ? lepjetAvsIP1D_sig/denlepjetAvsIP1D_sig : sIP1D_sig);
+      //Lep jet trks
+      double lepjetchtrks      = 0;
+      double lepjetpvchtrks    = 0;
+      double lepjetnonpvchtrks = 0;
+      double lepjetndaus       = 0;
+      if(lepjetidx!=-1){
+        const pat::Jet & lepjet = (*jets)[lepjetidx];
+        lepjetTrks(lepjet, firstGoodVertex, lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus);
+      }
       Muon_lepjetchtrks.push_back(lepjetchtrks);
       Muon_lepjetpvchtrks.push_back(lepjetpvchtrks);
       Muon_lepjetnonpvchtrks.push_back(lepjetnonpvchtrks);
       Muon_lepjetndaus.push_back(lepjetndaus);
+      //Lep jet vtx compatibility
+      double lepjetpvchi2    = 0;
+      double lepjetnumno2trk = 0;
+      if(lepjetidx!=-1){
+        const pat::Jet & lepjet = (*jets)[lepjetidx];
+        lepjetVtxCompatibility(lepjet, firstGoodVertex, *ttrkbuilder, lepjetpvchi2, lepjetnumno2trk);
+      }
       Muon_lepjetpvchi2.push_back(lepjetpvchi2);
       Muon_lepjetnumno2trk.push_back(lepjetnumno2trk);
     }
@@ -464,7 +507,6 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         Muon_gen_pdgId.push_back(genpart->pdgId());
         Muon_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
         Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
-
       }else{
         Muon_gen_pt.push_back(-999);
         Muon_gen_eta.push_back(-999);
@@ -484,6 +526,10 @@ void MuonSelector::SetBranches(){
   AddBranch(&Muon_eta               ,"Muon_eta");
   AddBranch(&Muon_phi               ,"Muon_phi");
   AddBranch(&Muon_energy            ,"Muon_energy");
+  AddBranch(&Muon_px                ,"Muon_px");
+  AddBranch(&Muon_py                ,"Muon_py");
+  AddBranch(&Muon_pz                ,"Muon_pz");
+  AddBranch(&Muon_p                 ,"Muon_p");
   AddBranch(&Muon_p                 ,"Muon_p");
   AddBranch(&Muon_dB                ,"Muon_dB");
   AddBranch(&Muon_pt_it             ,"Muon_pt_it");
@@ -521,6 +567,7 @@ void MuonSelector::SetBranches(){
   AddBranch(&Muon_relIsoDeltaBetaR03  ,"Muon_relIsoDeltaBetaR03");
   AddBranch(&Muon_isoR03CharParPt     ,"Muon_isoR03CharParPt");
   AddBranch(&Muon_trackIso            ,"Muon_trackIso");
+  AddBranch(&Muon_TrackerIso          ,"Muon_TrackerIso");
   AddBranch(&Muon_ecalIso             ,"Muon_ecalIso");
   AddBranch(&Muon_hcalIso             ,"Muon_hcalIso");
   AddBranch(&Muon_caloIso             ,"Muon_caloIso");
@@ -584,10 +631,10 @@ void MuonSelector::SetBranches(){
     AddBranch(&Muon_mujet_pfCombinedMVABJetTags   ,"Muon_mujet_pfCombinedMVABJetTags");
     AddBranch(&Muon_mujet_qgl         ,"Muon_mujet_qgl");
     AddBranch(&Muon_mumass            ,"Muon_mumass");
-    AddBranch(&Muon_mujetmass         ,"Muon_mujetmass");
-    AddBranch(&Muon_mujetWmass        ,"Muon_mujetWmass");
-    AddBranch(&Muon_mujetTopmass      ,"Muon_mujetTopmass");
-    AddBranch(&Muon_mujetWTopmass     ,"Muon_mujetWTopmass");
+    AddBranch(&Muon_mujet_mass        ,"Muon_mujet_mass");
+    AddBranch(&Muon_mujet_Wmass       ,"Muon_mujet_Wmass");
+    AddBranch(&Muon_mujet_Topmass     ,"Muon_mujet_Topmass");
+    AddBranch(&Muon_mujet_WTopmass    ,"Muon_mujet_WTopmass");
     //Lep jet IP ntrks
     AddBranch(&Muon_IP3D_val           ,"Muon_IP3D_val");
     AddBranch(&Muon_IP3D_err           ,"Muon_IP3D_err");
@@ -656,6 +703,10 @@ void MuonSelector::Clear(){
   Muon_eta.clear();
   Muon_phi.clear();
   Muon_energy.clear();
+  Muon_px.clear();
+  Muon_py.clear();
+  Muon_pz.clear();
+  Muon_p.clear();
   Muon_p.clear(); 
   Muon_dB.clear();
   Muon_pt_it.clear();
@@ -693,6 +744,7 @@ void MuonSelector::Clear(){
   Muon_relIsoDeltaBetaR03.clear();
   Muon_isoR03CharParPt.clear();
   Muon_trackIso.clear();
+  Muon_TrackerIso.clear();
   Muon_ecalIso.clear();
   Muon_hcalIso.clear(); 
   Muon_caloIso.clear();
@@ -756,10 +808,10 @@ void MuonSelector::Clear(){
     Muon_mujet_pfCombinedMVABJetTags.clear();
     Muon_mujet_qgl.clear();
     Muon_mumass.clear();
-    Muon_mujetmass.clear();
-    Muon_mujetWmass.clear();
-    Muon_mujetTopmass.clear();
-    Muon_mujetWTopmass.clear();
+    Muon_mujet_mass.clear();
+    Muon_mujet_Wmass.clear();
+    Muon_mujet_Topmass.clear();
+    Muon_mujet_WTopmass.clear();
     //Lep jet IP ntrks
     Muon_IP3D_val.clear();
     Muon_IP3D_err.clear();
@@ -835,8 +887,8 @@ void MuonSelector::get_muminiIso_info(const pat::PackedCandidateCollection& pcc,
   vector<const pat::PackedCandidate *> pfc_neu; pfc_neu.clear();
   vector<const pat::PackedCandidate *> pfc_pu;  pfc_pu.clear();
   get_chneupu_pcc(pcc,pfc_all,pfc_ch,pfc_neu,pfc_pu);
-  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.0001, 0, 0);
-  miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, 0.01, 0.5, 0);
+  miniIsoCh  = get_isosumraw(pfc_ch,  cand, miniIsoConeSize, 0.0001, 0, SelfVetoPolicyMu::selfVetoAll, 0);
+  miniIsoNeu = get_isosumraw(pfc_neu, cand, miniIsoConeSize, 0.01, 0.5, SelfVetoPolicyMu::selfVetoAll, 0);
   double effarea    = get_effarea(cand.eta());
   double correction = rho*effarea*pow((miniIsoConeSize/0.3),2);
   miniIsoPUsub = std::max(0.0, miniIsoNeu-correction);
@@ -857,26 +909,35 @@ void MuonSelector::get_chneupu_pcc(const pat::PackedCandidateCollection& pcc,vec
       }
     }
   }
+  std::sort(pfc_ch.begin(),  pfc_ch.end(),  ByEta());
+  std::sort(pfc_neu.begin(), pfc_neu.end(), ByEta());
+  std::sort(pfc_pu.begin(),  pfc_pu.end(),  ByEta());
 }
-double MuonSelector::get_isosumraw(const std::vector<const pat::PackedCandidate *> & pcc, const pat::Muon& cand, double miniIsoConeSize, double innerR, double ptTh, int pdgId){
+double MuonSelector::get_isosumraw(const std::vector<const pat::PackedCandidate *> & pcc, const pat::Muon& cand, double miniIsoConeSize, double innerR, double ptTh, SelfVetoPolicyMu::SelfVetoPolicyMu selfVeto, int pdgId){
   //Look for cand sources
   std::vector<const reco::Candidate *> vetos; vetos.clear();
   for(uint i=0, n=cand.numberOfSourceCandidatePtrs(); i<n; ++i){
+    if(selfVeto == SelfVetoPolicyMu::selfVetoNone) break;
     const reco::CandidatePtr &cp = cand.sourceCandidatePtr(i);
     if(cp.isNonnull() && cp.isAvailable()){
       vetos.push_back(&*cp);
+      if(selfVeto == SelfVetoPolicyMu::selfVetoFirst) break;
     }
-  }     
+  }
   //Get the isolation
   double isosum = 0;
-  for(std::vector<const pat::PackedCandidate *>::const_iterator pc = pcc.begin(); pc<pcc.end(); ++pc){
+  float miniIsoConeSize2 = miniIsoConeSize*miniIsoConeSize, innerR2 = innerR*innerR;
+  typedef std::vector<const pat::PackedCandidate *>::const_iterator IT;
+  IT pccbegin = std::lower_bound(pcc.begin(), pcc.end(), cand.eta() - miniIsoConeSize, ByEta());
+  IT pccend   = std::upper_bound(pccbegin,    pcc.end(), cand.eta() + miniIsoConeSize, ByEta());
+  for(IT pc = pccbegin; pc<pccend; ++pc){
     //pdgId veto
     if(pdgId>0 && abs((*pc)->pdgId())!=pdgId) continue;
     //pT requirement 
     if(ptTh>0 && (*pc)->pt()<ptTh) continue;
     //cone region
-    double dr = reco::deltaR(**pc, cand);
-    if(dr<innerR || dr>=miniIsoConeSize) continue;
+    double dr2 = reco::deltaR2(**pc, cand);
+    if(miniIsoConeSize2<dr2 || dr2<innerR2) continue;
     //itself veto
     if(std::find(vetos.begin(), vetos.end(),*pc)!=vetos.end()) continue;
     //add to sum
@@ -893,15 +954,6 @@ double MuonSelector::get_effarea(double eta){
   else                    effarea = 0.0577;
   return effarea;
 }
-//double MuonSelector::get_iso_rho(const pat::Muon& mu, double& rho){
-// double miniIsoCh  = mu.pfIsolationR03().sumChargedHadronPt;
-// double miniIsoNeu = mu.pfIsolationR03().sumNeutralHadronEt + mu.pfIsolationR03().sumPhotonEt;
-// double effarea  = get_effarea(mu.eta());
-// double correction = rho*effarea;
-// double pfIsoPUsub = std::max( 0.0, miniIsoNeu - correction);
-// double iso = (miniIsoCh + pfIsoPUsub)/mu.pt();
-// return iso;
-//}
 void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                                   double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt,
                                   double& mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& mujet_pfJetProbabilityBJetTags, double& mujet_pfCombinedMVABJetTags, double& mujet_qgl,
@@ -950,6 +1002,27 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
   TLorentzVector mu_lv    = TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.p4().E());
   TLorentzVector mujet_lv = TLorentzVector(mujet.px(),mujet.py(),mujet.pz(),mujet.p4().E());
   muptrel = mu_lv.Perp((mujet_lv-mu_lv).Vect());
+}
+int MuonSelector::pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc){
+  int pvass = -1;
+  double mindr = 0.3;
+  for(const pat::PackedCandidate &cpf : pcc){ 
+    if(deltaR(mu.p4(),cpf.p4())<mindr             //dR is the standard geometrical way to associate 
+       && (fabs(mu.pt()-cpf.pt())/mu.pt())<0.05   //Check in pT, because ele,tau are usually faked by jets (many trks) and dR may not be enough
+       && cpf.charge()!=0 && cpf.numberOfHits()>0 //Leptons are charged and built from tracks, also to be consistent with PV tracks  
+    ){
+      mindr = deltaR(mu.p4(),cpf.p4());
+      pvass = cpf.fromPV();
+    }
+  }
+  return pvass;  
+}
+double MuonSelector::relativeEta(const math::XYZVector& vector, const math::XYZVector& axis){
+  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+  double mag = vector.r() * axis.r();
+  double dot = vector.Dot(axis);
+  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
+  return etarel;  
 }
 double MuonSelector::get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx){
   double lepWmass = 0;
@@ -1072,28 +1145,7 @@ double MuonSelector::get_lepWTopmass(const pat::Muon& mu, const edm::Event& iEve
   }
   return lepWTopmass;
 };
-int MuonSelector::pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc){
-  int pvass = -1;
-  double mindr = 0.3;
-  for(const pat::PackedCandidate &cpf : pcc){ 
-    if(deltaR(mu.p4(),cpf.p4())<mindr             //dR is the standard geometrical way to associate 
-       && (fabs(mu.pt()-cpf.pt())/mu.pt())<0.05   //Check in pT, because ele,tau are usually faked by jets (many trks) and dR may not be enough
-       && cpf.charge()!=0 && cpf.numberOfHits()>0 //Leptons are charged and built from tracks, also to be consistent with PV tracks  
-    ){
-      mindr = deltaR(mu.p4(),cpf.p4());
-      pvass = cpf.fromPV();
-    }
-  }
-  return pvass;  
-}
-double MuonSelector::relativeEta(const math::XYZVector& vector, const math::XYZVector& axis){
-  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
-  double mag = vector.r() * axis.r();
-  double dot = vector.Dot(axis);
-  if(mag!=dot && (mag+dot)!=0) etarel = -log((mag - dot)/(mag + dot)) / 2;
-  return etarel;  
-}
-void MuonSelector::IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP3D_val,double& IP3D_err,double& IP3D_sig,  double& IP2D_val,double& IP2D_err,double& IP2D_sig, double& sIP3D_val,double& sIP3D_err,double& sIP3D_sig,  double& sIP2D_val,double& sIP2D_err,double& sIP2D_sig){
+void MuonSelector::IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVector gv, double& IP3D_val,double& IP3D_err,double& IP3D_sig, double& sIP3D_val,double& sIP3D_err,double& sIP3D_sig, double& IP2D_val,double& IP2D_err,double& IP2D_sig, double& sIP2D_val,double& sIP2D_err,double& sIP2D_sig){
  pair<bool, Measurement1D> currIP;
  //3D
  currIP = IPTools::absoluteImpactParameter3D(ttrk,vtx);
@@ -1136,12 +1188,145 @@ void MuonSelector::zIP1D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVec
    if(currIP.second.significance()==currIP.second.significance()) sIP1D_sig = currIP.second.significance();
  }
 }
-void MuonSelector::lepjetIPtrks(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
+void MuonSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
                     double& lepjetMaxIP3D_val, double& lepjetMaxIP3D_sig, double& lepjetMaxsIP3D_val, double& lepjetMaxsIP3D_sig, double& lepjetMaxIP2D_val, double& lepjetMaxIP2D_sig, double& lepjetMaxsIP2D_val, double& lepjetMaxsIP2D_sig, double& lepjetMaxIP1D_val, double& lepjetMaxIP1D_sig, double& lepjetMaxsIP1D_val, double& lepjetMaxsIP1D_sig,
                     double& lepjetAvIP3D_val, double& lepjetAvIP3D_sig, double& lepjetAvsIP3D_val, double& lepjetAvsIP3D_sig, double& lepjetAvIP2D_val, double& lepjetAvIP2D_sig, double& lepjetAvsIP2D_val, double& lepjetAvsIP2D_sig, double& lepjetAvIP1D_val, double& lepjetAvIP1D_sig, double& lepjetAvsIP1D_val, double& lepjetAvsIP1D_sig,
-                    double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus,
-                    double& lepjetpvchi2, double& lepjetnumno2tr
+                    double& denlepjetAvIP3D_val, double& denlepjetAvIP3D_sig, double& denlepjetAvsIP3D_val, double& denlepjetAvsIP3D_sig, double& denlepjetAvIP2D_val, double& denlepjetAvIP2D_sig, double& denlepjetAvsIP2D_val, double& denlepjetAvsIP2D_sig, double& denlepjetAvIP1D_val, double& denlepjetAvIP1D_sig, double& denlepjetAvsIP1D_val, double& denlepjetAvsIP1D_sig,
+                    double& Lep_IP3D_val
 ){
+ //Access jet daughters
+ vector<CandidatePtr> jdaus(jet.daughterPtrVector());
+ sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
+ for(uint jd=0; jd<jdaus.size(); jd++){
+  const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
+  if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
+  Track trk = Track(jcand.pseudoTrack());
+  bool isgoodtrk = is_goodtrk(trk,vtx);
+  //Minimal conditions for a track 
+  if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
+    TransientTrack ttrk = ttrkbuilder.build(&trk);
+    //Current IP values 
+    double IP3D_val  = -9999;
+    double IP3D_err  = -9999;
+    double IP3D_sig  = -9999;
+    double sIP3D_val = -9999;
+    double sIP3D_err = -9999;
+    double sIP3D_sig = -9999;
+    double IP2D_val  = -9999;
+    double IP2D_err  = -9999;
+    double IP2D_sig  = -9999;
+    double sIP2D_val = -9999;
+    double sIP2D_err = -9999;
+    double sIP2D_sig = -9999;
+    double IP1D_val  = -9999;
+    double IP1D_err  = -9999;
+    double IP1D_sig  = -9999;
+    double sIP1D_val = -9999;
+    double sIP1D_err = -9999;
+    double sIP1D_sig = -9999;
+    IP3D2D(ttrk,vtx,lepjetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+    zIP1D(ttrk,vtx,lepjetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+    //Max Lep jet IP
+    if(IP3D_val>lepjetMaxIP3D_val)   lepjetMaxIP3D_val  = IP3D_val;
+    if(IP3D_sig>lepjetMaxIP3D_sig)   lepjetMaxIP3D_sig  = IP3D_sig;
+    if(sIP3D_val>lepjetMaxsIP3D_val) lepjetMaxsIP3D_val = sIP3D_val;
+    if(sIP3D_sig>lepjetMaxsIP3D_sig) lepjetMaxsIP3D_sig = sIP3D_sig;
+    if(IP2D_val>lepjetMaxIP2D_val)   lepjetMaxIP2D_val  = IP2D_val;
+    if(IP2D_sig>lepjetMaxIP2D_sig)   lepjetMaxIP2D_sig  = IP2D_sig;
+    if(sIP2D_val>lepjetMaxsIP2D_val) lepjetMaxsIP2D_val = sIP2D_val;
+    if(sIP2D_sig>lepjetMaxsIP2D_sig) lepjetMaxsIP2D_sig = sIP2D_sig;
+    if(IP1D_val>lepjetMaxIP1D_val)   lepjetMaxIP1D_val  = IP1D_val;
+    if(IP1D_sig>lepjetMaxIP1D_sig)   lepjetMaxIP1D_sig  = IP1D_sig;
+    if(sIP1D_val>lepjetMaxsIP1D_val) lepjetMaxsIP1D_val = sIP1D_val;
+    if(sIP1D_sig>lepjetMaxsIP1D_sig) lepjetMaxsIP1D_sig = sIP1D_sig;
+    //Max Lep jet IP
+    if((fabs(IP3D_val-Lep_IP3D_val)/IP3D_val)>0.01){
+      if(IP3D_val!=-9999 ){
+        lepjetAvIP3D_val     += IP3D_val;
+        denlepjetAvIP3D_val  += 1;
+      }
+      if(IP3D_sig!=-9999 ){
+        lepjetAvIP3D_sig     += IP3D_sig;
+        denlepjetAvIP3D_sig  += 1;
+      }
+      if(sIP3D_val!=-9999){
+        lepjetAvsIP3D_val    += sIP3D_val;
+        denlepjetAvsIP3D_val += 1;
+      }
+      if(sIP3D_sig!=-9999){
+        lepjetAvsIP3D_sig    += sIP3D_sig;
+        denlepjetAvsIP3D_sig += 1;
+      }
+      if(IP2D_val!=-9999 ){
+        lepjetAvIP2D_val     += IP2D_val;
+        denlepjetAvIP2D_val  += 1;
+      }
+      if(IP2D_sig!=-9999 ){
+        lepjetAvIP2D_sig     += IP2D_sig;
+        denlepjetAvIP2D_sig  += 1;
+      }
+      if(sIP2D_val!=-9999){
+        lepjetAvsIP2D_val    += sIP2D_val;
+        denlepjetAvsIP2D_val += 1;
+      }
+      if(sIP2D_sig!=-9999){
+        lepjetAvsIP2D_sig    += sIP2D_sig;
+        denlepjetAvsIP2D_sig += 1;
+      }
+      if(IP1D_val!=-9999 ){
+        lepjetAvIP1D_val     += IP1D_val;
+        denlepjetAvIP1D_val  += 1;
+      }
+      if(IP1D_sig!=-9999 ){
+        lepjetAvIP1D_sig     += IP1D_sig;
+        denlepjetAvIP1D_sig  += 1;
+      }
+      if(sIP1D_val!=-9999){
+        lepjetAvsIP1D_val    += sIP1D_val;
+        denlepjetAvsIP1D_val += 1;
+      }
+      if(sIP1D_sig!=-9999){
+        lepjetAvsIP1D_sig    += sIP1D_sig;
+        denlepjetAvsIP1D_sig += 1;
+      }
+    }
+  }//Ch trks 
+ }//Loop on jet daus
+}
+bool MuonSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
+ bool isgoodtrk = false;
+ if(trk.pt()>1 &&
+   trk.hitPattern().numberOfValidHits()>=8 &&
+   trk.hitPattern().numberOfValidPixelHits()>=2 &&
+   trk.normalizedChi2()<5 &&
+   std::abs(trk.dxy(vtx.position()))<0.2 &&
+   std::abs(trk.dz(vtx.position()))<17
+   ) isgoodtrk = true;
+ return isgoodtrk;
+}
+void MuonSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus){
+ //Access jet daughters
+ vector<CandidatePtr> jdaus(jet.daughterPtrVector());
+ sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
+ for(uint jd=0; jd<jdaus.size(); jd++){
+  const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
+  if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
+  Track trk = Track(jcand.pseudoTrack());
+  bool isgoodtrk = is_goodtrk(trk,vtx);
+  //Minimal conditions for a track 
+  if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
+    //Get jet trk num
+    lepjetchtrks++;
+    if(jcand.fromPV()==pat::PackedCandidate::PVUsedInFit){
+      lepjetpvchtrks++;
+    }else{
+      lepjetnonpvchtrks++;
+    }
+  }//Ch trks 
+ }//Loop on jet daus
+ lepjetndaus = jdaus.size();
+}
+void MuonSelector::lepjetVtxCompatibility(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr){
  //Access jet daughters
  vector<TransientTrack> jetttrks;
  vector<CandidatePtr> jdaus(jet.daughterPtrVector());
@@ -1155,65 +1340,11 @@ void MuonSelector::lepjetIPtrks(const pat::Jet& jet, const reco::Vertex& vtx, Gl
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);
     jetttrks.push_back(ttrk);
-    //Get max values
-    double IP3D_val  = -9999;
-    double IP3D_err  = -9999;
-    double IP3D_sig  = -9999;
-    double IP2D_val  = -9999;
-    double IP2D_err  = -9999;
-    double IP2D_sig  = -9999;
-    double sIP3D_val = -9999;
-    double sIP3D_err = -9999;
-    double sIP3D_sig = -9999;
-    double sIP2D_val = -9999;
-    double sIP2D_err = -9999;
-    double sIP2D_sig = -9999;
-    IP3D2D(ttrk,vtx,lepjetgv,IP3D_val,IP3D_err,IP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
-    double IP1D_val  = -9999;
-    double IP1D_err  = -9999;
-    double IP1D_sig  = -9999;
-    double sIP1D_val = -9999;
-    double sIP1D_err = -9999;
-    double sIP1D_sig = -9999;
-    zIP1D(ttrk,vtx,lepjetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
-    if(IP3D_val!=-9999  && IP3D_val>lepjetMaxIP3D_val)   lepjetMaxIP3D_val  = IP3D_val;
-    if(IP3D_sig!=-9999  && IP3D_sig>lepjetMaxIP3D_sig)   lepjetMaxIP3D_sig  = IP3D_sig;
-    if(sIP3D_val!=-9999 && sIP3D_val>lepjetMaxsIP3D_val) lepjetMaxsIP3D_val = sIP3D_val;
-    if(sIP3D_sig!=-9999 && sIP3D_sig>lepjetMaxsIP3D_sig) lepjetMaxsIP3D_sig = sIP3D_sig;
-    if(IP2D_val!=-9999  && IP2D_val>lepjetMaxIP2D_val)   lepjetMaxIP2D_val  = IP2D_val;
-    if(IP2D_sig!=-9999  && IP2D_sig>lepjetMaxIP2D_sig)   lepjetMaxIP2D_sig  = IP2D_sig;
-    if(sIP2D_val!=-9999 && sIP2D_val>lepjetMaxsIP2D_val) lepjetMaxsIP2D_val = sIP2D_val;
-    if(sIP2D_sig!=-9999 && sIP2D_sig>lepjetMaxsIP2D_sig) lepjetMaxsIP2D_sig = sIP2D_sig;
-    if(IP1D_val!=-9999  && IP1D_val>lepjetMaxIP1D_val)   lepjetMaxIP1D_val  = IP1D_val;
-    if(IP1D_sig!=-9999  && IP1D_sig>lepjetMaxIP1D_sig)   lepjetMaxIP1D_sig  = IP1D_sig;
-    if(sIP1D_val!=-9999 && sIP1D_val>lepjetMaxsIP1D_val) lepjetMaxsIP1D_val = sIP1D_val;
-    if(sIP1D_sig!=-9999 && sIP1D_sig>lepjetMaxsIP1D_sig) lepjetMaxsIP1D_sig = sIP1D_sig;
-    //Get av values
-    if(IP3D_val!=-9999 ) lepjetAvIP3D_val  += IP3D_val;
-    if(IP3D_sig!=-9999 ) lepjetAvIP3D_sig  += IP3D_sig;
-    if(sIP3D_val!=-9999) lepjetAvsIP3D_val += sIP3D_val;
-    if(sIP3D_sig!=-9999) lepjetAvsIP3D_sig += sIP3D_sig;
-    if(IP2D_val!=-9999 ) lepjetAvIP2D_val  += IP2D_val;
-    if(IP2D_sig!=-9999 ) lepjetAvIP2D_sig  += IP2D_sig;
-    if(sIP2D_val!=-9999) lepjetAvsIP2D_val += sIP2D_val;
-    if(sIP2D_sig!=-9999) lepjetAvsIP2D_sig += sIP2D_sig;
-    if(IP1D_val!=-9999 ) lepjetAvIP1D_val  += IP1D_val;
-    if(IP1D_sig!=-9999 ) lepjetAvIP1D_sig  += IP1D_sig;
-    if(sIP1D_val!=-9999) lepjetAvsIP1D_val += sIP1D_val;
-    if(sIP1D_sig!=-9999) lepjetAvsIP1D_sig += sIP1D_sig;
-    //Get jet trk num
-    lepjetchtrks++;
-    if(jcand.fromPV()==pat::PackedCandidate::PVUsedInFit){
-      lepjetpvchtrks++;
-    }else{
-      lepjetnonpvchtrks++;
-    }
   }//Ch trks 
  }//Loop on jet daus
- lepjetndaus = jdaus.size();
  //LepJet vertex chi2
  TransientVertex tv;
- if(jetttrks.size()>=2) tv = vertexfitter.vertex(jetttrks);
+ if(jetttrks.size()>=2) tv = vertexfittermu.vertex(jetttrks);
  if(tv.isValid()) lepjetpvchi2 = tv.totalChiSquared()/tv.degreesOfFreedom();
  double num2v = 0; double numno2v = 0; 
  get_2trksinfo(jetttrks,  num2v,  numno2v);
@@ -1227,7 +1358,7 @@ void MuonSelector::get_2trksinfo(vector<TransientTrack> ttrks, double& num2v, do
    twotrks.push_back(ttrks[t]);
    twotrks.push_back(ttrks[t2]);
    TransientVertex tv;
-   if(ttrks.size()>=2) tv = vertexfitter.vertex(ttrks);
+   if(ttrks.size()>=2) tv = vertexfittermu.vertex(ttrks);
    if(tv.isValid() && TMath::Prob(tv.totalChiSquared(),tv.degreesOfFreedom())>0.05){
     num2v++;
    }else{
@@ -1236,30 +1367,7 @@ void MuonSelector::get_2trksinfo(vector<TransientTrack> ttrks, double& num2v, do
   }
  }
 }
-bool MuonSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
- bool isgoodtrk = false;
- if(trk.pt()>1 &&
-   trk.hitPattern().numberOfValidHits()>=8 &&
-   trk.hitPattern().numberOfValidPixelHits()>=2 &&
-   trk.normalizedChi2()<5 &&
-   std::abs(trk.dxy(vtx.position()))<0.2 &&
-   std::abs(trk.dz(vtx.position()))<17
-   ) isgoodtrk = true;
- return isgoodtrk;
-}
-namespace{
-  struct ByEta{
-    bool operator()(const pat::PackedCandidate *c1, const pat::PackedCandidate *c2) const{
-      return c1->eta()<c2->eta();
-    }
-    bool operator()(double c1eta, const pat::PackedCandidate *c2) const{
-      return c1eta<c2->eta();
-    }
-    bool operator()(const pat::PackedCandidate *c1, double c2eta) const{
-      return c1->eta()<c2eta;
-    }
-  };
-}
+//TTHLep synch
   //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );
   //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFchsL1L2L3", iSetup );
   //  pat::Jet jet = j;//j.correctedJet(0);
@@ -1298,3 +1406,4 @@ namespace{
 	}
 	amu = true;
       }*/
+//BOOM->Scan("Muon_pt[0]:Muon_eta[0]:Muon_phi[0]:Muon_energy[0]:Muon_pdgId[0]:Muon_charge[0]:Muon_miniIsoRel[0]:Muon_miniIsoCh[0]:Muon_miniIsoPUsub[0]:Muon_ptrel[0]:Muon_jetcsv[0]:Muon_jetptratio[0]:Muon_IP3D_sig[0]:Muon_IP2D_val[0]:Muon_IP1D_val[0]:Muon_segmentCompatibility[0]")

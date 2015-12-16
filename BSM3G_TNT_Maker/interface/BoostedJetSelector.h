@@ -98,7 +98,7 @@ class BoostedJetSelector : public  baseTree{
   /////
   //   IHEP methods/variables
   /////
-  vector <double> BoostedJet_pt, BoostedJet_eta, BoostedJet_phi, BoostedJet_energy, BoostedJet_mass, BoostedJet_Btag0, BoostedJet_Btag1, BoostedJet_Btag2;
+  vector <double> BoostedJet_pt, BoostedJet_eta, BoostedJet_phi, BoostedJet_energy, BoostedJet_mass, BoostedJet_Uncorr_pt, BoostedJet_combinedSecondaryVertexBJetTags, BoostedJet_pfCombinedSecondaryVertexV2BJetTags, BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags;
   vector <double> BoostedJet_neutralHadEnergyFraction, BoostedJet_neutralEmEmEnergyFraction, BoostedJet_chargedHadronEnergyFraction;
   vector <double> BoostedJet_chargedEmEnergyFraction, BoostedJet_muonEnergyFraction,BoostedJet_electronEnergy, BoostedJet_photonEnergy;
   vector <int>    BoostedJet_numberOfConstituents, BoostedJet_chargedMultiplicity;

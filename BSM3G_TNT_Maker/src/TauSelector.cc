@@ -7,9 +7,9 @@ TauSelector::TauSelector(std::string name, TTree* tree, bool debug, const pset& 
   _beamSpot               = iConfig.getParameter<edm::InputTag>("beamSpot");
   _Tau_pt_min     	  = iConfig.getParameter<double>("Tau_pt_min");
   _Tau_eta_max    	  = iConfig.getParameter<double>("Tau_eta_max");
-  _Tau_vtx_ndof_min       = iConfig.getParameter<int>("Tau_vtx_ndof_min");
-  _Tau_vtx_rho_max        = iConfig.getParameter<int>("Tau_vtx_rho_max");
-  _Tau_vtx_position_z_max = iConfig.getParameter<double>("Tau_vtx_position_z_max");
+  _Tau_vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
+  _Tau_vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
+  _Tau_vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT      	  = iConfig.getParameter<bool>("super_TNT");
   _MiniAODv2      	  = iConfig.getParameter<bool>("MiniAODv2");
   SetBranches();
@@ -62,6 +62,10 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     Tau_eta.push_back(tau->eta());
     Tau_phi.push_back(tau->phi());
     Tau_energy.push_back(tau->energy());
+    Tau_px.push_back(tau->px());
+    Tau_py.push_back(tau->py());
+    Tau_pz.push_back(tau->pz());
+    Tau_p.push_back(tau->p());
     const reco::Track *leadTrack = 0;
     bool isBestTrackNonNull = false;
     bool leadPackedCandidateExists = false;
@@ -259,6 +263,10 @@ void TauSelector::SetBranches(){
   AddBranch(&Tau_eta                          ,"Tau_eta");
   AddBranch(&Tau_phi                          ,"Tau_phi");
   AddBranch(&Tau_energy                       ,"Tau_energy");
+  AddBranch(&Tau_px                           ,"Tau_px");
+  AddBranch(&Tau_py                           ,"Tau_py");
+  AddBranch(&Tau_pz                           ,"Tau_pz");
+  AddBranch(&Tau_p                            ,"Tau_p");
   AddBranch(&Tau_leadChargedCandPt            ,"Tau_leadChargedCandPt");
   AddBranch(&Tau_leadChargedCandEta           ,"Tau_leadChargedCandEta");
   AddBranch(&Tau_leadChargedCandPhi           ,"Tau_leadChargedCandPhi");
@@ -285,10 +293,13 @@ void TauSelector::SetBranches(){
     AddBranch(&Tau_againstElectronMedium     ,"Tau_againstElectronMedium");
     AddBranch(&Tau_againstElectronTight      ,"Tau_againstElectronTight");
   }
-  AddBranch(&Tau_againstElectronVLooseMVA5 ,"Tau_againstElectronVLooseMVA5");
-  AddBranch(&Tau_againstElectronLooseMVA5  ,"Tau_againstElectronLooseMVA5");
-  AddBranch(&Tau_againstElectronMediumMVA5 ,"Tau_againstElectronMediumMVA5");
-  AddBranch(&Tau_againstElectronTightMVA5  ,"Tau_againstElectronTightMVA5");
+  AddBranch(&Tau_againstElectronVLooseMVA5   ,"Tau_againstElectronVLooseMVA5");
+  AddBranch(&Tau_againstElectronLooseMVA5    ,"Tau_againstElectronLooseMVA5");
+  AddBranch(&Tau_againstElectronMediumMVA5   ,"Tau_againstElectronMediumMVA5");
+  AddBranch(&Tau_againstElectronTightMVA5    ,"Tau_againstElectronTightMVA5");
+  AddBranch(&Tau_againstElectronVTightMVA5   ,"Tau_againstElectronVTightMVA5");
+  AddBranch(&Tau_againstElectronMVA5category ,"Tau_againstElectronMVA5category");
+  AddBranch(&Tau_againstElectronMVA5raw      ,"Tau_againstElectronMVA5raw");
   //Isolation
   //MiniAODv1
   if(!_MiniAODv2){
@@ -377,6 +388,10 @@ void TauSelector::Clear(){
   Tau_eta.clear();
   Tau_phi.clear();
   Tau_energy.clear();
+  Tau_px.clear();
+  Tau_py.clear();
+  Tau_pz.clear();
+  Tau_p.clear();
   Tau_leadChargedCandPt.clear();
   Tau_leadChargedCandEta.clear();
   Tau_leadChargedCandPhi.clear();
@@ -407,6 +422,9 @@ void TauSelector::Clear(){
   Tau_againstElectronLooseMVA5.clear();
   Tau_againstElectronMediumMVA5.clear();
   Tau_againstElectronTightMVA5.clear();
+  Tau_againstElectronVTightMVA5.clear();
+  Tau_againstElectronMVA5category.clear();
+  Tau_againstElectronMVA5raw.clear();
   //Isolation
   //MiniAODv1
   if(!_MiniAODv2){

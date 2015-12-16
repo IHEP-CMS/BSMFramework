@@ -1,3 +1,7 @@
+//Please note that 
+// else if(jetPt >=160 && jetPt<100000) iPt = 5; was originally else if(jetPt >=160 && jetPt<10000) iPt = 5;
+// but it could crash if jetPt>10000, so I temporarily changed the value to 100000
+// I do not know what it changes in the analysis, but since we are not really use this class right now, I think it is temporarily ok
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BTagReweight.h"
 BTagReweight::BTagReweight(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug)
 {
@@ -173,7 +177,7 @@ double BTagReweight::get_csv_wgt(std::vector<double> jetPts, std::vector<double>
     else if(jetPt >=40 && jetPt<60) iPt = 2;
     else if(jetPt >=60 && jetPt<100) iPt = 3;
     else if(jetPt >=100 && jetPt<160) iPt = 4;
-    else if(jetPt >=160 && jetPt<10000) iPt = 5;
+    else if(jetPt >=160 && jetPt<100000) iPt = 5;
 		
     if(jetAbsEta >=0 &&  jetAbsEta<0.8) iEta = 0;
     else if(jetAbsEta>=0.8 && jetAbsEta<1.6)  iEta = 1;

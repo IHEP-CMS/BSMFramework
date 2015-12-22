@@ -166,13 +166,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     double SumNeutralCorrEt = std::max( 0.0, SumNeuHadEt+SumPhotonEt - 0.5*SumPU );
     double relIsoDeltaBeta = (SumChHadPt + SumNeutralCorrEt)/el->pt();
     patElectron_relIsoDeltaBeta.push_back(relIsoDeltaBeta);
-    double eleEta = fabs(el->eta());
-    double EffArea = 0;
-    if (eleEta >= 0. && eleEta < 0.8)        EffArea = 0.1013;
-    else if (eleEta >= 0.8 && eleEta < 1.3)  EffArea = 0.0988;
-    else if (eleEta >= 1.3 && eleEta < 2.0)  EffArea = 0.0572;
-    else if (eleEta >= 2.0 && eleEta < 2.2)  EffArea = 0.0842;
-    else if (eleEta >= 2.2 && eleEta <= 2.5) EffArea = 0.1530;
+    double EffArea = get_effarea(el->superCluster()->position().eta());
     SumNeutralCorrEt = std::max( 0.0, SumNeuHadEt+SumPhotonEt - rhopog*EffArea );
     double relIsoRhoEA = (SumChHadPt + SumNeutralCorrEt)/el->pt();
     patElectron_relIsoRhoEA.push_back(relIsoRhoEA);

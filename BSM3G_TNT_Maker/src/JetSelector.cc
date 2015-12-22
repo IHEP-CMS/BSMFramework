@@ -126,7 +126,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     float JERScaleFactor     = 1; 
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
-    GetJER(j, corrAK4PFchs, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    if(!_is_data) GetJER(j, corrAK4PFchs, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -224,7 +224,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       float JERScaleFactor     = 1; 
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
-      GetJER(j, corrAK4PFPuppi, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      if(!_is_data) GetJER(j, corrAK4PFPuppi, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -491,7 +491,6 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float
   double cFactorJER = 1.0; 
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
-  //The following factors are derived from 8TeV but blessed for 13TeV, before new factors will be available
   //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
   string ERA="13TeV";
   if(ERA=="8TeV"){
@@ -567,7 +566,7 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float
       cFactorJERup   = 1.320+0.286; 
     }
   }
-  double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
+  double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();
   double diffPt    = recoJetPt - genJetPt;
   if(genJetPt>0.){

@@ -18,7 +18,12 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 #include <TTree.h>
+#include "TLorentzVector.h"
+#include "TMath.h"
 #include <Math/VectorUtil.h>
 #include "baseTree.h"
 using namespace std;
@@ -28,17 +33,29 @@ using namespace edm;
 /////
 class BTagReweight : public baseTree{
  public:
-  BTagReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  BTagReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~BTagReweight();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
+  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  void GetLeptonsForDeltaRWithJets(vector<TLorentzVector> &LeptonsForDeltaRWithJets, const edm::Event& iEvent);
+  double get_effarea(double eta);
+  bool isGoodVertex(const reco::Vertex& vtx);
  private:
   BTagReweight(){};
   /////
   //   Config variables
   /////
+  bool _is_data;
   double bWeight;
   edm::InputTag jetToken_;
+  edm::InputTag _muonToken;
+  edm::InputTag _vertexInputTag;
+  edm::InputTag _patElectronToken;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
+  int    _vtx_ndof_min;
+  int    _vtx_rho_max;
+  double _vtx_position_z_max;
   /////
   //   IHEP methods/variables
   /////

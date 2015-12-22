@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 500
 #process.load("Configuration.StandardSequences.Geometry_cff")
 ##process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -15,7 +15,7 @@ process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 #process.GlobalTag.globaltag = 'MCRUN2_74_V9::All'
-process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v2'
+process.GlobalTag.globaltag = '74X_dataRun2_v5'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -24,39 +24,14 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-    #RUN D v3
-    #'/store/data/Run2015D/SingleElectron/MINIAOD/PromptReco-v3/000/256/630/00000/6E469C2A-165F-E511-9E77-02163E01414D.root'
-    #RUN D v4
-    '/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v4/000/258/159/00000/9A34CAC7-236C-E511-9B16-02163E01437A.root'
+    #data
+    'root://xrootd-cms.infn.it///store/user/hmildner/el_skim_3loosejets.root',
+    'root://xrootd-cms.infn.it///store/user/hmildner/mu_skim_3loosejets.root',
+    'root://xrootd-cms.infn.it///store/user/hmildner/muel_skim_2loosejets.root'
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-#####
-##   Trigger
-#####
-process.hltFilter = cms.EDFilter('HLTHighLevel',
-  TriggerResultsTag = cms.InputTag('TriggerResults','','HLT'),
-  HLTPaths          = cms.vstring(
-    'HLT_Ele105_CaloIdVT_GsfTrkIdT_v*',
-    'HLT_Ele27_eta2p1_WP75_Gsf_v*',
-    'HLT_Ele27_WP85_Gsf_v*',
-    'HLT_Ele27_eta2p1_WPLoose_Gsf_v*',
-    'HLT_Mu50_v*',
-    'HLT_IsoMu20_v*',
-    'HLT_IsoMu17_eta2p1_v*',
-    'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-    'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*',
-    'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*',
-    'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
-    'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
-    'HLT_IsoMu24_eta2p1_v*',
-    'HLT_IsoMu18_v*',
-  ),
-  eventSetupPathsKey = cms.string(''),
-  andOr              = cms.bool(True), #---- True = OR, False = AND between the HLT paths
-  throw              = cms.bool(False)
-)
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -72,7 +47,9 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff']
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff'
+                ]
 # Add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
@@ -187,33 +164,69 @@ process.matchGenCHadron = matchGenCHadron.clone(
 ##   Output file
 #####
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("OutTree.root")
+  fileName = cms.string("OutTree_data.root")
 )
 #####
 ##   Analysis parameters
 #####
 process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   #### Running options
-  # Choose which information you want to use
+  # Choose which trigger you want (do NOT need to put * as it will consider all the versions by default)
+  ifevtriggers      = cms.bool(False), # True means you want to require the triggers
+  maxtriggerversion = cms.double(10), # please leave it as a double
+  evtriggers        = cms.vstring(
+    #Common
+     #Electron
+     'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+     #Muon
+     'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
+     'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 
+     'HLT_IsoMu20_v',
+     'HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
+     'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
+    #TTHbb
+     #Electron
+     'HLT_Ele105_CaloIdVT_GsfTrkIdT_v',
+     'HLT_Ele27_eta2p1_WP75_Gsf_v',
+     'HLT_Ele27_WP85_Gsf_v',
+     'HLT_Ele27_eta2p1_WPLoose_Gsf_v',
+     #Muon
+     'HLT_Mu45_eta2p1',
+     'HLT_Mu50_v',
+     'HLT_IsoMu17_eta2p1_v',
+     'HLT_IsoMu24_eta2p1_v',
+     'HLT_IsoMu18_v',
+    #TTHLep
+     #Electron
+     'HLT_Ele23_WPLoose_Gsf_v', #Data
+     'HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v', #MC 	
+     #Muon
+     'HLT_IsoTkMu20_v', 
+     #Cross Ele-Mu
+     'HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v',
+     'HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v',
+     'HLT_TripleMu_12_10_5_v',
+     'HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v',
+  ),
   fillgeninfo           = cms.bool(False),
   fillgenHFCategoryinfo = cms.bool(False),
   filleventinfo         = cms.bool(True),
   filltriggerinfo       = cms.bool(True),
-  fillPVinfo            = cms.bool(True),
+  fillPVinfo            = cms.bool(False),
   fillmuoninfo          = cms.bool(True),
   fillelectronpatinfo   = cms.bool(True),
   filltauinfo           = cms.bool(False),
   filljetinfo           = cms.bool(True),
-  fillBoostedJetinfo    = cms.bool(True),
-  fillTopSubJetinfo     = cms.bool(True),
+  fillBoostedJetinfo    = cms.bool(False),
+  fillTopSubJetinfo     = cms.bool(False),
   fillBJetnessinfo      = cms.bool(False),
-  fillBTagReweight      = cms.bool(False),
-  fillPileupReweight    = cms.bool(True),
+  fillBTagReweight      = cms.bool(True),
+  fillPileupReweight    = cms.bool(False),
   fillMETinfo           = cms.bool(True),
-  fillphotoninfo        = cms.bool(False),   
-  filltthjetinfo        = cms.bool(False),
-  # Choose format and variables
-  MiniAODv2 = cms.bool(False),
+  fillphotoninfo        = cms.bool(False), 
+  filltthjetinfo        = cms.bool(False),  
+  # Choose format
+  MiniAODv2 = cms.bool(True),
   is_data   = cms.bool(True),
   debug_    = cms.bool(False),
   super_TNT = cms.bool(False),
@@ -234,9 +247,11 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
   electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
   eleMVATrigIdMap     = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80"),
-  elemvaValuesMap     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
-  elemvaCategoriesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   eleHEEPIdMap        = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
+  elemvaValuesMap_nonTrig      = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
+  elemvaCategoriesMap_nonTrig  = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Categories"),
+  elemvaValuesMap_Trig         = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
+  elemvaCategoriesMap_Trig     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   taus                = cms.InputTag("slimmedTaus"),
   #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),
   jets                = cms.InputTag("slimmedJets"),
@@ -248,10 +263,10 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   photons             = cms.InputTag("slimmedPhotons"),
   packedPFCandidates  = cms.InputTag("packedPFCandidates"), 
   #JEC - CORRECTIONS ON FLY
-  jecPayloadNamesAK4PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/MCRUN2_74_V9_L1FastJet_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/MCRUN2_74_V9_L2Relative_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/MCRUN2_74_V9_L3Absolute_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/MCRUN2_74_V9_Uncertainty_AK4PFchs.txt"),
   jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt"),
   jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
   jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
@@ -275,30 +290,30 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   #PILEUP REWEIGHTING
   PUReweightfile      = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/PUReweight/MyDataPileupHistogram_true.root"),
   #BTAG REWEIGHTING
-  BTAGReweightfile1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_hf_IT_FlatSF_2015_07_27.root"),
-  BTAGReweightfile2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_lf_IT_FlatSF_2015_07_27.root"),
+  BTAGReweightfile1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_hf_2015_11_20.root"),
+  BTAGReweightfile2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_lf_2015_11_20.root"),
   #### Object selection
   # Primary vertex cuts
   Pvtx_ndof_min   = cms.double(4.),
   Pvtx_vtx_max    = cms.double(24.),
   Pvtx_vtxdxy_max = cms.double(24.),
   # Muon cuts
-  Muon_pt_min         = cms.double(20.),
-  Muon_eta_max        = cms.double(2.4),
+  Muon_pt_min         = cms.double(5.),
+  Muon_eta_max        = cms.double(3.0),
   vtx_ndof_min        = cms.int32(4),
   vtx_rho_max         = cms.int32(2),
   vtx_position_z_max  = cms.double(24.),
   # Electron cuts
-  patElectron_pt_min  = cms.double(20.),
-  patElectron_eta_max = cms.double(2.4),
+  patElectron_pt_min  = cms.double(5.),
+  patElectron_eta_max = cms.double(3.0),
   # Tau cuts
   Tau_pt_min              = cms.double(10.),
-  Tau_eta_max             = cms.double(2.3),
+  Tau_eta_max             = cms.double(3.0),
   Tau_vtx_ndof_min        = cms.int32(4),
   Tau_vtx_rho_max         = cms.int32(2),
   Tau_vtx_position_z_max  = cms.double(24.),
   # Jet cuts
-  Jet_pt_min = cms.double(20.),
+  Jet_pt_min = cms.double(5.),
   # Photon cuts 
   Photon_pt_min   = cms.double(5.0),
   Photon_eta_max  = cms.double(5.0),    
@@ -330,7 +345,7 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
 )
 #process.p = cms.Path(process.printGenParticleList)
 process.p = cms.Path(
-process.hltFilter*
+#process.hltFilter*
 #process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*
 process.egmGsfElectronIDSequence*
 #process.primaryVertexFilter* 

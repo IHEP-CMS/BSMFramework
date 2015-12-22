@@ -53,7 +53,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig);
+  if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig);
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);

@@ -67,7 +67,8 @@ void BTagReweight::Fill(const edm::Event& iEvent){
       jetEtas.push_back(j.eta());
       if(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<1.0) jetCSVs.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       else jetCSVs.push_back(1);
-      jetFlavors.push_back(j.partonFlavour());
+      //jetFlavors.push_back(j.partonFlavour());
+      jetFlavors.push_back(j.hadronFlavour());
     }
     int iSys = 0;
     double wgt_csv_hf, wgt_csv_lf, wgt_csv_cf;
@@ -226,7 +227,6 @@ double BTagReweight::get_csv_wgt(std::vector<double> jetPts, std::vector<double>
   csvWgtCF = csvWgtC;
   return csvWgtTotal;
 }
-
 void BTagReweight::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());

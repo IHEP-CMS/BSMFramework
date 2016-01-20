@@ -51,7 +51,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -240,6 +240,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   fillBoostedJetinfo    = cms.bool(True),
   fillTopSubJetinfo     = cms.bool(True),
   fillBJetnessinfo      = cms.bool(True),
+  fillBJetnessFVinfo    = cms.bool(True),
   fillBTagReweight      = cms.bool(True),
   fillPileupReweight    = cms.bool(True),
   fillMETinfo           = cms.bool(True),

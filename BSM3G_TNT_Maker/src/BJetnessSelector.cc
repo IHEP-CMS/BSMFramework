@@ -24,7 +24,10 @@ using namespace edm;
 using namespace reco;
 BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug),
-  electronLooseIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronLooseIdMap")))
+  electronLooseIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronLooseIdMap"))),
+  eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
+  elemvaValuesMapToken_Trig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_Trig"))),
+  elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig")))
   {
     _is_data = iConfig.getParameter<bool>("is_data");
   _muonToken        = iConfig.getParameter<edm::InputTag>("muons");
@@ -48,9 +51,18 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   edm::Handle<edm::View<pat::Electron> > electron_pat;
   iEvent.getByLabel(_patElectronToken, electron_pat);
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
+  edm::Handle<edm::ValueMap<float> > elemvaValues_Trig;
+  edm::Handle<edm::ValueMap<int> >   elemvaCategories_Trig;
   iEvent.getByToken(electronLooseIdMapToken_,loose_id_decisions);
+  iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);
+  iEvent.getByToken(elemvaValuesMapToken_Trig_,        elemvaValues_Trig);
+  iEvent.getByToken(elemvaCategoriesMapToken_Trig_,    elemvaCategories_Trig);
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByLabel(jetToken_, jets);                                         
+  edm::Handle<double> rhopogHandle;
+  iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
+  double rhopog = *rhopogHandle;
   edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
   /////
@@ -71,8 +83,10 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   //for(const pat::Electron &ele : *electron_pat){
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const Ptr<pat::Electron> elPtr(electron_pat, ele - electron_pat->begin() );
-    bool isPassLoose  = (*loose_id_decisions) [ elPtr ];
-    if(!(is_loose_electron(*ele) && isPassLoose)) continue;
+    bool isPassMvatrig = (*mvatrig_id_decisions)[ elPtr ];
+    //float mvaval_Trig  = (*elemvaValues_Trig)[ elPtr ];
+    //float mvacat_Trig  = (*elemvaCategories_Trig)[ elPtr ];
+    if(!(is_loose_electron(*ele,rhopog) && isPassMvatrig)) continue;
     //bool matchelemu = false;
     //for(uint gl=0; gl<looseleps.size(); gl++) if(deltaR(looseleps[gl]->p4(),ele.p4())<0.3) matchelemu = true;
     //if(matchelemu) continue;
@@ -262,8 +276,8 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetchtrks_chi2 = 997;
       get_chi2(jetschtrks, *ttrkbuilder, jetchtrks_chi2);
       BJetness_chi2.push_back(jetchtrks_chi2);
-      double ip_valtemp = 0;
       //ImpactParameter  
+      double ip_valtemp = 0;
       double jetchtrks_avip3d_val  = 0;  
       double jetchtrks_avip3d_sig  = 0;  
       double jetchtrks_avsip3d_val = 0;  
@@ -536,19 +550,19 @@ void BJetnessSelector::Clear(){
 //Look for loose muon
 bool BJetnessSelector::is_loose_muon(const pat::Muon& mu, const reco::Vertex& vtx){
   bool isloosemu = false;
-  if(mu.muonBestTrack().isNonnull() && mu.globalTrack().isNonnull() && mu.innerTrack().isNonnull() && mu.track().isNonnull() &&
-    mu.pt()>10 &&
+  if(//mu.muonBestTrack().isNonnull() && mu.globalTrack().isNonnull() && mu.innerTrack().isNonnull() && mu.track().isNonnull() &&
+    mu.pt()>15 &&
     TMath::Abs(mu.eta()) < 2.4 &&
     mu.isTightMuon(vtx) &&  
-    mu.isPFMuon() && mu.isGlobalMuon() &&
-    fabs(mu.muonBestTrack()->dxy(vtx.position())) < 0.2 && 
-    fabs(mu.muonBestTrack()->dz(vtx.position()))  < 0.5 && 
-    mu.globalTrack()->normalizedChi2() < 10 &&
-    mu.globalTrack()->hitPattern().numberOfValidMuonHits()  > 0 &&
-    mu.innerTrack()->hitPattern().numberOfValidPixelHits()  > 0 &&
-    mu.track()->hitPattern().trackerLayersWithMeasurement() > 5 &&
-    mu.numberOfMatchedStations() > 1 && 
-    rel_iso_dbc_mu(mu) < 0.2
+    //mu.isPFMuon() && mu.isGlobalMuon() &&
+    //fabs(mu.muonBestTrack()->dxy(vtx.position())) < 0.2 && 
+    //fabs(mu.muonBestTrack()->dz(vtx.position()))  < 0.5 && 
+    //mu.globalTrack()->normalizedChi2() < 10 &&
+    //mu.globalTrack()->hitPattern().numberOfValidMuonHits()  > 0 &&
+    //mu.innerTrack()->hitPattern().numberOfValidPixelHits()  > 0 &&
+    //mu.track()->hitPattern().trackerLayersWithMeasurement() > 5 &&
+    //mu.numberOfMatchedStations() > 1 && 
+    rel_iso_dbc_mu(mu) < 0.25
     ) isloosemu = true;
   return isloosemu;
 }
@@ -556,12 +570,30 @@ double BJetnessSelector::rel_iso_dbc_mu(const pat::Muon& lepton){
   return((lepton.pfIsolationR04().sumChargedHadronPt + max(lepton.pfIsolationR04().sumNeutralHadronEt + lepton.pfIsolationR04().sumPhotonEt - 0.5 * lepton.pfIsolationR04().sumPUPt,0.0))/lepton.pt()
         );
 }
-bool BJetnessSelector::is_loose_electron(const pat::Electron& ele){
+bool BJetnessSelector::is_loose_electron(const pat::Electron& ele, double rhopog){
   bool isele = false;
-  if(ele.pt()>10 && TMath::Abs(ele.eta())<2.4 &&
-     !(abs(ele.superCluster()->position().eta()) > 1.4442 && abs(ele.superCluster()->position().eta()) < 1.5660) &&
-     ele.passConversionVeto()
-    ) isele = true;
+  if(ele.pt()>15 && TMath::Abs(ele.eta())<2.4 &&
+     !(fabs(ele.superCluster()->position().eta()) > 1.4442 && fabs(ele.superCluster()->position().eta()) < 1.5660)){
+    if(fabs(ele.superCluster()->position().eta())<1.4442 
+      && (ele.full5x5_sigmaIetaIeta()<0.012)                 
+      && (ele.hcalOverEcal()<0.09)                           
+      && (ele.ecalPFClusterIso()/ele.pt()<0.37)            
+      && (ele.hcalPFClusterIso()/ele.pt()<0.25)            
+      && (ele.dr03TkSumPt()/ele.pt()<0.18)                 
+      && (fabs(ele.deltaEtaSuperClusterTrackAtVtx())<0.0095)
+      && (fabs(ele.deltaPhiSuperClusterTrackAtVtx())<0.065)){  
+      isele = true;
+    }
+    if(fabs(ele.superCluster()->position().eta())>1.5660
+      && ele.full5x5_sigmaIetaIeta()<0.033
+      && ele.hcalOverEcal()<0.09
+      && (ele.ecalPFClusterIso()/ele.pt())<0.45
+      && (ele.hcalPFClusterIso()/ele.pt())<0.28
+      && (ele.dr03TkSumPt()/ele.pt())<0.18){
+      isele = true;
+    }
+  }
+  //ele.passConversionVeto()
   return isele; 
 }
 //Having the vtx in this function is kept for historical reason 
@@ -574,9 +606,26 @@ bool BJetnessSelector::is_loose_electron(const pat::Electron& ele){
 //    ) islooseele = true;
 //  return islooseele; 
 //}
-double BJetnessSelector::rel_iso_dbc_ele(const pat::Electron& lepton){
-  return( (lepton.chargedHadronIso() +
-          std::max(0.0, lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.pt() );
+double BJetnessSelector::rel_iso_dbc_ele(const pat::Electron& lepton, double rhopog){
+  double effarea          = get_effarea(lepton.superCluster()->position().eta());  
+  double SumChHadPt       = lepton.pfIsolationVariables().sumChargedHadronPt;
+  double SumNeuHadEt      = lepton.pfIsolationVariables().sumNeutralHadronEt;
+  double SumPhotonEt      = lepton.pfIsolationVariables().sumPhotonEt;
+  double SumNeutralCorrEt = std::max( 0.0, SumNeuHadEt+SumPhotonEt - rhopog*effarea );
+  return ((SumChHadPt + SumNeutralCorrEt)/lepton.pt());
+//  return( (lepton.chargedHadronIso() +
+//          std::max(0.0, lepton.neutralHadronIso() + lepton.photonIso() - 0.5*lepton.puChargedHadronIso()))/lepton.pt() );
+}
+double BJetnessSelector::get_effarea(double eta){
+  double effarea = -1;
+  if(abs(eta) < 1.0)        effarea = 0.1752;
+  else if(abs(eta) < 1.479) effarea = 0.1862;
+  else if(abs(eta) < 2.0)   effarea = 0.1411;
+  else if(abs(eta) < 2.2)   effarea = 0.1534;
+  else if(abs(eta) < 2.3)   effarea = 0.1903;
+  else if(abs(eta) < 2.4)   effarea = 0.2243;
+  else                      effarea = 0.2687;
+  return effarea;
 }
 //Look for loose electron
 //Require good jets
@@ -584,7 +633,7 @@ double BJetnessSelector::rel_iso_dbc_ele(const pat::Electron& lepton){
 bool BJetnessSelector::is_good_jet(const pat::Jet &j){
   bool isgoodjet = true;
   //Acceptance
-  if(j.pt() < 30)       isgoodjet = false;
+  if(j.pt() < 30)       isgoodjet = false; //Please note that this requirement is for the SL channel, while for DL channel we require pT > 20! 
   if(fabs(j.eta())>2.4) isgoodjet = false; 
   //ID requirements
   if(j.neutralHadronEnergyFraction() >= 0.99) isgoodjet = false;
@@ -642,16 +691,35 @@ bool BJetnessSelector::is_loosePOGNoIPNoIso_jetelectron(const pat::PackedCandida
   bool isele = false;
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const pat::Electron &lele = *ele; 
-    if(deltaR(jcand.p4(),lele.p4())<0.1 && fabs(jcand.pt()-lele.pt())/lele.pt()<0.05) {
+    if(deltaR(jcand.p4(),lele.p4())<0.1 && fabs(jcand.pt()-lele.pt())/lele.pt()<0.05){
       double ooEmooP = 999;
       if(lele.ecalEnergy()==0)                   ooEmooP = 1e30;
       else if(!std::isfinite(lele.ecalEnergy())) ooEmooP = 1e30;
-      else                                       ooEmooP = fabs(1.0/lele.ecalEnergy() - lele.eSuperClusterOverP()/lele.ecalEnergy() );
-      if(lele.full5x5_sigmaIetaIeta()<0.0105 && fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00976 && fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.0929
-         && lele.hcalOverEcal()<0.0765 && ooEmooP<0.184
-         //&& fabs((-1) * lele.gsfTrack()->dxy(vtx.position()))<0.0227 && fabs(lele.gsfTrack()->dz(vtx.position()))<0.379
-         && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=2 && lele.passConversionVeto()
-        ) isele = true;
+      else                                       ooEmooP = fabs(1.0/lele.ecalEnergy() - lele.eSuperClusterOverP()/lele.ecalEnergy());
+      if(!(fabs(lele.superCluster()->position().eta()) > 1.4442 && fabs(lele.superCluster()->position().eta()) < 1.5660)){
+        if(fabs(lele.superCluster()->position().eta())<1.4442
+          && (lele.full5x5_sigmaIetaIeta()<0.0103)
+          && (lele.hcalOverEcal()<0.104)
+          && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.0105)
+          && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.115)
+          && ooEmooP<0.102
+          && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=2
+          && lele.passConversionVeto()   
+          ){
+            isele = true;
+        }
+        if(fabs(lele.superCluster()->position().eta())>1.5660
+          && (lele.full5x5_sigmaIetaIeta()<0.0301)
+          && (lele.hcalOverEcal()<0.0897)
+          && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00814)
+          && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.182)
+          && ooEmooP<0.126
+          && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1
+          && lele.passConversionVeto()   
+          ){
+            isele = true;
+        }
+      } 
       if(isele) break;
     } 
   } 
@@ -724,8 +792,8 @@ void BJetnessSelector::get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx,
       }else{
         jetchtrksnpv.push_back(trk);
       }
-     //Fill in the jet direction information to keep synchronisation
-     jetsdir.push_back(make_tuple(jet.px(),jet.py(),jet.pz()));
+      //Fill in the jet direction information to keep synchronisation
+      jetsdir.push_back(make_tuple(jet.px(),jet.py(),jet.pz()));
     }//Ch trks 
   }//Loop on jet daus
 }

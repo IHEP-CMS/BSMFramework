@@ -31,6 +31,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo"); 
   _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
   _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
+  _fillBJetnessFVinfo    = iConfig.getParameter<bool>("fillBJetnessFVinfo"); 
   _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
   _fillPileupReweight    = iConfig.getParameter<bool>("fillPileupReweight");
   _fillMETinfo           = iConfig.getParameter<bool>("fillMETinfo");
@@ -53,6 +54,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillBJetnessFVinfo)    BJetnessFVselector = new BJetnessFVSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig);
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig);
@@ -107,6 +109,7 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
     if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
     if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup);
+    if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
     if(_fillBTagReweight)      btagreweight->Fill(iEvent);
     if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
     if(_fillMETinfo)           metselector->Fill(iEvent);

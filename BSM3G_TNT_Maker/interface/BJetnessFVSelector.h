@@ -98,7 +98,7 @@ class BJetnessFVSelector : public  baseTree{
     edm::InputTag _vertexInputTag;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
     /////
-    //   TTH variables
+    //   Variables
     /////
     //Num_of_trks
     vector<double> BJetnessFV_num_loosenoipnoiso_leps;
@@ -107,24 +107,26 @@ class BJetnessFVSelector : public  baseTree{
     //ImpactParameter
     vector<double> BJetnessFV_avip3d_val, BJetnessFV_avip3d_sig, BJetnessFV_avsip3d_sig, BJetnessFV_avip1d_sig;
     /////
-    //   TTH methods 
+    //   Methods 
     /////
-    //Lepton methods
+    //Methods to be aligned to the TTHbb selection 
     bool is_loose_muon(const pat::Muon& mu, const reco::Vertex& vtx);
     double rel_iso_dbc_mu(const pat::Muon& lepton);  
     bool is_loose_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     double rel_iso_dbc_ele(const pat::Electron& lepton, double rhopog);
     double get_effarea(double eta);
     bool is_good_jet(const pat::Jet &j);
+    //Methods for the BJetness variables
+    void get_bjetness_vars(
+                           vector<pat::Jet> evtjets, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, edm::Handle<edm::View<pat::Electron> > electron_pat, edm::Handle<edm::View<pat::Muon> > muon_h,
+                           double& bjetnessFV_num_loosenoipnoiso_leps, double& bjetnessFV_numjettrksnopv, double& bjetnessFV_pvTrkOVcollTrk, double& bjetnessFV_avip3d_val, double& bjetnessFV_avip3d_sig, double& bjetnessFV_avsip3d_sig, double& bjetnessFV_avip1d_sig
+                          );
+    void get_bjetness_trkinfos(vector<pat::Jet> evtjets, const reco::Vertex& vtx, vector<Track>& jetchtrks, double& bjetness_num_pvtrks, double& bjetness_num_npvtrks, edm::Handle<edm::View<pat::Electron> > electron_pat, edm::Handle<edm::View<pat::Muon> > muon_h, double& bjetness_num_loosenoipnoiso_eles, double& bjetness_num_loose_mus, vector<tuple<double, double, double> >& jetsdir);
+    bool is_goodtrk(Track trk,const reco::Vertex& vtx);
     bool is_loosePOG_jetmuon(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Muon> > muon_h);
     bool is_loosePOGNoIPNoIso_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
-    //Track methods
-    bool is_goodtrk(Track trk,const reco::Vertex& vtx);
-    TransientTrack get_ttrk(Track trk, const TransientTrackBuilder& ttrkbuilder);
-    vector<TransientTrack> get_ttrks(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder);
-    void get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, vector<Track>& jetchtrks, vector<Track>& jetchtrkspv, vector<Track>& jetchtrksnpv, vector<tuple<double, double, double> >& jetsdir, edm::Handle<edm::View<pat::Electron> > electron_pat, edm::Handle<edm::View<pat::Muon> > muon_h, double& bjetness_num_loosenoipnoiso_eles, double& bjetness_num_loose_mus);
-    //IP methods
     void get_avip3d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip3d_val, double& jetchtrks_avip3d_sig, double& jetchtrks_avsip3d_sig);
     void get_avip1d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip1d_sig);
+    vector<TransientTrack> get_ttrks(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder);
 };
 #endif

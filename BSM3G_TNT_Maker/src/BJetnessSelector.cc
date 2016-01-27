@@ -142,7 +142,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     /////
     //   Gen info
     /////
-    if(!_is_data) {
+    if(!_is_data){
       BJetness_ngenbh = 0;
       BJetness_ngenbt = 0;
       BJetness_ngenb  = 0;

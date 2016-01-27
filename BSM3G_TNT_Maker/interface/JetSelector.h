@@ -88,6 +88,7 @@ class JetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK4PFchsDATA1_;
   edm::FileInPath jecPayloadNamesAK4PFchsDATA2_;
   edm::FileInPath jecPayloadNamesAK4PFchsDATA3_;
+  edm::FileInPath jecPayloadNamesAK4PFchsDATA4_;
   edm::FileInPath jecPayloadNamesAK4PFchsDATAUnc_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiMC1_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiMC2_;
@@ -96,6 +97,7 @@ class JetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA1_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA2_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA3_;
+  edm::FileInPath jecPayloadNamesAK4PFPuppiDATA4_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATAUnc_;
   double _Jet_pt_min;
   bool _super_TNT;

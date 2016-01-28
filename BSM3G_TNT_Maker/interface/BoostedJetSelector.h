@@ -86,6 +86,7 @@ class BoostedJetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK8PFchsDATA1_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA2_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA3_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATA4_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATAUnc_;
   bool _is_data;
   /////

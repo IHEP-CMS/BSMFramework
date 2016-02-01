@@ -20,7 +20,7 @@ for count in ${varList[@]};
 do
   #echo "    ${varList[$pos]} = "
   echo "    uint "${varList[$pos]}"_v(trigNames.triggerIndex(("\"${varList[$pos]}"_v\"+string(buffer)).c_str()));"
-  echo "    if("${varList[$pos]}"_v<triggerBits->size()) "${varList[$pos]}" = trigResults->accept("${varList[$pos]}"_v);"  
+  echo "    if("${varList[$pos]}"_v<triggerBits->size()) "${varList[$pos]}" = triggerBits->accept("${varList[$pos]}"_v);"  
   let pos=pos+1
 done
 echo " "

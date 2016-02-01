@@ -89,9 +89,14 @@ class MuonSelector : public  baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag _muonToken;
-  edm::InputTag _vertexInputTag;
-  edm::InputTag _beamSpot; 
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
+  edm::EDGetTokenT<edm::View<pat::Muon> > muon_h_;
+  edm::EDGetTokenT<pat::JetCollection> jets_;
+  edm::EDGetTokenT<edm::View<pat::Jet>> jetsToken;
+  edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
+  edm::EDGetTokenT<double> rhoHandle_;
+  edm::EDGetTokenT<edm::ValueMap<float> > qgToken_;  
   double _Muon_pt_min;
   double _Muon_eta_max;
   int    _vtx_ndof_min;
@@ -99,10 +104,6 @@ class MuonSelector : public  baseTree{
   double _vtx_position_z_max;
   bool   _super_TNT; //super tiny ntuple?
   bool   _is_data;
-  edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
-  edm::InputTag jetToken_;
-  edm::EDGetTokenT<edm::View<pat::Jet>> jetsToken;
-  edm::EDGetTokenT<edm::ValueMap<float> > qgToken;  
   bool _AJVar;
   bool _tthlepVar;
   /////

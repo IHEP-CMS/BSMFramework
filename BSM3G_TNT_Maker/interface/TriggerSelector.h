@@ -91,6 +91,8 @@ class TriggerSelector : public baseTree{
   int HLT_Mu8_DiEle12_CaloIdL_TrackIdL;
   int HLT_TripleMu_12_10_5;
   int HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL;
+  //Other
+  int HLT_DoubleEle33_CaloIdL_GsfTrkIdVL;
   //Analysis
   int TTHbb_SL;
   int TTHbb_DL;

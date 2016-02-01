@@ -57,6 +57,7 @@
 #include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "baseTree.h"
 using namespace std;
 using namespace pat;
@@ -66,7 +67,7 @@ using namespace edm;
 /////
 class JetSelector : public  baseTree{
  public:
-  JetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  JetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~JetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -78,9 +79,10 @@ class JetSelector : public  baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag jetToken_;
-  edm::InputTag puppi_jetToken_;
-  edm::InputTag _vertexInputTag;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<pat::JetCollection> jets_;
+  edm::EDGetTokenT<pat::JetCollection> puppijets_;
+  edm::EDGetTokenT<double> rhopogHandle_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC3_;

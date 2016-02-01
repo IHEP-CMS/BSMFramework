@@ -1,11 +1,12 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/PileupReweight.h"
-PileupReweight::PileupReweight(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug)
+PileupReweight::PileupReweight(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
 {
   if(debug) std::cout<<"in PileupReweight constructor"<<std::endl;
-  _MiniAODv2       = iConfig.getParameter<bool>("MiniAODv2");
+  _MiniAODv2 = iConfig.getParameter<bool>("MiniAODv2");
   _is_data   = iConfig.getParameter<bool>("is_data");
+  PUInfo_         = ic.consumes<std::vector< PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo"));
   PUReweightfile_ = iConfig.getParameter<edm::FileInPath>("PUReweightfile");
-
   // Get data distribution from file
   const char *filePath = PUReweightfile_.fullPath().c_str();
   TFile file(filePath, "READ");
@@ -61,14 +62,11 @@ void PileupReweight::Fill(const edm::Event& iEvent){
   if(debug_) std::cout<<"getting PileupReweight info"<<std::endl;
   double w = 1.;
   if(!_is_data) {
-    Handle<std::vector< PileupSummaryInfo > >  PupInfo;
-    string pileupinfo;
-    if(!_MiniAODv2) pileupinfo = "addPileupInfo";
-    if(_MiniAODv2)  pileupinfo = "slimmedAddPileupInfo";
-    iEvent.getByLabel(pileupinfo, PupInfo); 
+    Handle<std::vector< PileupSummaryInfo > >  PUInfo;
+    iEvent.getByToken(PUInfo_, PUInfo);
     std::vector<PileupSummaryInfo>::const_iterator PVI;
     float nPU = -1;
-    for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI) {
+    for(PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI) {
       int BX = PVI->getBunchCrossing();
       if(BX == 0) { 
 	nPU = PVI->getTrueNumInteractions();

@@ -9,10 +9,11 @@ BTagReweight::BTagReweight(std::string name, TTree* tree, bool debug, const pset
 {
   if(debug) std::cout<<"in BTagReweight constructor"<<std::endl;
   if(debug) std::cout<<"in BTagReweight constructor: calling SetBrances()"<<std::endl;
-  jetToken_          = iConfig.getParameter<edm::InputTag>("jets");
-  _muonToken         = iConfig.getParameter<edm::InputTag>("muons");
-  _vertexInputTag    = iConfig.getParameter<edm::InputTag>("vertices");
-  _patElectronToken  = iConfig.getParameter<edm::InputTag>("patElectrons");
+  vtx_h_               = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  electron_pat_        = ic.consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("patElectrons"));
+  muon_h_              = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
+  jets_                = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  rhopogHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   BTAGReweightfile1_ = iConfig.getParameter<edm::FileInPath>("BTAGReweightfile1");
   BTAGReweightfile2_ = iConfig.getParameter<edm::FileInPath>("BTAGReweightfile2");
   _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
@@ -33,8 +34,8 @@ BTagReweight::~BTagReweight(){
 void BTagReweight::Fill(const edm::Event& iEvent){
   if(debug_) std::cout<<"getting BTagReweight info"<<std::endl;
   if(!_is_data){
-    edm::Handle<pat::JetCollection> jets;                                       
-    iEvent.getByLabel(jetToken_, jets);  
+    edm::Handle<pat::JetCollection> jets;
+    iEvent.getByToken(jets_, jets);
     std::vector<double> jetPts;
     std::vector<double> jetEtas;
     std::vector<double> jetCSVs;
@@ -323,17 +324,19 @@ void BTagReweight::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, floa
 }
 
 void BTagReweight::GetLeptonsForDeltaRWithJets(vector<TLorentzVector> &LeptonsForDeltaRWithJets, const edm::Event& iEvent){
-  edm::Handle<edm::View<pat::Muon> > muon_h;
-  iEvent.getByLabel(_muonToken, muon_h);
   edm::Handle<reco::VertexCollection> vtx_h;
-  iEvent.getByLabel(_vertexInputTag, vtx_h);
+  iEvent.getByToken(vtx_h_, vtx_h);
   edm::Handle<edm::View<pat::Electron> > electron_pat;
-  iEvent.getByLabel(_patElectronToken, electron_pat);
+  iEvent.getByToken(electron_pat_, electron_pat);
+  edm::Handle<edm::View<pat::Muon> > muon_h;
+  iEvent.getByToken(muon_h_, muon_h);
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByToken(jets_, jets);
+  edm::Handle<double> rhopogHandle;
+  iEvent.getByToken(rhopogHandle_,rhopogHandle);
+  double rhopog = *rhopogHandle;
   edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
   iEvent.getByToken(eleMVATrigIdMapToken_,mvatrig_id_decisions);
-  edm::Handle<double> rhopogHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
-  double rhopog = *rhopogHandle;  
   if(vtx_h->empty()) return; // skip the event if no PV found
   const reco::Vertex &firstGoodVertex = vtx_h->front();  
   bool isgoodvtx = isGoodVertex(firstGoodVertex);

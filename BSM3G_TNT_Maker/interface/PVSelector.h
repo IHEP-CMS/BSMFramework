@@ -71,6 +71,7 @@
 #include "boost/regex.hpp"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "PhysicsTools/JetMCUtils/interface/JetMCTag.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -90,12 +91,14 @@
 #include "TClonesArray.h"
 using namespace std;
 using namespace edm;
+using namespace reco;
+using namespace pat;
 /////
 //   Class declaration
 /////
 class PVSelector : public baseTree{
  public:
-  PVSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  PVSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~PVSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -105,8 +108,9 @@ class PVSelector : public baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag pileUpLabel_;
-  edm::InputTag _beamSpot;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_;
+  edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
+  edm::EDGetTokenT<std::vector< PileupSummaryInfo> > PUInfo_;
   //Primary vertex cuts
   double _Pvtx_ndof_min;
   double _Pvtx_vtx_max; 

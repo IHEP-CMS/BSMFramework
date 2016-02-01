@@ -1,7 +1,12 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/EventInfoSelector.h"
-EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
-  if(debug) std::cout<<"in EventInfoSelector constructor"<<std::endl;
+EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
+  genEvtInfo_   = ic.consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+  rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+  rhotthHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   _is_data = iConfig.getParameter<bool>("is_data");
+  if(debug) std::cout<<"in EventInfoSelector constructor"<<std::endl;
   SetBranches();
 }
 EventInfoSelector::~EventInfoSelector(){
@@ -14,15 +19,15 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   EVENT_lumiBlock_ = iEvent.id().luminosityBlock();
   EVENT_genWeight_ = 1;
   edm::Handle<GenEventInfoProduct> genEvtInfo;
-  iEvent.getByLabel("generator",genEvtInfo);
+  iEvent.getByToken(genEvtInfo_,genEvtInfo);
   if(!_is_data){
     EVENT_genWeight_ = genEvtInfo->weight();
   }
   edm::Handle<double> rhopogHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
+  iEvent.getByToken(rhopogHandle_,rhopogHandle);
   double rhopog = *rhopogHandle;
   edm::Handle<double> rhotthHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetCentralNeutral",rhotthHandle);
+  iEvent.getByToken(rhotthHandle_,rhotthHandle);
   double rhotth = *rhotthHandle;
   EVENT_rhopog_ = rhopog;
   EVENT_rhotth_ = rhotth;

@@ -1,10 +1,11 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TauSelector.h"
-TauSelector::TauSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):
-  baseTree(name,tree,debug){
-  tauToken_       	  = iConfig.getParameter<edm::InputTag>("taus");
-  packedPFCandidateToken_ = iConfig.getParameter<edm::InputTag>("packedPFCandidates");
-  _vertexInputTag 	  = iConfig.getParameter<edm::InputTag>("vertices");
-  _beamSpot               = iConfig.getParameter<edm::InputTag>("beamSpot");
+TauSelector::TauSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
+  vtx_h_                  = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  beamSpot_               = ic.consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"));
+  taus_                   = ic.consumes<edm::View<pat::Tau> >(iConfig.getParameter<edm::InputTag>("taus"));
+  pfToken_                = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
   _Tau_pt_min     	  = iConfig.getParameter<double>("Tau_pt_min");
   _Tau_eta_max    	  = iConfig.getParameter<double>("Tau_eta_max");
   _Tau_vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
@@ -22,17 +23,17 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   /////
   //   Recall collections
   /////
-  edm::Handle<edm::View<pat::Tau> > taus;
-  iEvent.getByLabel(tauToken_, taus);
-  edm::Handle<pat::PackedCandidateCollection> pfs;
-  iEvent.getByLabel(packedPFCandidateToken_, pfs);
+  edm::Handle<reco::VertexCollection> vtx_h;
+  iEvent.getByToken(vtx_h_, vtx_h);
   reco::BeamSpot beamSpot;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
-  iEvent.getByLabel(_beamSpot, beamSpotHandle);
+  iEvent.getByToken(beamSpot_, beamSpotHandle);
+  edm::Handle<edm::View<pat::Tau> > taus;
+  iEvent.getByToken(taus_, taus);
+  edm::Handle<pat::PackedCandidateCollection> pfs;
+  iEvent.getByToken(pfToken_, pfs);
   edm::ESHandle<TransientTrackBuilder> theB;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",theB);
-  edm::Handle<reco::VertexCollection> vtx_h;
-  iEvent.getByLabel(_vertexInputTag, vtx_h);
   /////
   //   Require a good vertex 
   /////

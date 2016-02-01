@@ -23,6 +23,7 @@
 #include "baseTree.h"
 #include "PhysicsTools/Utilities/interface/LumiReWeighting.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 using namespace std;
 using namespace edm;
 /////
@@ -30,7 +31,7 @@ using namespace edm;
 /////
 class PileupReweight : public baseTree{
  public:
-  PileupReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  PileupReweight(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~PileupReweight();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -39,9 +40,10 @@ class PileupReweight : public baseTree{
   /////
   //   Config variables
   /////
+  edm::EDGetTokenT<std::vector< PileupSummaryInfo> > PUInfo_;
+  edm::FileInPath PUReweightfile_;
   bool _is_data;
   bool _MiniAODv2;
-  edm::FileInPath PUReweightfile_;
   double PUWeight;
   int nPUMax_;
   std::vector<double> puWeigths_;

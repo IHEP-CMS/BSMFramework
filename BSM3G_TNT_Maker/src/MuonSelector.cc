@@ -38,9 +38,14 @@ namespace{
 MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug)
 {
-  _muonToken          = iConfig.getParameter<edm::InputTag>("muons");
-  _vertexInputTag     = iConfig.getParameter<edm::InputTag>("vertices");
-  _beamSpot           = iConfig.getParameter<edm::InputTag>("beamSpot");
+  vtx_h_              = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  beamSpot_           = ic.consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"));
+  muon_h_             = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
+  jets_               = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  jetsToken           = ic.consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jets"));
+  pfToken_            = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
+  rhoHandle_          = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
+  qgToken_            = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _Muon_pt_min        = iConfig.getParameter<double>("Muon_pt_min");
   _Muon_eta_max       = iConfig.getParameter<double>("Muon_eta_max");
   _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
@@ -48,10 +53,6 @@ MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset
   _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT          = iConfig.getParameter<bool>("super_TNT");
   _is_data            = iConfig.getParameter<bool>("is_data");
-  pfToken_            = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
-  jetToken_           = iConfig.getParameter<edm::InputTag>("jets");
-  jetsToken           = ic.consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jets"));
-  qgToken             = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _AJVar = iConfig.getParameter<bool>("AJVar");
   _tthlepVar = iConfig.getParameter<bool>("tthlepVar");
   SetBranches();
@@ -64,22 +65,22 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   /////
   //   Recall collections
   ///// 
-  edm::Handle<edm::View<pat::Muon> > muon_h;
-  iEvent.getByLabel(_muonToken, muon_h);
   edm::Handle<reco::VertexCollection> vtx_h;
-  iEvent.getByLabel(_vertexInputTag, vtx_h);
+  iEvent.getByToken(vtx_h_, vtx_h);
   reco::BeamSpot beamSpot;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
-  iEvent.getByLabel(_beamSpot, beamSpotHandle);
-  edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
-  iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
+  iEvent.getByToken(beamSpot_, beamSpotHandle);
+  edm::Handle<edm::View<pat::Muon> > muon_h;
+  iEvent.getByToken(muon_h_, muon_h);
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByToken(jets_, jets);
   edm::Handle<double> rhoHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetCentralNeutral",rhoHandle);
+  iEvent.getByToken(rhoHandle_,rhoHandle);
   double rho = *rhoHandle;
   edm::Handle<pat::PackedCandidateCollection> pcc;
   iEvent.getByToken(pfToken_, pcc);
-  edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
+  iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
   /////
   //   Require a good vertex 
   ///// 
@@ -960,7 +961,7 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
                                   double& jx, double& jy, double& jz, double& muptrel, int& lepjetidx){
   //Look for jet associated to mu
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   pat::Jet mujet;
   int currjetpos = 0;
   for(const pat::Jet &j : *jets){
@@ -989,7 +990,7 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
   edm::Handle<edm::View<pat::Jet>> jets_QGL;
   iEvent.getByToken(jetsToken,jets_QGL);
   edm::Handle<edm::ValueMap<float>> qgHandle;
-  iEvent.getByToken(qgToken, qgHandle);
+  iEvent.getByToken(qgToken_, qgHandle);
   for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
     if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
     edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
@@ -1029,7 +1030,7 @@ double MuonSelector::get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent,
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
@@ -1060,7 +1061,7 @@ double MuonSelector::get_lepTopmass(const pat::Muon& mu, const edm::Event& iEven
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
@@ -1105,7 +1106,7 @@ double MuonSelector::get_lepWTopmass(const pat::Muon& mu, const edm::Event& iEve
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];

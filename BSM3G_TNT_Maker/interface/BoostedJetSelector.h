@@ -58,6 +58,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "baseTree.h"
 #include "DataFormats/BTauReco/interface/CATopJetTagInfo.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 using namespace std;
 using namespace pat;
 using namespace edm;
@@ -66,7 +67,7 @@ using namespace edm;
 /////
 class BoostedJetSelector : public  baseTree{
  public:
-  BoostedJetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  BoostedJetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~BoostedJetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -77,8 +78,9 @@ class BoostedJetSelector : public  baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag fatjetToken_; 
-  edm::InputTag _vertexInputTag;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<pat::JetCollection> fatjets_;
+  edm::EDGetTokenT<double> rhopogHandle_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC3_;
@@ -86,6 +88,7 @@ class BoostedJetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK8PFchsDATA1_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA2_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA3_;
+  edm::FileInPath jecPayloadNamesAK8PFchsDATA4_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATAUnc_;
   bool _is_data;
   /////

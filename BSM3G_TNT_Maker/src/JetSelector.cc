@@ -1,8 +1,11 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/JetSelector.h"
-JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
-  jetToken_       = iConfig.getParameter<edm::InputTag>("jets");
-  puppi_jetToken_ = iConfig.getParameter<edm::InputTag>("jetsPUPPI");
-  _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");
+JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
+  vtx_h_        = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  jets_         = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  puppijets_    = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jetsPUPPI"));
+  rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
   jecPayloadNamesAK4PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC2");
   jecPayloadNamesAK4PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC3");
@@ -36,15 +39,15 @@ void JetSelector::Fill(const edm::Event& iEvent){
   /////
   //   Recall collections
   /////  
-  edm::Handle<pat::JetCollection> jets;                                       
-  iEvent.getByLabel(jetToken_, jets);                                         
-  edm::Handle<pat::JetCollection> puppijets;                                       
-  iEvent.getByLabel(puppi_jetToken_, puppijets); 
-  edm::Handle<double> rhoHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhoHandle);
-  double rho = *rhoHandle;
   edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByLabel(_vertexInputTag, vertices);
+  iEvent.getByToken(vtx_h_, vertices);
+  edm::Handle<pat::JetCollection> jets;                                       
+  iEvent.getByToken(jets_, jets);                                         
+  edm::Handle<pat::JetCollection> puppijets;                                       
+  iEvent.getByToken(puppijets_, puppijets); 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByToken(rhopogHandle_,rhoHandle);
+  double rho = *rhoHandle;
   /////
   //   Get jet information
   /////  

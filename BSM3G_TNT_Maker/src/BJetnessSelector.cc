@@ -28,12 +28,14 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
   eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
   elemvaValuesMapToken_Trig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_Trig"))),
   elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig")))
-  {
-    _is_data = iConfig.getParameter<bool>("is_data");
-  _muonToken        = iConfig.getParameter<edm::InputTag>("muons");
-  _patElectronToken = iConfig.getParameter<edm::InputTag>("patElectrons");
-  jetToken_         = iConfig.getParameter<edm::InputTag>("jets");
-  _vertexInputTag   = iConfig.getParameter<edm::InputTag>("vertices");
+{
+  vtx_h_               = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  electron_pat_        = ic.consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("patElectrons"));
+  muon_h_              = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
+  jets_                = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  rhopogHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+  prunedGenToken_      = ic.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("pruned"));
+  _is_data = iConfig.getParameter<bool>("is_data");
   SetBranches();
 }
 BJetnessSelector::~BJetnessSelector(){
@@ -45,11 +47,16 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   //   Recall collections
   ///// 
   edm::Handle<reco::VertexCollection> vtx_h;
-  iEvent.getByLabel(_vertexInputTag, vtx_h);
-  edm::Handle<edm::View<pat::Muon> > muon_h;
-  iEvent.getByLabel(_muonToken, muon_h);
+  iEvent.getByToken(vtx_h_, vtx_h);
   edm::Handle<edm::View<pat::Electron> > electron_pat;
-  iEvent.getByLabel(_patElectronToken, electron_pat);
+  iEvent.getByToken(electron_pat_, electron_pat);
+  edm::Handle<edm::View<pat::Muon> > muon_h;
+  iEvent.getByToken(muon_h_, muon_h);
+  edm::Handle<pat::JetCollection> jets;                                       
+  iEvent.getByToken(jets_, jets);                                         
+  edm::Handle<double> rhopogHandle;
+  iEvent.getByToken(rhopogHandle_,rhopogHandle);
+  double rhopog = *rhopogHandle;
   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
   edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
   edm::Handle<edm::ValueMap<float> > elemvaValues_Trig;
@@ -58,11 +65,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);
   iEvent.getByToken(elemvaValuesMapToken_Trig_,        elemvaValues_Trig);
   iEvent.getByToken(elemvaCategoriesMapToken_Trig_,    elemvaCategories_Trig);
-  edm::Handle<pat::JetCollection> jets;                                       
-  iEvent.getByLabel(jetToken_, jets);                                         
-  edm::Handle<double> rhopogHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
-  double rhopog = *rhopogHandle;
   edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
   /////
@@ -147,8 +149,8 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       BJetness_ngenbt = 0;
       BJetness_ngenb  = 0;
       BJetness_ngenc  = 0;
-      Handle< reco::GenParticleCollection > pruned;
-      iEvent.getByLabel("prunedGenParticles", pruned);
+      Handle<edm::View<reco::GenParticle> > pruned;
+      iEvent.getByToken(prunedGenToken_, pruned);
       for(size_t i=0; i<pruned->size(); i++){
 	if(abs((*pruned)[i].pdgId())==5){// && (*pruned)[i].pt()>15)
 	  const Candidate * bquark = &(*pruned)[i];

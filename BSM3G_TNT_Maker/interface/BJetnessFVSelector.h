@@ -92,10 +92,11 @@ class BJetnessFVSelector : public  baseTree{
     /////
     //   Config variables
     /////
-    edm::InputTag _muonToken;
-    edm::InputTag _patElectronToken;
-    edm::InputTag jetToken_;
-    edm::InputTag _vertexInputTag;
+    edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+    edm::EDGetTokenT<edm::View<pat::Electron> > electron_pat_;
+    edm::EDGetTokenT<edm::View<pat::Muon> > muon_h_;
+    edm::EDGetTokenT<pat::JetCollection> jets_;
+    edm::EDGetTokenT<double> rhopogHandle_;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
     /////
     //   Variables

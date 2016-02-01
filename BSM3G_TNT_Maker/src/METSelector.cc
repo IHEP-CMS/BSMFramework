@@ -1,8 +1,10 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/METSelector.h"
-METSelector::METSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
+METSelector::METSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
   if(debug) std::cout<<"in METSelector constructor"<<std::endl;
-  metToken_ = iConfig.getParameter<edm::InputTag>("mets");
-  puppi_metToken_ = iConfig.getParameter<edm::InputTag>("metsPUPPI");
+  mets_      = ic.consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("mets"));
+  puppimets_ = ic.consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("metsPUPPI"));
   if(debug) std::cout<<"in pileup constructor: calling SetBrances()"<<std::endl;
   _is_data   = iConfig.getParameter<bool>("is_data");
   _super_TNT = iConfig.getParameter<bool>("super_TNT");
@@ -20,9 +22,9 @@ void METSelector::Fill(const edm::Event& iEvent){
   //   Recall collections
   /////  
   edm::Handle<pat::METCollection> mets;
-  iEvent.getByLabel(metToken_, mets);
+  iEvent.getByToken(mets_, mets);
   edm::Handle<pat::METCollection> puppimets;
-  iEvent.getByLabel(puppi_metToken_, puppimets);
+  iEvent.getByToken(puppimets_, puppimets);
   if(debug_) std::cout<<"Filling met branches"<<std::endl;
   /////
   //   Get muon information

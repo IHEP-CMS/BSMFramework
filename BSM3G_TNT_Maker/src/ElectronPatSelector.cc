@@ -12,18 +12,20 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   elemvaValuesMapToken_Trig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_Trig"))),
   elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig")))
 {
-  _vertexInputTag      = iConfig.getParameter<edm::InputTag>("vertices");
-  _beamSpot            = iConfig.getParameter<edm::InputTag>("beamSpot");
-  _patElectronToken    = iConfig.getParameter<edm::InputTag>("patElectrons");
+  vtx_h_               = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  beamSpot_            = ic.consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"));
+  electron_pat_        = ic.consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("patElectrons"));
+  pfToken_             = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
+  jets_                = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  jetsToken            = ic.consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jets"));
+  qgToken              = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+  rhopogHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+  rhotthHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   _patElectron_pt_min  = iConfig.getParameter<double>("patElectron_pt_min");
   _patElectron_eta_max = iConfig.getParameter<double>("patElectron_eta_max");
   _vtx_ndof_min        = iConfig.getParameter<int>("vtx_ndof_min");
   _vtx_rho_max         = iConfig.getParameter<int>("vtx_rho_max");
   _vtx_position_z_max  = iConfig.getParameter<double>("vtx_position_z_max");
-  pfToken_             = ic.consumes<pat::PackedCandidateCollection>(edm::InputTag("packedPFCandidates"));
-  jetToken_            = iConfig.getParameter<edm::InputTag>("jets");
-  jetsToken            = ic.consumes<edm::View<pat::Jet>>(iConfig.getParameter<edm::InputTag>("jets"));
-  qgToken              = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _AJVar               = iConfig.getParameter<bool>("AJVar");
   _tthlepVar           = iConfig.getParameter<bool>("tthlepVar");
   _is_data             = iConfig.getParameter<bool>("is_data");
@@ -52,12 +54,22 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   //   Recall collections
   /////  
   edm::Handle<reco::VertexCollection> vtx_h;
-  iEvent.getByLabel(_vertexInputTag, vtx_h);
-  edm::Handle<edm::View<pat::Electron> > electron_pat;
-  iEvent.getByLabel(_patElectronToken, electron_pat);
+  iEvent.getByToken(vtx_h_, vtx_h);
   reco::BeamSpot beamSpot;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
-  iEvent.getByLabel(_beamSpot, beamSpotHandle);
+  iEvent.getByToken(beamSpot_, beamSpotHandle);
+  edm::Handle<edm::View<pat::Electron> > electron_pat;
+  iEvent.getByToken(electron_pat_, electron_pat);
+  edm::Handle<pat::PackedCandidateCollection> pcc;
+  iEvent.getByToken(pfToken_, pcc);
+  edm::Handle<pat::JetCollection> jets;
+  iEvent.getByToken(jets_, jets);
+  edm::Handle<double> rhopogHandle;
+  iEvent.getByToken(rhopogHandle_,rhopogHandle);
+  double rhopog = *rhopogHandle;
+  edm::Handle<double> rhotthHandle;
+  iEvent.getByToken(rhotthHandle_,rhotthHandle);
+  double rhotth = *rhotthHandle;
   edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
   edm::Handle<edm::ValueMap<bool>  > veto_id_decisions;
@@ -80,16 +92,6 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(elemvaCategoriesMapToken_nonTrig_, elemvaCategories_nonTrig);
   iEvent.getByToken(elemvaValuesMapToken_Trig_,        elemvaValues_Trig);
   iEvent.getByToken(elemvaCategoriesMapToken_Trig_,    elemvaCategories_Trig);
-  edm::Handle<double> rhopogHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhopogHandle);
-  double rhopog = *rhopogHandle;
-  edm::Handle<double> rhotthHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetCentralNeutral",rhotthHandle);
-  double rhotth = *rhotthHandle;
-  edm::Handle<pat::PackedCandidateCollection> pcc;
-  iEvent.getByToken(pfToken_, pcc);
-  edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
   /////
   //   Require a good vertex 
   /////
@@ -951,7 +953,7 @@ void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterat
                        int& lepjetidx){
   //Look for jet associated to ele
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   pat::Jet elejet;
   int currjetpos = 0;
   for(const pat::Jet &j : *jets){
@@ -1020,7 +1022,7 @@ double ElectronPatSelector::get_lepWmass(edm::View<pat::Electron>::const_iterato
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
@@ -1051,7 +1053,7 @@ double ElectronPatSelector::get_lepTopmass(edm::View<pat::Electron>::const_itera
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
@@ -1096,7 +1098,7 @@ double ElectronPatSelector::get_lepWTopmass(edm::View<pat::Electron>::const_iter
   double minchi2  = 999;
   //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
-  iEvent.getByLabel(jetToken_, jets);
+  iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];

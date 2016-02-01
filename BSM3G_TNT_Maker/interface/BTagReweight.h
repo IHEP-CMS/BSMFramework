@@ -48,10 +48,11 @@ class BTagReweight : public baseTree{
   /////
   bool _is_data;
   double bWeight;
-  edm::InputTag jetToken_;
-  edm::InputTag _muonToken;
-  edm::InputTag _vertexInputTag;
-  edm::InputTag _patElectronToken;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<edm::View<pat::Electron> > electron_pat_;
+  edm::EDGetTokenT<edm::View<pat::Muon> > muon_h_;
+  edm::EDGetTokenT<pat::JetCollection> jets_;
+  edm::EDGetTokenT<double> rhopogHandle_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
   int    _vtx_ndof_min;
   int    _vtx_rho_max;

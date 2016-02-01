@@ -1,0 +1,12 @@
+Sembra che nella 7_6_3 ci siano delle news:
+1. Aggiorna il global tag
+    MC:   76X_mcRun2_asymptotic_v12 
+    Data: 76X_dataRun2_v15
+2. Usa i sample giusti: quelli v2
+3. GenHFHadronMatching nn sembra funzionare quindi l'ho commentato cosi' come
+   #process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*
+4. Sembra che tocca sostituire tutti gli input tag con EDGetTokenT
+   edm::InputTag _muonToken; -> edm::EDGetTokenT<edm::View<pat::Muon>> _muonToken;
+   Vedi su https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2015#Packed_ParticleFlow_Candidates
+           Example code accessing all high-level physics objects 
+   come puoi fare, o dalla classe Muon.h

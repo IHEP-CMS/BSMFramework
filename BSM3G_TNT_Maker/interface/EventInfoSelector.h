@@ -74,6 +74,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -93,17 +94,22 @@
 #include "TClonesArray.h"
 using namespace std;
 using namespace edm;
+using namespace reco;
+using namespace pat;
 /////
 //   Class declaration
 /////
 class EventInfoSelector : public baseTree{
  public:
-  EventInfoSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  EventInfoSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~EventInfoSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
  private:
   EventInfoSelector(){};
+  edm::EDGetTokenT<GenEventInfoProduct> genEvtInfo_;
+  edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhotthHandle_;
   void Initialise();
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
   double EVENT_genWeight_;

@@ -72,6 +72,7 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "TMath.h"
 using namespace std;
 using namespace pat;
@@ -82,7 +83,7 @@ using namespace reco;
 /////
 class TauSelector : public baseTree{
  public:
-  TauSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  TauSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~TauSelector();
   void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   void SetBranches();
@@ -93,10 +94,10 @@ class TauSelector : public baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag tauToken_;
-  edm::InputTag packedPFCandidateToken_;
-  edm::InputTag _vertexInputTag;
-  edm::InputTag _beamSpot;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
+  edm::EDGetTokenT<edm::View<pat::Tau> > taus_;
+  edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
   double _Tau_pt_min;
   double _Tau_eta_max;
   int _Tau_vtx_ndof_min;

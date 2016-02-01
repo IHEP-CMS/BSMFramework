@@ -71,6 +71,13 @@
 #include "boost/regex.hpp"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "PhysicsTools/JetMCUtils/interface/JetMCTag.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/Common/interface/ValueMap.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -90,12 +97,14 @@
 #include "TClonesArray.h"
 using namespace std;
 using namespace edm;
+using namespace reco;
+using namespace pat;
 /////
 //   Class declaration
 /////
 class GenParticleSelector : public baseTree{
  public:
-  GenParticleSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  GenParticleSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~GenParticleSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -105,6 +114,7 @@ class GenParticleSelector : public baseTree{
   /////
   //   Config variables
   /////
+  edm::EDGetTokenT<edm::View<reco::GenParticle> > prunedGenToken_;
   bool _tthlepVar;
   /////
   //   BSM 

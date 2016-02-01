@@ -1,7 +1,10 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
-BoostedJetSelector::BoostedJetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
-  fatjetToken_ = iConfig.getParameter<edm::InputTag>("fatjets");
-  _vertexInputTag = iConfig.getParameter<edm::InputTag>("vertices");
+BoostedJetSelector::BoostedJetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
+  vtx_h_        = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  fatjets_      = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("fatjets"));
+  rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   jecPayloadNamesAK8PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC1");
   jecPayloadNamesAK8PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC2");
   jecPayloadNamesAK8PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsMC3");
@@ -9,6 +12,7 @@ BoostedJetSelector::BoostedJetSelector(std::string name, TTree* tree, bool debug
   jecPayloadNamesAK8PFchsDATA1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA1");
   jecPayloadNamesAK8PFchsDATA2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA2");
   jecPayloadNamesAK8PFchsDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA3");
+  jecPayloadNamesAK8PFchsDATA4_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATA4");
   jecPayloadNamesAK8PFchsDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK8PFchsDATAUnc");
   _is_data = iConfig.getParameter<bool>("is_data");
   JECInitialization();
@@ -22,13 +26,13 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
   /////
   //   Recall collections
   /////  
-  edm::Handle<pat::JetCollection> fatjets;                                       
-  iEvent.getByLabel(fatjetToken_, fatjets); 
-  edm::Handle<double> rhoHandle;
-  iEvent.getByLabel("fixedGridRhoFastjetAll",rhoHandle);
-  double rho = *rhoHandle;
   edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByLabel(_vertexInputTag, vertices);                                        
+  iEvent.getByToken(vtx_h_, vertices);                                        
+  edm::Handle<pat::JetCollection> fatjets;                                       
+  iEvent.getByToken(fatjets_, fatjets); 
+  edm::Handle<double> rhoHandle;
+  iEvent.getByToken(rhopogHandle_,rhoHandle);
+  double rho = *rhoHandle;
   /////
   //   Get fatjet information
   /////  
@@ -137,6 +141,7 @@ void BoostedJetSelector::JECInitialization(){
   jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA1_.fullPath());
   jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA2_.fullPath());
   jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA3_.fullPath());
+  jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA4_.fullPath());
   std::vector<JetCorrectorParameters> vParAK8PFchsDATA;
   for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK8PFchsDATA_.begin(),
 	  payloadEnd = jecPayloadNamesAK8PFchsDATA_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {

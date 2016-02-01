@@ -93,10 +93,12 @@ class BJetnessSelector : public  baseTree{
     //   Config variables
     /////
     bool _is_data;
-    edm::InputTag _muonToken;
-    edm::InputTag _patElectronToken;
-    edm::InputTag jetToken_;
-    edm::InputTag _vertexInputTag;
+    edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+    edm::EDGetTokenT<edm::View<pat::Electron> > electron_pat_;
+    edm::EDGetTokenT<edm::View<pat::Muon> > muon_h_;
+    edm::EDGetTokenT<pat::JetCollection> jets_;
+    edm::EDGetTokenT<double> rhopogHandle_;
+    edm::EDGetTokenT<edm::View<reco::GenParticle> > prunedGenToken_;
     edm::EDGetTokenT<edm::ValueMap<bool> > electronLooseIdMapToken_;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
     edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;

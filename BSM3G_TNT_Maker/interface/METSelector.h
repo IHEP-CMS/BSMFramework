@@ -71,6 +71,7 @@
 #include "boost/regex.hpp"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "PhysicsTools/JetMCUtils/interface/JetMCTag.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -95,7 +96,7 @@ using namespace edm;
 /////
 class METSelector : public baseTree{
  public:
-  METSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  METSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~METSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -105,8 +106,8 @@ class METSelector : public baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag metToken_;
-  edm::InputTag puppi_metToken_;
+  edm::EDGetTokenT<pat::METCollection> mets_;
+  edm::EDGetTokenT<pat::METCollection> puppimets_;
   bool _is_data;
   bool _super_TNT; 
   bool _MiniAODv2;

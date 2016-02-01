@@ -93,18 +93,15 @@ class ElectronPatSelector : public  baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag _patElectronToken;
-  edm::InputTag _vertexInputTag;
-  edm::InputTag _beamSpot;
-  double _patElectron_pt_min;
-  double _patElectron_eta_max;
-  int    _vtx_ndof_min;
-  int    _vtx_rho_max;
-  double _vtx_position_z_max;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<reco::BeamSpot> beamSpot_;
+  edm::EDGetTokenT<edm::View<pat::Electron> > electron_pat_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
-  edm::InputTag jetToken_;
+  edm::EDGetTokenT<pat::JetCollection> jets_;
   edm::EDGetTokenT<edm::View<pat::Jet>> jetsToken;
   edm::EDGetTokenT<edm::ValueMap<float> > qgToken;
+  edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhotthHandle_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronVetoIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronMediumIdMapToken_;
@@ -115,9 +112,14 @@ class ElectronPatSelector : public  baseTree{
   edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_nonTrig_;
   edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;
   edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_Trig_;
-  bool _AJVar;
-  bool _tthlepVar;
-  bool _is_data;
+  double _patElectron_pt_min;
+  double _patElectron_eta_max;
+  int    _vtx_ndof_min;
+  int    _vtx_rho_max;
+  double _vtx_position_z_max;
+  bool   _AJVar;
+  bool   _tthlepVar;
+  bool   _is_data;
   /////
   //   BSM 
   /////

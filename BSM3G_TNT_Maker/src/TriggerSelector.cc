@@ -73,6 +73,9 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     if(HLT_TripleMu_12_10_5_v<triggerBits->size()) HLT_TripleMu_12_10_5 = triggerBits->accept(HLT_TripleMu_12_10_5_v);
     uint HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v(trigNames.triggerIndex(("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v"+string(buffer)).c_str()));
     if(HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v<triggerBits->size()) HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL = triggerBits->accept(HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v);
+    //Other
+    uint HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v(trigNames.triggerIndex(("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v"+string(buffer)).c_str()));
+    if(HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v<triggerBits->size()) HLT_DoubleEle33_CaloIdL_GsfTrkIdVL = triggerBits->accept(HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v);
     //Analysis
     //uint TTHbb_SL_v(trigNames.triggerIndex(("TTHbb_SL_v"+string(buffer)).c_str()));
     //if(TTHbb_SL_v<triggerBits->size()) TTHbb_SL = triggerBits->accept(TTHbb_SL_v);
@@ -126,6 +129,8 @@ void TriggerSelector::SetBranches(){
   AddBranch(&HLT_Mu8_DiEle12_CaloIdL_TrackIdL                ,"HLT_Mu8_DiEle12_CaloIdL_TrackIdL");
   AddBranch(&HLT_TripleMu_12_10_5                            ,"HLT_TripleMu_12_10_5");
   AddBranch(&HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL           ,"HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL");
+  //Other
+  AddBranch(&HLT_DoubleEle33_CaloIdL_GsfTrkIdVL              ,"HLT_DoubleEle33_CaloIdL_GsfTrkIdVL");
   //Analysis
   AddBranch(&TTHbb_SL     ,"TTHbb_SL");
   AddBranch(&TTHbb_DL     ,"TTHbb_DL");
@@ -171,6 +176,8 @@ void TriggerSelector::Clear(){
   HLT_Mu8_DiEle12_CaloIdL_TrackIdL      = -9999;
   HLT_TripleMu_12_10_5                  = -9999;
   HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL = -9999;
+  //Other
+  HLT_DoubleEle33_CaloIdL_GsfTrkIdVL    = -9999;
   //Analysis
   TTHbb_SL     = -9999;
   TTHbb_DL     = -9999;

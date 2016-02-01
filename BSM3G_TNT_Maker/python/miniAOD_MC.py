@@ -30,7 +30,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -131,32 +131,35 @@ process.ak4GenJetsCustom = ak4GenJets.clone(
 )
 # Ghost particle collection used for Hadron-Jet association 
 # MUST use proper input particle collection
-#from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
-#process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
-#  particles = genParticleCollection
-#)
-## Input particle collection for matching to gen jets (partons + leptons) 
-## MUST use use proper input jet collection: the jets to which hadrons should be associated
-## rParam and jetAlgorithm MUST match those used for jets to be associated with hadrons
-## More details on the tool: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagMCTools#New_jet_flavour_definition
-#from PhysicsTools.JetMCAlgos.sequences.GenHFHadronMatching_cff import genJetFlavourPlusLeptonInfos
-#process.genJetFlavourPlusLeptonInfos = genJetFlavourPlusLeptonInfos.clone(
-#  jets = genJetCollection,
-#  rParam = cms.double(0.4),
-#  jetAlgorithm = cms.string("AntiKt")
-#)
-## Plugin for analysing B hadrons
-## MUST use the same particle collection as in selectedHadronsAndPartons
-#from PhysicsTools.JetMCAlgos.sequences.GenHFHadronMatching_cff import matchGenBHadron
-#process.matchGenBHadron = matchGenBHadron.clone(
-#  genParticles = genParticleCollection
-#)
-## Plugin for analysing C hadrons
-## MUST use the same particle collection as in selectedHadronsAndPartons
-#from PhysicsTools.JetMCAlgos.sequences.GenHFHadronMatching_cff import matchGenCHadron
-#process.matchGenCHadron = matchGenCHadron.clone(
-#  genParticles = genParticleCollection
-#)
+from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+  particles = genParticleCollection
+)
+# Input particle collection for matching to gen jets (partons + leptons) 
+# MUST use use proper input jet collection: the jets to which hadrons should be associated
+# rParam and jetAlgorithm MUST match those used for jets to be associated with hadrons
+# More details on the tool: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagMCTools#New_jet_flavour_definition
+from PhysicsTools.JetMCAlgos.AK5PFJetsMCFlavourInfos_cfi import ak5JetFlavourInfos
+process.genJetFlavourPlusLeptonInfos = ak5JetFlavourInfos.clone(
+  leptons = cms.InputTag("selectedHadronsAndPartons","leptons"),
+  jets = genJetCollection,
+  rParam = cms.double(0.4),
+  jetAlgorithm = cms.string("AntiKt")
+) 
+# Plugin for analysing B hadrons
+# MUST use the same particle collection as in selectedHadronsAndPartons
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+process.matchGenBHadron = matchGenBHadron.clone(
+  genParticles = genParticleCollection,
+  jetFlavourInfos = cms.InputTag("genJetFlavourPlusLeptonInfos")
+)
+# Plugin for analysing C hadrons
+# MUST use the same particle collection as in selectedHadronsAndPartons
+from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+process.matchGenCHadron = matchGenCHadron.clone(
+  genParticles = genParticleCollection,
+  jetFlavourInfos = cms.InputTag("genJetFlavourPlusLeptonInfos")
+)
 #####
 ##   Output file
 #####
@@ -209,7 +212,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   ),
   # Choose which information you want to use
   fillgeninfo           = cms.bool(True),
-  fillgenHFCategoryinfo = cms.bool(False),
+  fillgenHFCategoryinfo = cms.bool(True),
   filleventinfo         = cms.bool(True),
   filltriggerinfo       = cms.bool(True),
   fillPVinfo            = cms.bool(True),
@@ -351,7 +354,7 @@ process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
 process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
 #process.p = cms.Path(process.printGenParticleList)
 process.p = cms.Path(
-#process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*
+process.selectedHadronsAndPartons*process.ak4GenJetsCustom*process.genJetFlavourPlusLeptonInfos*process.matchGenCHadron*process.selectedHadronsAndPartons*process.genJetFlavourPlusLeptonInfos*process.matchGenBHadron*
 process.egmGsfElectronIDSequence*
 process.QGTagger*
 #process.primaryVertexFilter* 

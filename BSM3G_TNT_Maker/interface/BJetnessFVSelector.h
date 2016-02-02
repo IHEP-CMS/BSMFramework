@@ -101,6 +101,8 @@ class BJetnessFVSelector : public  baseTree{
     /////
     //   Variables
     /////
+    //BTag discriminators
+    vector<double> BJetnessFV_jetcsv, BJetnessFV_pfJetProbabilityBJetTags, BJetnessFV_pfCombinedMVAV2BJetTags;
     //Num_of_trks
     vector<double> BJetnessFV_num_loosenoipnoiso_leps;
     vector<double> BJetnessFV_numjettrksnopv;

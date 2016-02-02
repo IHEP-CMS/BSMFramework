@@ -112,7 +112,7 @@ class BJetnessSelector : public  baseTree{
     //Kinematics and csv 
     vector<double> BJetness_numjet;
     vector<double> BJetness_jetpt, BJetness_jeteta, BJetness_jetphi, BJetness_jetenergy;
-    vector<double> BJetness_jetcsv, BJetness_pfJetProbabilityBJetTags, BJetness_pfCombinedMVABJetTags;
+    vector<double> BJetness_jetcsv, BJetness_pfJetProbabilityBJetTags, BJetness_pfCombinedMVAV2BJetTags;
     //Num_of_trks
     vector<double> BJetness_num_pdgid_leps, BJetness_num_pdgid_eles, BJetness_num_pdgid_mus, BJetness_num_soft_leps, BJetness_num_soft_eles, BJetness_num_vetonoipnoiso_leps, BJetness_num_vetonoipnoiso_eles, BJetness_num_loosenoipnoiso_leps, BJetness_num_loosenoipnoiso_eles, BJetness_num_loose_mus;
     vector<double> BJetness_numjettrks, BJetness_numjettrkspv, BJetness_numjettrksnopv;

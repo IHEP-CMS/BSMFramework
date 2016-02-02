@@ -34,8 +34,8 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
   muon_h_              = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
   jets_                = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
   rhopogHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
-  prunedGenToken_      = ic.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("pruned"));
   _is_data = iConfig.getParameter<bool>("is_data");
+  if(!_is_data) prunedGenToken_ = ic.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("pruned"));
   SetBranches();
 }
 BJetnessSelector::~BJetnessSelector(){
@@ -132,12 +132,12 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetbjetprob = j.bDiscriminator("pfJetProbabilityBJetTags");
       if(jetbjetprob!=jetbjetprob) jetbjetprob = -996; 
       BJetness_pfJetProbabilityBJetTags.push_back(jetbjetprob);
-      double jetbjetcombmva = j.bDiscriminator("pfCombinedMVABJetTags");
+      double jetbjetcombmva = j.bDiscriminator("pfCombinedMVAV2BJetTags");
       if(jetbjetcombmva!=jetbjetcombmva) jetbjetcombmva = -996;
-      BJetness_pfCombinedMVABJetTags.push_back(jetbjetcombmva);
+      BJetness_pfCombinedMVAV2BJetTags.push_back(jetbjetcombmva);
       //cout<<"Jet pf"<<setw(20)<<"hf"<<setw(20)<<"pt"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<setw(20)<<"csv"<<endl;
       //cout<<j.partonFlavour()<<setw(20)<<j.hadronFlavour()<<setw(20)<<j.pt()<<setw(20)<<j.eta()<<setw(20)<<j.phi()<<setw(20)<<j.energy()<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
-      //cout<<"CSV "<<setw(20)<<j<<setw(20)<<j.bDiscriminator("pfJetProbabilityBJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedMVABJetTags")<<endl;
+      //cout<<"CSV "<<setw(20)<<j<<setw(20)<<j.bDiscriminator("pfJetProbabilityBJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedMVAV2BJetTags")<<endl;
       BJetness_partonFlavour.push_back(j.partonFlavour());
       BJetness_hadronFlavour.push_back(j.hadronFlavour());
     }
@@ -376,7 +376,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
    BJetness_jetenergy.push_back(-999);
    BJetness_jetcsv.push_back(-999);
    BJetness_pfJetProbabilityBJetTags.push_back(-999);
-   BJetness_pfCombinedMVABJetTags.push_back(-999);
+   BJetness_pfCombinedMVAV2BJetTags.push_back(-999);
    //Num_of_trks
    BJetness_num_pdgid_leps.push_back(-999);
    BJetness_num_pdgid_eles.push_back(-999);
@@ -440,7 +440,7 @@ void BJetnessSelector::SetBranches(){
   AddBranch(&BJetness_jetenergy                ,"BJetness_jetenergy");
   AddBranch(&BJetness_jetcsv                   ,"BJetness_jetcsv");
   AddBranch(&BJetness_pfJetProbabilityBJetTags ,"BJetness_pfJetProbabilityBJetTags");
-  AddBranch(&BJetness_pfCombinedMVABJetTags    ,"BJetness_pfCombinedMVABJetTags");
+  AddBranch(&BJetness_pfCombinedMVAV2BJetTags    ,"BJetness_pfCombinedMVAV2BJetTags");
   //Num_of_trks
   AddBranch(&BJetness_num_pdgid_leps           ,"BJetness_num_pdgid_leps");
   AddBranch(&BJetness_num_pdgid_eles           ,"BJetness_num_pdgid_eles");
@@ -503,7 +503,7 @@ void BJetnessSelector::Clear(){
   BJetness_jetenergy.clear();
   BJetness_jetcsv.clear(); 
   BJetness_pfJetProbabilityBJetTags.clear();
-  BJetness_pfCombinedMVABJetTags.clear();
+  BJetness_pfCombinedMVAV2BJetTags.clear();
   //Num_of_trks
   BJetness_num_pdgid_leps.clear();
   BJetness_num_pdgid_eles.clear();

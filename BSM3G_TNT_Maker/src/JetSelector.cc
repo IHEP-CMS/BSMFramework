@@ -68,7 +68,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
     //ID
     Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-    Jet_pfCombinedMVABJetTags.push_back(j.bDiscriminator("pfCombinedMVABJetTags"));
+    Jet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
     Jet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     Jet_isPFJet.push_back(j.isPFJet());
@@ -166,7 +166,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
       //ID
       Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-      Jet_puppi_pfCombinedMVABJetTags.push_back(j.bDiscriminator("pfCombinedMVABJetTags"));
+      Jet_puppi_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
       Jet_puppi_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
       Jet_puppi_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
       Jet_puppi_isPFJet.push_back(j.isPFJet());
@@ -313,7 +313,7 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_Uncorr_pt ,"Jet_Uncorr_pt");
   //ID
   AddBranch(&Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
-  AddBranch(&Jet_pfCombinedMVABJetTags                        ,"Jet_pfCombinedMVABJetTags");
+  AddBranch(&Jet_pfCombinedMVAV2BJetTags                        ,"Jet_pfCombinedMVAV2BJetTags");
   AddBranch(&Jet_pfJetProbabilityBJetTags                     ,"Jet_pfJetProbabilityBJetTags");
   AddBranch(&Jet_pileupId                                     ,"Jet_pileupId");
   AddBranch(&Jet_isPFJet                                      ,"Jet_isPFJet");
@@ -360,7 +360,7 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_puppi_Uncorr_pt ,"Jet_puppi_Uncorr_pt");
     //ID
     AddBranch(&Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags");
-    AddBranch(&Jet_puppi_pfCombinedMVABJetTags                        ,"Jet_puppi_pfCombinedMVABJetTags");
+    AddBranch(&Jet_puppi_pfCombinedMVAV2BJetTags                        ,"Jet_puppi_pfCombinedMVAV2BJetTags");
     AddBranch(&Jet_puppi_pfJetProbabilityBJetTags                     ,"Jet_puppi_pfJetProbabilityBJetTags");
     AddBranch(&Jet_puppi_pileupId                                     ,"Jet_puppi_pileupId");
     AddBranch(&Jet_puppi_isPFJet                                      ,"Jet_puppi_isPFJet");
@@ -410,7 +410,7 @@ void JetSelector::Clear(){
   Jet_Uncorr_pt.clear();
   //ID
   Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
-  Jet_pfCombinedMVABJetTags.clear();
+  Jet_pfCombinedMVAV2BJetTags.clear();
   Jet_pfJetProbabilityBJetTags.clear();
   Jet_pileupId.clear();
   Jet_isPFJet.clear();
@@ -457,7 +457,7 @@ void JetSelector::Clear(){
     Jet_puppi_Uncorr_pt.clear();
     //ID
     Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
-    Jet_puppi_pfCombinedMVABJetTags.clear();
+    Jet_puppi_pfCombinedMVAV2BJetTags.clear();
     Jet_puppi_pfJetProbabilityBJetTags.clear();
     Jet_puppi_pileupId.clear();
     Jet_puppi_isPFJet.clear();

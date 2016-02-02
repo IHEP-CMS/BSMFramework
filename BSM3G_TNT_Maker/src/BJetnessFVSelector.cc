@@ -84,6 +84,7 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
                    //The definition of good jet in the event must be the same of the TTHbb analysis
                    //so that jet_num corresponds to the number of jets that define the categories in the TTHbb search
   vector<pair<double,int> > jet_csv_pos;
+  vector<pair<double,int> > jet_cmva_pos;
   for(const pat::Jet &j : *jets){ 
     if(!is_good_jet(j)){jet_pos++; continue;}
     bool jetmatchedlepts = false;
@@ -91,9 +92,18 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
     if(jetmatchedlepts){jet_pos++; continue;}
     double csvcurrjet = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
+    BJetnessFV_jetcsv.push_back(csvcurrjet);
+    double cmvacurrjet = j.bDiscriminator("pfCombinedMVAV2BJetTags");
+    jet_cmva_pos.push_back(make_pair(cmvacurrjet,jet_pos));
+    BJetnessFV_pfCombinedMVAV2BJetTags.push_back(cmvacurrjet);
+    double jetprobjet = j.bDiscriminator("pfJetProbabilityBJetTags");
+    BJetnessFV_pfJetProbabilityBJetTags.push_back(jetprobjet);
     jet_pos++;
     jet_num++;
   }
+  /////
+  //   Consider btag ordering by decreasing pfCombinedInclusiveSecondaryVertexV2BJetTags discriminator
+  /////
   sort(jet_csv_pos.rbegin(), jet_csv_pos.rend());//Order by descreasing csv value
   if(jet_num!=0){
     /////
@@ -133,6 +143,59 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
     BJetnessFV_avip3d_sig.push_back(bjetnessFV_avip3d_sig);
     BJetnessFV_avsip3d_sig.push_back(bjetnessFV_avsip3d_sig);
     BJetnessFV_avip1d_sig.push_back(bjetnessFV_avip1d_sig); 
+  }else{//if(jet_num!=0)
+    //Num_of_trks
+    BJetnessFV_num_loosenoipnoiso_leps.push_back(-999);
+    BJetnessFV_numjettrksnopv.push_back(-999);
+    BJetnessFV_pvTrkOVcollTrk.push_back(-999);
+    //ImpactParameter  
+    BJetnessFV_avip3d_val.push_back(-999);
+    BJetnessFV_avip3d_sig.push_back(-999);
+    BJetnessFV_avsip3d_sig.push_back(-999);
+    BJetnessFV_avip1d_sig.push_back(-999);
+  }
+  /////
+  //   Consider btag ordering by decreasing pfCombinedMVAV2BJetTags discriminator
+  /////
+  sort(jet_cmva_pos.rbegin(), jet_cmva_pos.rend());//Order by descreasing cmva value
+  if(jet_num!=0){
+    /////
+    //   From here on it starts to define the BJetness variables
+    /////
+    //You need to provide as input the jets selected in the event (selection according to the TTHbb analysis),
+    //excluding the jet with the highest CSV (start from jn=1 below)   
+    vector<pat::Jet> evtjets; evtjets.clear();
+    int maxjetnum = 6; //This value has been chosen after optimisation 
+    if(jet_num<maxjetnum)  maxjetnum = jet_num;
+    for(int jn=1; jn<maxjetnum; jn++) evtjets.push_back((*jets)[jet_cmva_pos[jn].second]);
+    //Define the variables you want to access 
+    double bjetnessFV_num_loosenoipnoiso_leps = -1;
+    double bjetnessFV_numjettrksnopv          = -1;
+    double bjetnessFV_pvTrkOVcollTrk          = -1;
+    double bjetnessFV_avip3d_val              = -1;
+    double bjetnessFV_avip3d_sig              = -1;
+    double bjetnessFV_avsip3d_sig             = -1;
+    double bjetnessFV_avip1d_sig              = -1;   
+    //This is the method to access the BJetness variables
+    get_bjetness_vars(
+                      //Inputs:
+                      evtjets,      //Jets selected in the event according to the TTHbb selection 
+                      PV,           //Prinary vertex of the event 
+                      *ttrkbuilder, //Transient tracker builder to measure impact parameters
+                      electron_pat, muon_h, //Leptons collections to count the number of electrons and muons 
+                      //BJetness variables  
+                      bjetnessFV_num_loosenoipnoiso_leps,bjetnessFV_numjettrksnopv,bjetnessFV_pvTrkOVcollTrk,bjetnessFV_avip3d_val,bjetnessFV_avip3d_sig,bjetnessFV_avsip3d_sig,bjetnessFV_avip1d_sig
+                     );
+    //Fill the quantities for the event
+    //Num_of_trks
+    BJetnessFV_num_loosenoipnoiso_leps.push_back(bjetnessFV_num_loosenoipnoiso_leps);
+    BJetnessFV_numjettrksnopv.push_back(bjetnessFV_numjettrksnopv);
+    BJetnessFV_pvTrkOVcollTrk.push_back(bjetnessFV_pvTrkOVcollTrk);
+    //ImpactParameter  
+    BJetnessFV_avip3d_val.push_back(bjetnessFV_avip3d_val);
+    BJetnessFV_avip3d_sig.push_back(bjetnessFV_avip3d_sig);
+    BJetnessFV_avsip3d_sig.push_back(bjetnessFV_avsip3d_sig);
+    BJetnessFV_avip1d_sig.push_back(bjetnessFV_avip1d_sig); 
  }else{//if(jet_num!=0)
    //Num_of_trks
    BJetnessFV_num_loosenoipnoiso_leps.push_back(-999);
@@ -144,12 +207,22 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
    BJetnessFV_avsip3d_sig.push_back(-999);
    BJetnessFV_avip1d_sig.push_back(-999);
  }
+ //cout<<"Event num is "<<iEvent.id().event()<<endl;
+ //cout<<"Values csv"<<endl;
+ //for(int jn=0; jn<jet_num; jn++) cout<<jn<<setw(20)<<jet_csv_pos[jn].first<<setw(20)<<jet_csv_pos[jn].second<<endl;
+ //cout<<"Values cmva"<<endl;
+ //for(int jn=0; jn<jet_num; jn++) cout<<jn<<setw(20)<<jet_cmva_pos[jn].first<<setw(20)<<jet_cmva_pos[jn].second<<endl;
+ //cout<<endl;
 }
 /////
 //   Variables
 /////
 void BJetnessFVSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
+  //BTag discriminators
+  AddBranch(&BJetnessFV_jetcsv                   ,"BJetnessFV_jetcsv");
+  AddBranch(&BJetnessFV_pfJetProbabilityBJetTags ,"BJetnessFV_pfJetProbabilityBJetTags");
+  AddBranch(&BJetnessFV_pfCombinedMVAV2BJetTags  ,"BJetnessFV_pfCombinedMVAV2BJetTags");  
   //Num_of_trks
   AddBranch(&BJetnessFV_num_loosenoipnoiso_leps  ,"BJetnessFV_num_loosenoipnoiso_leps");
   AddBranch(&BJetnessFV_numjettrksnopv           ,"BJetnessFV_numjettrksnopv");
@@ -162,6 +235,10 @@ void BJetnessFVSelector::SetBranches(){
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void BJetnessFVSelector::Clear(){
+  //BTag discriminators
+  BJetnessFV_jetcsv.clear();
+  BJetnessFV_pfJetProbabilityBJetTags.clear();
+  BJetnessFV_pfCombinedMVAV2BJetTags.clear();
   //Num_of_trks
   BJetnessFV_num_loosenoipnoiso_leps.clear();
   BJetnessFV_numjettrksnopv.clear();

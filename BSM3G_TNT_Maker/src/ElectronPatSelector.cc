@@ -6,6 +6,9 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   electronMediumIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronMediumIdMap"))),
   electronTightIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronTightIdMap"))),
   eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
+  eleMVAnonTrigIdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAnonTrigIdMap"))),
+  eleMVATrigwp90IdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigwp90IdMap"))),
+  eleMVAnonTrigwp90IdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAnonTrigwp90IdMap"))),
   eleHEEPIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleHEEPIdMap"))),
   elemvaValuesMapToken_nonTrig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_nonTrig"))),
   elemvaCategoriesMapToken_nonTrig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_nonTrig"))),
@@ -78,6 +81,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   edm::Handle<edm::ValueMap<bool>  > tight_id_decisions;
   edm::Handle<edm::ValueMap<bool>  > heep_id_decisions;
   edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvanontrig_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvatrigwp90_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvanontrigwp90_id_decisions;
   edm::Handle<edm::ValueMap<float> > elemvaValues_nonTrig;
   edm::Handle<edm::ValueMap<int> >   elemvaCategories_nonTrig;
   edm::Handle<edm::ValueMap<float> > elemvaValues_Trig;
@@ -87,6 +93,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   iEvent.getByToken(electronMediumIdMapToken_, medium_id_decisions);
   iEvent.getByToken(electronTightIdMapToken_,  tight_id_decisions);  
   iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);  
+  iEvent.getByToken(eleMVAnonTrigIdMap_,       mvanontrig_id_decisions);  
+  iEvent.getByToken(eleMVATrigwp90IdMap_,      mvatrigwp90_id_decisions);  
+  iEvent.getByToken(eleMVAnonTrigwp90IdMap_,   mvanontrigwp90_id_decisions);  
   iEvent.getByToken(eleHEEPIdMapToken_,        heep_id_decisions);
   iEvent.getByToken(elemvaValuesMapToken_nonTrig_,     elemvaValues_nonTrig);
   iEvent.getByToken(elemvaCategoriesMapToken_nonTrig_, elemvaCategories_nonTrig);
@@ -137,7 +146,10 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     bool isPassLoose   = (*loose_id_decisions) [ elPtr ];
     bool isPassMedium  = (*medium_id_decisions)[ elPtr ];
     bool isPassTight   = (*tight_id_decisions) [ elPtr ];
-    bool isPassMvatrig = (*mvatrig_id_decisions) [ elPtr ];
+    bool isPassMvatrig        = (*mvatrig_id_decisions) [ elPtr ];
+    bool isPassMvanontrig     = (*mvanontrig_id_decisions) [ elPtr ];
+    bool isPassMvatrigwp90    = (*mvatrigwp90_id_decisions) [ elPtr ];
+    bool isPassMvanontrigwp90 = (*mvanontrigwp90_id_decisions) [ elPtr ];
     bool isHEEPId      = (*heep_id_decisions)  [ elPtr ];
     float mvaval_nonTrig  = (*elemvaValues_nonTrig)[ elPtr ];
     float mvacat_nonTrig  = (*elemvaCategories_nonTrig)[ elPtr ];
@@ -148,6 +160,9 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     passMediumId_.push_back( isPassMedium );
     passTightId_.push_back ( isPassTight  );
     passMvatrigId_.push_back( isPassMvatrig );
+    passMvanontrigId_.push_back( isPassMvanontrig );
+    passMvatrigwp90Id_.push_back( isPassMvatrigwp90 );
+    passMvanontrigwp90Id_.push_back( isPassMvanontrigwp90 );
     passHEEPId_.push_back  ( isHEEPId     );   
     patElectron_mvaValue_nonTrig_.push_back(mvaval_nonTrig);
     patElectron_mvaCategory_nonTrig_.push_back(mvacat_nonTrig);
@@ -545,6 +560,9 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&passTightId_             ,"patElectron_isPassTight");
   AddBranch(&passHEEPId_              ,"patElectron_isPassHEEPId");
   AddBranch(&passMvatrigId_           ,"patElectron_isPassMvatrig");
+  AddBranch(&passMvanontrigId_        ,"patElectron_isPassMvanontrig");
+  AddBranch(&passMvatrigwp90Id_       ,"patElectron_isPassMvatrigwp90");
+  AddBranch(&passMvanontrigwp90Id_    ,"patElectron_isPassMvanontrigwp90");
   AddBranch(&patElectron_pdgId        ,"patElectron_pdgId");
   AddBranch(&patElectron_isEcalDriven ,"patElectron_isEcalDriven");
   AddBranch(&patElectron_mvaValue_nonTrig_    ,"patElectron_mvaValue_nonTrig");
@@ -710,6 +728,9 @@ void ElectronPatSelector::Clear(){
   passTightId_.clear();  
   passHEEPId_.clear();
   passMvatrigId_.clear();
+  passMvanontrigId_.clear();
+  passMvatrigwp90Id_.clear();
+  passMvanontrigwp90Id_.clear();
   patElectron_pdgId.clear();
   patElectron_isEcalDriven.clear();
   patElectron_mvaValue_nonTrig_.clear();

@@ -46,8 +46,8 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_mass.push_back(j.mass()); 
     BoostedJet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());    
     //ID
-    BoostedJet_combinedSecondaryVertexBJetTags.push_back(j.bDiscriminator("combinedSecondaryVertexBJetTags"));              
-    BoostedJet_pfCombinedSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"));              
+    BoostedJet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));              
+    BoostedJet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));              
     BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));              
     //Energy related variables
     BoostedJet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
@@ -63,7 +63,7 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_tau1.push_back(j.userFloat("NjettinessAK8:tau1"));    //
     BoostedJet_tau2.push_back(j.userFloat("NjettinessAK8:tau2"));    //  Access the n-subjettiness variables
     BoostedJet_tau3.push_back(j.userFloat("NjettinessAK8:tau3"));    // 
-    BoostedJet_softdrop_mass.push_back(j.userFloat("ak8PFJetsCHSSoftDropMass")); // access to filtered mass
+    BoostedJet_softdrop_mass.push_back(j.userFloat("ak8PFJetsCHSSoftDropMass")); // access to soft drop mass
     BoostedJet_trimmed_mass.push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
     BoostedJet_pruned_mass.push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
     BoostedJet_filtered_mass.push_back(j.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
@@ -161,8 +161,8 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_mass,                        "BoostedJet_mass");
   AddBranch(&BoostedJet_Uncorr_pt ,                  "BoostedJet_Uncorr_pt");
   //ID
-  AddBranch(&BoostedJet_combinedSecondaryVertexBJetTags,              "BoostedJet_combinedSecondaryVertexBJetTags");
-  AddBranch(&BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, "BoostedJet_pfCombinedSecondaryVertexV2BJetTags");
+  AddBranch(&BoostedJet_pfJetProbabilityBJetTags,                     "BoostedJet_pfJetProbabilityBJetTags");
+  AddBranch(&BoostedJet_pfCombinedMVAV2BJetTags,                      "BoostedJet_pfCombinedMVAV2BJetTags");
   AddBranch(&BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, "BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
   //Energy related variables
   AddBranch(&BoostedJet_neutralHadEnergyFraction,    "BoostedJet_neutralHadEnergyFraction");
@@ -202,8 +202,8 @@ void BoostedJetSelector::Clear(){
   BoostedJet_mass.clear();
   BoostedJet_Uncorr_pt.clear();
   //ID
-  BoostedJet_combinedSecondaryVertexBJetTags.clear();
-  BoostedJet_pfCombinedSecondaryVertexV2BJetTags.clear();
+  BoostedJet_pfJetProbabilityBJetTags.clear();
+  BoostedJet_pfCombinedMVAV2BJetTags.clear();
   BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
   //Energy related variables
   BoostedJet_neutralHadEnergyFraction.clear();

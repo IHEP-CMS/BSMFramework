@@ -110,10 +110,32 @@ class EventInfoSelector : public baseTree{
   edm::EDGetTokenT<GenEventInfoProduct> genEvtInfo_;
   edm::EDGetTokenT<double> rhopogHandle_;
   edm::EDGetTokenT<double> rhotthHandle_;
+  edm::EDGetTokenT<edm::TriggerResults> metFilterBits_;
   void Initialise();
+  //Event quantities
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
   double EVENT_genWeight_;
   bool _is_data; 
   double EVENT_rhopog_, EVENT_rhotth_; 
+  //Event filters
+  int Flag_HBHENoiseFilter;
+  int Flag_HBHENoiseIsoFilter;
+  int Flag_CSCTightHaloFilter;
+  int Flag_CSCTightHaloTrkMuUnvetoFilter;
+  int Flag_CSCTightHalo2015Filter;
+  int Flag_HcalStripHaloFilter;
+  int Flag_hcalLaserEventFilter;
+  int Flag_EcalDeadCellTriggerPrimitiveFilter;
+  int Flag_EcalDeadCellBoundaryEnergyFilter;
+  int Flag_goodVertices;
+  int Flag_eeBadScFilter;
+  int Flag_ecalLaserCorrFilter;
+  int Flag_trkPOGFilters;
+  int Flag_chargedHadronTrackResolutionFilter;
+  int Flag_muonBadTrackFilter;
+  int Flag_trkPOG_manystripclus53X;
+  int Flag_trkPOG_toomanystripclus53X;
+  int Flag_trkPOG_logErrorTooManyClusters;
+  int Flag_METFilters;
 };
 #endif

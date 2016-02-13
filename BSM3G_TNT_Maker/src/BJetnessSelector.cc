@@ -135,6 +135,12 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetbjetcombmva = j.bDiscriminator("pfCombinedMVAV2BJetTags");
       if(jetbjetcombmva!=jetbjetcombmva) jetbjetcombmva = -996;
       BJetness_pfCombinedMVAV2BJetTags.push_back(jetbjetcombmva);
+      double jetpfCombinedCvsLJetTags = j.bDiscriminator("pfCombinedCvsLJetTags");
+      if(jetpfCombinedCvsLJetTags!=jetpfCombinedCvsLJetTags) jetpfCombinedCvsLJetTags = -996;
+      BJetness_pfCombinedCvsLJetTags.push_back(jetpfCombinedCvsLJetTags);
+      double jetpfCombinedCvsBJetTags = j.bDiscriminator("pfCombinedCvsBJetTags");
+      if(jetpfCombinedCvsBJetTags!=jetpfCombinedCvsBJetTags) jetpfCombinedCvsBJetTags = -996;
+      BJetness_pfCombinedCvsBJetTags.push_back(jetpfCombinedCvsBJetTags);
       //cout<<"Jet pf"<<setw(20)<<"hf"<<setw(20)<<"pt"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<setw(20)<<"csv"<<endl;
       //cout<<j.partonFlavour()<<setw(20)<<j.hadronFlavour()<<setw(20)<<j.pt()<<setw(20)<<j.eta()<<setw(20)<<j.phi()<<setw(20)<<j.energy()<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
       //cout<<"CSV "<<setw(20)<<j<<setw(20)<<j.bDiscriminator("pfJetProbabilityBJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20)<<j.bDiscriminator("pfCombinedMVAV2BJetTags")<<endl;
@@ -377,6 +383,8 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
    BJetness_jetcsv.push_back(-999);
    BJetness_pfJetProbabilityBJetTags.push_back(-999);
    BJetness_pfCombinedMVAV2BJetTags.push_back(-999);
+   BJetness_pfCombinedCvsLJetTags.push_back(-999);
+   BJetness_pfCombinedCvsBJetTags.push_back(-999);
    //Num_of_trks
    BJetness_num_pdgid_leps.push_back(-999);
    BJetness_num_pdgid_eles.push_back(-999);
@@ -440,7 +448,9 @@ void BJetnessSelector::SetBranches(){
   AddBranch(&BJetness_jetenergy                ,"BJetness_jetenergy");
   AddBranch(&BJetness_jetcsv                   ,"BJetness_jetcsv");
   AddBranch(&BJetness_pfJetProbabilityBJetTags ,"BJetness_pfJetProbabilityBJetTags");
-  AddBranch(&BJetness_pfCombinedMVAV2BJetTags    ,"BJetness_pfCombinedMVAV2BJetTags");
+  AddBranch(&BJetness_pfCombinedMVAV2BJetTags  ,"BJetness_pfCombinedMVAV2BJetTags");
+  AddBranch(&BJetness_pfCombinedCvsLJetTags    ,"BJetness_pfCombinedCvsLJetTags");
+  AddBranch(&BJetness_pfCombinedCvsBJetTags    ,"BJetness_pfCombinedCvsBJetTags");
   //Num_of_trks
   AddBranch(&BJetness_num_pdgid_leps           ,"BJetness_num_pdgid_leps");
   AddBranch(&BJetness_num_pdgid_eles           ,"BJetness_num_pdgid_eles");
@@ -504,6 +514,8 @@ void BJetnessSelector::Clear(){
   BJetness_jetcsv.clear(); 
   BJetness_pfJetProbabilityBJetTags.clear();
   BJetness_pfCombinedMVAV2BJetTags.clear();
+  BJetness_pfCombinedCvsLJetTags.clear();
+  BJetness_pfCombinedCvsBJetTags.clear();
   //Num_of_trks
   BJetness_num_pdgid_leps.clear();
   BJetness_num_pdgid_eles.clear();

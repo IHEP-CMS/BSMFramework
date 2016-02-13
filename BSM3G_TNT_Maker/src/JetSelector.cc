@@ -70,6 +70,8 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     Jet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
     Jet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
+    Jet_pfCombinedCvsLJetTags.push_back(j.bDiscriminator("pfCombinedCvsLJetTags"));
+    Jet_pfCombinedCvsBJetTags.push_back(j.bDiscriminator("pfCombinedCvsBJetTags"));
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     Jet_isPFJet.push_back(j.isPFJet());
     Jet_isCaloJet.push_back(j.isCaloJet());
@@ -168,6 +170,8 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       Jet_puppi_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
       Jet_puppi_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
+      Jet_puppi_pfCombinedCvsLJetTags.push_back(j.bDiscriminator("pfCombinedCvsLJetTags"));
+      Jet_puppi_pfCombinedCvsBJetTags.push_back(j.bDiscriminator("pfCombinedCvsBJetTags"));
       Jet_puppi_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
       Jet_puppi_isPFJet.push_back(j.isPFJet());
       Jet_puppi_isCaloJet.push_back(j.isCaloJet());
@@ -313,8 +317,10 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_Uncorr_pt ,"Jet_Uncorr_pt");
   //ID
   AddBranch(&Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
-  AddBranch(&Jet_pfCombinedMVAV2BJetTags                        ,"Jet_pfCombinedMVAV2BJetTags");
+  AddBranch(&Jet_pfCombinedMVAV2BJetTags                      ,"Jet_pfCombinedMVAV2BJetTags");
   AddBranch(&Jet_pfJetProbabilityBJetTags                     ,"Jet_pfJetProbabilityBJetTags");
+  AddBranch(&Jet_pfCombinedCvsLJetTags                        ,"Jet_pfCombinedCvsLJetTags");
+  AddBranch(&Jet_pfCombinedCvsBJetTags                        ,"Jet_pfCombinedCvsBJetTags");
   AddBranch(&Jet_pileupId                                     ,"Jet_pileupId");
   AddBranch(&Jet_isPFJet                                      ,"Jet_isPFJet");
   AddBranch(&Jet_isCaloJet                                    ,"Jet_isCaloJet");
@@ -360,8 +366,10 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_puppi_Uncorr_pt ,"Jet_puppi_Uncorr_pt");
     //ID
     AddBranch(&Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags");
-    AddBranch(&Jet_puppi_pfCombinedMVAV2BJetTags                        ,"Jet_puppi_pfCombinedMVAV2BJetTags");
+    AddBranch(&Jet_puppi_pfCombinedMVAV2BJetTags                      ,"Jet_puppi_pfCombinedMVAV2BJetTags");
     AddBranch(&Jet_puppi_pfJetProbabilityBJetTags                     ,"Jet_puppi_pfJetProbabilityBJetTags");
+    AddBranch(&Jet_puppi_pfCombinedCvsLJetTags                        ,"Jet_puppi_pfCombinedCvsLJetTags");
+    AddBranch(&Jet_puppi_pfCombinedCvsBJetTags                        ,"Jet_puppi_pfCombinedCvsBJetTags");
     AddBranch(&Jet_puppi_pileupId                                     ,"Jet_puppi_pileupId");
     AddBranch(&Jet_puppi_isPFJet                                      ,"Jet_puppi_isPFJet");
     AddBranch(&Jet_puppi_isCaloJet                                    ,"Jet_puppi_isCaloJet");
@@ -412,6 +420,8 @@ void JetSelector::Clear(){
   Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
   Jet_pfCombinedMVAV2BJetTags.clear();
   Jet_pfJetProbabilityBJetTags.clear();
+  Jet_pfCombinedCvsLJetTags.clear();
+  Jet_pfCombinedCvsBJetTags.clear();
   Jet_pileupId.clear();
   Jet_isPFJet.clear();
   Jet_isCaloJet.clear();
@@ -459,6 +469,8 @@ void JetSelector::Clear(){
     Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
     Jet_puppi_pfCombinedMVAV2BJetTags.clear();
     Jet_puppi_pfJetProbabilityBJetTags.clear();
+    Jet_puppi_pfCombinedCvsLJetTags.clear();
+    Jet_puppi_pfCombinedCvsBJetTags.clear();
     Jet_puppi_pileupId.clear();
     Jet_puppi_isPFJet.clear();
     Jet_puppi_isCaloJet.clear();

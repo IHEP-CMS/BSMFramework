@@ -49,6 +49,8 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));              
     BoostedJet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));              
     BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));              
+    BoostedJet_pfCombinedCvsLJetTags.push_back(j.bDiscriminator("pfCombinedCvsLJetTags"));
+    BoostedJet_pfCombinedCvsBJetTags.push_back(j.bDiscriminator("pfCombinedCvsBJetTags"));
     //Energy related variables
     BoostedJet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
     BoostedJet_neutralEmEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
@@ -164,6 +166,8 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_pfJetProbabilityBJetTags,                     "BoostedJet_pfJetProbabilityBJetTags");
   AddBranch(&BoostedJet_pfCombinedMVAV2BJetTags,                      "BoostedJet_pfCombinedMVAV2BJetTags");
   AddBranch(&BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, "BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  AddBranch(&BoostedJet_pfCombinedCvsLJetTags                        ,"BoostedJet_pfCombinedCvsLJetTags");
+  AddBranch(&BoostedJet_pfCombinedCvsBJetTags                        ,"BoostedJet_pfCombinedCvsBJetTags");
   //Energy related variables
   AddBranch(&BoostedJet_neutralHadEnergyFraction,    "BoostedJet_neutralHadEnergyFraction");
   AddBranch(&BoostedJet_neutralEmEmEnergyFraction,   "BoostedJet_neutralEmEmEnergyFraction");
@@ -205,6 +209,8 @@ void BoostedJetSelector::Clear(){
   BoostedJet_pfJetProbabilityBJetTags.clear();
   BoostedJet_pfCombinedMVAV2BJetTags.clear();
   BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
+  BoostedJet_pfCombinedCvsLJetTags.clear();
+  BoostedJet_pfCombinedCvsBJetTags.clear();
   //Energy related variables
   BoostedJet_neutralHadEnergyFraction.clear();
   BoostedJet_neutralEmEmEnergyFraction.clear();

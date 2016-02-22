@@ -106,6 +106,14 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_JesSF.push_back(corrAK8PFchs);
     BoostedJet_JesSFup.push_back(corrUpAK8PFchs);
     BoostedJet_JesSFdown.push_back(corrDownAK8PFchs);
+    //JER scale factor and uncertainties
+    float JERScaleFactor     = 1; 
+    float JERScaleFactorUP   = 1;
+    float JERScaleFactorDOWN = 1;
+    if(!_is_data) GetJER(j, corrAK8PFchs, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    BoostedJet_JerSF.push_back(JERScaleFactor);
+    BoostedJet_JerSFup.push_back(JERScaleFactorUP);
+    BoostedJet_JerSFdown.push_back(JERScaleFactorDOWN);
     //Variables for top-tagging
     double TopMass = -10.;
     double MinMass = -10.;
@@ -190,6 +198,9 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_JesSF                ,"BoostedJet_JesSF");
   AddBranch(&BoostedJet_JesSFup              ,"BoostedJet_JesSFup");
   AddBranch(&BoostedJet_JesSFdown            ,"BoostedJet_JesSFdown");
+  AddBranch(&BoostedJet_JerSF                ,"BoostedJet_JerSF");
+  AddBranch(&BoostedJet_JerSFup              ,"BoostedJet_JerSFup");
+  AddBranch(&BoostedJet_JerSFdown            ,"BoostedJet_JerSFdown");
   //Variables for top-tagging
   AddBranch(&TopTagging_topMass,  "TopTagging_topMass");
   AddBranch(&TopTagging_minMass,  "TopTagging_minMass");
@@ -233,9 +244,106 @@ void BoostedJetSelector::Clear(){
   BoostedJet_JesSF.clear();
   BoostedJet_JesSFup.clear();
   BoostedJet_JesSFdown.clear();
+  BoostedJet_JerSF.clear();
+  BoostedJet_JerSFup.clear();
+  BoostedJet_JerSFdown.clear();
   //Variables for top-tagging
   TopTagging_topMass.clear();
   TopTagging_minMass.clear();
   TopTagging_wMass.clear();
   TopTagging_nSubJets.clear();
+}
+void BoostedJetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
+  if(!jet.genJet()) return;
+  double jetEta=fabs(jet.eta());
+  double cFactorJER = 1.0; 
+  double cFactorJERdown = 1.0;
+  double cFactorJERup = 1.0;
+  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
+  string ERA="13TeV";
+  if(ERA=="8TeV"){
+    if( jetEta<0.5 ){ 
+      cFactorJER = 1.079; 
+      cFactorJERdown = 1.053;
+      cFactorJERup = 1.105; 
+    }
+    else if( jetEta<1.1 ){ 
+      cFactorJER = 1.099; 
+      cFactorJERdown = 1.071;
+      cFactorJERup = 1.127; 
+    }
+    else if( jetEta<1.7 ){ 
+      cFactorJER = 1.121; 
+      cFactorJERdown = 1.092;
+      cFactorJERup = 1.150; 
+    }
+    else if( jetEta<2.3 ){ 
+      cFactorJER = 1.208; 
+      cFactorJERdown = 1.162;
+      cFactorJERup = 1.254; 
+    }
+    else if( jetEta<2.8 ){ 
+      cFactorJER = 1.254; 
+      cFactorJERdown = 1.192;
+      cFactorJERup = 1.316; 
+    }
+    else if( jetEta<3.2 ){ 
+      cFactorJER = 1.395; 
+      cFactorJERdown = 1.332;
+      cFactorJERup = 1.458; 
+    }
+    else if( jetEta<5.0 ){ 
+      cFactorJER = 1.056; 
+      cFactorJERdown = 0.865;
+      cFactorJERup = 1.247; 
+    }
+  } else if(ERA=="13TeV"){
+    if( jetEta<0.8 ){ 
+      cFactorJER = 1.061; 
+      cFactorJERdown = 1.061-0.023;
+      cFactorJERup   = 1.061+0.023; 
+    }
+    else if( jetEta<1.3 ){ 
+      cFactorJER = 1.088; 
+      cFactorJERdown = 1.088-0.029;
+      cFactorJERup   = 1.088+0.029; 
+    }
+    else if( jetEta<1.9 ){ 
+      cFactorJER = 1.106; 
+      cFactorJERdown = 1.106-0.030;
+      cFactorJERup   = 1.106+0.030; 
+    }
+    else if( jetEta<2.5 ){ 
+      cFactorJER = 1.126; 
+      cFactorJERdown = 1.126-0.094;
+      cFactorJERup   = 1.126+0.094; 
+    }
+    else if( jetEta<3.0 ){ 
+      cFactorJER = 1.343; 
+      cFactorJERdown = 1.343-0.123;
+      cFactorJERup   = 1.343+0.123; 
+    }
+    else if( jetEta<3.2 ){ 
+      cFactorJER = 1.303; 
+      cFactorJERdown = 1.303-0.111;
+      cFactorJERup   = 1.303+0.111; 
+    }
+    else if( jetEta<5.0 ){ 
+      cFactorJER = 1.320; 
+      cFactorJERdown = 1.320-0.286;
+      cFactorJERup   = 1.320+0.286; 
+    }
+  }
+  double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
+  double genJetPt  = jet.genJet()->pt();
+  double diffPt    = recoJetPt - genJetPt;
+  if(genJetPt>0.){
+    JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;
+    JERScaleFactorUP   = (std::max(0., genJetPt + cFactorJERup*diffPt))/recoJetPt;
+    JERScaleFactorDOWN = (std::max(0., genJetPt + cFactorJERdown*diffPt))/recoJetPt;
+  } else {
+    JERScaleFactor     = 1.;
+    JERScaleFactorUP   = 1.;
+    JERScaleFactorDOWN = 1.;
+  } 
 }

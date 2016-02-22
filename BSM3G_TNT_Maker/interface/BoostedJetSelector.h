@@ -73,6 +73,7 @@ class BoostedJetSelector : public  baseTree{
   void SetBranches();
   void JECInitialization();
   void Clear();
+  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   BoostedJetSelector(){};
   /////
@@ -110,6 +111,6 @@ class BoostedJetSelector : public  baseTree{
   vector <double> TopTagging_topMass, TopTagging_minMass, TopTagging_wMass;
   vector <int>    TopTagging_nSubJets;
   //Jet Energy Corrections and Uncertainties
-  vector<double> BoostedJet_JesSF, BoostedJet_JesSFup, BoostedJet_JesSFdown; 
+  vector<double> BoostedJet_JesSF, BoostedJet_JesSFup, BoostedJet_JesSFdown, BoostedJet_JerSF, BoostedJet_JerSFup, BoostedJet_JerSFdown; 
 };
 #endif

@@ -30,6 +30,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   _filltthjetinfo        = iConfig.getParameter<bool>("filltthjetinfo"); 
   _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo"); 
   _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
+  _fillTauJetnessinfo    = iConfig.getParameter<bool>("fillTauJetnessinfo"); 
   _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
   _fillBJetnessFVinfo    = iConfig.getParameter<bool>("fillBJetnessFVinfo"); 
   _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
@@ -53,6 +54,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_filltthjetinfo)        tthjetselector     = new TTHJetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
+  if(_fillTauJetnessinfo)    TauJetnessselector = new TauJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBJetnessFVinfo)    BJetnessFVselector = new BJetnessFVSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
@@ -108,6 +110,7 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
     if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
+    if(_fillTauJetnessinfo)    TauJetnessselector->Fill(iEvent, iSetup);
     if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup);
     if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
     if(_fillBTagReweight)      btagreweight->Fill(iEvent);

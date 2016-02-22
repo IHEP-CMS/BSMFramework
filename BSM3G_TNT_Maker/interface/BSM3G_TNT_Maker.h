@@ -26,6 +26,7 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TTHJetSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BoostedJetSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TopSubJetSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/TauJetnessSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BJetnessSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BJetnessFVSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/BTagReweight.h"
@@ -79,6 +80,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   bool _filltthjetinfo;
   bool _fillBoostedJetinfo;
   bool _fillTopSubJetinfo;
+  bool _fillTauJetnessinfo;
   bool _fillBJetnessinfo;
   bool _fillBJetnessFVinfo;
   bool _fillBTagReweight;
@@ -106,6 +108,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   TTHJetSelector         *tthjetselector;
   BoostedJetSelector     *BoostedJetselector;
   TopSubJetSelector      *TopSubJetselector;
+  TauJetnessSelector     *TauJetnessselector;
   BJetnessSelector       *BJetnessselector;
   BJetnessFVSelector     *BJetnessFVselector;
   BTagReweight           *btagreweight;

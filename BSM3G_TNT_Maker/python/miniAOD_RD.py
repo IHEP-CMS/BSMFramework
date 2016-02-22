@@ -115,48 +115,38 @@ for idmod in my_id_modules:
 ##   For tt+X
 #####
 # Setting input particle collections to be used by the tools
-genJetCollection              = 'ak4GenJetsCustom'
-genParticleCollection         = 'prunedGenParticles'
-genJetInputParticleCollection = 'packedGenParticles'
-# Supplies PDG ID to real name resolution of MC particles
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-# Producing own jets for testing purposes
-from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
-process.ak4GenJetsCustom = ak4GenJets.clone(
-  src = genJetInputParticleCollection,
-  rParam = cms.double(0.4),
-  jetAlgorithm = cms.string("AntiKt")
-)
-# Ghost particle collection used for Hadron-Jet association 
-# MUST use proper input particle collection
+genParticleCollection = "prunedGenParticles"
+genJetCollection      = "slimmedGenJets"
+jetFlavourInfos       = "genJetFlavourInfos"
+jetAlgo               = "AntiKt"
+rParam                = 0.4
+genJetPtMin           = 20.
+genJetAbsEtaMax       = 2.4
 from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
 process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
   particles = genParticleCollection
 )
-# Input particle collection for matching to gen jets (partons + leptons) 
-# MUST use use proper input jet collection: the jets to which hadrons should be associated
-# rParam and jetAlgorithm MUST match those used for jets to be associated with hadrons
-# More details on the tool: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideBTagMCTools#New_jet_flavour_definition
-from PhysicsTools.JetMCAlgos.AK5PFJetsMCFlavourInfos_cfi import ak5JetFlavourInfos
-process.genJetFlavourPlusLeptonInfos = ak5JetFlavourInfos.clone(
-  leptons = cms.InputTag("selectedHadronsAndPartons","leptons"),
-  jets = genJetCollection,
-  rParam = cms.double(0.4),
-  jetAlgorithm = cms.string("AntiKt")
-) 
-# Plugin for analysing B hadrons
-# MUST use the same particle collection as in selectedHadronsAndPartons
+from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+    jets         = genJetCollection,
+    rParam       = cms.double(rParam),
+    jetAlgorithm = cms.string(jetAlgo)
+)
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
 process.matchGenBHadron = matchGenBHadron.clone(
   genParticles = genParticleCollection,
-  jetFlavourInfos = cms.InputTag("genJetFlavourPlusLeptonInfos")
+  jetFlavourInfos = jetFlavourInfos
 )
-# Plugin for analysing C hadrons
-# MUST use the same particle collection as in selectedHadronsAndPartons
 from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
 process.matchGenCHadron = matchGenCHadron.clone(
   genParticles = genParticleCollection,
-  jetFlavourInfos = cms.InputTag("genJetFlavourPlusLeptonInfos")
+  jetFlavourInfos = jetFlavourInfos
+)
+from TopQuarkAnalysis.TopTools.GenTtbarCategorizer_cfi import categorizeGenTtbar
+process.categorizeGenTtbar = categorizeGenTtbar.clone(
+    genJetPtMin     = genJetPtMin,
+    genJetAbsEtaMax = genJetAbsEtaMax,
+    genJets         = genJetCollection
 )
 #####
 ##   Output file
@@ -326,9 +316,9 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   Photon_pt_min   = cms.double(5.0),
   Photon_eta_max  = cms.double(5.0),    
   # ttHFCategorization
-  genJetPtMin               = cms.double(20),
-  genJetAbsEtaMax           = cms.double(2.4),
-  genJets                   = cms.InputTag("ak4GenJetsCustom"),
+  genJetPtMin               = cms.double(genJetPtMin),
+  genJetAbsEtaMax           = cms.double(genJetAbsEtaMax),
+  genJets                   = cms.InputTag(genJetCollection),
   genBHadJetIndex           = cms.InputTag("matchGenBHadron", "genBHadJetIndex"),
   genBHadFlavour            = cms.InputTag("matchGenBHadron", "genBHadFlavour"),
   genBHadFromTopWeakDecay   = cms.InputTag("matchGenBHadron", "genBHadFromTopWeakDecay"),

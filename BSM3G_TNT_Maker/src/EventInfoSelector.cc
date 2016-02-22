@@ -5,6 +5,9 @@ EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, 
   genEvtInfo_    = ic.consumes<GenEventInfoProduct>(edm::InputTag("generator"));
   rhopogHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhotthHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
+  fixedGridRhoFastjetCentralHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentral"));
+  fixedGridRhoFastjetCentralChargedPileUpHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralChargedPileUp"));
+  fixedGridRhoFastjetCentralNeutralHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   metFilterBits_ = ic.consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("metFilterBits"));
   _is_data = iConfig.getParameter<bool>("is_data");
   if(debug) std::cout<<"in EventInfoSelector constructor"<<std::endl;
@@ -28,11 +31,27 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   edm::Handle<double> rhopogHandle;
   iEvent.getByToken(rhopogHandle_,rhopogHandle);
   double rhopog = *rhopogHandle;
+  EVENT_rhopog_ = rhopog;
+
   edm::Handle<double> rhotthHandle;
   iEvent.getByToken(rhotthHandle_,rhotthHandle);
   double rhotth = *rhotthHandle;
-  EVENT_rhopog_ = rhopog;
   EVENT_rhotth_ = rhotth;
+
+  edm::Handle<double> fixedGridRhoFastjetCentralHandle;
+  iEvent.getByToken(fixedGridRhoFastjetCentralHandle_,fixedGridRhoFastjetCentralHandle);
+  double fixedGridRhoFastjetCentral = *fixedGridRhoFastjetCentralHandle;
+  EVENT_fixedGridRhoFastjetCentral = fixedGridRhoFastjetCentral;
+
+  edm::Handle<double> fixedGridRhoFastjetCentralChargedPileUpHandle;
+  iEvent.getByToken(fixedGridRhoFastjetCentralChargedPileUpHandle_,fixedGridRhoFastjetCentralChargedPileUpHandle);
+  double fixedGridRhoFastjetCentralChargedPileUp = *fixedGridRhoFastjetCentralChargedPileUpHandle;
+  EVENT_fixedGridRhoFastjetCentralChargedPileUp = fixedGridRhoFastjetCentralChargedPileUp;
+
+  edm::Handle<double> fixedGridRhoFastjetCentralNeutralHandle;
+  iEvent.getByToken(fixedGridRhoFastjetCentralNeutralHandle_,fixedGridRhoFastjetCentralNeutralHandle);
+  double fixedGridRhoFastjetCentralNeutral = *fixedGridRhoFastjetCentralNeutralHandle;
+  EVENT_fixedGridRhoFastjetCentralNeutral = fixedGridRhoFastjetCentralNeutral;
   //Event filters
   edm::Handle<edm::TriggerResults> metFilterBits;
   iEvent.getByToken(metFilterBits_, metFilterBits);
@@ -68,6 +87,9 @@ void EventInfoSelector::SetBranches(){
   AddBranch(&EVENT_genWeight_ ,"EVENT_genWeight");
   AddBranch(&EVENT_rhopog_    ,"EVENT_rhopog");
   AddBranch(&EVENT_rhotth_    ,"EVENT_rhotth");
+  AddBranch(&EVENT_fixedGridRhoFastjetCentral               ,"EVENT_fixedGridRhoFastjetCentral");
+  AddBranch(&EVENT_fixedGridRhoFastjetCentralChargedPileUp  ,"EVENT_fixedGridRhoFastjetCentralChargedPileUp");
+  AddBranch(&EVENT_fixedGridRhoFastjetCentralNeutral        ,"EVENT_fixedGridRhoFastjetCentralNeutral");
   //Event filters
   AddBranch(&Flag_HBHENoiseFilter                    ,"Flag_HBHENoiseFilter");
   AddBranch(&Flag_HBHENoiseIsoFilter                 ,"Flag_HBHENoiseIsoFilter");
@@ -97,6 +119,9 @@ void EventInfoSelector::Initialise(){
   EVENT_genWeight_  = -9999;
   EVENT_rhopog_     = -9999;
   EVENT_rhotth_     = -9999; 
+  EVENT_fixedGridRhoFastjetCentral              = -9999;
+  EVENT_fixedGridRhoFastjetCentralChargedPileUp = -9999; 
+  EVENT_fixedGridRhoFastjetCentralNeutral       = -9999;
   //Event filters
   Flag_HBHENoiseFilter                    = -9999;
   Flag_HBHENoiseIsoFilter                 = -9999;

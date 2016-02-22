@@ -110,6 +110,9 @@ class EventInfoSelector : public baseTree{
   edm::EDGetTokenT<GenEventInfoProduct> genEvtInfo_;
   edm::EDGetTokenT<double> rhopogHandle_;
   edm::EDGetTokenT<double> rhotthHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralChargedPileUpHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralNeutralHandle_;
   edm::EDGetTokenT<edm::TriggerResults> metFilterBits_;
   void Initialise();
   //Event quantities
@@ -117,6 +120,7 @@ class EventInfoSelector : public baseTree{
   double EVENT_genWeight_;
   bool _is_data; 
   double EVENT_rhopog_, EVENT_rhotth_; 
+  double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;
   //Event filters
   int Flag_HBHENoiseFilter;
   int Flag_HBHENoiseIsoFilter;

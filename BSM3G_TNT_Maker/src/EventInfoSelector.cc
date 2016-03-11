@@ -3,6 +3,7 @@ EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, 
   baseTree(name,tree,debug)
 {
   genEvtInfo_    = ic.consumes<GenEventInfoProduct>(edm::InputTag("generator"));
+  lheEventProduct_ = ic.consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer"));
   rhopogHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhotthHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   fixedGridRhoFastjetCentralHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentral"));
@@ -25,8 +26,28 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   EVENT_genWeight_ = 1;
   edm::Handle<GenEventInfoProduct> genEvtInfo;
   iEvent.getByToken(genEvtInfo_,genEvtInfo);
+  edm::Handle<LHEEventProduct> lheEventProduct;
+  iEvent.getByToken(lheEventProduct_, lheEventProduct);
   if(!_is_data){
     EVENT_genWeight_ = genEvtInfo->weight();
+    //gen Parton HT
+    //Definition taken from https://github.com/cmkuo/ggAnalysis/blob/a24edc65be23b402d761c75545192ce79cddf316/ggNtuplizer/plugins/ggNtuplizer_genParticles.cc#L201 
+    //Zaixing has a somehow different, but likely equivalent implementation
+    //https://github.com/zaixingmao/FSA/blob/miniAOD_dev_7_4_14/DataFormats/src/PATFinalStateEvent.cc#L153
+    double lheHt = 0.;
+    if(lheEventProduct.isValid()){
+      const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
+      std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
+      size_t numParticles = lheParticles.size();
+      for(size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle){
+        int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
+        int status = lheEvent.ISTUP[idxParticle];
+        if(status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21)){ // quarks and gluons
+          lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
+        } 
+      }
+    }
+    EVENT_genHT = lheHt;
   }
   edm::Handle<double> rhopogHandle;
   iEvent.getByToken(rhopogHandle_,rhopogHandle);
@@ -52,6 +73,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(fixedGridRhoFastjetCentralNeutralHandle_,fixedGridRhoFastjetCentralNeutralHandle);
   double fixedGridRhoFastjetCentralNeutral = *fixedGridRhoFastjetCentralNeutralHandle;
   EVENT_fixedGridRhoFastjetCentralNeutral = fixedGridRhoFastjetCentralNeutral;
+
   //Event filters
   edm::Handle<edm::TriggerResults> metFilterBits;
   iEvent.getByToken(metFilterBits_, metFilterBits);
@@ -85,6 +107,7 @@ void EventInfoSelector::SetBranches(){
   AddBranch(&EVENT_run_       ,"EVENT_run");
   AddBranch(&EVENT_lumiBlock_ ,"EVENT_lumiBlock");
   AddBranch(&EVENT_genWeight_ ,"EVENT_genWeight");
+  AddBranch(&EVENT_genHT      ,"EVENT_genHT");
   AddBranch(&EVENT_rhopog_    ,"EVENT_rhopog");
   AddBranch(&EVENT_rhotth_    ,"EVENT_rhotth");
   AddBranch(&EVENT_fixedGridRhoFastjetCentral               ,"EVENT_fixedGridRhoFastjetCentral");
@@ -117,6 +140,7 @@ void EventInfoSelector::Initialise(){
   EVENT_run_        = -9999; 
   EVENT_lumiBlock_  = -9999;
   EVENT_genWeight_  = -9999;
+  EVENT_genHT       = -9999;
   EVENT_rhopog_     = -9999;
   EVENT_rhotth_     = -9999; 
   EVENT_fixedGridRhoFastjetCentral              = -9999;

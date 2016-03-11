@@ -75,6 +75,8 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "GeneratorInterface/LHEInterface/interface/LHEEvent.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -108,6 +110,7 @@ class EventInfoSelector : public baseTree{
  private:
   EventInfoSelector(){};
   edm::EDGetTokenT<GenEventInfoProduct> genEvtInfo_;
+  edm::EDGetTokenT<LHEEventProduct>     lheEventProduct_;
   edm::EDGetTokenT<double> rhopogHandle_;
   edm::EDGetTokenT<double> rhotthHandle_;
   edm::EDGetTokenT<double> fixedGridRhoFastjetCentralHandle_;
@@ -117,7 +120,7 @@ class EventInfoSelector : public baseTree{
   void Initialise();
   //Event quantities
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
-  double EVENT_genWeight_;
+  double EVENT_genWeight_, EVENT_genHT;
   bool _is_data; 
   double EVENT_rhopog_, EVENT_rhotth_; 
   double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;

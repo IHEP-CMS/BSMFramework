@@ -531,7 +531,6 @@ void MuonSelector::SetBranches(){
   AddBranch(&Muon_py                ,"Muon_py");
   AddBranch(&Muon_pz                ,"Muon_pz");
   AddBranch(&Muon_p                 ,"Muon_p");
-  AddBranch(&Muon_p                 ,"Muon_p");
   AddBranch(&Muon_dB                ,"Muon_dB");
   AddBranch(&Muon_pt_it             ,"Muon_pt_it");
   AddBranch(&Muon_ptErr_it          ,"Muon_ptErr_it");
@@ -708,7 +707,6 @@ void MuonSelector::Clear(){
   Muon_py.clear();
   Muon_pz.clear();
   Muon_p.clear();
-  Muon_p.clear(); 
   Muon_dB.clear();
   Muon_pt_it.clear();
   Muon_ptErr_it.clear();

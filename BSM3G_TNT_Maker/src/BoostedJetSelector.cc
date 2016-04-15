@@ -260,79 +260,58 @@ void BoostedJetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
   //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
-  string ERA="13TeV";
-  if(ERA=="8TeV"){
-    if( jetEta<0.5 ){ 
-      cFactorJER = 1.079; 
-      cFactorJERdown = 1.053;
-      cFactorJERup = 1.105; 
-    }
-    else if( jetEta<1.1 ){ 
-      cFactorJER = 1.099; 
-      cFactorJERdown = 1.071;
-      cFactorJERup = 1.127; 
-    }
-    else if( jetEta<1.7 ){ 
-      cFactorJER = 1.121; 
-      cFactorJERdown = 1.092;
-      cFactorJERup = 1.150; 
-    }
-    else if( jetEta<2.3 ){ 
-      cFactorJER = 1.208; 
-      cFactorJERdown = 1.162;
-      cFactorJERup = 1.254; 
-    }
-    else if( jetEta<2.8 ){ 
-      cFactorJER = 1.254; 
-      cFactorJERdown = 1.192;
-      cFactorJERup = 1.316; 
-    }
-    else if( jetEta<3.2 ){ 
-      cFactorJER = 1.395; 
-      cFactorJERdown = 1.332;
-      cFactorJERup = 1.458; 
-    }
-    else if( jetEta<5.0 ){ 
-      cFactorJER = 1.056; 
-      cFactorJERdown = 0.865;
-      cFactorJERup = 1.247; 
-    }
-  } else if(ERA=="13TeV"){
-    if( jetEta<0.8 ){ 
-      cFactorJER = 1.061; 
-      cFactorJERdown = 1.061-0.023;
-      cFactorJERup   = 1.061+0.023; 
-    }
-    else if( jetEta<1.3 ){ 
-      cFactorJER = 1.088; 
-      cFactorJERdown = 1.088-0.029;
-      cFactorJERup   = 1.088+0.029; 
-    }
-    else if( jetEta<1.9 ){ 
-      cFactorJER = 1.106; 
-      cFactorJERdown = 1.106-0.030;
-      cFactorJERup   = 1.106+0.030; 
-    }
-    else if( jetEta<2.5 ){ 
-      cFactorJER = 1.126; 
-      cFactorJERdown = 1.126-0.094;
-      cFactorJERup   = 1.126+0.094; 
-    }
-    else if( jetEta<3.0 ){ 
-      cFactorJER = 1.343; 
-      cFactorJERdown = 1.343-0.123;
-      cFactorJERup   = 1.343+0.123; 
-    }
-    else if( jetEta<3.2 ){ 
-      cFactorJER = 1.303; 
-      cFactorJERdown = 1.303-0.111;
-      cFactorJERup   = 1.303+0.111; 
-    }
-    else if( jetEta<5.0 ){ 
-      cFactorJER = 1.320; 
-      cFactorJERdown = 1.320-0.286;
-      cFactorJERup   = 1.320+0.286; 
-    }
+  if( jetEta<0.5 ){ 
+    cFactorJER = 1.095; 
+    cFactorJERdown = 1.095-0.018;
+    cFactorJERup   = 1.095+0.018; 
+  } else if( jetEta<0.8 ){ 
+    cFactorJER = 1.120; 
+    cFactorJERdown = 1.120-0.028;
+    cFactorJERup   = 1.120+0.028; 
+  } else if( jetEta<1.1 ){ 
+    cFactorJER = 1.097; 
+    cFactorJERdown = 1.097-0.017;
+    cFactorJERup   = 1.097+0.017; 
+  } else if( jetEta<1.3 ){ 
+    cFactorJER = 1.103; 
+    cFactorJERdown = 1.103-0.033;
+    cFactorJERup   = 1.103+0.033; 
+  } else if( jetEta<1.7 ){ 
+    cFactorJER = 1.118; 
+    cFactorJERdown = 1.118-0.014;
+    cFactorJERup   = 1.118+0.014; 
+  } else if( jetEta<1.9 ){ 
+    cFactorJER = 1.100; 
+    cFactorJERdown = 1.100-0.033;
+    cFactorJERup   = 1.100+0.033; 
+  } else if( jetEta<2.1 ){ 
+    cFactorJER = 1.162; 
+    cFactorJERdown = 1.162-0.044;
+    cFactorJERup   = 1.162+0.044; 
+  } else if( jetEta<2.3 ){ 
+    cFactorJER = 1.160; 
+    cFactorJERdown = 1.160-0.048;
+    cFactorJERup   = 1.160+0.048; 
+  } else if( jetEta<2.5 ){ 
+    cFactorJER = 1.161; 
+    cFactorJERdown = 1.161-0.060;
+    cFactorJERup   = 1.161+0.060; 
+  } else if( jetEta<2.8 ){ 
+    cFactorJER = 1.209; 
+    cFactorJERdown = 1.209-0.059;
+    cFactorJERup   = 1.209+0.059; 
+  } else if( jetEta<3.0 ){ 
+    cFactorJER = 1.564; 
+    cFactorJERdown = 1.564-0.321;
+    cFactorJERup   = 1.564+0.321; 
+  } else if( jetEta<3.2 ){ 
+    cFactorJER = 1.384; 
+    cFactorJERdown = 1.384-0.033;
+    cFactorJERup   = 1.384+0.033; 
+  } else if( jetEta<5.0 ){ 
+    cFactorJER = 1.216; 
+    cFactorJERdown = 1.216-0.050;
+    cFactorJERup   = 1.216+0.050;
   }
   double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();

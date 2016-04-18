@@ -76,7 +76,9 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "GeneratorInterface/LHEInterface/interface/LHEEvent.h"
+#include "SimDataFormats/GeneratorProducts/interface/PdfInfo.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -123,6 +125,8 @@ class EventInfoSelector : public baseTree{
   double EVENT_genWeight_, EVENT_genHT;
   bool _is_data; 
   double EVENT_rhopog_, EVENT_rhotth_; 
+  double EVENT_originalXWGTUP_, EVENT_scalePDF_;
+  vector<double> EVENT_genWeights_;
   double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;
   //Event filters
   int Flag_HBHENoiseFilter;

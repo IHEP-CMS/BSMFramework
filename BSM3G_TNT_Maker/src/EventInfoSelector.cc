@@ -30,6 +30,11 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(lheEventProduct_, lheEventProduct);
   if(!_is_data){
     EVENT_genWeight_ = genEvtInfo->weight();
+    const GenEventInfoProduct& genEventInfoW = *(genEvtInfo.product());
+    const gen::PdfInfo* pdf = genEventInfoW.pdf();
+    EVENT_originalXWGTUP_ = lheEventProduct->originalXWGTUP();
+    EVENT_scalePDF_ = pdf->scalePDF;
+    for (unsigned int i=0; i<lheEventProduct->weights().size(); i++) EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
     //gen Parton HT
     //Definition taken from https://github.com/cmkuo/ggAnalysis/blob/a24edc65be23b402d761c75545192ce79cddf316/ggNtuplizer/plugins/ggNtuplizer_genParticles.cc#L201 
     //Zaixing has a somehow different, but likely equivalent implementation
@@ -48,6 +53,10 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
       }
     }
     EVENT_genHT = lheHt;
+  } else {
+    EVENT_originalXWGTUP_ = 1;
+    EVENT_scalePDF_ = 1;
+    EVENT_genWeights_.push_back(1);
   }
   edm::Handle<double> rhopogHandle;
   iEvent.getByToken(rhopogHandle_,rhopogHandle);

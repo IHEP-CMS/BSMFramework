@@ -1,0 +1,30 @@
+Task splitting is based on an initial proposal
+
+ANIELLO
+- Syncro with TTHbb
+- Add corrections for 
+  . PileUp
+  . Jet
+
+FRANCESCO
+- BJetness
+  . Fix selection to reproduce BJetness variables
+    Align to new lepton selection. 
+    Add electron isolation and adjust jet pT for the dilepton channel
+- Missing variables
+  . Electron
+    GsfElectron::deltaEtaSeedClusterTrackAtVtx() e variabili legate
+    float dEtaInSeed(const reco::GsfElectronPtr& ele){
+     return ele->superCluster().isNonnull() && ele->superCluster()->seed().isNonnull() ? 
+     ele->deltaEtaSuperClusterTrackAtVtx() - ele->superCluster()->eta() + ele->superCluster()->seed()->eta() : std::numeric_limits<float>::max();
+    }
+    TTHLep TightCharge selection
+  . Add all the jet version of corrected pT: (1), (2)... (useful for offline corrections)
+  . Tau, FatJet, all objects new variables
+  . BJet use the right WP on the new compaign
+    E.g. lepWmass and similar they use 890 -> Check that all the values are updated
+- GenInfo
+  . Check which one is correct between
+    //lheEventProduct_ = ic.consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer")); -> per genHT
+    lheEventProduct_ = ic.consumes<LHEEventProduct>(edm::InputTag("source")); -> per genWeights di HCMN 
+  . Info at gen level for mothers of jets and leptons (as done for the TTH study)

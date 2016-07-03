@@ -106,6 +106,7 @@ class MuonSelector : public  baseTree{
   bool   _is_data;
   bool _AJVar;
   bool _tthlepVar;
+  bool _qglVar;
   /////
   //   BSM 
   /////

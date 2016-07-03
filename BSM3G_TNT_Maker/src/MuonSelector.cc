@@ -47,14 +47,13 @@ MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset
   rhoHandle_          = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   qgToken_            = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _Muon_pt_min        = iConfig.getParameter<double>("Muon_pt_min");
-  _Muon_eta_max       = iConfig.getParameter<double>("Muon_eta_max");
-  _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
   _vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
   _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT          = iConfig.getParameter<bool>("super_TNT");
   _is_data            = iConfig.getParameter<bool>("is_data");
-  _AJVar = iConfig.getParameter<bool>("AJVar");
-  _tthlepVar = iConfig.getParameter<bool>("tthlepVar");
+  _AJVar              = iConfig.getParameter<bool>("AJVar");
+  _tthlepVar          = iConfig.getParameter<bool>("tthlepVar");
+  _qglVar             = iConfig.getParameter<bool>("qglVar");
   SetBranches();
 }
 MuonSelector::~MuonSelector(){
@@ -985,15 +984,17 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
   if(mujet_pfJetProbabilityBJetTags!=mujet_pfJetProbabilityBJetTags) mujet_pfJetProbabilityBJetTags = -996;
   mujet_pfCombinedMVABJetTags    = mujet.bDiscriminator("pfCombinedMVABJetTags"); 
   if(mujet_pfCombinedMVABJetTags!=mujet_pfCombinedMVABJetTags) mujet_pfCombinedMVABJetTags = -996;
-  edm::Handle<edm::View<pat::Jet>> jets_QGL;
-  iEvent.getByToken(jetsToken,jets_QGL);
-  edm::Handle<edm::ValueMap<float>> qgHandle;
-  iEvent.getByToken(qgToken_, qgHandle);
-  for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
-    if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
-    edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
-    mujet_qgl = (*qgHandle)[jetRef];
-    break;
+  if(_qglVar){
+    edm::Handle<edm::View<pat::Jet>> jets_QGL;
+    iEvent.getByToken(jetsToken,jets_QGL);
+    edm::Handle<edm::ValueMap<float>> qgHandle;
+    iEvent.getByToken(qgToken_, qgHandle);
+    for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
+      if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
+      edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
+      mujet_qgl = (*qgHandle)[jetRef];
+      break;
+    }
   }
   jx = mujet.px();
   jy = mujet.py();

@@ -31,6 +31,7 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   _vtx_position_z_max  = iConfig.getParameter<double>("vtx_position_z_max");
   _AJVar               = iConfig.getParameter<bool>("AJVar");
   _tthlepVar           = iConfig.getParameter<bool>("tthlepVar");
+  _qglVar              = iConfig.getParameter<bool>("qglVar");
   _is_data             = iConfig.getParameter<bool>("is_data");
   SetBranches();
 }
@@ -1000,15 +1001,17 @@ void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterat
   if(elejet_pfJetProbabilityBJetTags!=elejet_pfJetProbabilityBJetTags) elejet_pfJetProbabilityBJetTags = -996;
   elejet_pfCombinedMVABJetTags    = elejet.bDiscriminator("pfCombinedMVABJetTags");
   if(elejet_pfCombinedMVABJetTags!=elejet_pfCombinedMVABJetTags) elejet_pfCombinedMVABJetTags = -996;
-  edm::Handle<edm::View<pat::Jet>> jets_QGL;
-  iEvent.getByToken(jetsToken,jets_QGL);
-  edm::Handle<edm::ValueMap<float>> qgHandle;
-  iEvent.getByToken(qgToken, qgHandle);
-  for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
-    if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
-    edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
-    elejet_qgl = (*qgHandle)[jetRef];
-    break;
+  if(_qglVar){
+    edm::Handle<edm::View<pat::Jet>> jets_QGL;
+    iEvent.getByToken(jetsToken,jets_QGL);
+    edm::Handle<edm::ValueMap<float>> qgHandle;
+    iEvent.getByToken(qgToken, qgHandle);
+    for(auto jet = jets_QGL->begin();  jet != jets_QGL->end(); ++jet){
+      if(distance(jets_QGL->begin(),jet)!=lepjetidx) continue;
+      edm::RefToBase<pat::Jet> jetRef(edm::Ref<edm::View<pat::Jet> >(jets_QGL, jet - jets_QGL->begin()));
+      elejet_qgl = (*qgHandle)[jetRef];
+      break;
+    }
   }
   jx = elejet.px();
   jy = elejet.py();

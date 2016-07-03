@@ -66,9 +66,9 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_tau2.push_back(j.userFloat("NjettinessAK8:tau2"));    //  Access the n-subjettiness variables
     BoostedJet_tau3.push_back(j.userFloat("NjettinessAK8:tau3"));    // 
     BoostedJet_softdrop_mass.push_back(j.userFloat("ak8PFJetsCHSSoftDropMass")); // access to soft drop mass
-    BoostedJet_trimmed_mass.push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
+    //BoostedJet_trimmed_mass.push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
     BoostedJet_pruned_mass.push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
-    BoostedJet_filtered_mass.push_back(j.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
+    //BoostedJet_filtered_mass.push_back(j.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
     //Jet Energy Corrections and Uncertainties
     double corrAK8PFchs     = 1;
     double corrUpAK8PFchs   = 1;
@@ -191,9 +191,9 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_tau2,           "BoostedJet_tau2");
   AddBranch(&BoostedJet_tau3,           "BoostedJet_tau3");
   AddBranch(&BoostedJet_softdrop_mass,  "BoostedJet_softdrop_mass");
-  AddBranch(&BoostedJet_trimmed_mass,   "BoostedJet_trimmed_mass");
+  //AddBranch(&BoostedJet_trimmed_mass,   "BoostedJet_trimmed_mass");
   AddBranch(&BoostedJet_pruned_mass,    "BoostedJet_pruned_mass");
-  AddBranch(&BoostedJet_filtered_mass,  "BoostedJet_filtered_mass");
+  //AddBranch(&BoostedJet_filtered_mass,  "BoostedJet_filtered_mass");
   //Jet Energy Corrections and Uncertainties
   AddBranch(&BoostedJet_JesSF                ,"BoostedJet_JesSF");
   AddBranch(&BoostedJet_JesSFup              ,"BoostedJet_JesSFup");
@@ -237,9 +237,9 @@ void BoostedJetSelector::Clear(){
   BoostedJet_tau2.clear();
   BoostedJet_tau3.clear();
   BoostedJet_softdrop_mass.clear();
-  BoostedJet_trimmed_mass.clear();
+  //BoostedJet_trimmed_mass.clear();
   BoostedJet_pruned_mass.clear();
-  BoostedJet_filtered_mass.clear();
+  //BoostedJet_filtered_mass.clear();
   //Jet Energy Corrections and Uncertainties
   BoostedJet_JesSF.clear();
   BoostedJet_JesSFup.clear();

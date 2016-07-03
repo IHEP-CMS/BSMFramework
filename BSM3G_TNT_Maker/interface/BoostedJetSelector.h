@@ -107,7 +107,8 @@ class BoostedJetSelector : public  baseTree{
   vector <double> BoostedJet_chargedEmEnergyFraction, BoostedJet_muonEnergyFraction,BoostedJet_electronEnergy, BoostedJet_photonEnergy;
   vector <int>    BoostedJet_numberOfConstituents, BoostedJet_chargedMultiplicity;
   vector <double> BoostedJet_tau1, BoostedJet_tau2, BoostedJet_tau3;
-  vector <double> BoostedJet_softdrop_mass, BoostedJet_trimmed_mass, BoostedJet_pruned_mass, BoostedJet_filtered_mass;
+  vector <double> BoostedJet_softdrop_mass, //BoostedJet_trimmed_mass,
+                                                                       BoostedJet_pruned_mass;//, BoostedJet_filtered_mass;
   vector <double> TopTagging_topMass, TopTagging_minMass, TopTagging_wMass;
   vector <int>    TopTagging_nSubJets;
   //Jet Energy Corrections and Uncertainties

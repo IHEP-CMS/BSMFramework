@@ -14,7 +14,7 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-process.GlobalTag.globaltag = '76X_mcRun2_asymptotic_v12'
+process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_miniAODv2'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -23,16 +23,18 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-    #HNeejj
-    #'/store/mc/RunIIFall15MiniAODv2/ExtendedWeakIsospinModel_eejj_L15000_M1500_CalcHEP/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/10000/04F43CCD-58B8-E511-A6E8-848F69FD0BAE.root'
-    #TTJets
-    '/store/mc/RunIIFall15MiniAODv2/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/20000/005B04BC-CBBD-E511-9C1A-001E673972E7.root'
-    #Z'tau(1.5)
-    #'/store/mc/RunIIFall15MiniAODv2/ZprimeToTauTau_M_1500_TuneCUETP8M1_tauola_13TeV_pythia8/MINIAODSIM/PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/00000/20929A1E-5EB8-E511-9F25-002590D0AFAA.root'
+    #TPrime b -> tZb (M=1.0TeV)
+    #TTHbb
+    #TT
+    '/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/004A0552-3929-E611-BD44-0025905A48F0.root'
+    #DYJetsToLL
+    #Zprime
+    #HN
+    #TTHLep
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -54,6 +56,7 @@ my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElect
 # Add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+"""
 #####
 ##   JEC (to check if they need to be used in miniAOD)
 #####
@@ -146,6 +149,7 @@ process.matchGenCHadron = matchGenCHadron.clone(
   genParticles = genParticleCollection,
   jetFlavourInfos = jetFlavourInfos
 )
+"""
 #####
 ##   Output file
 #####
@@ -198,7 +202,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   ),
   # Choose which information you want to use
   fillgeninfo           = cms.bool(True),
-  fillgenHFCategoryinfo = cms.bool(True),
+  fillgenHFCategoryinfo = cms.bool(False),
   filleventinfo         = cms.bool(True),
   filltriggerinfo       = cms.bool(True),
   fillPVinfo            = cms.bool(True),
@@ -224,6 +228,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   AJVar     = cms.bool(False),
   tthlepVar = cms.bool(True),
   PuppiVar  = cms.bool(False),
+  qglVar    = cms.bool(False),
   # Input tags 
   bits                = cms.InputTag("TriggerResults","","HLT"),
   prescales           = cms.InputTag("patTrigger"),
@@ -314,21 +319,21 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   Photon_pt_min   = cms.double(5.0),
   Photon_eta_max  = cms.double(5.0),    
   # ttHFCategorization
-  genJetPtMin               = cms.double(genJetPtMin),
-  genJetAbsEtaMax           = cms.double(genJetAbsEtaMax),
-  genJets                   = cms.InputTag(genJetCollection),
-  genBHadJetIndex           = cms.InputTag("matchGenBHadron", "genBHadJetIndex"),
-  genBHadFlavour            = cms.InputTag("matchGenBHadron", "genBHadFlavour"),
-  genBHadFromTopWeakDecay   = cms.InputTag("matchGenBHadron", "genBHadFromTopWeakDecay"),
-  genBHadPlusMothers        = cms.InputTag("matchGenBHadron", "genBHadPlusMothers"),
-  genBHadPlusMothersIndices = cms.InputTag("matchGenBHadron", "genBHadPlusMothersIndices"),
-  genBHadIndex              = cms.InputTag("matchGenBHadron", "genBHadIndex"),
-  genBHadLeptonHadronIndex  = cms.InputTag("matchGenBHadron", "genBHadLeptonHadronIndex"),
-  genBHadLeptonViaTau       = cms.InputTag("matchGenBHadron", "genBHadLeptonViaTau"),
-  genCHadJetIndex           = cms.InputTag("matchGenCHadron", "genCHadJetIndex"),
-  genCHadFlavour            = cms.InputTag("matchGenCHadron", "genCHadFlavour"),
-  genCHadFromTopWeakDecay   = cms.InputTag("matchGenCHadron", "genCHadFromTopWeakDecay"),
-  genCHadBHadronId          = cms.InputTag("matchGenCHadron", "genCHadBHadronId"),
+  #genJetPtMin               = cms.double(genJetPtMin),
+  #genJetAbsEtaMax           = cms.double(genJetAbsEtaMax),
+  #genJets                   = cms.InputTag(genJetCollection),
+  #genBHadJetIndex           = cms.InputTag("matchGenBHadron", "genBHadJetIndex"),
+  #genBHadFlavour            = cms.InputTag("matchGenBHadron", "genBHadFlavour"),
+  #genBHadFromTopWeakDecay   = cms.InputTag("matchGenBHadron", "genBHadFromTopWeakDecay"),
+  #genBHadPlusMothers        = cms.InputTag("matchGenBHadron", "genBHadPlusMothers"),
+  #genBHadPlusMothersIndices = cms.InputTag("matchGenBHadron", "genBHadPlusMothersIndices"),
+  #genBHadIndex              = cms.InputTag("matchGenBHadron", "genBHadIndex"),
+  #genBHadLeptonHadronIndex  = cms.InputTag("matchGenBHadron", "genBHadLeptonHadronIndex"),
+  #genBHadLeptonViaTau       = cms.InputTag("matchGenBHadron", "genBHadLeptonViaTau"),
+  #genCHadJetIndex           = cms.InputTag("matchGenCHadron", "genCHadJetIndex"),
+  #genCHadFlavour            = cms.InputTag("matchGenCHadron", "genCHadFlavour"),
+  #genCHadFromTopWeakDecay   = cms.InputTag("matchGenCHadron", "genCHadFromTopWeakDecay"),
+  #genCHadBHadronId          = cms.InputTag("matchGenCHadron", "genCHadBHadronId"),
 )
 #####
 ##   Dump gen particle list 
@@ -339,15 +344,15 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
   printVertex = cms.untracked.bool(True),
   src = cms.InputTag("prunedGenParticles")
 )
-#QG likelihood
-process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
-process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
 #process.p = cms.Path(process.printGenParticleList)
+#QG likelihood
+#process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
+#process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
+#process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
 process.p = cms.Path(
-process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenCHadron*process.matchGenBHadron*
+#process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenCHadron*process.matchGenBHadron*
 process.egmGsfElectronIDSequence*
-process.QGTagger*
+#process.QGTagger*
 #process.primaryVertexFilter* 
 #process.CSCTightHaloFilter*process.eeBadScFilter*process.HBHENoiseFilterResultProducer*process.ApplyBaselineHBHENoiseFilter*
 process.TNT

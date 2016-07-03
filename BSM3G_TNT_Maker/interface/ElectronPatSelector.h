@@ -122,6 +122,7 @@ class ElectronPatSelector : public  baseTree{
   double _vtx_position_z_max;
   bool   _AJVar;
   bool   _tthlepVar;
+  bool   _qglVar;
   bool   _is_data;
   /////
   //   BSM 

@@ -56,6 +56,7 @@ class TriggerSelector : public baseTree{
   HLTConfigProvider hltConfig_;
   edm::InputTag triggerBits_;
   double _maxtriggerversion;
+  bool _is_data;
   /////
   //   TTH
   /////
@@ -66,6 +67,7 @@ class TriggerSelector : public baseTree{
   int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
   int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
   int HLT_IsoMu20;
+  int HLT_IsoMu22;
   int HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
   int HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL;
   //TTHbb
@@ -74,18 +76,24 @@ class TriggerSelector : public baseTree{
   int HLT_Ele27_eta2p1_WP75_Gsf;
   int HLT_Ele27_WP85_Gsf;
   int HLT_Ele27_eta2p1_WPLoose_Gsf;
+  int HLT_Ele27_eta2p1_WPTight_Gsf;
   //Muon
   int HLT_Mu45_eta2p1;
   int HLT_Mu50;
   int HLT_IsoMu17_eta2p1;
   int HLT_IsoMu24_eta2p1;
   int HLT_IsoMu18;
+  //Cross
+  int HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+  int HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
+  int HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL;
   //TTHLep
   //Electron
   int HLT_Ele23_WPLoose_Gsf; //Data
   int HLT_Ele23_CaloIdL_TrackIdL_IsoVL; //MC
   //Muon
   int HLT_IsoTkMu20;
+  int HLT_IsoTkMu22;
   //CrossEle-Mu
   int HLT_DiMu9_Ele9_CaloIdL_TrackIdL;
   int HLT_Mu8_DiEle12_CaloIdL_TrackIdL;

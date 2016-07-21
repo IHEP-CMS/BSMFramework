@@ -24,6 +24,10 @@
 <use name="RecoVertex/KinematicFitPrimitives"/>
 <use name="TrackingTools/IPTools"/>
 <use name="RecoBTag/BTagTools"/>
+<use name="JetMETCorrections/Algorithms"/>
+<use name="JetMETCorrections/JetCorrector"/>
+<use name="JetMETCorrections/Modules"/>
+<use name="LHAPDF"/>
 <use name="clhep"/>
 <use name="root"/>
 <use name="rootmath"/>

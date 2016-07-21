@@ -43,6 +43,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -73,7 +74,7 @@ class JetSelector : public  baseTree{
   void SetBranches();
   void JECInitialization();
   void Clear();
-  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};
   /////
@@ -83,6 +84,7 @@ class JetSelector : public  baseTree{
   edm::EDGetTokenT<pat::JetCollection> jets_;
   edm::EDGetTokenT<pat::JetCollection> puppijets_;
   edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhoJERHandle_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC3_;
@@ -101,6 +103,10 @@ class JetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA3_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA4_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATAUnc_;
+  std::string jerAK4PFchs_;
+  std::string jerAK4PFchsSF_;
+  std::string jerAK4PFPuppi_;
+  std::string jerAK4PFPuppiSF_;
   double _Jet_pt_min;
   bool _super_TNT;
   bool _PuppiVar;

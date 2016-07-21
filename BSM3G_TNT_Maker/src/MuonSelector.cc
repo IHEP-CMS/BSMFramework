@@ -47,6 +47,8 @@ MuonSelector::MuonSelector(std::string name, TTree* tree, bool debug, const pset
   rhoHandle_          = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   qgToken_            = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   _Muon_pt_min        = iConfig.getParameter<double>("Muon_pt_min");
+  _Muon_eta_max       = iConfig.getParameter<double>("Muon_eta_max");
+  _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
   _vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
   _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT          = iConfig.getParameter<bool>("super_TNT");

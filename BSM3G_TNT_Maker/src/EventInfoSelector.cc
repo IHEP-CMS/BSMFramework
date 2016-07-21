@@ -13,6 +13,8 @@ EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, 
   _is_data = iConfig.getParameter<bool>("is_data");
   if(debug) std::cout<<"in EventInfoSelector constructor"<<std::endl;
   SetBranches();
+  read_PDFSet = new (LHAPDF::PDFSet)("NNPDF30_nlo_as_0118");
+  _systPDFs = read_PDFSet->mkPDFs();
 }
 EventInfoSelector::~EventInfoSelector(){
   delete tree_;
@@ -34,7 +36,30 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     const gen::PdfInfo* pdf = genEventInfoW.pdf();
     EVENT_originalXWGTUP_ = lheEventProduct->originalXWGTUP();
     EVENT_scalePDF_ = pdf->scalePDF;
-    for (unsigned int i=0; i<lheEventProduct->weights().size(); i++) EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
+    for (unsigned int i=0; i<lheEventProduct->weights().size(); i++){
+      EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
+      //Q2 for ttHbb synchronization
+      if (lheEventProduct->weights()[i].id == "1005") EVENT_Q2tthbbWeightUp_   = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+      if (lheEventProduct->weights()[i].id == "1009") EVENT_Q2tthbbWeightDown_ = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+    }
+    //PDF for ttHbb synchronization
+    auto pdfInfos = genEvtInfo->pdf();
+    double pdfNominal = pdfInfos->xPDF.first * pdfInfos->xPDF.second;
+    std::vector<double> pdfs;
+    for (size_t j = 0; j < _systPDFs.size(); ++j) {
+      double xpdf1 = _systPDFs[j]->xfxQ(pdfInfos->id.first, pdfInfos->x.first, pdfInfos->scalePDF);
+      double xpdf2 = _systPDFs[j]->xfxQ(pdfInfos->id.second, pdfInfos->x.second, pdfInfos->scalePDF);
+      pdfs.push_back(xpdf1 * xpdf2);
+    }
+    const LHAPDF::PDFUncertainty pdfUnc = read_PDFSet->uncertainty(pdfs, 68.);
+    double weight_up = 1.0;
+    double weight_down = 1.0;
+    if (std::isfinite(1./pdfNominal)) {
+      weight_up = (pdfUnc.central + pdfUnc.errplus) / pdfNominal;
+      weight_down = (pdfUnc.central - pdfUnc.errminus) / pdfNominal;
+    }
+    EVENT_PDFtthbbWeightUp_   = weight_up;
+    EVENT_PDFtthbbWeightDown_ = weight_down;
     //gen Parton HT
     //Definition taken from https://github.com/cmkuo/ggAnalysis/blob/a24edc65be23b402d761c75545192ce79cddf316/ggNtuplizer/plugins/ggNtuplizer_genParticles.cc#L201 
     //Zaixing has a somehow different, but likely equivalent implementation
@@ -57,6 +82,10 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     EVENT_originalXWGTUP_ = 1;
     EVENT_scalePDF_ = 1;
     EVENT_genWeights_.push_back(1);
+    EVENT_Q2tthbbWeightUp_    = 1;
+    EVENT_Q2tthbbWeightDown_  = 1;
+    EVENT_PDFtthbbWeightUp_   = 1;
+    EVENT_PDFtthbbWeightDown_ = 1;
   }
   edm::Handle<double> rhopogHandle;
   iEvent.getByToken(rhopogHandle_,rhopogHandle);
@@ -116,9 +145,14 @@ void EventInfoSelector::SetBranches(){
   AddBranch(&EVENT_run_       ,"EVENT_run");
   AddBranch(&EVENT_lumiBlock_ ,"EVENT_lumiBlock");
   AddBranch(&EVENT_genWeight_ ,"EVENT_genWeight");
+  AddBranch(&EVENT_genWeights_,"EVENT_genWeights");
   AddBranch(&EVENT_genHT      ,"EVENT_genHT");
   AddBranch(&EVENT_rhopog_    ,"EVENT_rhopog");
   AddBranch(&EVENT_rhotth_    ,"EVENT_rhotth");
+  AddBranch(&EVENT_Q2tthbbWeightUp_    ,"EVENT_Q2tthbbWeightUp");
+  AddBranch(&EVENT_Q2tthbbWeightDown_  ,"EVENT_Q2tthbbWeightDown");
+  AddBranch(&EVENT_PDFtthbbWeightUp_   ,"EVENT_PDFtthbbWeightUp");
+  AddBranch(&EVENT_PDFtthbbWeightDown_ ,"EVENT_PDFtthbbWeightDown");
   AddBranch(&EVENT_fixedGridRhoFastjetCentral               ,"EVENT_fixedGridRhoFastjetCentral");
   AddBranch(&EVENT_fixedGridRhoFastjetCentralChargedPileUp  ,"EVENT_fixedGridRhoFastjetCentralChargedPileUp");
   AddBranch(&EVENT_fixedGridRhoFastjetCentralNeutral        ,"EVENT_fixedGridRhoFastjetCentralNeutral");
@@ -149,9 +183,14 @@ void EventInfoSelector::Initialise(){
   EVENT_run_        = -9999; 
   EVENT_lumiBlock_  = -9999;
   EVENT_genWeight_  = -9999;
+  EVENT_genWeights_.clear();
   EVENT_genHT       = -9999;
   EVENT_rhopog_     = -9999;
   EVENT_rhotth_     = -9999; 
+  EVENT_Q2tthbbWeightUp_    = -9999; 
+  EVENT_Q2tthbbWeightDown_  = -9999; 
+  EVENT_PDFtthbbWeightUp_   = -9999; 
+  EVENT_PDFtthbbWeightDown_ = -9999; 
   EVENT_fixedGridRhoFastjetCentral              = -9999;
   EVENT_fixedGridRhoFastjetCentralChargedPileUp = -9999; 
   EVENT_fixedGridRhoFastjetCentralNeutral       = -9999;

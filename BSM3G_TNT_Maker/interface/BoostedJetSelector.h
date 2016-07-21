@@ -42,6 +42,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -73,7 +74,7 @@ class BoostedJetSelector : public  baseTree{
   void SetBranches();
   void JECInitialization();
   void Clear();
-  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK8PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   BoostedJetSelector(){};
   /////
@@ -82,6 +83,7 @@ class BoostedJetSelector : public  baseTree{
   edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
   edm::EDGetTokenT<pat::JetCollection> fatjets_;
   edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhoJERHandle_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC3_;
@@ -91,6 +93,10 @@ class BoostedJetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK8PFchsDATA3_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA4_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATAUnc_;
+  std::string jerAK8PFchs_;
+  std::string jerAK8PFchsSF_;
+  std::string jerAK8PFPuppi_;
+  std::string jerAK8PFPuppiSF_;
   bool _is_data;
   /////
   //   JEC

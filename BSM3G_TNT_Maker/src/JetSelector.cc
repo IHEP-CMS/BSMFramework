@@ -6,6 +6,7 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jets_         = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
   puppijets_    = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jetsPUPPI"));
   rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+  rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoAll"));
   jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
   jecPayloadNamesAK4PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC2");
   jecPayloadNamesAK4PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC3");
@@ -24,6 +25,10 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jecPayloadNamesAK4PFPuppiDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA3");
   jecPayloadNamesAK4PFPuppiDATA4_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA4");
   jecPayloadNamesAK4PFPuppiDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATAUnc");
+  jerAK4PFchs_     = iConfig.getParameter<edm::FileInPath>("jerAK4PFchs").fullPath();
+  jerAK4PFchsSF_   = iConfig.getParameter<edm::FileInPath>("jerAK4PFchsSF").fullPath();
+  jerAK4PFPuppi_   = iConfig.getParameter<edm::FileInPath>("jerAK4PFPuppi").fullPath();
+  jerAK4PFPuppiSF_ = iConfig.getParameter<edm::FileInPath>("jerAK4PFPuppiSF").fullPath();
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
   _is_data = iConfig.getParameter<bool>("is_data");
@@ -48,6 +53,9 @@ void JetSelector::Fill(const edm::Event& iEvent){
   edm::Handle<double> rhoHandle;
   iEvent.getByToken(rhopogHandle_,rhoHandle);
   double rho = *rhoHandle;
+  edm::Handle<double> rhoJERHandle;
+  iEvent.getByToken(rhoJERHandle_,rhoJERHandle);
+  double rhoJER = *rhoJERHandle;
   /////
   //   Get jet information
   /////  
@@ -133,7 +141,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     float JERScaleFactor     = 1; 
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
-    if(!_is_data) GetJER(j, corrAK4PFchs, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    if(!_is_data) GetJER(j, corrAK4PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -233,7 +241,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       float JERScaleFactor     = 1; 
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
-      if(!_is_data) GetJER(j, corrAK4PFPuppi, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      if(!_is_data) GetJER(j, corrAK4PFPuppi, rhoJER, false, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -504,7 +512,7 @@ void JetSelector::Clear(){
     }
   }
 }
-void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
+void JetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
   double cFactorJER = 1.0; 
@@ -512,63 +520,78 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float
   double cFactorJERup = 1.0;
   //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
   if( jetEta<0.5 ){ 
-    cFactorJER = 1.095; 
-    cFactorJERdown = 1.095-0.018;
-    cFactorJERup   = 1.095+0.018; 
+    cFactorJER = 1.122; 
+    cFactorJERdown = 1.122-0.026;
+    cFactorJERup   = 1.122+0.026; 
   } else if( jetEta<0.8 ){ 
-    cFactorJER = 1.120; 
-    cFactorJERdown = 1.120-0.028;
-    cFactorJERup   = 1.120+0.028; 
+    cFactorJER = 1.167; 
+    cFactorJERdown = 1.167-0.048;
+    cFactorJERup   = 1.167+0.048; 
   } else if( jetEta<1.1 ){ 
-    cFactorJER = 1.097; 
-    cFactorJERdown = 1.097-0.017;
-    cFactorJERup   = 1.097+0.017; 
+    cFactorJER = 1.168; 
+    cFactorJERdown = 1.168-0.046;
+    cFactorJERup   = 1.168+0.046; 
   } else if( jetEta<1.3 ){ 
-    cFactorJER = 1.103; 
-    cFactorJERdown = 1.103-0.033;
-    cFactorJERup   = 1.103+0.033; 
+    cFactorJER = 1.029; 
+    cFactorJERdown = 1.029-0.066;
+    cFactorJERup   = 1.029+0.066; 
   } else if( jetEta<1.7 ){ 
-    cFactorJER = 1.118; 
-    cFactorJERdown = 1.118-0.014;
-    cFactorJERup   = 1.118+0.014; 
+    cFactorJER = 1.115; 
+    cFactorJERdown = 1.115-0.030;
+    cFactorJERup   = 1.115+0.030; 
   } else if( jetEta<1.9 ){ 
-    cFactorJER = 1.100; 
-    cFactorJERdown = 1.100-0.033;
-    cFactorJERup   = 1.100+0.033; 
+    cFactorJER = 1.041; 
+    cFactorJERdown = 1.041-0.062;
+    cFactorJERup   = 1.041+0.062; 
   } else if( jetEta<2.1 ){ 
-    cFactorJER = 1.162; 
-    cFactorJERdown = 1.162-0.044;
-    cFactorJERup   = 1.162+0.044; 
+    cFactorJER = 1.167; 
+    cFactorJERdown = 1.167-0.086;
+    cFactorJERup   = 1.167+0.086; 
   } else if( jetEta<2.3 ){ 
-    cFactorJER = 1.160; 
-    cFactorJERdown = 1.160-0.048;
-    cFactorJERup   = 1.160+0.048; 
+    cFactorJER = 1.094; 
+    cFactorJERdown = 1.094-0.093;
+    cFactorJERup   = 1.094+0.093; 
   } else if( jetEta<2.5 ){ 
-    cFactorJER = 1.161; 
-    cFactorJERdown = 1.161-0.060;
-    cFactorJERup   = 1.161+0.060; 
+    cFactorJER = 1.168; 
+    cFactorJERdown = 1.168-0.120;
+    cFactorJERup   = 1.168+0.120; 
   } else if( jetEta<2.8 ){ 
-    cFactorJER = 1.209; 
-    cFactorJERdown = 1.209-0.059;
-    cFactorJERup   = 1.209+0.059; 
+    cFactorJER = 1.266; 
+    cFactorJERdown = 1.266-0.132;
+    cFactorJERup   = 1.266+0.132; 
   } else if( jetEta<3.0 ){ 
-    cFactorJER = 1.564; 
-    cFactorJERdown = 1.564-0.321;
-    cFactorJERup   = 1.564+0.321; 
+    cFactorJER = 1.595; 
+    cFactorJERdown = 1.595-0.175;
+    cFactorJERup   = 1.595+0.175; 
   } else if( jetEta<3.2 ){ 
-    cFactorJER = 1.384; 
-    cFactorJERdown = 1.384-0.033;
-    cFactorJERup   = 1.384+0.033; 
+    cFactorJER = 0.998; 
+    cFactorJERdown = 0.998-0.066;
+    cFactorJERup   = 0.998+0.066; 
   } else if( jetEta<5.0 ){ 
-    cFactorJER = 1.216; 
-    cFactorJERdown = 1.216-0.050;
-    cFactorJERup   = 1.216+0.050;
+    cFactorJER = 1.226; 
+    cFactorJERdown = 1.226-0.145;
+    cFactorJERup   = 1.226+0.145;
   }
   //double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
   double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();
   double diffPt    = recoJetPt - genJetPt;
-  if(genJetPt>0.){
+  JME::JetResolution resolution;
+  JME::JetResolutionScaleFactor res_sf;
+  if(AK4PFchs){
+    resolution = JME::JetResolution(jerAK4PFchs_);
+    res_sf = JME::JetResolutionScaleFactor(jerAK4PFchsSF_);
+  } else {
+    resolution = JME::JetResolution(jerAK4PFPuppi_);
+    res_sf = JME::JetResolutionScaleFactor(jerAK4PFPuppiSF_);
+  }
+  JME::JetParameters parameters;
+  parameters.setJetPt(jet.pt());
+  parameters.setJetEta(jet.eta());
+  parameters.setRho(rhoJER);
+  float relpterr = resolution.getResolution(parameters);
+  if(genJetPt>0. && deltaR(jet.eta(),jet.phi(),jet.genJet()->eta(),jet.genJet()->phi())<0.2
+     && (abs(jet.pt()-jet.genJet()->pt())<3*relpterr*jet.pt())) {
     JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;
     JERScaleFactorUP   = (std::max(0., genJetPt + cFactorJERup*diffPt))/recoJetPt;
     JERScaleFactorDOWN = (std::max(0., genJetPt + cFactorJERdown*diffPt))/recoJetPt;

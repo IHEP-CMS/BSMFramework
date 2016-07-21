@@ -79,6 +79,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "GeneratorInterface/LHEInterface/interface/LHEEvent.h"
 #include "SimDataFormats/GeneratorProducts/interface/PdfInfo.h"
+#include "LHAPDF/LHAPDF.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -126,6 +127,7 @@ class EventInfoSelector : public baseTree{
   bool _is_data; 
   double EVENT_rhopog_, EVENT_rhotth_; 
   double EVENT_originalXWGTUP_, EVENT_scalePDF_;
+  double EVENT_PDFtthbbWeightUp_, EVENT_PDFtthbbWeightDown_, EVENT_Q2tthbbWeightUp_, EVENT_Q2tthbbWeightDown_;
   vector<double> EVENT_genWeights_;
   double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;
   //Event filters
@@ -148,5 +150,7 @@ class EventInfoSelector : public baseTree{
   int Flag_trkPOG_toomanystripclus53X;
   int Flag_trkPOG_logErrorTooManyClusters;
   int Flag_METFilters;
+  LHAPDF::PDFSet *read_PDFSet;
+  std::vector<LHAPDF::PDF*> _systPDFs;
 };
 #endif

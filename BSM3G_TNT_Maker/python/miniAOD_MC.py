@@ -24,14 +24,20 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
     #ttHbb
-    'file:pickevents.root'
+    #'file:pickevents.root'
+    #'file:pickevents_2233019.root',
+    #'file:pickevents_2245465.root',
+    #'file:pickevents_2247570.root',
+    #'file:pickevents_2252997.root',
+    #'file:pickevents_2656212.root'
+    '/store/mc/RunIISpring16MiniAODv2/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/40000/0089CC67-6338-E611-947D-0025904C4E2A.root'
     #'/store/mc/RunIISpring16MiniAODv2/ttHTobb_M125_13TeV_powheg_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/40000/0089CC67-6338-E611-947D-0025904C4E2A.root'
     #ttjets
     #'/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/00000/0064B539-803A-E611-BDEA-002590D0B060.root '
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -151,7 +157,7 @@ process.matchGenCHadron = matchGenCHadron.clone(
 ##   Output file
 #####
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("OutTree_tth.root")
+  fileName = cms.string("OutTree.root")
 )
 #####
 ##   Analysis parameters
@@ -159,7 +165,7 @@ process.TFileService = cms.Service("TFileService",
 process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   #### Running options
   # Choose which trigger you want (do NOT need to put * as it will consider all the versions by default)
-  ifevtriggers      = cms.bool(True), # True means you want to require the triggers
+  ifevtriggers      = cms.bool(False), # True means you want to require the triggers
   maxtriggerversion = cms.double(10), # please leave it as a double
   evtriggers        = cms.vstring(
     #Common
@@ -173,7 +179,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
     #TTHbb
      'HLT_Ele27_eta2p1_WPTight_Gsf_v',
-     'HLT_IsoMu22_v* or HLT_IsoTkMu22_v',
+     'HLT_IsoMu22_v',
+     'HLT_IsoTkMu22_v',
      'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
      'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
      'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
@@ -194,19 +201,19 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v',
   ),
   # Choose which information you want to use
-  fillgeninfo           = cms.bool(True),
+  fillgeninfo           = cms.bool(False),
   fillgenHFCategoryinfo = cms.bool(True),
-  filleventinfo         = cms.bool(True),
-  filltriggerinfo       = cms.bool(True),
-  fillPVinfo            = cms.bool(True),
-  fillmuoninfo          = cms.bool(True),
-  fillelectronpatinfo   = cms.bool(True),
-  filltauinfo           = cms.bool(True),
-  filljetinfo           = cms.bool(True),
+  filleventinfo         = cms.bool(False),
+  filltriggerinfo       = cms.bool(False),
+  fillPVinfo            = cms.bool(False),
+  fillmuoninfo          = cms.bool(False),
+  fillelectronpatinfo   = cms.bool(False),
+  filltauinfo           = cms.bool(False),
+  filljetinfo           = cms.bool(False),
   filltthjetinfo        = cms.bool(False), #F
-  fillBoostedJetinfo    = cms.bool(True),
+  fillBoostedJetinfo    = cms.bool(False),
   fillTopSubJetinfo     = cms.bool(False), #F
-  fillTauJetnessinfo    = cms.bool(True),
+  fillTauJetnessinfo    = cms.bool(False),
   fillBJetnessinfo      = cms.bool(True),
   fillBJetnessFVinfo    = cms.bool(True),
   fillBTagReweight      = cms.bool(True),

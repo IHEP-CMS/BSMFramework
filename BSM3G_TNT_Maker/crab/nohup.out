@@ -1,0 +1,40 @@
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/Firts2016_SEleB/crab_Firts2016_SEleB
+Task name:			160726_142148:fromeo_crab_Firts2016_SEleB
+Grid scheduler:			crab3-7@vocms0114.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_142148%3Afromeo_crab_Firts2016_SEleB
+
+Jobs status:			finished      100.0% (1743/1743)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/Firts2016_SEleB/crab_Firts2016_SEleB/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/Firts2016_SEleC/crab_Firts2016_SEleC
+Task name:			160726_142218:fromeo_crab_Firts2016_SEleC
+Grid scheduler:			crab3@vocms0106.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_142218%3Afromeo_crab_Firts2016_SEleC
+
+Jobs status:			finished      100.0% (392/392)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/Firts2016_SEleC/crab_Firts2016_SEleC/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_SMuB/crab_First2016_SMuB
+Task name:			160726_142254:fromeo_crab_First2016_SMuB
+Grid scheduler:			crab3@vocms0112.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_142254%3Afromeo_crab_First2016_SMuB
+
+Jobs status:			finished      100.0% (1740/1740)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_SMuB/crab_First2016_SMuB/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_SMuC/crab_First2016_SMuC
+Task name:			160726_142334:fromeo_crab_First2016_SMuC
+Grid scheduler:			crab3@vocms0112.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_142334%3Afromeo_crab_First2016_SMuC
+
+Jobs status:			finished      100.0% (391/391)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_SMuC/crab_First2016_SMuC/crab.log

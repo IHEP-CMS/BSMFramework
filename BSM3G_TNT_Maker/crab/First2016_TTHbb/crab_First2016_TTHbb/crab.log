@@ -1,0 +1,475 @@
+# Conditions read from  CMS_CONDITIONS  via FrontierProd 
+DEBUG 2016-07-26 16:05:19,076: 	 Executing command: 'submit'
+DEBUG 2016-07-26 16:05:19,112: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-26 16:05:19,243: 	 Checking credentials
+DEBUG 2016-07-26 16:05:19,243: 	 Proxy file /tmp/x509up_u30997 not found
+DEBUG 2016-07-26 16:05:19,243: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2016-07-26 16:05:21,882: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2016-07-26 16:05:22,496: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:23,120: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 86397
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:23,730: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30997 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:23,730: 	 Proxy created.
+DEBUG 2016-07-26 16:05:23,731: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2016-07-26 16:05:24,164: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:24,165: 	 Checking credentials
+DEBUG 2016-07-26 16:05:24,165: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 16:05:24,165: 	 Getting proxy life time left
+DEBUG 2016-07-26 16:05:24,771: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 86396
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:25,377: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 86395
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:25,377: 	 Proxy valid for 23:59:56 hours
+DEBUG 2016-07-26 16:05:25,992: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30997 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:26,950: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-26 16:05:27,064: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:27,064: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-26 16:05:27,064: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-26 16:05:27,569: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 387:45:44  (16.2 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 16:05:27,570: 	 Myproxy is valid: 1395944
+DEBUG 2016-07-26 16:05:27,570: 	 Command use: submit
+DEBUG 2016-07-26 16:05:27,570: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7f2b480b3c90>]
+DEBUG 2016-07-26 16:05:28,476: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-26 16:05:28,476: 	 Instance is prod
+DEBUG 2016-07-26 16:05:28,476: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-26 16:05:28,476: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-26 16:05:28,477: 	 Started submission
+DEBUG 2016-07-26 16:05:28,477: 	 Working on /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+DEBUG 2016-07-26 16:05:29,027: 	 Loading required information from the environment
+DEBUG 2016-07-26 16:05:29,027: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-26 16:05:29,098: 	 UNIQUE NAME: tarUUID c18ab822-5c42-4aaf-880c-e288a56cc6c0 
+DEBUG 2016-07-26 16:05:29,098: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.workArea = 'First2016_TTHbb'
+config.General.requestName = 'First2016_TTHbb'
+config.section_('JobType')
+config.JobType.psetName = '/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC.py'
+config.JobType.pluginName = 'Analysis'
+config.section_('Data')
+config.Data.inputDataset = '/ttHTobb_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM'
+config.Data.totalUnits = 2500
+config.Data.unitsPerJob = 1
+config.Data.inputDBS = 'global'
+config.Data.splitting = 'FileBased'
+config.Data.outLFNDirBase = '/store/user/fromeo/'
+config.section_('Site')
+config.Site.storageSite = 'T2_CN_Beijing'
+config.section_('User')
+config.section_('Debug')
+
+DEBUG 2016-07-26 16:05:29,098: 	 self.config.JobType.psetName: /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC.py
+INFO 2016-07-26 16:05:29,101: 	 Importing CMSSW configuration /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC.py
+INFO 2016-07-26 16:05:29,760: 	 Finished importing CMSSW configuration /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC.py
+DEBUG 2016-07-26 16:05:29,760: 	 Writing CMSSW configuration to /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/inputs/PSet.py
+DEBUG 2016-07-26 16:05:29,888: 	 The following EDM output files will be collected: []
+DEBUG 2016-07-26 16:05:29,888: 	 The following TFile output files will be collected: ['OutTree.root']
+DEBUG 2016-07-26 16:05:29,888: 	 The following user output files will be collected: []
+DEBUG 2016-07-26 16:05:29,888: 	 Loading required information from the environment
+DEBUG 2016-07-26 16:05:29,888: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-26 16:05:29,888: 	 Making tarball in /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/inputs/c18ab822-5c42-4aaf-880c-e288a56cc6c0default.tgz
+DEBUG 2016-07-26 16:05:29,889: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/lib
+DEBUG 2016-07-26 16:05:29,889: 	 Adding directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/lib to tarball
+DEBUG 2016-07-26 16:05:30,205: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/biglib
+DEBUG 2016-07-26 16:05:30,205: 	 Adding directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/biglib to tarball
+DEBUG 2016-07-26 16:05:30,206: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/module
+DEBUG 2016-07-26 16:05:30,301: 	 Adding data directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/data to tarball
+DEBUG 2016-07-26 16:05:46,907: 	 Adding data directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/interface to tarball
+DEBUG 2016-07-26 16:05:47,713: 	 Uploading archive /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/inputs/c18ab822-5c42-4aaf-880c-e288a56cc6c0default.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-07-26 16:05:58,940: 	 Loading required information from the environment
+DEBUG 2016-07-26 16:05:58,940: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-26 16:05:58,941: 	 Making tarball in /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/inputs/debugFiles.tgz
+DEBUG 2016-07-26 16:05:58,953: 	 Uploading archive /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/inputs/debugFiles.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-07-26 16:05:59,332: 	 Result uploading input files: ba79e5e41a5a9f172a5f31a782562b74469abe8631140a308a72e8a616a37aaf.tar.gz 
+WARNING 2016-07-26 16:05:59,332: 	 Warning: The following output files will not be published, as they are not EDM files: ['OutTree.root']
+INFO 2016-07-26 16:05:59,332: 	 Sending the request to the server
+DEBUG 2016-07-26 16:05:59,333: 	 Submitting {'maxjobruntime': 1250, 'ignorelocality': 0, 'savelogsflag': 0, 'useparent': 0, 'asyncdest': 'T2_CN_Beijing', 'algoargs': 1, 'cachefilename': 'ba79e5e41a5a9f172a5f31a782562b74469abe8631140a308a72e8a616a37aaf.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_8_0_12', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/ttHTobb_M125_13TeV_powheg_pythia8/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM', 'lfn': '/store/user/fromeo/', 'dryrun': 0, 'workflow': 'crab_First2016_TTHbb', 'adduserfiles': [], 'nonprodsw': 0, 'tfileoutfiles': ['OutTree.root'], 'oneEventMode': 0, 'debugfilename': '31e1f44811d45a860a6ddc084e1f55dad495d80a20c0d90153a027ee939f6030.tar.gz', 'cacheurl': 'https://cmsweb.cern.ch/crabcache', 'saveoutput': 1, 'publication': 1, 'jobarch': 'slc6_amd64_gcc530', 'totalunits': 2500, 'splitalgo': 'FileBased', 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2016-07-26 16:05:59,333: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=0&useparent=0&asyncdest=T2_CN_Beijing&algoargs=1&cachefilename=ba79e5e41a5a9f172a5f31a782562b74469abe8631140a308a72e8a616a37aaf.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_8_0_12&primarydataset=&inputdata=%2FttHTobb_M125_13TeV_powheg_pythia8%2FRunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1%2FMINIAODSIM&lfn=%2Fstore%2Fuser%2Ffromeo%2F&dryrun=0&workflow=crab_First2016_TTHbb&nonprodsw=0&oneEventMode=0&debugfilename=31e1f44811d45a860a6ddc084e1f55dad495d80a20c0d90153a027ee939f6030.tar.gz&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&saveoutput=1&publication=1&jobarch=slc6_amd64_gcc530&totalunits=2500&splitalgo=FileBased&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fglobal%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&tfileoutfiles=OutTree.root
+DEBUG 2016-07-26 16:06:00,039: 	 Result: {'result': [{'RequestName': '160726_140559:fromeo_crab_First2016_TTHbb'}]}
+INFO 2016-07-26 16:06:00,049: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2016-07-26 16:06:00,050: 	 Task name: 160726_140559:fromeo_crab_First2016_TTHbb
+INFO 2016-07-26 16:06:00,050: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2016-07-26 16:06:00,050: 	 About to return
+DEBUG 2016-07-26 17:08:37,471: 	 Executing command: 'status'
+DEBUG 2016-07-26 17:08:37,471: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-26 17:08:37,594: 	 Checking credentials
+DEBUG 2016-07-26 17:08:37,595: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 17:08:37,595: 	 Getting proxy life time left
+DEBUG 2016-07-26 17:08:40,426: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 82600
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:41,062: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 82599
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:41,062: 	 Proxy valid for 22:56:40 hours
+DEBUG 2016-07-26 17:08:41,310: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:41,310: 	 Checking credentials
+DEBUG 2016-07-26 17:08:41,310: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 17:08:41,310: 	 Getting proxy life time left
+DEBUG 2016-07-26 17:08:41,962: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 82599
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:42,581: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 82598
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:42,581: 	 Proxy valid for 22:56:39 hours
+DEBUG 2016-07-26 17:08:42,996: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-26 17:08:43,105: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:43,105: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-26 17:08:43,105: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-26 17:08:44,821: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 386:42:27  (16.1 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 17:08:44,824: 	 Myproxy is valid: 1392147
+DEBUG 2016-07-26 17:08:44,824: 	 Command use: status
+DEBUG 2016-07-26 17:08:44,824: 	 Options use: ['First2016_TTHbb/crab_First2016_TTHbb']
+DEBUG 2016-07-26 17:08:45,252: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-26 17:08:45,252: 	 Instance is prod
+DEBUG 2016-07-26 17:08:45,252: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-26 17:08:45,252: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-26 17:08:45,252: 	 Looking up detailed status of task 160726_140559:fromeo_crab_First2016_TTHbb
+DEBUG 2016-07-26 17:08:47,504: 	 {'status': 'SUBMITTED', 'username': 'fromeo', 'jobsPerStatus': {'running': 30, 'transferring': 54, 'finished': 6}, 'jobs': {'24': {'State': 'running'}, '25': {'State': 'finished'}, '26': {'State': 'transferring'}, '27': {'State': 'transferring'}, '20': {'State': 'transferring'}, '21': {'State': 'running'}, '22': {'State': 'transferring'}, '23': {'State': 'transferring'}, '28': {'State': 'transferring'}, '29': {'State': 'running'}, '4': {'State': 'transferring'}, '8': {'State': 'transferring'}, '59': {'State': 'transferring'}, '58': {'State': 'running'}, '55': {'State': 'transferring'}, '54': {'State': 'running'}, '57': {'State': 'running'}, '56': {'State': 'running'}, '51': {'State': 'transferring'}, '50': {'State': 'running'}, '53': {'State': 'transferring'}, '52': {'State': 'transferring'}, '88': {'State': 'transferring'}, '89': {'State': 'transferring'}, '82': {'State': 'transferring'}, '83': {'State': 'running'}, '80': {'State': 'transferring'}, '81': {'State': 'running'}, '86': {'State': 'finished'}, '87': {'State': 'transferring'}, '84': {'State': 'running'}, '85': {'State': 'running'}, '3': {'State': 'running'}, '7': {'State': 'transferring'}, '39': {'State': 'running'}, '38': {'State': 'transferring'}, '33': {'State': 'transferring'}, '32': {'State': 'transferring'}, '31': {'State': 'finished'}, '30': {'State': 'transferring'}, '37': {'State': 'transferring'}, '36': {'State': 'transferring'}, '35': {'State': 'transferring'}, '34': {'State': 'transferring'}, '60': {'State': 'transferring'}, '61': {'State': 'running'}, '62': {'State': 'transferring'}, '63': {'State': 'transferring'}, '64': {'State': 'running'}, '65': {'State': 'transferring'}, '66': {'State': 'running'}, '67': {'State': 'transferring'}, '68': {'State': 'running'}, '69': {'State': 'running'}, '2': {'State': 'transferring'}, '6': {'State': 'running'}, '90': {'State': 'running'}, '11': {'State': 'transferring'}, '10': {'State': 'transferring'}, '13': {'State': 'transferring'}, '12': {'State': 'transferring'}, '15': {'State': 'transferring'}, '14': {'State': 'running'}, '17': {'State': 'transferring'}, '16': {'State': 'transferring'}, '19': {'State': 'transferring'}, '18': {'State': 'transferring'}, '48': {'State': 'transferring'}, '49': {'State': 'transferring'}, '46': {'State': 'transferring'}, '47': {'State': 'running'}, '44': {'State': 'transferring'}, '45': {'State': 'transferring'}, '42': {'State': 'running'}, '43': {'State': 'transferring'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'running'}, '9': {'State': 'running'}, '77': {'State': 'running'}, '76': {'State': 'transferring'}, '75': {'State': 'transferring'}, '74': {'State': 'transferring'}, '73': {'State': 'running'}, '72': {'State': 'running'}, '71': {'State': 'running'}, '70': {'State': 'transferring'}, '79': {'State': 'transferring'}, '78': {'State': 'transferring'}}, 'publication': {}, 'taskWarningMsg': [], 'schedd': 'crab3@vocms0106.cern.ch', 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb2', 'command': 'SUBMIT', 'totalJobdefs': 0, 'submissionTime': 1469541960, 'jobdefErrors': [], 'collector': 'cmsgwms-collector-global.cern.ch,cmssrv221.fnal.gov', 'jobList': [['running', 24], ['finished', 25], ['transferring', 26], ['transferring', 27], ['transferring', 20], ['running', 21], ['transferring', 22], ['transferring', 23], ['transferring', 28], ['running', 29], ['transferring', 4], ['transferring', 8], ['transferring', 59], ['running', 58], ['transferring', 55], ['running', 54], ['running', 57], ['running', 56], ['transferring', 51], ['running', 50], ['transferring', 53], ['transferring', 52], ['transferring', 88], ['transferring', 89], ['transferring', 82], ['running', 83], ['transferring', 80], ['running', 81], ['finished', 86], ['transferring', 87], ['running', 84], ['running', 85], ['running', 3], ['transferring', 7], ['running', 39], ['transferring', 38], ['transferring', 33], ['transferring', 32], ['finished', 31], ['transferring', 30], ['transferring', 37], ['transferring', 36], ['transferring', 35], ['transferring', 34], ['transferring', 60], ['running', 61], ['transferring', 62], ['transferring', 63], ['running', 64], ['transferring', 65], ['running', 66], ['transferring', 67], ['running', 68], ['running', 69], ['transferring', 2], ['running', 6], ['running', 90], ['transferring', 11], ['transferring', 10], ['transferring', 13], ['transferring', 12], ['transferring', 15], ['running', 14], ['transferring', 17], ['transferring', 16], ['transferring', 19], ['transferring', 18], ['transferring', 48], ['transferring', 49], ['transferring', 46], ['running', 47], ['transferring', 44], ['transferring', 45], ['running', 42], ['transferring', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['running', 5], ['running', 9], ['running', 77], ['transferring', 76], ['transferring', 75], ['transferring', 74], ['running', 73], ['running', 72], ['running', 71], ['transferring', 70], ['transferring', 79], ['transferring', 78]]}
+INFO 2016-07-26 17:08:47,504: 	 CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+INFO 2016-07-26 17:08:47,505: 	 Task name:			160726_140559:fromeo_crab_First2016_TTHbb
+INFO 2016-07-26 17:08:47,505: 	 Grid scheduler:			crab3@vocms0106.cern.ch
+INFO 2016-07-26 17:08:47,505: 	 Task status:			SUBMITTED
+INFO 2016-07-26 17:08:47,505: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140559%3Afromeo_crab_First2016_TTHbb
+INFO 2016-07-26 17:08:47,505: 	 
+Jobs status:			finished        6.7% ( 6/90)
+INFO 2016-07-26 17:08:47,505: 	 				running        33.3% (30/90)
+INFO 2016-07-26 17:08:47,505: 	 				transferring   60.0% (54/90)
+INFO 2016-07-26 17:08:47,505: 	 
+No publication information available yet
+INFO 2016-07-26 17:08:47,531: 	 Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/crab.log
+DEBUG 2016-07-26 19:03:06,298: 	 Executing command: 'status'
+DEBUG 2016-07-26 19:03:06,299: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-26 19:03:06,351: 	 Checking credentials
+DEBUG 2016-07-26 19:03:06,351: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 19:03:06,351: 	 Getting proxy life time left
+DEBUG 2016-07-26 19:03:06,958: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 75734
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:07,570: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 75733
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:07,570: 	 Proxy valid for 21:02:14 hours
+DEBUG 2016-07-26 19:03:07,718: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:07,719: 	 Checking credentials
+DEBUG 2016-07-26 19:03:07,719: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 19:03:07,719: 	 Getting proxy life time left
+DEBUG 2016-07-26 19:03:08,437: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 75732
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:09,051: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 75732
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:09,052: 	 Proxy valid for 21:02:12 hours
+DEBUG 2016-07-26 19:03:09,443: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-26 19:03:09,554: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:09,555: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-26 19:03:09,555: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-26 19:03:09,761: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 384:48:02  (16.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:03:09,765: 	 Myproxy is valid: 1385282
+DEBUG 2016-07-26 19:03:09,765: 	 Command use: status
+DEBUG 2016-07-26 19:03:09,765: 	 Options use: ['First2016_TTHbb/crab_First2016_TTHbb']
+DEBUG 2016-07-26 19:03:10,147: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-26 19:03:10,147: 	 Instance is prod
+DEBUG 2016-07-26 19:03:10,147: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-26 19:03:10,147: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-26 19:03:10,148: 	 Looking up detailed status of task 160726_140559:fromeo_crab_First2016_TTHbb
+DEBUG 2016-07-26 19:03:10,987: 	 {'status': 'COMPLETED', 'username': 'fromeo', 'jobsPerStatus': {'finished': 90}, 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'finished'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'finished'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'finished'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'finished'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'finished'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'finished'}, '35': {'State': 'finished'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'finished'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '90': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'finished'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'finished'}, '45': {'State': 'finished'}, '42': {'State': 'finished'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'finished'}, '76': {'State': 'finished'}, '75': {'State': 'finished'}, '74': {'State': 'finished'}, '73': {'State': 'finished'}, '72': {'State': 'finished'}, '71': {'State': 'finished'}, '70': {'State': 'finished'}, '79': {'State': 'finished'}, '78': {'State': 'finished'}}, 'publication': {}, 'taskWarningMsg': [], 'schedd': 'crab3@vocms0106.cern.ch', 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb2', 'command': 'SUBMIT', 'totalJobdefs': 0, 'submissionTime': 1469541960, 'jobdefErrors': [], 'collector': 'cmsgwms-collector-global.cern.ch,cmssrv221.fnal.gov', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['finished', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['finished', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['finished', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['finished', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 39], ['finished', 38], ['finished', 33], ['finished', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['finished', 36], ['finished', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['finished', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 90], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['finished', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['finished', 44], ['finished', 45], ['finished', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['finished', 77], ['finished', 76], ['finished', 75], ['finished', 74], ['finished', 73], ['finished', 72], ['finished', 71], ['finished', 70], ['finished', 79], ['finished', 78]]}
+INFO 2016-07-26 19:03:10,987: 	 CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+INFO 2016-07-26 19:03:10,988: 	 Task name:			160726_140559:fromeo_crab_First2016_TTHbb
+INFO 2016-07-26 19:03:10,988: 	 Grid scheduler:			crab3@vocms0106.cern.ch
+INFO 2016-07-26 19:03:10,988: 	 Task status:			COMPLETED
+INFO 2016-07-26 19:03:10,988: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140559%3Afromeo_crab_First2016_TTHbb
+INFO 2016-07-26 19:03:10,988: 	 
+Jobs status:			finished      100.0% (90/90)
+INFO 2016-07-26 19:03:10,988: 	 
+No publication information available yet
+INFO 2016-07-26 19:03:11,031: 	 Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/crab.log
+DEBUG 2016-07-26 19:05:21,595: 	 Executing command: 'status'
+DEBUG 2016-07-26 19:05:21,595: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-26 19:05:21,623: 	 Checking credentials
+DEBUG 2016-07-26 19:05:21,623: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 19:05:21,623: 	 Getting proxy life time left
+DEBUG 2016-07-26 19:05:22,330: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 75598
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:22,836: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 75598
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:22,836: 	 Proxy valid for 20:59:58 hours
+DEBUG 2016-07-26 19:05:22,951: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:22,952: 	 Checking credentials
+DEBUG 2016-07-26 19:05:22,952: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-26 19:05:22,952: 	 Getting proxy life time left
+DEBUG 2016-07-26 19:05:23,563: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 75597
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:24,176: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 75596
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:24,176: 	 Proxy valid for 20:59:57 hours
+DEBUG 2016-07-26 19:05:24,526: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-26 19:05:24,636: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:24,636: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-26 19:05:24,636: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-26 19:05:25,142: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 384:45:46  (16.0 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-26 19:05:25,144: 	 Myproxy is valid: 1385146
+DEBUG 2016-07-26 19:05:25,144: 	 Command use: status
+DEBUG 2016-07-26 19:05:25,144: 	 Options use: ['First2016_TTHbb/crab_First2016_TTHbb']
+DEBUG 2016-07-26 19:05:25,647: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-26 19:05:25,647: 	 Instance is prod
+DEBUG 2016-07-26 19:05:25,647: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-26 19:05:25,647: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-26 19:05:25,647: 	 Looking up detailed status of task 160726_140559:fromeo_crab_First2016_TTHbb
+DEBUG 2016-07-26 19:05:26,455: 	 {'status': 'COMPLETED', 'username': 'fromeo', 'jobsPerStatus': {'finished': 90}, 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'finished'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'finished'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'finished'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'finished'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'finished'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'finished'}, '35': {'State': 'finished'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'finished'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '90': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'finished'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'finished'}, '45': {'State': 'finished'}, '42': {'State': 'finished'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'finished'}, '76': {'State': 'finished'}, '75': {'State': 'finished'}, '74': {'State': 'finished'}, '73': {'State': 'finished'}, '72': {'State': 'finished'}, '71': {'State': 'finished'}, '70': {'State': 'finished'}, '79': {'State': 'finished'}, '78': {'State': 'finished'}}, 'publication': {}, 'taskWarningMsg': [], 'schedd': 'crab3@vocms0106.cern.ch', 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb2', 'command': 'SUBMIT', 'totalJobdefs': 0, 'submissionTime': 1469541960, 'jobdefErrors': [], 'collector': 'cmsgwms-collector-global.cern.ch,cmssrv221.fnal.gov', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['finished', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['finished', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['finished', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['finished', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 39], ['finished', 38], ['finished', 33], ['finished', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['finished', 36], ['finished', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['finished', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 90], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['finished', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['finished', 44], ['finished', 45], ['finished', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['finished', 77], ['finished', 76], ['finished', 75], ['finished', 74], ['finished', 73], ['finished', 72], ['finished', 71], ['finished', 70], ['finished', 79], ['finished', 78]]}
+INFO 2016-07-26 19:05:26,455: 	 CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+INFO 2016-07-26 19:05:26,455: 	 Task name:			160726_140559:fromeo_crab_First2016_TTHbb
+INFO 2016-07-26 19:05:26,455: 	 Grid scheduler:			crab3@vocms0106.cern.ch
+INFO 2016-07-26 19:05:26,456: 	 Task status:			COMPLETED
+INFO 2016-07-26 19:05:26,456: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140559%3Afromeo_crab_First2016_TTHbb
+INFO 2016-07-26 19:05:26,456: 	 
+Jobs status:			finished      100.0% (90/90)
+INFO 2016-07-26 19:05:26,456: 	 
+No publication information available yet
+INFO 2016-07-26 19:05:26,465: 	 Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/crab.log
+DEBUG 2016-07-27 11:03:24,903: 	 Executing command: 'status'
+DEBUG 2016-07-27 11:03:24,917: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-27 11:03:25,028: 	 Checking credentials
+DEBUG 2016-07-27 11:03:25,038: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-27 11:03:25,038: 	 Getting proxy life time left
+DEBUG 2016-07-27 11:03:26,162: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 0
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:26,162: 	 Proxy valid for 00:00:00 hours
+DEBUG 2016-07-27 11:03:26,162: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2016-07-27 11:03:30,639: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 0
+DEBUG 2016-07-27 11:03:31,446: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 86398
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:32,358: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 86396
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:33,374: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30997 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:33,374: 	 Proxy created.
+DEBUG 2016-07-27 11:03:33,956: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:33,956: 	 Checking credentials
+DEBUG 2016-07-27 11:03:33,956: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-27 11:03:33,956: 	 Getting proxy life time left
+DEBUG 2016-07-27 11:03:34,872: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 86395
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:35,886: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 86393
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:35,886: 	 Proxy valid for 23:59:55 hours
+DEBUG 2016-07-27 11:03:36,455: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-27 11:03:36,572: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:36,572: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-27 11:03:36,572: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-27 11:03:37,280: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 368:47:34  (15.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:03:37,284: 	 Myproxy is valid: 1327654
+DEBUG 2016-07-27 11:03:37,284: 	 Command use: status
+DEBUG 2016-07-27 11:03:37,285: 	 Options use: ['First2016_TTHbb/crab_First2016_TTHbb']
+DEBUG 2016-07-27 11:03:37,711: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-27 11:03:37,711: 	 Instance is prod
+DEBUG 2016-07-27 11:03:37,711: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-27 11:03:37,711: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-27 11:03:37,711: 	 Looking up detailed status of task 160726_140559:fromeo_crab_First2016_TTHbb
+DEBUG 2016-07-27 11:03:38,813: 	 {'status': 'COMPLETED', 'username': 'fromeo', 'jobsPerStatus': {'finished': 90}, 'jobs': {'24': {'State': 'finished'}, '25': {'State': 'finished'}, '26': {'State': 'finished'}, '27': {'State': 'finished'}, '20': {'State': 'finished'}, '21': {'State': 'finished'}, '22': {'State': 'finished'}, '23': {'State': 'finished'}, '28': {'State': 'finished'}, '29': {'State': 'finished'}, '4': {'State': 'finished'}, '8': {'State': 'finished'}, '59': {'State': 'finished'}, '58': {'State': 'finished'}, '55': {'State': 'finished'}, '54': {'State': 'finished'}, '57': {'State': 'finished'}, '56': {'State': 'finished'}, '51': {'State': 'finished'}, '50': {'State': 'finished'}, '53': {'State': 'finished'}, '52': {'State': 'finished'}, '88': {'State': 'finished'}, '89': {'State': 'finished'}, '82': {'State': 'finished'}, '83': {'State': 'finished'}, '80': {'State': 'finished'}, '81': {'State': 'finished'}, '86': {'State': 'finished'}, '87': {'State': 'finished'}, '84': {'State': 'finished'}, '85': {'State': 'finished'}, '3': {'State': 'finished'}, '7': {'State': 'finished'}, '39': {'State': 'finished'}, '38': {'State': 'finished'}, '33': {'State': 'finished'}, '32': {'State': 'finished'}, '31': {'State': 'finished'}, '30': {'State': 'finished'}, '37': {'State': 'finished'}, '36': {'State': 'finished'}, '35': {'State': 'finished'}, '34': {'State': 'finished'}, '60': {'State': 'finished'}, '61': {'State': 'finished'}, '62': {'State': 'finished'}, '63': {'State': 'finished'}, '64': {'State': 'finished'}, '65': {'State': 'finished'}, '66': {'State': 'finished'}, '67': {'State': 'finished'}, '68': {'State': 'finished'}, '69': {'State': 'finished'}, '2': {'State': 'finished'}, '6': {'State': 'finished'}, '90': {'State': 'finished'}, '11': {'State': 'finished'}, '10': {'State': 'finished'}, '13': {'State': 'finished'}, '12': {'State': 'finished'}, '15': {'State': 'finished'}, '14': {'State': 'finished'}, '17': {'State': 'finished'}, '16': {'State': 'finished'}, '19': {'State': 'finished'}, '18': {'State': 'finished'}, '48': {'State': 'finished'}, '49': {'State': 'finished'}, '46': {'State': 'finished'}, '47': {'State': 'finished'}, '44': {'State': 'finished'}, '45': {'State': 'finished'}, '42': {'State': 'finished'}, '43': {'State': 'finished'}, '40': {'State': 'finished'}, '41': {'State': 'finished'}, '1': {'State': 'finished'}, '5': {'State': 'finished'}, '9': {'State': 'finished'}, '77': {'State': 'finished'}, '76': {'State': 'finished'}, '75': {'State': 'finished'}, '74': {'State': 'finished'}, '73': {'State': 'finished'}, '72': {'State': 'finished'}, '71': {'State': 'finished'}, '70': {'State': 'finished'}, '79': {'State': 'finished'}, '78': {'State': 'finished'}}, 'publication': {}, 'taskWarningMsg': [], 'schedd': 'crab3@vocms0106.cern.ch', 'publicationFailures': {}, 'outdatasets': None, 'statusFailureMsg': '', 'taskFailureMsg': '', 'failedJobdefs': 0, 'ASOURL': 'https://cmsweb.cern.ch/couchdb2', 'command': 'SUBMIT', 'totalJobdefs': 0, 'submissionTime': 1469541960, 'jobdefErrors': [], 'collector': 'cmsgwms-collector-global.cern.ch,cmssrv221.fnal.gov', 'jobList': [['finished', 24], ['finished', 25], ['finished', 26], ['finished', 27], ['finished', 20], ['finished', 21], ['finished', 22], ['finished', 23], ['finished', 28], ['finished', 29], ['finished', 4], ['finished', 8], ['finished', 59], ['finished', 58], ['finished', 55], ['finished', 54], ['finished', 57], ['finished', 56], ['finished', 51], ['finished', 50], ['finished', 53], ['finished', 52], ['finished', 88], ['finished', 89], ['finished', 82], ['finished', 83], ['finished', 80], ['finished', 81], ['finished', 86], ['finished', 87], ['finished', 84], ['finished', 85], ['finished', 3], ['finished', 7], ['finished', 39], ['finished', 38], ['finished', 33], ['finished', 32], ['finished', 31], ['finished', 30], ['finished', 37], ['finished', 36], ['finished', 35], ['finished', 34], ['finished', 60], ['finished', 61], ['finished', 62], ['finished', 63], ['finished', 64], ['finished', 65], ['finished', 66], ['finished', 67], ['finished', 68], ['finished', 69], ['finished', 2], ['finished', 6], ['finished', 90], ['finished', 11], ['finished', 10], ['finished', 13], ['finished', 12], ['finished', 15], ['finished', 14], ['finished', 17], ['finished', 16], ['finished', 19], ['finished', 18], ['finished', 48], ['finished', 49], ['finished', 46], ['finished', 47], ['finished', 44], ['finished', 45], ['finished', 42], ['finished', 43], ['finished', 40], ['finished', 41], ['finished', 1], ['finished', 5], ['finished', 9], ['finished', 77], ['finished', 76], ['finished', 75], ['finished', 74], ['finished', 73], ['finished', 72], ['finished', 71], ['finished', 70], ['finished', 79], ['finished', 78]]}
+INFO 2016-07-27 11:03:38,813: 	 CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+INFO 2016-07-27 11:03:38,813: 	 Task name:			160726_140559:fromeo_crab_First2016_TTHbb
+INFO 2016-07-27 11:03:38,814: 	 Grid scheduler:			crab3@vocms0106.cern.ch
+INFO 2016-07-27 11:03:38,814: 	 Task status:			COMPLETED
+INFO 2016-07-27 11:03:38,815: 	 Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140559%3Afromeo_crab_First2016_TTHbb
+INFO 2016-07-27 11:03:38,815: 	 
+Jobs status:			finished      100.0% (90/90)
+INFO 2016-07-27 11:03:38,815: 	 
+No publication information available yet
+INFO 2016-07-27 11:03:38,880: 	 Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/crab.log

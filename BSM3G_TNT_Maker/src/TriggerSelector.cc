@@ -127,7 +127,7 @@ void TriggerSelector::SetBranches(){
   AddBranch(&HLT_Ele27_eta2p1_WP75_Gsf                       ,"HLT_Ele27_eta2p1_WP75_Gsf");
   AddBranch(&HLT_Ele27_WP85_Gsf                              ,"HLT_Ele27_WP85_Gsf");
   AddBranch(&HLT_Ele27_eta2p1_WPLoose_Gsf                    ,"HLT_Ele27_eta2p1_WPLoose_Gsf");
-  AddBranch(&HLT_Ele27_eta2p1_WPTight_Gsf                       ,"HLT_Ele27_eta2p1_WPTight_Gsf");
+  AddBranch(&HLT_Ele27_eta2p1_WPTight_Gsf                    ,"HLT_Ele27_eta2p1_WPTight_Gsf");
   //Muon
   AddBranch(&HLT_Mu45_eta2p1                                 ,"HLT_Mu45_eta2p1");
   AddBranch(&HLT_Mu50                                        ,"HLT_Mu50");

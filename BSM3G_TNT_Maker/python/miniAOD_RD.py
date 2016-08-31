@@ -23,17 +23,18 @@ process.load('Configuration.StandardSequences.Services_cff')
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
+   'file:/afs/cern.ch/work/a/aspiezia/public/4FrancescoR/pickevents_1354521796.root'
    #SingleEle
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/150/00000/0A6284C7-D719-E611-93E6-02163E01421D.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/06277EC1-181A-E611-870F-02163E0145E5.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/0A7BD549-131A-E611-8287-02163E0134FC.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/0C65F947-0F1A-E611-A1E6-02163E0144EA.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/1CCC1100-0E1A-E611-98C7-02163E014332.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/2209DFC5-191A-E611-9809-02163E014272.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/26868D6F-4A1A-E611-8916-02163E011D33.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/361F045C-111A-E611-AEF0-02163E01457C.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/3A8562C4-2B1A-E611-96AC-02163E0141D2.root',
-   '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/429D71B2-1D1A-E611-A5A9-02163E013926.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/150/00000/0A6284C7-D719-E611-93E6-02163E01421D.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/06277EC1-181A-E611-870F-02163E0145E5.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/0A7BD549-131A-E611-8287-02163E0134FC.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/0C65F947-0F1A-E611-A1E6-02163E0144EA.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/1CCC1100-0E1A-E611-98C7-02163E014332.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/2209DFC5-191A-E611-9809-02163E014272.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/26868D6F-4A1A-E611-8916-02163E011D33.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/361F045C-111A-E611-AEF0-02163E01457C.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/3A8562C4-2B1A-E611-96AC-02163E0141D2.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/429D71B2-1D1A-E611-A5A9-02163E013926.root',
    #SingleMuo
    #'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/150/00000/34A57FB8-D819-E611-B0A4-02163E0144EE.root',
    #'/store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/273/158/00000/02D9C19F-571A-E611-AD8E-02163E013732.root',
@@ -81,7 +82,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -201,7 +202,7 @@ process.matchGenCHadron = matchGenCHadron.clone(
 ##   Output file
 #####
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("OutTree_SingleEle.root")
+  fileName = cms.string("OutTree.root")
 )
 #####
 ##   Analysis parameters
@@ -223,7 +224,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v',
     #TTHbb
      'HLT_Ele27_eta2p1_WPTight_Gsf_v',
-     'HLT_IsoMu22_v* or HLT_IsoTkMu22_v',
+     'HLT_IsoMu22_v',
+     'HLT_IsoTkMu22_v',
      'HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
      'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
      'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
@@ -246,17 +248,17 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   # Choose which information you want to use
   fillgeninfo           = cms.bool(False),
   fillgenHFCategoryinfo = cms.bool(False),
-  filleventinfo         = cms.bool(True),
+  filleventinfo         = cms.bool(False),
   filltriggerinfo       = cms.bool(True),
-  fillPVinfo            = cms.bool(True),
-  fillmuoninfo          = cms.bool(True),
-  fillelectronpatinfo   = cms.bool(True),
-  filltauinfo           = cms.bool(True),
-  filljetinfo           = cms.bool(True),
+  fillPVinfo            = cms.bool(False),
+  fillmuoninfo          = cms.bool(False),
+  fillelectronpatinfo   = cms.bool(False),
+  filltauinfo           = cms.bool(False),
+  filljetinfo           = cms.bool(False),
   filltthjetinfo        = cms.bool(False), #F
-  fillBoostedJetinfo    = cms.bool(True),
+  fillBoostedJetinfo    = cms.bool(False),
   fillTopSubJetinfo     = cms.bool(False), #F
-  fillTauJetnessinfo    = cms.bool(True),
+  fillTauJetnessinfo    = cms.bool(False),
   fillBJetnessinfo      = cms.bool(True),
   fillBJetnessFVinfo    = cms.bool(True),
   fillBTagReweight      = cms.bool(True),

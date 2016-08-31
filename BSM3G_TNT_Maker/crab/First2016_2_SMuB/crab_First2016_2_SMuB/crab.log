@@ -1,0 +1,132 @@
+DEBUG 2016-07-27 11:12:36,525: 	 Executing command: 'submit'
+DEBUG 2016-07-27 11:12:36,526: 	 Found CRAB cache file /afs/cern.ch/user/f/fromeo/.crab3
+DEBUG 2016-07-27 11:12:36,539: 	 Checking credentials
+DEBUG 2016-07-27 11:12:36,540: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-27 11:12:36,540: 	 Getting proxy life time left
+DEBUG 2016-07-27 11:12:37,458: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 85852
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:38,471: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 85850
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:38,471: 	 Proxy valid for 23:50:52 hours
+DEBUG 2016-07-27 11:12:38,472: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2016-07-27 11:12:38,685: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:38,686: 	 Checking credentials
+DEBUG 2016-07-27 11:12:38,686: 	 Found proxy file /tmp/x509up_u30997
+DEBUG 2016-07-27 11:12:38,686: 	 Getting proxy life time left
+DEBUG 2016-07-27 11:12:39,504: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -timeleft
+ output : 85850
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:40,324: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u30997 -actimeleft
+ output : 85848
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:40,325: 	 Proxy valid for 23:50:50 hours
+DEBUG 2016-07-27 11:12:41,036: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u30997 voms-proxy-info -fqan
+ output : /cms/Role=NULL/Capability=NULL
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:41,452: 	 Registering user credentials for server /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+DEBUG 2016-07-27 11:12:41,563: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:41,563: 	 Getting myproxy life time left for myproxy.cern.ch
+DEBUG 2016-07-27 11:12:41,563: 	 Calculating hash of /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo_cmsweb.cern.ch for credential name
+DEBUG 2016-07-27 11:12:41,968: 	 Executing : 
+ command : myproxy-info -l 83bb954b043085ec6b5075bf38fafc2a023a8c7b -s myproxy.cern.ch
+ output : username: 83bb954b043085ec6b5075bf38fafc2a023a8c7b
+owner: /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=fromeo/CN=674630/CN=Francesco Romeo
+  renewal policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  trusted retrieval policy: /DC=ch/DC=cern/OU=computers/CN=vocms(045|052|021|031|0118|0118a|0119|0108).cern.ch
+  timeleft: 368:38:30  (15.4 days)
+
+ error: 
+ retcode : 0
+DEBUG 2016-07-27 11:12:41,969: 	 Myproxy is valid: 1327110
+DEBUG 2016-07-27 11:12:41,969: 	 Command use: submit
+DEBUG 2016-07-27 11:12:41,969: 	 Options use: ['--config', <WMCore.Configuration.Configuration object at 0x7ff51c2aec90>]
+DEBUG 2016-07-27 11:12:42,328: 	 CRABClient version: 3.3.1607.patch1
+DEBUG 2016-07-27 11:12:42,328: 	 Instance is prod
+DEBUG 2016-07-27 11:12:42,329: 	 Server base url is cmsweb.cern.ch
+DEBUG 2016-07-27 11:12:42,329: 	 Command url /crabserver/prod/workflow
+DEBUG 2016-07-27 11:12:42,329: 	 Started submission
+DEBUG 2016-07-27 11:12:42,329: 	 Working on /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB
+DEBUG 2016-07-27 11:12:42,701: 	 Loading required information from the environment
+DEBUG 2016-07-27 11:12:42,701: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-27 11:12:42,755: 	 UNIQUE NAME: tarUUID 74dabc02-902a-4cb4-a467-daa26a5aad05 
+DEBUG 2016-07-27 11:12:42,755: 	 self.config: from WMCore.Configuration import Configuration
+config = Configuration()
+config.section_('General')
+config.General.workArea = 'First2016_2_SMuB'
+config.General.requestName = 'First2016_2_SMuB'
+config.section_('JobType')
+config.JobType.psetName = '/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD.py'
+config.JobType.pluginName = 'Analysis'
+config.section_('Data')
+config.Data.inputDataset = '/SingleMuon/Run2016B-PromptReco-v2/MINIAOD'
+config.Data.unitsPerJob = 30
+config.Data.splitting = 'LumiBased'
+config.Data.inputDBS = 'global'
+config.Data.lumiMask = '/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/Cert_271036-276097_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt'
+config.Data.outLFNDirBase = '/store/user/fromeo/'
+config.section_('Site')
+config.Site.storageSite = 'T2_CN_Beijing'
+config.section_('User')
+config.section_('Debug')
+
+DEBUG 2016-07-27 11:12:42,756: 	 self.config.JobType.psetName: /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD.py
+INFO 2016-07-27 11:12:42,756: 	 Importing CMSSW configuration /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD.py
+INFO 2016-07-27 11:12:42,812: 	 Finished importing CMSSW configuration /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD.py
+DEBUG 2016-07-27 11:12:42,812: 	 Writing CMSSW configuration to /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB/inputs/PSet.py
+DEBUG 2016-07-27 11:12:42,944: 	 The following EDM output files will be collected: []
+DEBUG 2016-07-27 11:12:42,944: 	 The following TFile output files will be collected: ['OutTree.root']
+DEBUG 2016-07-27 11:12:42,944: 	 The following user output files will be collected: []
+DEBUG 2016-07-27 11:12:42,944: 	 Loading required information from the environment
+DEBUG 2016-07-27 11:12:42,944: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-27 11:12:42,944: 	 Making tarball in /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB/inputs/74dabc02-902a-4cb4-a467-daa26a5aad05default.tgz
+DEBUG 2016-07-27 11:12:42,945: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/lib
+DEBUG 2016-07-27 11:12:42,945: 	 Adding directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/lib to tarball
+DEBUG 2016-07-27 11:12:43,216: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/biglib
+DEBUG 2016-07-27 11:12:43,216: 	 Adding directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/biglib to tarball
+DEBUG 2016-07-27 11:12:43,217: 	 Checking directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/module
+DEBUG 2016-07-27 11:12:43,228: 	 Adding data directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/data to tarball
+DEBUG 2016-07-27 11:12:54,560: 	 Adding data directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/interface to tarball
+DEBUG 2016-07-27 11:12:55,776: 	 Uploading archive /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB/inputs/74dabc02-902a-4cb4-a467-daa26a5aad05default.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-07-27 11:13:08,003: 	 Loading required information from the environment
+DEBUG 2016-07-27 11:13:08,003: 	 Found CMSSW_8_0_12 for slc6_amd64_gcc530 with base /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW
+DEBUG 2016-07-27 11:13:08,003: 	 Making tarball in /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB/inputs/debugFiles.tgz
+DEBUG 2016-07-27 11:13:08,026: 	 Uploading archive /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SMuB/crab_First2016_2_SMuB/inputs/debugFiles.tgz to the CRAB cache. Using URI https://cmsweb.cern.ch/crabcache
+DEBUG 2016-07-27 11:13:08,501: 	 Result uploading input files: edebee524ade74a0de815fefa97dcb7e4076e3caf6cd9edb817395c766d9dcfe.tar.gz 
+DEBUG 2016-07-27 11:13:08,501: 	 Attaching lumi mask /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/Cert_271036-276097_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt to the request
+DEBUG 2016-07-27 11:13:08,501: 	 Reading lumi-mask from /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/Cert_271036-276097_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt
+WARNING 2016-07-27 11:13:08,503: 	 Warning: The following output files will not be published, as they are not EDM files: ['OutTree.root']
+INFO 2016-07-27 11:13:08,504: 	 Sending the request to the server
+DEBUG 2016-07-27 11:13:08,504: 	 Submitting {'maxjobruntime': 1250, 'ignorelocality': 0, 'savelogsflag': 0, 'useparent': 0, 'asyncdest': 'T2_CN_Beijing', 'algoargs': 30, 'cachefilename': 'edebee524ade74a0de815fefa97dcb7e4076e3caf6cd9edb817395c766d9dcfe.tar.gz', 'numcores': 1, 'addoutputfiles': [], 'generator': 'pythia', 'maxmemory': 2000, 'publishdbsurl': 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter', 'priority': 10, 'jobsw': 'CMSSW_8_0_12', 'edmoutfiles': [], 'userfiles': [], 'primarydataset': '', 'inputdata': '/SingleMuon/Run2016B-PromptReco-v2/MINIAOD', 'lfn': '/store/user/fromeo/', 'dryrun': 0, 'workflow': 'crab_First2016_2_SMuB', 'adduserfiles': [], 'jobarch': 'slc6_amd64_gcc530', 'lumis': ['1,1279', '1,459', '100,292', '1,53', '1,18', '2,25', '1,112', '1,6', '1,309', '1,90', '1,29', '62,352,354,733', '1,33', '1,113,115,412', '1,391', '1,214', '1,214,219,647', '71,71,73,282,284,325,327,338', '1,233', '1,192', '73,256,258,318,320,813,815,1064', '1,598', '77,437', '1,173', '83,252,254,2545', '1,100', '1,1814,1820,2126', '108,332', '1,67', '1,43', '1,207', '1,516', '31,95', '81,191', '1,623', '1,678', '1,40,42,82', '1,1152,1161,1176', '1,607', '1,701', '1,546', '2,19', '1,210', '1,154', '97,97,99,158', '1,424', '1,959', '1,3', '1,225', '60,1003', '1,14', '3,17', '1,698', '1,29,31,31,33,33,35,93', '1,632', '1,170', '94,144', '88,439', '1,1820', '94,268', '1,342', '1,2207', '92,493', '1,431', '1,752', '37,37,39,57', '1,91', '1,1192', '1,1003', '1,47', '1,905', '64,782', '1,1241', '1,136', '1,1781,1786,2061', '78,81,105,137', '1,96', '1,392', '1,915', '1,517', '1,442,444,647', '106,106,108,431', '1,989', '91,180', '1,132', '1,74', '96,143', '1,347', '1,121', '1,142,144,201', '55,617', '1,1929', '1,1253', '141,282', '1,427', '1,520', '76,356', '1,353', '81,365', '1,22,28,569', '127,421,424,1449', '1,2667,2669,3096', '1,105', '1,337', '1,17', '1,9', '1,4', '1,56', '1,7', '1,311,315,315', '1,140', '1,300', '1,305', '1,131,133,762', '1,367', '1,53,56,115,117,251', '1,297', '1,13', '1,429,431,1163,1166,1170,1184,1293', '1,186,198,726', '1,2263', '73,109', '1,1393', '62,298,300,354,356,440', '1,289', '1,475', '1,318,348,361', '7,15,17,18,21,186,191,192,195,196,205,210,213,216,219,224,227,234,237,240,247,248,251,252,255,264,267,270,275,298,301,460', '1,2,4,5,17,20', '3,53,63,64,66,126', '1,14,19,89', '82,139,141,172', '74,149', '1,507'], 'nonprodsw': 0, 'tfileoutfiles': ['OutTree.root'], 'oneEventMode': 0, 'debugfilename': '6aa05bcd0f9b536381f5c73e350cef63b13b64593db420ebacdcb7f1c03b49b3.tar.gz', 'cacheurl': 'https://cmsweb.cern.ch/crabcache', 'saveoutput': 1, 'publication': 1, 'runs': [u'273158', u'273302', u'273402', u'273403', u'273404', u'273405', u'273406', u'273408', u'273409', u'273410', u'273411', u'273425', u'273446', u'273447', u'273448', u'273449', u'273450', u'273492', u'273493', u'273494', u'273502', u'273503', u'273554', u'273555', u'273725', u'273728', u'273730', u'274094', u'274146', u'274159', u'274160', u'274161', u'274172', u'274198', u'274199', u'274200', u'274240', u'274241', u'274244', u'274250', u'274251', u'274283', u'274284', u'274286', u'274314', u'274315', u'274316', u'274317', u'274319', u'274335', u'274336', u'274337', u'274338', u'274339', u'274344', u'274345', u'274382', u'274387', u'274388', u'274420', u'274421', u'274422', u'274440', u'274441', u'274442', u'274954', u'274955', u'274968', u'274969', u'274970', u'274971', u'274998', u'274999', u'275000', u'275001', u'275059', u'275066', u'275067', u'275068', u'275073', u'275074', u'275124', u'275125', u'275282', u'275283', u'275284', u'275290', u'275291', u'275292', u'275293', u'275309', u'275310', u'275311', u'275319', u'275337', u'275338', u'275344', u'275345', u'275370', u'275371', u'275375', u'275376', u'275657', u'275658', u'275659', u'275761', u'275767', u'275772', u'275773', u'275774', u'275776', u'275777', u'275778', u'275782', u'275832', u'275833', u'275834', u'275835', u'275836', u'275837', u'275847', u'275886', u'275890', u'275911', u'275912', u'275913', u'275918', u'275920', u'275921', u'275923', u'275931', u'275963', u'276092', u'276097'], 'totalunits': 0, 'splitalgo': 'LumiBased', 'nonvaliddata': 0, 'dbsurl': 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader', 'publishgroupname': 0, 'jobtype': 'Analysis', 'publishname2': ''} 
+DEBUG 2016-07-27 11:13:08,505: 	 Encoded submit request: maxjobruntime=1250&ignorelocality=0&savelogsflag=0&useparent=0&asyncdest=T2_CN_Beijing&algoargs=30&cachefilename=edebee524ade74a0de815fefa97dcb7e4076e3caf6cd9edb817395c766d9dcfe.tar.gz&numcores=1&generator=pythia&maxmemory=2000&publishdbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fphys03%2FDBSWriter&priority=10&jobsw=CMSSW_8_0_12&primarydataset=&inputdata=%2FSingleMuon%2FRun2016B-PromptReco-v2%2FMINIAOD&lfn=%2Fstore%2Fuser%2Ffromeo%2F&dryrun=0&workflow=crab_First2016_2_SMuB&jobarch=slc6_amd64_gcc530&nonprodsw=0&oneEventMode=0&debugfilename=6aa05bcd0f9b536381f5c73e350cef63b13b64593db420ebacdcb7f1c03b49b3.tar.gz&cacheurl=https%3A%2F%2Fcmsweb.cern.ch%2Fcrabcache&saveoutput=1&publication=1&totalunits=0&splitalgo=LumiBased&nonvaliddata=0&dbsurl=https%3A%2F%2Fcmsweb.cern.ch%2Fdbs%2Fprod%2Fglobal%2FDBSReader&publishgroupname=0&jobtype=Analysis&publishname2=&tfileoutfiles=OutTree.root&runs=273158&runs=273302&runs=273402&runs=273403&runs=273404&runs=273405&runs=273406&runs=273408&runs=273409&runs=273410&runs=273411&runs=273425&runs=273446&runs=273447&runs=273448&runs=273449&runs=273450&runs=273492&runs=273493&runs=273494&runs=273502&runs=273503&runs=273554&runs=273555&runs=273725&runs=273728&runs=273730&runs=274094&runs=274146&runs=274159&runs=274160&runs=274161&runs=274172&runs=274198&runs=274199&runs=274200&runs=274240&runs=274241&runs=274244&runs=274250&runs=274251&runs=274283&runs=274284&runs=274286&runs=274314&runs=274315&runs=274316&runs=274317&runs=274319&runs=274335&runs=274336&runs=274337&runs=274338&runs=274339&runs=274344&runs=274345&runs=274382&runs=274387&runs=274388&runs=274420&runs=274421&runs=274422&runs=274440&runs=274441&runs=274442&runs=274954&runs=274955&runs=274968&runs=274969&runs=274970&runs=274971&runs=274998&runs=274999&runs=275000&runs=275001&runs=275059&runs=275066&runs=275067&runs=275068&runs=275073&runs=275074&runs=275124&runs=275125&runs=275282&runs=275283&runs=275284&runs=275290&runs=275291&runs=275292&runs=275293&runs=275309&runs=275310&runs=275311&runs=275319&runs=275337&runs=275338&runs=275344&runs=275345&runs=275370&runs=275371&runs=275375&runs=275376&runs=275657&runs=275658&runs=275659&runs=275761&runs=275767&runs=275772&runs=275773&runs=275774&runs=275776&runs=275777&runs=275778&runs=275782&runs=275832&runs=275833&runs=275834&runs=275835&runs=275836&runs=275837&runs=275847&runs=275886&runs=275890&runs=275911&runs=275912&runs=275913&runs=275918&runs=275920&runs=275921&runs=275923&runs=275931&runs=275963&runs=276092&runs=276097&lumis=1%2C1279&lumis=1%2C459&lumis=100%2C292&lumis=1%2C53&lumis=1%2C18&lumis=2%2C25&lumis=1%2C112&lumis=1%2C6&lumis=1%2C309&lumis=1%2C90&lumis=1%2C29&lumis=62%2C352%2C354%2C733&lumis=1%2C33&lumis=1%2C113%2C115%2C412&lumis=1%2C391&lumis=1%2C214&lumis=1%2C214%2C219%2C647&lumis=71%2C71%2C73%2C282%2C284%2C325%2C327%2C338&lumis=1%2C233&lumis=1%2C192&lumis=73%2C256%2C258%2C318%2C320%2C813%2C815%2C1064&lumis=1%2C598&lumis=77%2C437&lumis=1%2C173&lumis=83%2C252%2C254%2C2545&lumis=1%2C100&lumis=1%2C1814%2C1820%2C2126&lumis=108%2C332&lumis=1%2C67&lumis=1%2C43&lumis=1%2C207&lumis=1%2C516&lumis=31%2C95&lumis=81%2C191&lumis=1%2C623&lumis=1%2C678&lumis=1%2C40%2C42%2C82&lumis=1%2C1152%2C1161%2C1176&lumis=1%2C607&lumis=1%2C701&lumis=1%2C546&lumis=2%2C19&lumis=1%2C210&lumis=1%2C154&lumis=97%2C97%2C99%2C158&lumis=1%2C424&lumis=1%2C959&lumis=1%2C3&lumis=1%2C225&lumis=60%2C1003&lumis=1%2C14&lumis=3%2C17&lumis=1%2C698&lumis=1%2C29%2C31%2C31%2C33%2C33%2C35%2C93&lumis=1%2C632&lumis=1%2C170&lumis=94%2C144&lumis=88%2C439&lumis=1%2C1820&lumis=94%2C268&lumis=1%2C342&lumis=1%2C2207&lumis=92%2C493&lumis=1%2C431&lumis=1%2C752&lumis=37%2C37%2C39%2C57&lumis=1%2C91&lumis=1%2C1192&lumis=1%2C1003&lumis=1%2C47&lumis=1%2C905&lumis=64%2C782&lumis=1%2C1241&lumis=1%2C136&lumis=1%2C1781%2C1786%2C2061&lumis=78%2C81%2C105%2C137&lumis=1%2C96&lumis=1%2C392&lumis=1%2C915&lumis=1%2C517&lumis=1%2C442%2C444%2C647&lumis=106%2C106%2C108%2C431&lumis=1%2C989&lumis=91%2C180&lumis=1%2C132&lumis=1%2C74&lumis=96%2C143&lumis=1%2C347&lumis=1%2C121&lumis=1%2C142%2C144%2C201&lumis=55%2C617&lumis=1%2C1929&lumis=1%2C1253&lumis=141%2C282&lumis=1%2C427&lumis=1%2C520&lumis=76%2C356&lumis=1%2C353&lumis=81%2C365&lumis=1%2C22%2C28%2C569&lumis=127%2C421%2C424%2C1449&lumis=1%2C2667%2C2669%2C3096&lumis=1%2C105&lumis=1%2C337&lumis=1%2C17&lumis=1%2C9&lumis=1%2C4&lumis=1%2C56&lumis=1%2C7&lumis=1%2C311%2C315%2C315&lumis=1%2C140&lumis=1%2C300&lumis=1%2C305&lumis=1%2C131%2C133%2C762&lumis=1%2C367&lumis=1%2C53%2C56%2C115%2C117%2C251&lumis=1%2C297&lumis=1%2C13&lumis=1%2C429%2C431%2C1163%2C1166%2C1170%2C1184%2C1293&lumis=1%2C186%2C198%2C726&lumis=1%2C2263&lumis=73%2C109&lumis=1%2C1393&lumis=62%2C298%2C300%2C354%2C356%2C440&lumis=1%2C289&lumis=1%2C475&lumis=1%2C318%2C348%2C361&lumis=7%2C15%2C17%2C18%2C21%2C186%2C191%2C192%2C195%2C196%2C205%2C210%2C213%2C216%2C219%2C224%2C227%2C234%2C237%2C240%2C247%2C248%2C251%2C252%2C255%2C264%2C267%2C270%2C275%2C298%2C301%2C460&lumis=1%2C2%2C4%2C5%2C17%2C20&lumis=3%2C53%2C63%2C64%2C66%2C126&lumis=1%2C14%2C19%2C89&lumis=82%2C139%2C141%2C172&lumis=74%2C149&lumis=1%2C507
+DEBUG 2016-07-27 11:13:09,235: 	 Result: {'result': [{'RequestName': '160727_091308:fromeo_crab_First2016_2_SMuB'}]}
+INFO 2016-07-27 11:13:09,239: 	 Success: Your task has been delivered to the CRAB3 server.
+INFO 2016-07-27 11:13:09,239: 	 Task name: 160727_091308:fromeo_crab_First2016_2_SMuB
+INFO 2016-07-27 11:13:09,239: 	 Please use 'crab status' to check how the submission process proceeds.
+DEBUG 2016-07-27 11:13:09,239: 	 About to return

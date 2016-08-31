@@ -43,6 +43,8 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -87,6 +89,9 @@ class BJetnessSelector : public  baseTree{
     void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
     void SetBranches();
     void Clear();
+    bool isGoodVertex(const reco::Vertex& vtx);
+    void JECInitialization();
+    void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
   private:
     BJetnessSelector(){};
     /////
@@ -98,14 +103,35 @@ class BJetnessSelector : public  baseTree{
     edm::EDGetTokenT<edm::View<pat::Muon> > muon_h_;
     edm::EDGetTokenT<pat::JetCollection> jets_;
     edm::EDGetTokenT<double> rhopogHandle_;
+    edm::EDGetTokenT<double> rhoJERHandle_;
     edm::EDGetTokenT<edm::View<reco::GenParticle> > prunedGenToken_;
     edm::EDGetTokenT<edm::ValueMap<bool> > electronLooseIdMapToken_;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
     edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;
     edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_Trig_;
+    int    _vtx_ndof_min;
+    int    _vtx_rho_max;
+    double _vtx_position_z_max;
+    edm::FileInPath jecPayloadNamesAK4PFchsMC1_;
+    edm::FileInPath jecPayloadNamesAK4PFchsMC2_;
+    edm::FileInPath jecPayloadNamesAK4PFchsMC3_;
+    edm::FileInPath jecPayloadNamesAK4PFchsMCUnc_;
+    edm::FileInPath jecPayloadNamesAK4PFchsDATA1_;
+    edm::FileInPath jecPayloadNamesAK4PFchsDATA2_;
+    edm::FileInPath jecPayloadNamesAK4PFchsDATA3_;
+    edm::FileInPath jecPayloadNamesAK4PFchsDATA4_;
+    edm::FileInPath jecPayloadNamesAK4PFchsDATAUnc_;
+    std::string jerAK4PFchs_;
+    std::string jerAK4PFchsSF_;
+    boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsMC_;
+    boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_;
+    boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsDATA_;
+    boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_;
     /////
     //   TTH variables
     /////
+    //Evt selection
+    int BJetness_isSingleLepton, BJetness_isDoubleLepton;
     //Gen info
     int BJetness_ngenbh, BJetness_ngenbt, BJetness_ngenb, BJetness_ngenc;
     vector<double> BJetness_partonFlavour, BJetness_hadronFlavour;
@@ -129,15 +155,17 @@ class BJetnessSelector : public  baseTree{
     /////
     //bool is_soft_muon(const pat::PackedCandidate &jcand, edm::View<pat::Muon>& );
     bool is_loose_muon(const pat::Muon& mu, const reco::Vertex& vtx);
+    bool is_tight_muon(const pat::Muon& mu, const reco::Vertex& vtx);
     double rel_iso_dbc_mu(const pat::Muon& lepton);  
     double rel_iso_dbc_ele(const pat::Electron& lepton, double rhopog);
     double get_effarea(double eta);
-    bool is_good_jet(const pat::Jet &j);
+    bool is_good_jet(const pat::Jet &j, double rho, double rhoJER, int vtxsize);
     bool is_loosePOG_jetmuon(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Muon> > muon_h);
     bool is_softLep_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
     bool is_vetoPOGNoIPNoIso_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
     bool is_loosePOGNoIPNoIso_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
     bool is_loose_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
+    bool is_tight_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     bool is_goodtrk(Track trk,const reco::Vertex& vtx);
     TransientTrack get_ttrk(Track trk, const TransientTrackBuilder& ttrkbuilder);
     vector<TransientTrack> get_ttrks(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder);

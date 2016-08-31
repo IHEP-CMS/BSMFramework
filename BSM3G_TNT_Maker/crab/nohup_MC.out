@@ -1,0 +1,98 @@
+Contacting voms2.cern.ch:15002 [/DC=ch/DC=cern/OU=computers/CN=voms2.cern.ch] "cms"...
+Remote VOMS server contacted succesfully.
+
+
+Created proxy in /tmp/x509up_u30997.
+
+Your proxy is valid until Thu Jul 28 11:03:30 CEST 2016
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb
+Task name:			160726_140559:fromeo_crab_First2016_TTHbb
+Grid scheduler:			crab3@vocms0106.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140559%3Afromeo_crab_First2016_TTHbb
+
+Jobs status:			finished      100.0% (90/90)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TTHbb/crab_First2016_TTHbb/crab.log
+The server answered with an error.
+Server answered with: Database unavailable
+Error Id: 7ed62721bdff2a38fbf8d471c7402e4f
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TT/crab_First2016_TT
+Task name:			160726_140659:fromeo_crab_First2016_TT
+Grid scheduler:			crab3@submit-1.t2.ucsd.edu
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_140659%3Afromeo_crab_First2016_TT
+
+Jobs status:			finished      100.0% (2124/2124)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_TT/crab_First2016_TT/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_ST/crab_First2016_2_ST
+Task name:			160726_151730:fromeo_crab_First2016_2_ST
+Grid scheduler:			crab3@submit-1.t2.ucsd.edu
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_151730%3Afromeo_crab_First2016_2_ST
+
+Jobs status:			finished      100.0% (25/25)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_ST/crab_First2016_2_ST/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SaT/crab_First2016_2_SaT
+Task name:			160726_151805:fromeo_crab_First2016_2_SaT
+Grid scheduler:			crab3@submit-6.t2.ucsd.edu
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_151805%3Afromeo_crab_First2016_2_SaT
+
+Jobs status:			finished      100.0% (26/26)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_SaT/crab_First2016_2_SaT/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_DY/crab_First2016_2_DY
+Task name:			160726_151834:fromeo_crab_First2016_2_DY
+Grid scheduler:			crab3-7@vocms0114.cern.ch
+Task status:			FAILED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_151834%3Afromeo_crab_First2016_2_DY
+
+Jobs status:			failed          0.2% (   2/1185)
+				finished       99.8% (1183/1185)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   2 jobs failed with exit code 60318
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_DY/crab_First2016_2_DY/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_WJets/crab_First2016_2_WJets
+Task name:			160726_151923:fromeo_crab_First2016_2_WJets
+Grid scheduler:			crab3-2@vocms0109.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_151923%3Afromeo_crab_First2016_2_WJets
+
+Jobs status:			finished      100.0% (663/663)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_WJets/crab_First2016_2_WJets/crab.log
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_WW/crab_First2016_2_WW
+Task name:			160726_151952:fromeo_crab_First2016_2_WW
+Grid scheduler:			crab3@vocms0106.cern.ch
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_151952%3Afromeo_crab_First2016_2_WW
+
+Jobs status:			finished      100.0% (24/24)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_WW/crab_First2016_2_WW/crab.log
+Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_WZ/crab_First2016_2_WZ
+CRAB project directory:		/afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_ZZ/crab_First2016_2_ZZ
+Task name:			160726_152149:fromeo_crab_First2016_2_ZZ
+Grid scheduler:			crab3-1@submit-5.t2.ucsd.edu
+Task status:			COMPLETED
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=fromeo&table=Mains&pattern=160726_152149%3Afromeo_crab_First2016_2_ZZ
+
+Jobs status:			finished      100.0% (25/25)
+
+No publication information available yet
+Log file is /afs/cern.ch/work/f/fromeo/CMSSW_8_0_12_FW/src/BSMFramework/BSM3G_TNT_Maker/crab/First2016_2_ZZ/crab_First2016_2_ZZ/crab.log

@@ -66,6 +66,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::TriggerResults> triggerBits_;
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjects_;
   edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescales_;
+  bool _is_data;
   bool _ifevtriggers;
   vector<string> _evtriggers;
   bool _fillgeninfo;
@@ -93,9 +94,12 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   TFile* file;
   TTree* evtree_;
   int eventnum;
+  int eventnumnegative;
   TTree* tree_;
   const size_t MaxN;
   bool debug_;
+  bool bjetnessselfilter;
+  int bjetnesssel_filter;
   GenParticleSelector    *genselector;
   GenHFHadrMatchSelector *genhfselector;
   EventInfoSelector      *eventinfoselector;

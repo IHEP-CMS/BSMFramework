@@ -322,16 +322,20 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double mujety  = -999;
       double mujetz  = -999;
       double muptrel = -999;
+      double muparel = -999;
+      double muparelsub = -999;
       int lepjetidx = -1;
       get_mujet_info(*mu,iEvent,iSetup,
                      mujet_mindr,mujet_pt,muptOVmujetpt,
                      mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags,mujet_pfJetProbabilityBJetTag,mujet_pfCombinedMVABJetTags,mujet_qgl,
-                     mujetx,mujety,mujetz,muptrel,lepjetidx);
+                     mujetx,mujety,mujetz,muptrel,muparel,muparelsub,lepjetidx);
       Muon_jetdr.push_back(mujet_mindr);
       Muon_jetpt.push_back(mujet_pt);
       Muon_jetptratio.push_back(muptOVmujetpt);
       Muon_jetcsv.push_back(mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags);
       Muon_ptrel.push_back(muptrel);
+      Muon_parel.push_back(muparel);
+      Muon_parelsub.push_back(muparelsub);
       Muon_mujet_pfJetProbabilityBJetTag.push_back(mujet_pfJetProbabilityBJetTag);
       Muon_mujet_pfCombinedMVABJetTags.push_back(mujet_pfCombinedMVABJetTags);
       Muon_mujet_qgl.push_back(mujet_qgl);      
@@ -340,14 +344,20 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       Muon_pvass.push_back(pvass);
       const math::XYZVector& lepton_momentum = mu->momentum(); 
       const math::XYZVector axis(mujetx,mujety,mujetz);
-      double etarel = relativeEta(lepton_momentum,axis);
+      double etarel = relEta(axis,lepton_momentum);
       Muon_etarel.push_back(etarel);
+      double etarelsub = relEta(axis-lepton_momentum,lepton_momentum);
+      Muon_etarelsub.push_back(etarelsub);
+      double etapar = parEta(axis,lepton_momentum);
+      Muon_etapar.push_back(etapar);
+      double etaparsub = parEta(axis-lepton_momentum,lepton_momentum);
+      Muon_etaparsub.push_back(etaparsub);
       Muon_ptOVen.push_back(mu->pt()/mu->energy());
       //Mass
       Muon_mumass.push_back(mu->p4().M());
-      double muwmass = get_lepWmass(*mu,iEvent,lepjetidx);
-      double mutopmass = get_lepTopmass(*mu,iEvent,lepjetidx);
-      double muwtopmass = get_lepWTopmass(*mu,iEvent,lepjetidx);
+      double muwmass    = 0;//get_lepWmass(*mu,iEvent,lepjetidx);
+      double mutopmass  = 0;//get_lepTopmass(*mu,iEvent,lepjetidx);
+      double muwtopmass = 0;//get_lepWTopmass(*mu,iEvent,lepjetidx);
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
         Muon_mujet_mass.push_back(lepjet.p4().M());
@@ -624,9 +634,14 @@ void MuonSelector::SetBranches(){
     AddBranch(&Muon_jetptratio        ,"Muon_jetptratio");
     AddBranch(&Muon_jetcsv            ,"Muon_jetcsv");
     AddBranch(&Muon_ptrel             ,"Muon_ptrel");
+    AddBranch(&Muon_parel             ,"Muon_parel");
+    AddBranch(&Muon_parelsub          ,"Muon_parelsub");
+    AddBranch(&Muon_etarel            ,"Muon_etarel");
+    AddBranch(&Muon_etarelsub         ,"Muon_etarelsub");
+    AddBranch(&Muon_etapar            ,"Muon_etapar");
+    AddBranch(&Muon_etaparsub         ,"Muon_etaparsub");
     AddBranch(&Muon_IP3Dsig_it        ,"Muon_IP3Dsig_it");
     AddBranch(&Muon_pvass             ,"Muon_pvass");
-    AddBranch(&Muon_etarel            ,"Muon_etarel");
     AddBranch(&Muon_ptOVen            ,"Muon_ptOVen");
     AddBranch(&Muon_mujet_pfJetProbabilityBJetTag ,"Muon_mujet_pfJetProbabilityBJetTag");
     AddBranch(&Muon_mujet_pfCombinedMVABJetTags   ,"Muon_mujet_pfCombinedMVABJetTags");
@@ -800,9 +815,14 @@ void MuonSelector::Clear(){
     Muon_jetptratio.clear();
     Muon_jetcsv.clear();
     Muon_ptrel.clear();
+    Muon_parel.clear();
+    Muon_parelsub.clear();
+    Muon_etarel.clear();
+    Muon_etarelsub.clear();
+    Muon_etapar.clear();
+    Muon_etaparsub.clear();
     Muon_IP3Dsig_it.clear();
     Muon_pvass.clear();
-    Muon_etarel.clear();
     Muon_ptOVen.clear();
     Muon_mujet_pfJetProbabilityBJetTag.clear();
     Muon_mujet_pfCombinedMVABJetTags.clear();
@@ -957,7 +977,7 @@ double MuonSelector::get_effarea(double eta){
 void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                                   double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt,
                                   double& mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& mujet_pfJetProbabilityBJetTags, double& mujet_pfCombinedMVABJetTags, double& mujet_qgl,
-                                  double& jx, double& jy, double& jz, double& muptrel, int& lepjetidx){
+                                  double& jx, double& jy, double& jz, double& muptrel, double& muparel, double& muparelsub, int& lepjetidx){
   //Look for jet associated to mu
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByToken(jets_, jets);
@@ -1004,6 +1024,8 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
   TLorentzVector mu_lv    = TLorentzVector(mu.px(),mu.py(),mu.pz(),mu.p4().E());
   TLorentzVector mujet_lv = TLorentzVector(mujet.px(),mujet.py(),mujet.pz(),mujet.p4().E());
   muptrel = mu_lv.Perp((mujet_lv-mu_lv).Vect());
+  muparel = (mu_lv.Vect()).Dot(mujet_lv.Vect().Unit());
+  muparelsub = (mu_lv.Vect()).Dot((mujet_lv-mu_lv).Vect().Unit());
 }
 int MuonSelector::pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc){
   int pvass = -1;
@@ -1019,12 +1041,35 @@ int MuonSelector::pvassociation(const pat::Muon& mu, const pat::PackedCandidateC
   }
   return pvass;  
 }
-double MuonSelector::relativeEta(const math::XYZVector& vector, const math::XYZVector& axis){
-  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
-  double mag = vector.r() * axis.r();
-  double dot = vector.Dot(axis);
-  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
-  return etarel;  
+double MuonSelector::relEta(const math::XYZVector& dir, const math::XYZVector& track){
+ double etarel = -9999;
+ double momPar = track.Dot(dir.Unit());
+ double energy = std::sqrt(track.Mag2() + pow(0.105658,2));
+ if((energy - momPar)!=0 && (energy + momPar)!=0) etarel = 0.5 * log((energy + momPar) / (energy - momPar));
+ return etarel;
+//Old def
+//const math::XYZVector& vector, const math::XYZVector& axis){
+//  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+//  double mag = vector.r() * axis.r();
+//  double dot = vector.Dot(axis);
+//  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
+//  return etarel;  
+}
+double MuonSelector::parEta(const math::XYZVector& dir, const math::XYZVector& track){
+ double etapar  = -9999;
+ TVector3 trkdir(track.x(),track.y(),track.z());
+ TVector3 dirdir(dir.x(),dir.y(),dir.z());
+ double momPerp = trkdir.Perp(dirdir);
+ double energy  = std::sqrt(track.Mag2() + pow(0.105658,2));
+ if((energy - momPerp)!=0 && (energy + momPerp)!=0) etapar = 0.5 * log((energy + momPerp) / (energy - momPerp));
+ return etapar;
+//Old def
+//const math::XYZVector& vector, const math::XYZVector& axis){
+//  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+//  double mag = vector.r() * axis.r();
+//  double dot = vector.Dot(axis);
+//  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
+//  return etarel;  
 }
 double MuonSelector::get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx){
   double lepWmass = 0;

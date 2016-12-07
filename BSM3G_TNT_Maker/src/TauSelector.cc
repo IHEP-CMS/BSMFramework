@@ -189,8 +189,8 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     //Tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau->tauID("byLooseCombinedIsolationDeltaBetaCorr3HitsdR03"));
     //Tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau->tauID("byMediumCombinedIsolationDeltaBetaCorr3HitsdR03"));
     //Tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.push_back(tau->tauID("byTightCombinedIsolationDeltaBetaCorr3HitsdR03"));
-    //Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byLooseIsolationMVArun2v1DBdR03oldDMwLT"));
-    //Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byMediumIsolationMVArun2v1DBdR03oldDMwLT"));
+    Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byLooseIsolationMVArun2v1DBdR03oldDMwLT"));
+    Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byMediumIsolationMVArun2v1DBdR03oldDMwLT"));
     //Tau_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byTightIsolationMVArun2v1DBdR03oldDMwLT"));
     //Tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau->tauID("byVTightIsolationMVArun2v1DBdR03oldDMwLT"));
     //Other prop and Track related variables
@@ -209,6 +209,19 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
     Tau_defaultDxy.push_back(tau->dxy());
     Tau_defaultDxyError.push_back(tau->dxy_error());
     Tau_defaultDxySig.push_back(tau->dxy_Sig());
+    Tau_leadChargedCandCharge.push_back(tau->leadChargedHadrCand().isNonnull() ? tau->leadChargedHadrCand()->charge() : -999);
+    pat::PackedCandidate const* packedLeadTauCand = dynamic_cast<pat::PackedCandidate const*>(tau->leadChargedHadrCand().get());
+    if(packedLeadTauCand){
+     Tau_packedLeadTauCand_dxy.push_back(packedLeadTauCand->dxy());
+     Tau_packedLeadTauCand_dz.push_back(packedLeadTauCand->dz());    
+     Tau_packedLeadTauCand_dxyError.push_back(packedLeadTauCand->dxyError());
+     Tau_packedLeadTauCand_dzError.push_back(packedLeadTauCand->dzError());    
+    }else{
+     Tau_packedLeadTauCand_dxy.push_back(-999);
+     Tau_packedLeadTauCand_dz.push_back(-999);    
+     Tau_packedLeadTauCand_dxyError.push_back(-999);
+     Tau_packedLeadTauCand_dzError.push_back(-999);    
+    }
     Tau_defaultFlightLengthX.push_back(tau->flightLength().x());
     Tau_defaultFlightLengthY.push_back(tau->flightLength().y());
     Tau_defaultFlightLengthZ.push_back(tau->flightLength().z());
@@ -225,15 +238,8 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
       GlobalPoint tauLeadTrack_pca_bs = tauTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
       GlobalPoint tauLeadTrack_pca_pv = tauTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
-      Tau_leadChargedCandDz_pv.push_back(leadTrack->dz(firstGoodVertex.position()));
-      Tau_leadChargedCandDxy_pv.push_back(leadTrack->dxy(firstGoodVertex.position()));
       Tau_leadChargedCandDz_bs.push_back(leadTrack->dz(point));
       Tau_leadChargedCandDxy_bs.push_back(-1.*(leadTrack->dxy(point)));
-      Tau_leadChargedCandDzError.push_back(leadTrack->dzError());
-      Tau_leadChargedCandDxyError.push_back(leadTrack->d0Error());
-      Tau_leadChargedCandVtx.push_back(leadTrack->vx());
-      Tau_leadChargedCandVty.push_back(leadTrack->vy());
-      Tau_leadChargedCandVtz.push_back(leadTrack->vz());
       Tau_leadChargedCandTrack_PCAx_bs.push_back(tauLeadTrack_pca_bs.x());
       Tau_leadChargedCandTrack_PCAy_bs.push_back(tauLeadTrack_pca_bs.y());
       Tau_leadChargedCandTrack_PCAz_bs.push_back(tauLeadTrack_pca_bs.z());
@@ -253,16 +259,8 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       Tau_leadChargedCandTrackFitErrorMatrix_12.push_back(tauParticle->stateAtPoint(tauLeadTrack_pca_bs).kinematicParametersError().matrix()(1,2));
       Tau_leadChargedCandTrackFitErrorMatrix_22.push_back(tauParticle->stateAtPoint(tauLeadTrack_pca_bs).kinematicParametersError().matrix()(2,2));
     }else{
-      edm::LogInfo("MyAnalyzer") << "No beam spot available from EventSetup \n";
-      Tau_leadChargedCandDz_pv.push_back(-999);
-      Tau_leadChargedCandDxy_pv.push_back(-999);
       Tau_leadChargedCandDz_bs.push_back(-999);
       Tau_leadChargedCandDxy_bs.push_back(-999);
-      Tau_leadChargedCandDzError.push_back(-999);
-      Tau_leadChargedCandDxyError.push_back(-999);
-      Tau_leadChargedCandVtx.push_back(-999);
-      Tau_leadChargedCandVty.push_back(-999);
-      Tau_leadChargedCandVtz.push_back(-999);
       Tau_leadChargedCandTrack_PCAx_bs.push_back(-999);
       Tau_leadChargedCandTrack_PCAy_bs.push_back(-999);
       Tau_leadChargedCandTrack_PCAz_bs.push_back(-999);
@@ -275,6 +273,24 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       Tau_leadChargedCandTrackFitErrorMatrix_11.push_back(-999);
       Tau_leadChargedCandTrackFitErrorMatrix_12.push_back(-999);
       Tau_leadChargedCandTrackFitErrorMatrix_22.push_back(-999);
+    }
+    if(isBestTrackNonNull && leadPackedCandidateExists){ 
+      Tau_leadChargedCandDz_pv.push_back(leadTrack->dz(firstGoodVertex.position()));
+      Tau_leadChargedCandDxy_pv.push_back(leadTrack->dxy(firstGoodVertex.position()));
+      Tau_leadChargedCandDzError.push_back(leadTrack->dzError());
+      Tau_leadChargedCandDxyError.push_back(leadTrack->d0Error());
+      Tau_leadChargedCandVtx.push_back(leadTrack->vx());
+      Tau_leadChargedCandVty.push_back(leadTrack->vy());
+      Tau_leadChargedCandVtz.push_back(leadTrack->vz());
+    }else{
+      Tau_leadChargedCandDz_pv.push_back(-999);
+      Tau_leadChargedCandDxy_pv.push_back(-999);
+      Tau_leadChargedCandDzError.push_back(-999);
+      Tau_leadChargedCandDxyError.push_back(-999);
+      Tau_leadChargedCandVtx.push_back(-999);
+      Tau_leadChargedCandVty.push_back(-999);
+      Tau_leadChargedCandVtz.push_back(-999);
+
     }
   }
 }
@@ -384,8 +400,8 @@ void TauSelector::SetBranches(){
   //AddBranch(&Tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03    ,"Tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03");
   //AddBranch(&Tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03   ,"Tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03");
   //AddBranch(&Tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03    ,"Tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03");
-  //AddBranch(&Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT           ,"Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT");
-  //AddBranch(&Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT          ,"Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT");
+  AddBranch(&Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT           ,"Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT");
+  AddBranch(&Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT          ,"Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT");
   //AddBranch(&Tau_byTightIsolationMVArun2v1DBdR03oldDMwLT           ,"Tau_byTightIsolationMVArun2v1DBdR03oldDMwLT");
   //AddBranch(&Tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT          ,"Tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT");
   //Other prop and Track related variables
@@ -397,6 +413,10 @@ void TauSelector::SetBranches(){
   AddBranch(&Tau_defaultDxy                            ,"Tau_defaultDxy");
   AddBranch(&Tau_defaultDxyError                       ,"Tau_defaultDxyError");
   AddBranch(&Tau_defaultDxySig                         ,"Tau_defaultDxySig");
+  AddBranch(&Tau_packedLeadTauCand_dxy                 ,"Tau_packedLeadTauCand_dxy");
+  AddBranch(&Tau_packedLeadTauCand_dz                  ,"Tau_packedLeadTauCand_dz");
+  AddBranch(&Tau_packedLeadTauCand_dxyError            ,"Tau_packedLeadTauCand_dxyError");
+  AddBranch(&Tau_packedLeadTauCand_dzError             ,"Tau_packedLeadTauCand_dzError");
   AddBranch(&Tau_defaultFlightLengthX                  ,"Tau_defaultFlightLengthX");
   AddBranch(&Tau_defaultFlightLengthY                  ,"Tau_defaultFlightLengthY");
   AddBranch(&Tau_defaultFlightLengthZ                  ,"Tau_defaultFlightLengthZ");
@@ -530,8 +550,8 @@ void TauSelector::Clear(){
   //Tau_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
   //Tau_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
   //Tau_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
-  //Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.clear();
-  //Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.clear();
+  Tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.clear();
+  Tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.clear();
   //Tau_byTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
   //Tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
   //Other prop and Track related variables
@@ -543,6 +563,10 @@ void TauSelector::Clear(){
   Tau_defaultDxy.clear();
   Tau_defaultDxyError.clear();
   Tau_defaultDxySig.clear();
+  Tau_packedLeadTauCand_dxy.clear();
+  Tau_packedLeadTauCand_dz.clear();
+  Tau_packedLeadTauCand_dxyError.clear();
+  Tau_packedLeadTauCand_dzError.clear();
   Tau_defaultFlightLengthX.clear();
   Tau_defaultFlightLengthY.clear();
   Tau_defaultFlightLengthZ.clear();

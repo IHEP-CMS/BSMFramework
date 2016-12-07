@@ -82,6 +82,10 @@ class JetSelector : public  baseTree{
   /////
   edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
   edm::EDGetTokenT<pat::JetCollection> jets_;
+  edm::EDGetTokenT<edm::ValueMap<float> > qgToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > axis2Token_;
+  edm::EDGetTokenT<edm::ValueMap<float> > ptDToken_;
+  edm::EDGetTokenT<edm::ValueMap<int> > multToken_;
   edm::EDGetTokenT<pat::JetCollection> puppijets_;
   edm::EDGetTokenT<double> rhopogHandle_;
   edm::EDGetTokenT<double> rhoJERHandle_;
@@ -127,9 +131,11 @@ class JetSelector : public  baseTree{
   /////
   ////slimmedJets
   //Kinematics
-  vector<double> Jet_pt, Jet_eta, Jet_phi, Jet_energy, Jet_mass, Jet_px, Jet_py, Jet_pz, Jet_Uncorr_pt;
+  vector<double> Jet_pt, Jet_eta, Jet_phi, Jet_energy, Jet_mass, Jet_px, Jet_py, Jet_pz, Jet_Uncorr_pt, Jet_genpt, Jet_geneta, Jet_genphi, Jet_genenergy, Jet_genmass, Jet_genpx, Jet_genpy, Jet_genpz;
   //ID
   vector<double> Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_pfCombinedMVAV2BJetTags, Jet_pfJetProbabilityBJetTags, Jet_pfCombinedCvsLJetTags, Jet_pfCombinedCvsBJetTags, Jet_pileupId, Jet_isPFJet, Jet_isCaloJet;
+  vector<double> Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_newpfCombinedMVAV2BJetTags, Jet_newpfJetProbabilityBJetTags, Jet_newpfCombinedCvsLJetTags, Jet_newpfCombinedCvsBJetTags;
+  vector<double> Jet_qg, Jet_axis2, Jet_ptD, Jet_mult;  
   //Energy
   vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction;
   //Other prop

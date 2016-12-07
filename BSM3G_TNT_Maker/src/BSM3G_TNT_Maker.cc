@@ -16,6 +16,8 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   MaxN(200)
 {
   debug_                 = iConfig.getParameter<bool>("debug_");
+  bjetnessselfilter      = iConfig.getParameter<bool>("bjetnessselfilter");
+  _is_data               = iConfig.getParameter<bool>("is_data");
   _ifevtriggers          = iConfig.getParameter<bool>("ifevtriggers"); 
   _evtriggers            = iConfig.getParameter<vector<string> >("evtriggers");
   _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo"); 
@@ -41,6 +43,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   edm::Service<TFileService> fs;
   evtree_ = fs->make<TTree>("evtree","evtree");
   evtree_->Branch("eventnum",&eventnum,"eventnum/I");
+  evtree_->Branch("eventnumnegative",&eventnumnegative,"eventnumnegative/I");
   tree_   = fs->make<TTree>("BOOM","BOOM");
   if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillgenHFCategoryinfo) genhfselector      = new GenHFHadrMatchSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
@@ -80,6 +83,12 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Event info for all the events you read
   eventnum = -1;
   eventnum = iEvent.id().event();
+  eventnumnegative = 1;
+  if(!_is_data){
+    edm::Handle<GenEventInfoProduct> genEvtInfo;
+    iEvent.getByLabel("generator",genEvtInfo);
+    eventnumnegative = (genEvtInfo->weight())/abs(genEvtInfo->weight());
+  }
   evtree_->Fill();
   //Require trigger on the event
   bool evtriggered = false;
@@ -98,26 +107,30 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   //Call classes
   if((_ifevtriggers && evtriggered) || !_ifevtriggers){
-    if(_fillgeninfo)           genselector->Fill(iEvent); 
-    if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
-    if(_filleventinfo)         eventinfoselector->Fill(iEvent);
-    if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
-    if(_fillPVinfo)            pvselector->Fill(iEvent); 
-    if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
-    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
-    if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
-    if(_filljetinfo)           jetselector->Fill(iEvent);
-    if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
-    if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
-    if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
-    if(_fillTauJetnessinfo)    TauJetnessselector->Fill(iEvent, iSetup);
-    if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup);
-    if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
-    if(_fillBTagReweight)      btagreweight->Fill(iEvent);
-    if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
-    if(_fillMETinfo)           metselector->Fill(iEvent);
-    if(_fillphotoninfo)        photonselector->Fill(iEvent);
-    tree_->Fill();
+    bjetnesssel_filter = 0;
+    if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup, bjetnesssel_filter);
+    if((bjetnessselfilter && bjetnesssel_filter==1) || !bjetnessselfilter){
+      //cout<<"bjetnesssel_filter aft "<<bjetnesssel_filter<<endl;
+      if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
+      if(_fillgeninfo)           genselector->Fill(iEvent); 
+      if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
+      if(_filleventinfo)         eventinfoselector->Fill(iEvent);
+      if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
+      if(_fillPVinfo)            pvselector->Fill(iEvent); 
+      if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
+      if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
+      if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
+      if(_filljetinfo)           jetselector->Fill(iEvent);
+      if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
+      if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
+      if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
+      if(_fillTauJetnessinfo)    TauJetnessselector->Fill(iEvent, iSetup);
+      if(_fillBTagReweight)      btagreweight->Fill(iEvent);
+      if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
+      if(_fillMETinfo)           metselector->Fill(iEvent);
+      if(_fillphotoninfo)        photonselector->Fill(iEvent);
+      tree_->Fill();
+    }
   }
 }
 // ------------ method called once each job just before starting event loop  ------------

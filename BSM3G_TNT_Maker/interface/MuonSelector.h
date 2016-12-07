@@ -137,10 +137,11 @@ class MuonSelector : public  baseTree{
   void get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                       double& mujet_mindr, double& mujet_pt, double& muptOVmujetpt,
                       double& mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& mujet_pfJetProbabilityBJetTags, double& mujet_pfCombinedMVABJetTags, double& mujet_qgl,
-                      double& jx, double& jy, double& jz, double& muptrel,
+                      double& jx, double& jy, double& jz, double& muptrel, double& muparel, double& muparelsub,
                       int& lepjetidx);
   int pvassociation(const pat::Muon& mu, const pat::PackedCandidateCollection& pcc);
-  double relativeEta(const math::XYZVector& vector, const math::XYZVector& axis);
+  double relEta(const math::XYZVector& dir, const math::XYZVector& track);
+  double parEta(const math::XYZVector& dir, const math::XYZVector& track);
   double get_lepWmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
   double get_lepTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
   double get_lepWTopmass(const pat::Muon& mu, const edm::Event& iEvent, int& lepjetidx);
@@ -158,8 +159,8 @@ class MuonSelector : public  baseTree{
   bool is_goodtrk(Track trk,const reco::Vertex& vtx);
   //Variables
   vector<double> Muon_miniIsoRel, Muon_miniIsoCh, Muon_miniIsoNeu, Muon_miniIsoPUsub;
-  vector<double> Muon_jetdr, Muon_jetpt, Muon_jetptratio, Muon_jetcsv, Muon_ptrel, Muon_IP3Dsig_it;
-  vector<double> Muon_pvass, Muon_etarel, Muon_ptOVen, Muon_mujet_pfJetProbabilityBJetTag, Muon_mujet_pfCombinedMVABJetTags, Muon_mujet_qgl;
+  vector<double> Muon_jetdr, Muon_jetpt, Muon_jetptratio, Muon_jetcsv, Muon_ptrel, Muon_parel, Muon_parelsub, Muon_etarel, Muon_etarelsub, Muon_etapar, Muon_etaparsub, Muon_IP3Dsig_it;
+  vector<double> Muon_pvass, Muon_ptOVen, Muon_mujet_pfJetProbabilityBJetTag, Muon_mujet_pfCombinedMVABJetTags, Muon_mujet_qgl;
   vector<double> Muon_mumass, Muon_mujet_mass, Muon_mujet_Wmass, Muon_mujet_Topmass, Muon_mujet_WTopmass;
   vector<double> Muon_IP3D_val, Muon_IP3D_err, Muon_IP3D_sig, Muon_IP2D_val, Muon_IP2D_err, Muon_IP2D_sig, Muon_sIP3D_val, Muon_sIP3D_err, Muon_sIP3D_sig, Muon_sIP2D_val, Muon_sIP2D_err, Muon_sIP2D_sig, Muon_IP1D_val, Muon_IP1D_err, Muon_IP1D_sig, Muon_sIP1D_val, Muon_sIP1D_err, Muon_sIP1D_sig;
   vector<double> Muon_lepjetMaxIP3D_val, Muon_lepjetMaxIP3D_sig, Muon_lepjetMaxsIP3D_val, Muon_lepjetMaxsIP3D_sig, Muon_lepjetMaxIP2D_val, Muon_lepjetMaxIP2D_sig, Muon_lepjetMaxsIP2D_val, Muon_lepjetMaxsIP2D_sig, Muon_lepjetMaxIP1D_val, Muon_lepjetMaxIP1D_sig, Muon_lepjetMaxsIP1D_val, Muon_lepjetMaxsIP1D_sig, Muon_lepjetAvIP3D_val, Muon_lepjetAvIP3D_sig, Muon_lepjetAvsIP3D_val, Muon_lepjetAvsIP3D_sig, Muon_lepjetAvIP2D_val, Muon_lepjetAvIP2D_sig, Muon_lepjetAvsIP2D_val, Muon_lepjetAvsIP2D_sig, Muon_lepjetAvIP1D_val, Muon_lepjetAvIP1D_sig, Muon_lepjetAvsIP1D_val, Muon_lepjetAvsIP1D_sig;

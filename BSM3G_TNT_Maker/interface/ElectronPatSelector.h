@@ -131,7 +131,7 @@ class ElectronPatSelector : public  baseTree{
   //Kinematics
   vector<double> patElectron_pt, patElectron_eta, patElectron_phi, patElectron_energy, patElectron_px, patElectron_py, patElectron_pz, patElectron_p, patElectron_Et, patElectron_SCeta, patElectron_inCrack;
   //Charge
-  vector<double> patElectron_charge;
+  vector<double> patElectron_charge, patElectron_isGsfCtfScPixChargeConsistent, patElectron_isGsfScPixChargeConsistent;
   //ID
   vector<int>  passVetoId_, passLooseId_, passMediumId_, passTightId_, passHEEPId_, passMvatrigId_, passMvanontrigId_, passMvatrigwp90Id_, passMvanontrigwp90Id_, patElectron_mvaCategory_, patElectron_pdgId, patElectron_isEcalDriven;
   vector<float> patElectron_mvaValue_nonTrig_, patElectron_mvaCategory_nonTrig_, patElectron_mvaValue_Trig_, patElectron_mvaCategory_Trig_;
@@ -158,10 +158,11 @@ class ElectronPatSelector : public  baseTree{
   void get_elejet_info(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                        double& elejet_mindr, double& elejet_pt, double& eleptOVelejetpt,
                        double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,                       
-                       double& jx, double& jy, double& jz, double& eleptrel,
+                       double& jx, double& jy, double& jz, double& eleptrel, double& eleparel, double& eleparelsub,
                        int& lepjetidx);
   int pvassociation(edm::View<pat::Electron>::const_iterator& ele, const pat::PackedCandidateCollection& pcc);
-  double relativeEta(const math::XYZVector& vector, const math::XYZVector& axis);
+  double relEta(const math::XYZVector& dir, const math::XYZVector& track);
+  double parEta(const math::XYZVector& dir, const math::XYZVector& track);
   double get_lepWmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx);
   double get_lepTopmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx);
   double get_lepWTopmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx);
@@ -179,8 +180,8 @@ class ElectronPatSelector : public  baseTree{
   bool is_goodtrk(Track trk,const reco::Vertex& vtx);
   //Variables
   vector<double> patElectron_miniIsoRel, patElectron_miniIsoCh, patElectron_miniIsoNeu, patElectron_miniIsoPUsub;
-  vector<double> patElectron_jetdr, patElectron_jetpt, patElectron_jetptratio, patElectron_jetcsv, patElectron_ptrel, patElectron_IP3Dsig, patElectron_eleMVASpring15NonTrig25ns, patElectron_eleMVASpring15NonTrig25ns_VL;
-  vector<double> patElectron_pvass, patElectron_etarel, patElectron_ptOVen, patElectron_elejet_pfJetProbabilityBJetTag, patElectron_elejet_pfCombinedMVABJetTags, patElectron_elejet_qgl;
+  vector<double> patElectron_jetdr, patElectron_jetpt, patElectron_jetptratio, patElectron_jetcsv, patElectron_ptrel, patElectron_parel, patElectron_parelsub, patElectron_etarel, patElectron_etarelsub, patElectron_etapar, patElectron_etaparsub, patElectron_IP3Dsig, patElectron_eleMVASpring15NonTrig25ns, patElectron_eleMVASpring15NonTrig25ns_VL;
+  vector<double> patElectron_pvass, patElectron_ptOVen, patElectron_elejet_pfJetProbabilityBJetTag, patElectron_elejet_pfCombinedMVABJetTags, patElectron_elejet_qgl;
   vector<double> patElectron_elemass, patElectron_elejet_mass, patElectron_elejet_Wmass, patElectron_elejet_Topmass, patElectron_elejet_WTopmass;
   vector<double> patElectron_IP3D_val, patElectron_IP3D_err, patElectron_IP3D_sig, patElectron_IP2D_val, patElectron_IP2D_err, patElectron_IP2D_sig, patElectron_sIP3D_val, patElectron_sIP3D_err, patElectron_sIP3D_sig, patElectron_sIP2D_val, patElectron_sIP2D_err, patElectron_sIP2D_sig, patElectron_IP1D_val, patElectron_IP1D_err, patElectron_IP1D_sig, patElectron_sIP1D_val, patElectron_sIP1D_err, patElectron_sIP1D_sig;
   vector<double> patElectron_lepjetMaxIP3D_val, patElectron_lepjetMaxIP3D_sig, patElectron_lepjetMaxsIP3D_val, patElectron_lepjetMaxsIP3D_sig, patElectron_lepjetMaxIP2D_val, patElectron_lepjetMaxIP2D_sig, patElectron_lepjetMaxsIP2D_val, patElectron_lepjetMaxsIP2D_sig, patElectron_lepjetMaxIP1D_val, patElectron_lepjetMaxIP1D_sig, patElectron_lepjetMaxsIP1D_val, patElectron_lepjetMaxsIP1D_sig, patElectron_lepjetAvIP3D_val, patElectron_lepjetAvIP3D_sig, patElectron_lepjetAvsIP3D_val, patElectron_lepjetAvsIP3D_sig, patElectron_lepjetAvIP2D_val, patElectron_lepjetAvIP2D_sig, patElectron_lepjetAvsIP2D_val, patElectron_lepjetAvsIP2D_sig, patElectron_lepjetAvIP1D_val, patElectron_lepjetAvIP1D_sig, patElectron_lepjetAvsIP1D_val, patElectron_lepjetAvsIP1D_sig;

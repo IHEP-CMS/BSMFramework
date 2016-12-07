@@ -3,6 +3,7 @@
 <use name="FWCore/ParameterSet"/>
 <use name="DataFormats/VertexReco"/>
 <use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/ParticleFlowCandidate"/>
 <use name="FWCore/MessageService"/>
 <use name="DataFormats/EgammaCandidates"/>
 <use name="FWCore/ServiceRegistry"/>

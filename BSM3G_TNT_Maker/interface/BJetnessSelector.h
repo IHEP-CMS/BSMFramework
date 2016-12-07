@@ -86,7 +86,7 @@ class BJetnessSelector : public  baseTree{
   public:
     BJetnessSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
     ~BJetnessSelector();
-    void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup);
+    void Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup, int& bjetnesssel_filter);
     void SetBranches();
     void Clear();
     bool isGoodVertex(const reco::Vertex& vtx);
@@ -105,8 +105,17 @@ class BJetnessSelector : public  baseTree{
     edm::EDGetTokenT<double> rhopogHandle_;
     edm::EDGetTokenT<double> rhoJERHandle_;
     edm::EDGetTokenT<edm::View<reco::GenParticle> > prunedGenToken_;
-    edm::EDGetTokenT<edm::ValueMap<bool> > electronLooseIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > electronVetoIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > electronLooseIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > electronMediumIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > electronTightIdMapToken_;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAnonTrigIdMap_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigwp90IdMap_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAnonTrigwp90IdMap_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > eleHEEPIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_nonTrig_;
+    edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_nonTrig_;
     edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;
     edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_Trig_;
     int    _vtx_ndof_min;
@@ -139,17 +148,22 @@ class BJetnessSelector : public  baseTree{
     vector<double> BJetness_numjet;
     vector<double> BJetness_jetpt, BJetness_jeteta, BJetness_jetphi, BJetness_jetenergy;
     vector<double> BJetness_jetcsv, BJetness_pfJetProbabilityBJetTags, BJetness_pfCombinedMVAV2BJetTags, BJetness_pfCombinedCvsLJetTags, BJetness_pfCombinedCvsBJetTags;
+    vector<double> BJetness_pt, BJetness_eta, BJetness_phi, BJetness_en, BJetness_ptOVen;
+    //PFcand info
+    vector<double> BJetness_jetschpvass, BJetness_jetschfrompv, BJetness_jetschip3dval, BJetness_jetschip3dsig, BJetness_jetschip2dval, BJetness_jetschip2dsig, BJetness_jetschisgoodtrk, BJetness_jetschtrkpur, BJetness_jetschpt, BJetness_jetschen;
     //Num_of_trks
-    vector<double> BJetness_num_pdgid_leps, BJetness_num_pdgid_eles, BJetness_num_pdgid_mus, BJetness_num_soft_leps, BJetness_num_soft_eles, BJetness_num_vetonoipnoiso_leps, BJetness_num_vetonoipnoiso_eles, BJetness_num_loosenoipnoiso_leps, BJetness_num_loosenoipnoiso_eles, BJetness_num_loose_mus;
+    vector<double> BJetness_num_pdgid_eles, BJetness_num_soft_eles, BJetness_num_vetonoipnoiso_eles, BJetness_num_loosenoipnoiso_eles, BJetness_num_veto_eles, BJetness_num_loose_eles, BJetness_num_medium_eles, BJetness_num_tight_eles, BJetness_num_mvatrig_eles, BJetness_num_mvanontrig_eles, BJetness_num_mvatrigwp90_eles, BJetness_num_mvanontrigwp90_eles, BJetness_num_heep_eles, BJetness_num_pdgid_mus, BJetness_num_loose_mus, BJetness_num_soft_mus, BJetness_num_medium_mus, BJetness_num_tight_mus, BJetness_num_highpt_mus, BJetness_num_POGisGood_mus;
     vector<double> BJetness_numjettrks, BJetness_numjettrkspv, BJetness_numjettrksnopv;
     vector<double> BJetness_npvTrkOVcollTrk, BJetness_pvTrkOVcollTrk, BJetness_npvTrkOVpvTrk;
     vector<double> BJetness_npvPtOVcollPt, BJetness_pvPtOVcollPt, BJetness_npvPtOVpvPt;
+    //Trk prop rel to jet dir
+    vector<double> BJetness_avprel, BJetness_avppar, BJetness_avetarel, BJetness_avetapar, BJetness_avdr, BJetness_avpreljetpt, BJetness_avpreljeten, BJetness_avpparjetpt, BJetness_avpparjeten;
     //Two_trk_info
     vector<double> BJetness_avnum2v, BJetness_avnumno2v, BJetness_avdca3d2t, BJetness_avdca3dno2t, BJetness_avdca3d, BJetness_avdca2d2t, BJetness_avdca2dno2t, BJetness_avdca2d;
     //chi2
     vector<double> BJetness_chi2;
     //ImpactParameter
-    vector<double> BJetness_avip3d_val, BJetness_avip3d_sig, BJetness_avsip3d_val, BJetness_avsip3d_sig, BJetness_avip2d_val, BJetness_avip2d_sig, BJetness_avsip2d_val, BJetness_avsip2d_sig, BJetness_avip1d_val, BJetness_avip1d_sig, BJetness_avsip1d_val, BJetness_avsip1d_sig;
+    vector<double> BJetness_avip3d_val, BJetness_avip3d_sig, BJetness_avsip3d_val, BJetness_avsip3d_sig, BJetness_numip3dpos, BJetness_numip3dneg, BJetness_avip2d_val, BJetness_avip2d_sig, BJetness_avsip2d_val, BJetness_avsip2d_sig, BJetness_numip2dpos, BJetness_numip2dneg, BJetness_avip1d_val, BJetness_avip1d_sig, BJetness_avsip1d_val, BJetness_avsip1d_sig;
     /////
     //   TTH methods 
     /////
@@ -161,21 +175,22 @@ class BJetnessSelector : public  baseTree{
     double get_effarea(double eta);
     bool is_good_jet(const pat::Jet &j, double rho, double rhoJER, int vtxsize);
     bool is_loosePOG_jetmuon(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Muon> > muon_h);
-    bool is_softLep_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
-    bool is_vetoPOGNoIPNoIso_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
-    bool is_loosePOGNoIPNoIso_jetelectron(const pat::PackedCandidate &jcand, edm::Handle<edm::View<pat::Electron> > electron_pat, const reco::Vertex& vtx);
+    bool is_softLep_jetelectron(const pat::Electron &lele);
+    bool is_vetoPOGNoIPNoIso_jetelectron(const pat::Electron &lele);
+    bool is_loosePOGNoIPNoIso_jetelectron(const pat::Electron &lele);
     bool is_loose_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     bool is_tight_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     bool is_goodtrk(Track trk,const reco::Vertex& vtx);
     TransientTrack get_ttrk(Track trk, const TransientTrackBuilder& ttrkbuilder);
     vector<TransientTrack> get_ttrks(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder);
     TransientVertex get_tv(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder);
-    void get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, vector<Track>& jetchtrks, vector<Track>& jetchtrkspv, vector<Track>& jetchtrksnpv, vector<tuple<double, double, double> >& jetsdir, edm::Handle<edm::View<pat::Electron> > electron_pat, edm::Handle<edm::View<pat::Muon> > muon_h, double& bjetness_num_pdgid_eles, double& bjetness_num_pdgid_mus, double& bjetness_num_soft_eles, double& bjetness_num_vetonoipnoiso_eles, double& bjetness_num_loosenoipnoiso_eles, double& bjetness_num_loose_mus);
+    void get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, vector<Track>& jetchtrks, vector<Track>& jetchtrkspv, vector<Track>& jetchtrksnpv, vector<tuple<double, double, double> >& jetsdir, const edm::Event& iEvent, edm::Handle<edm::View<pat::Electron> > electron_pat, edm::Handle<edm::View<pat::Muon> > muon_h, double& bjetness_num_pdgid_eles, double& bjetness_num_soft_eles, double& bjetness_num_vetonoipnoiso_eles, double& bjetness_num_loosenoipnoiso_eles, double& bjetness_num_veto_eles, double& bjetness_num_loose_eles, double& bjetness_num_medium_eles, double& bjetness_num_tight_eles, double& bjetness_num_mvatrig_eles, double& bjetness_num_mvanontrig_eles, double& bjetness_num_mvatrigwp90_eles, double& bjetness_num_mvanontrigwp90_eles, double& bjetness_num_heep_eles, double& bjetness_num_pdgid_mus, double& bjetness_num_loose_mus, double& bjetness_num_soft_mus, double& bjetness_num_medium_mus, double& bjetness_num_tight_mus, double& bjetness_num_highpt_mus, double& bjetness_num_POGisGood_mus);
+    void get_avreljet(vector<Track> trks, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avprel, double& jetchtrks_avppar, double& jetchtrks_avetarel, double& jetchtrks_avetapar, double& jetchtrks_avdr);
     void get_chi2(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, double& chi2red);
     void get_2trksinfo(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, double& num2v, double& numno2v, double& dca3d2t, double& dca3dno2t, double& dca2d2t, double& dca2dno2t);
     pair<double,double> dca2trks(Track tkA, Track tkB, const TransientTrackBuilder& ttrkbuilder);
-    void get_avip3d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip3d_val, double& jetchtrks_avip3d_sig, double& jetchtrks_avsip3d_val, double& jetchtrks_avsip3d_sig);
-    void get_avip2d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip2d_val, double& jetchtrks_avip2d_sig, double& jetchtrks_avsip2d_val, double& jetchtrks_avsip2d_sig);
+    void get_avip3d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip3d_val, double& jetchtrks_avip3d_sig, double& jetchtrks_avsip3d_val, double& jetchtrks_avsip3d_sig, double& jetchtrks_numip3dpos, double& jetchtrks_numip3dneg);
+    void get_avip2d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip2d_val, double& jetchtrks_avip2d_sig, double& jetchtrks_avsip2d_val, double& jetchtrks_avsip2d_sig, double& jetchtrks_numip2dpos, double& jetchtrks_numip2dneg);
     void get_avip1d(vector<Track> trks, const TransientTrackBuilder& ttrkbuilder, reco::Vertex vtx, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avip1d_val, double& jetchtrks_avip1d_sig, double& jetchtrks_avsip1d_val, double& jetchtrks_avsip1d_sig);
 };
 #endif

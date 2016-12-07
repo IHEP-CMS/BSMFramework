@@ -105,6 +105,7 @@ class BJetnessFVSelector : public  baseTree{
     edm::EDGetTokenT<double> rhopogHandle_;
     edm::EDGetTokenT<double> rhoJERHandle_;
     edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVATrigIdMapToken_;
+    edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAnonTrigIdMapToken_;
     int    _vtx_ndof_min;
     int    _vtx_rho_max;
     double _vtx_position_z_max;

@@ -122,12 +122,12 @@ class METSelector : public baseTree{
   //Corrections/Systematics
   double Met_type1PF_shiftedPtUp, Met_type1PF_shiftedPtDown;
   //MC
-  double Gen_type1PF_Met;
+  double Gen_type1PF_Met, Gen_type1PF_Metpx, Gen_type1PF_Metpy, Gen_type1PF_Metpz, Gen_type1PF_Meteta, Gen_type1PF_Metphi, Gen_type1PF_Meten;
   ////slimmedMETsPUPPI
   double Met_puppi_pt, Met_puppi_px, Met_puppi_py, Met_puppi_pz, Met_puppi_phi, Met_puppi_sumEt;
   //Corrections/Systematics
   double Met_puppi_shiftedPtUp, Met_puppi_shiftedPtDown;
   //MC
-  double Gen_puppi_Met;
+  double Gen_puppi_Met, Gen_puppi_Metpx, Gen_puppi_Metpy, Gen_puppi_Metpz, Gen_puppi_Meteta, Gen_puppi_Metphi, Gen_puppi_Meten;
 };
 #endif

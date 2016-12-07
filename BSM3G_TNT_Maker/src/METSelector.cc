@@ -42,7 +42,15 @@ void METSelector::Fill(const edm::Event& iEvent){
   Met_type1PF_shiftedPtUp   = met.shiftedPt(pat::MET::JetEnUp);
   Met_type1PF_shiftedPtDown = met.shiftedPt(pat::MET::JetEnDown);
   //MC
-  if(!_is_data) Gen_type1PF_Met = met.genMET()->pt();
+  if(!_is_data){
+    Gen_type1PF_Met    = met.genMET()->pt();
+    Gen_type1PF_Metpx  = met.genMET()->px();
+    Gen_type1PF_Metpy  = met.genMET()->py();
+    Gen_type1PF_Metpz  = met.genMET()->pz();
+    Gen_type1PF_Meteta = met.genMET()->eta();
+    Gen_type1PF_Metphi = met.genMET()->phi();
+    Gen_type1PF_Meten  = met.genMET()->energy();
+  }
   /////
   //   TTH variables
   /////
@@ -66,7 +74,15 @@ void METSelector::Fill(const edm::Event& iEvent){
       Met_puppi_shiftedPtDown = -999;
     }
     //MC
-    if(!_is_data) Gen_puppi_Met = puppimet.genMET()->pt();
+    if(!_is_data){
+      Gen_puppi_Met    = puppimet.genMET()->pt();
+      Gen_puppi_Metpx  = puppimet.genMET()->px();
+      Gen_puppi_Metpy  = puppimet.genMET()->py();
+      Gen_puppi_Metpz  = puppimet.genMET()->pz();
+      Gen_puppi_Meteta = puppimet.genMET()->eta();
+      Gen_puppi_Metphi = puppimet.genMET()->phi();
+      Gen_puppi_Meten  = puppimet.genMET()->energy();
+    }
   }
   if(debug_) std::cout<<"got MET info"<<std::endl;
 }
@@ -85,6 +101,12 @@ void METSelector::SetBranches(){
   AddBranch(&Met_type1PF_shiftedPtDown, "Met_type1PF_shiftedPtDown");
   //MC
   AddBranch(&Gen_type1PF_Met,           "Gen_type1PF_Met");
+  AddBranch(&Gen_type1PF_Metpx         ,"Gen_type1PF_Metpx");
+  AddBranch(&Gen_type1PF_Metpy         ,"Gen_type1PF_Metpy");
+  AddBranch(&Gen_type1PF_Metpz         ,"Gen_type1PF_Metpz");
+  AddBranch(&Gen_type1PF_Meteta        ,"Gen_type1PF_Meteta");
+  AddBranch(&Gen_type1PF_Metphi        ,"Gen_type1PF_Metphi");
+  AddBranch(&Gen_type1PF_Meten         ,"Gen_type1PF_Meten");
   ////slimmedMETsPUPPI
   if(_PuppiVar){
     //Kinematic  
@@ -99,6 +121,12 @@ void METSelector::SetBranches(){
     AddBranch(&Met_puppi_shiftedPtDown, "Met_puppi_shiftedPtDown");
     //MC
     AddBranch(&Gen_puppi_Met,           "Gen_puppi_Met");
+    AddBranch(&Gen_puppi_Metpx         ,"Gen_puppi_Metpx");
+    AddBranch(&Gen_puppi_Metpy         ,"Gen_puppi_Metpy");
+    AddBranch(&Gen_puppi_Metpz         ,"Gen_puppi_Metpz");
+    AddBranch(&Gen_puppi_Meteta        ,"Gen_puppi_Meteta");
+    AddBranch(&Gen_puppi_Metphi        ,"Gen_puppi_Metphi");
+    AddBranch(&Gen_puppi_Meten         ,"Gen_puppi_Meten");
   }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
@@ -116,6 +144,12 @@ void METSelector::Clear(){
   Met_type1PF_shiftedPtDown = -9999;
   //MC
   Gen_type1PF_Met           = -9999;
+  Gen_type1PF_Metpx         = -9999;
+  Gen_type1PF_Metpy         = -9999;
+  Gen_type1PF_Metpz         = -9999;
+  Gen_type1PF_Meteta        = -9999;
+  Gen_type1PF_Metphi        = -9999;
+  Gen_type1PF_Meten         = -9999;
   ////slimmedMETsPUPPI
   if(_PuppiVar){
     //Kinematic  
@@ -130,5 +164,11 @@ void METSelector::Clear(){
     Met_puppi_shiftedPtDown = -9999;
     //MC
     Gen_puppi_Met           = -9999;
+    Gen_puppi_Metpx         = -9999;
+    Gen_puppi_Metpy         = -9999;
+    Gen_puppi_Metpz         = -9999;
+    Gen_puppi_Meteta        = -9999;
+    Gen_puppi_Metphi        = -9999;
+    Gen_puppi_Meten         = -9999;
   }
 }

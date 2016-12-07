@@ -23,7 +23,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-   'file:/afs/cern.ch/work/a/aspiezia/public/4FrancescoR/pickevents_1354521796.root'
+   #'file:/afs/cern.ch/work/a/aspiezia/public/4FrancescoR/pickevents_1354521796.root'
    #SingleEle
    #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/150/00000/0A6284C7-D719-E611-93E6-02163E01421D.root',
    #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/158/00000/06277EC1-181A-E611-870F-02163E0145E5.root',
@@ -79,10 +79,28 @@ process.source = cms.Source("PoolSource",
    #'/store/data/Run2016B/MuonEG/MINIAOD/PromptReco-v2/000/273/292/00000/C8EF3916-231A-E611-AC8E-02163E01411A.root',
    #'/store/data/Run2016B/MuonEG/MINIAOD/PromptReco-v2/000/273/294/00000/C2E47BF3-231A-E611-BC1D-02163E0137D0.root',
    #'/store/data/Run2016B/MuonEG/MINIAOD/PromptReco-v2/000/273/295/00000/A835EC00-241A-E611-A677-02163E0144FB.root',
+   #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/274/442/00000/A0E5DA71-C72D-E611-ABFE-02163E0140F0.root'
+   #SEle re-reco 
+   '/store/data/Run2016B/SingleElectron/MINIAOD/23Sep2016-v3/00000/00099863-E799-E611-A876-141877343E6D.root'
   ),
   skipEvents = cms.untracked.uint32(0)
 )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+#####
+##   BTAGGING WITH HIP MITIGATION
+#####
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Configuration.Geometry.GeometryRecoDB_cff")
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+  process,
+  jetSource = cms.InputTag('slimmedJets'),
+  jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
+  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfCombinedMVAV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedCvsLJetTags', 'pfCombinedCvsBJetTags'],
+  runIVF=True,
+  btagPrefix = 'new' # optional, in case interested in accessing both the old and new discriminator values
+)
+process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -246,19 +264,19 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v',
   ),
   # Choose which information you want to use
-  fillgeninfo           = cms.bool(False),
-  fillgenHFCategoryinfo = cms.bool(False),
-  filleventinfo         = cms.bool(False),
+  fillgeninfo           = cms.bool(False), #F
+  fillgenHFCategoryinfo = cms.bool(False), #F
+  filleventinfo         = cms.bool(True),
   filltriggerinfo       = cms.bool(True),
-  fillPVinfo            = cms.bool(False),
-  fillmuoninfo          = cms.bool(False),
-  fillelectronpatinfo   = cms.bool(False),
-  filltauinfo           = cms.bool(False),
-  filljetinfo           = cms.bool(False),
+  fillPVinfo            = cms.bool(True),
+  fillmuoninfo          = cms.bool(True),
+  fillelectronpatinfo   = cms.bool(True),
+  filltauinfo           = cms.bool(True),
+  filljetinfo           = cms.bool(True),
   filltthjetinfo        = cms.bool(False), #F
-  fillBoostedJetinfo    = cms.bool(False),
+  fillBoostedJetinfo    = cms.bool(True),
   fillTopSubJetinfo     = cms.bool(False), #F
-  fillTauJetnessinfo    = cms.bool(False),
+  fillTauJetnessinfo    = cms.bool(True),
   fillBJetnessinfo      = cms.bool(True),
   fillBJetnessFVinfo    = cms.bool(True),
   fillBTagReweight      = cms.bool(True),
@@ -272,8 +290,10 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   super_TNT = cms.bool(False),
   AJVar     = cms.bool(False),
   tthlepVar = cms.bool(True),
+  bjetnessselfilter = cms.bool(False),
+  bjetnessproducer  = cms.bool(True),
   PuppiVar  = cms.bool(False),
-  qglVar    = cms.bool(False),
+  qglVar    = cms.bool(True),
   # Input tags 
   bits                = cms.InputTag("TriggerResults","","HLT"),
   prescales           = cms.InputTag("patTrigger"),
@@ -297,7 +317,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   elemvaCategoriesMap_Trig     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   taus                = cms.InputTag("slimmedTaus"),
   #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),
-  jets                = cms.InputTag("slimmedJets"),
+  jets                = cms.InputTag("selectedUpdatedPatJets"),#slimmedJets"),
   jetsPUPPI           = cms.InputTag("slimmedJetsPuppi"),
   fatjets             = cms.InputTag("slimmedJetsAK8"),
   topsubjets          = cms.InputTag("slimmedJetsCMSTopTagCHSPacked", "SubJets"),
@@ -347,8 +367,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   # PILEUP REWEIGHTING
   PUReweightfile      = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/PUReweight/PileUpReweighting2016.root"),
   # BTAG REWEIGHTING
-  BTAGReweightfile1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_hf_v2_final_2016_06_30test.root"),
-  BTAGReweightfile2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_lf_v2_final_2016_06_30test.root"),
+  BTAGReweightfile1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_hf_v2_final_2016_09_7test.root"),
+  BTAGReweightfile2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/BTAGReweight/csv_rwt_fit_lf_v2_final_2016_09_7test.root"),
   # Object selection
   # Primary vertex cuts
   Pvtx_ndof_min   = cms.double(4.),
@@ -362,7 +382,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   Muon_pt_min         = cms.double(5.),
   Muon_eta_max        = cms.double(50),
   # Electron cuts
-  patElectron_pt_min  = cms.double(7.),
+  patElectron_pt_min  = cms.double(5.),
   patElectron_eta_max = cms.double(50),
   # Tau cuts
   Tau_pt_min          = cms.double(15.),
@@ -399,14 +419,35 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
   src = cms.InputTag("prunedGenParticles")
 )
 #process.p = cms.Path(process.printGenParticleList)
+#BJetness producer
+process.load('FlavorJetness.BJetness.BJetness_cfi')
+process.BJetness = cms.EDProducer('BJetness')
+process.BJetness.is_data = cms.bool(True)
+process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.BJetness.eleMVAnonTrigIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80")
+process.BJetness.patElectrons = cms.InputTag("slimmedElectrons")
+process.BJetness.muons = cms.InputTag("slimmedMuons")
+process.BJetness.jets = cms.InputTag("selectedUpdatedPatJets")#slimmedJets"),
+process.BJetness.jecPayloadNamesAK4PFchsMC1 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L1FastJet_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsMC2 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsMC3 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsDATA1 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsDATA2 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsDATA3 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsDATA4 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt")
+process.BJetness.jecPayloadNamesAK4PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt")
+process.BJetness.jerAK4PFchs   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV6_MC_PtResolution_AK4PFchs.txt")
+process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV6_MC_SF_AK4PFchs.txt")
 #QG likelihood
-#process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-#process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
-#process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
+process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
+process.QGTagger.srcJets       = cms.InputTag('selectedUpdatedPatJets')
+process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
+#Run analysis sequence
 process.p = cms.Path(
 #process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenCHadron*process.matchGenBHadron*
 process.egmGsfElectronIDSequence*
-#process.QGTagger*
+process.BJetness*
 #process.primaryVertexFilter* 
 #process.CSCTightHaloFilter*process.eeBadScFilter*process.HBHENoiseFilterResultProducer*process.ApplyBaselineHBHENoiseFilter*
 process.TNT

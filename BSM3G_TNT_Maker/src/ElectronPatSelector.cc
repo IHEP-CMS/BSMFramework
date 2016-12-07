@@ -141,6 +141,8 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_inCrack.push_back(inCrack);
     //Charge
     patElectron_charge.push_back(el->charge());
+    patElectron_isGsfCtfScPixChargeConsistent.push_back(el->isGsfCtfScPixChargeConsistent());
+    patElectron_isGsfScPixChargeConsistent.push_back(el->isGsfScPixChargeConsistent());    
     //ID
     const Ptr<pat::Electron> elPtr(electron_pat, el - electron_pat->begin() );
     bool isPassVeto    = (*veto_id_decisions)  [ elPtr ];
@@ -201,7 +203,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     double ooEmooP = -999;
     if(el->ecalEnergy()==0)                   ooEmooP = 1e30;
     else if(!std::isfinite(el->ecalEnergy())) ooEmooP = 1e30;
-    else                                      ooEmooP = fabs(1.0/el->ecalEnergy() - el->eSuperClusterOverP()/el->ecalEnergy() );
+    else                                      ooEmooP = 1.0/el->ecalEnergy() - el->eSuperClusterOverP()/el->ecalEnergy();
     patElectron_dEtaIn.push_back(dEtaIn);
     patElectron_dPhiIn.push_back(dPhiIn);
     patElectron_full5x5_sigmaIetaIeta.push_back(full5x5_sigmaIetaIeta);
@@ -327,16 +329,20 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       double elejety  = -999;
       double elejetz  = -999;
       double eleptrel = -999;
+      double eleparel = -999;
+      double eleparelsub = -999;
       int lepjetidx = -1;
       get_elejet_info(el,iEvent,iSetup,
                       elejet_mindr,elejet_pt,eleptOVelejetpt,
                       elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags,elejet_pfJetProbabilityBJetTag,elejet_pfCombinedMVABJetTags,elejet_qgl,
-                      elejetx,elejety,elejetz,eleptrel,lepjetidx);
+                      elejetx,elejety,elejetz,eleptrel,eleparel,eleparelsub,lepjetidx);
       patElectron_jetdr.push_back(elejet_mindr);
       patElectron_jetpt.push_back(elejet_pt);
       patElectron_jetptratio.push_back(eleptOVelejetpt);
       patElectron_jetcsv.push_back(elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags);
       patElectron_ptrel.push_back(eleptrel);
+      patElectron_parel.push_back(eleparel);
+      patElectron_parelsub.push_back(eleparelsub);
       patElectron_elejet_pfJetProbabilityBJetTag.push_back(elejet_pfJetProbabilityBJetTag);
       patElectron_elejet_pfCombinedMVABJetTags.push_back(elejet_pfCombinedMVABJetTags);
       patElectron_elejet_qgl.push_back(elejet_qgl);
@@ -357,14 +363,20 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_pvass.push_back(pvass);
       const math::XYZVector& lepton_momentum = el->momentum();
       const math::XYZVector axis(elejetx,elejety,elejetz);
-      double etarel = relativeEta(lepton_momentum,axis);
+      double etarel = relEta(axis,lepton_momentum);
       patElectron_etarel.push_back(etarel);
+      double etarelsub = relEta(axis-lepton_momentum,lepton_momentum);
+      patElectron_etarelsub.push_back(etarelsub);
+      double etapar = parEta(axis,lepton_momentum);
+      patElectron_etapar.push_back(etapar);
+      double etaparsub = parEta(axis-lepton_momentum,lepton_momentum);
+      patElectron_etaparsub.push_back(etaparsub);
       patElectron_ptOVen.push_back(el->pt()/el->energy());
       //Mass
       patElectron_elemass.push_back(el->p4().M());
-      double elewmass    = get_lepWmass(el,iEvent,lepjetidx);
-      double eletopmass  = get_lepTopmass(el,iEvent,lepjetidx);
-      double elewtopmass = get_lepWTopmass(el,iEvent,lepjetidx);
+      double elewmass    = 0;//get_lepWmass(el,iEvent,lepjetidx);
+      double eletopmass  = 0;//get_lepTopmass(el,iEvent,lepjetidx);
+      double elewtopmass = 0;//get_lepWTopmass(el,iEvent,lepjetidx);
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
         patElectron_elejet_mass.push_back(lepjet.p4().M());
@@ -554,6 +566,8 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&patElectron_inCrack      ,"patElectron_inCrack");
   //Charge
   AddBranch(&patElectron_charge       ,"patElectron_charge");
+  AddBranch(&patElectron_isGsfCtfScPixChargeConsistent            ,"patElectron_isGsfCtfScPixChargeConsistent");
+  AddBranch(&patElectron_isGsfScPixChargeConsistent               ,"patElectron_isGsfScPixChargeConsistent");
   //ID
   AddBranch(&passVetoId_              ,"patElectron_isPassVeto");          
   AddBranch(&passLooseId_             ,"patElectron_isPassLoose");
@@ -631,11 +645,16 @@ void ElectronPatSelector::SetBranches(){
     AddBranch(&patElectron_jetptratio                   ,"patElectron_jetptratio");
     AddBranch(&patElectron_jetcsv                       ,"patElectron_jetcsv");
     AddBranch(&patElectron_ptrel                        ,"patElectron_ptrel");
+    AddBranch(&patElectron_parel                        ,"patElectron_parel");
+    AddBranch(&patElectron_parelsub                     ,"patElectron_parelsub");
+    AddBranch(&patElectron_etarel                       ,"patElectron_etarel");
+    AddBranch(&patElectron_etarelsub                    ,"patElectron_etarelsub");
+    AddBranch(&patElectron_etapar                       ,"patElectron_etapar");
+    AddBranch(&patElectron_etaparsub                    ,"patElectron_etaparsub");
     AddBranch(&patElectron_IP3Dsig                      ,"patElectron_IP3Dsig");
     AddBranch(&patElectron_eleMVASpring15NonTrig25ns    ,"patElectron_eleMVASpring15NonTrig25ns");
     AddBranch(&patElectron_eleMVASpring15NonTrig25ns_VL ,"patElectron_eleMVASpring15NonTrig25ns_VL");
     AddBranch(&patElectron_pvass             ,"patElectron_pvass");
-    AddBranch(&patElectron_etarel            ,"patElectron_etarel");
     AddBranch(&patElectron_ptOVen            ,"patElectron_ptOVen");
     AddBranch(&patElectron_elejet_pfJetProbabilityBJetTag ,"patElectron_elejet_pfJetProbabilityBJetTag");
     AddBranch(&patElectron_elejet_pfCombinedMVABJetTags   ,"patElectron_elejet_pfCombinedMVABJetTags");
@@ -722,6 +741,8 @@ void ElectronPatSelector::Clear(){
   patElectron_inCrack.clear();
   //Charge
   patElectron_charge.clear(); 
+  patElectron_isGsfCtfScPixChargeConsistent.clear();
+  patElectron_isGsfScPixChargeConsistent.clear();
   //ID
   passVetoId_.clear();
   passLooseId_.clear();
@@ -799,11 +820,16 @@ void ElectronPatSelector::Clear(){
     patElectron_jetptratio.clear();
     patElectron_jetcsv.clear();
     patElectron_ptrel.clear();
+    patElectron_parel.clear();
+    patElectron_parelsub.clear();
+    patElectron_etarel.clear();
+    patElectron_etarelsub.clear();
+    patElectron_etapar.clear();
+    patElectron_etaparsub.clear();
     patElectron_IP3Dsig.clear();
     patElectron_eleMVASpring15NonTrig25ns.clear();
     patElectron_eleMVASpring15NonTrig25ns_VL.clear();
     patElectron_pvass.clear();
-    patElectron_etarel.clear();
     patElectron_ptOVen.clear();
     patElectron_elejet_pfJetProbabilityBJetTag.clear();
     patElectron_elejet_pfCombinedMVABJetTags.clear();
@@ -971,7 +997,7 @@ double ElectronPatSelector::get_effarea(double eta){
 void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                        double& elejet_mindr, double& elejet_pt, double& eleptOVelejetpt,
                        double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,
-                       double& jx, double& jy, double& jz, double& eleptrel,
+                       double& jx, double& jy, double& jz, double& eleptrel, double& eleparel, double& eleparelsub,
                        int& lepjetidx){
   //Look for jet associated to ele
   edm::Handle<pat::JetCollection> jets;
@@ -1019,6 +1045,8 @@ void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterat
   TLorentzVector ele_lv = TLorentzVector(ele->px(),ele->py(),ele->pz(),ele->p4().E());
   TLorentzVector jet_lv = TLorentzVector(elejet.px(),elejet.py(),elejet.pz(),elejet.p4().E());
   eleptrel = ele_lv.Perp((jet_lv-ele_lv).Vect());
+  eleparel = (ele_lv.Vect()).Dot(jet_lv.Vect().Unit());
+  eleparelsub = (ele_lv.Vect()).Dot((jet_lv-ele_lv).Vect().Unit());
 }
 int ElectronPatSelector::pvassociation(edm::View<pat::Electron>::const_iterator& ele, const pat::PackedCandidateCollection& pcc){
   int pvass = -1;
@@ -1034,12 +1062,35 @@ int ElectronPatSelector::pvassociation(edm::View<pat::Electron>::const_iterator&
   }
   return pvass;
 }
-double ElectronPatSelector::relativeEta(const math::XYZVector& vector, const math::XYZVector& axis){
-  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
-  double mag = vector.r() * axis.r();
-  double dot = vector.Dot(axis);
-  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
-  return etarel;
+double ElectronPatSelector::relEta(const math::XYZVector& dir, const math::XYZVector& track){
+ double etarel = -9999;
+ double momPar = track.Dot(dir.Unit());
+ double energy = std::sqrt(track.Mag2() + pow(0.0005,2));
+ if((energy - momPar)!=0 && (energy + momPar)!=0) etarel = 0.5 * log((energy + momPar) / (energy - momPar));
+ return etarel;
+//Old def
+//const math::XYZVector& vector, const math::XYZVector& axis){
+//  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+//  double mag = vector.r() * axis.r();
+//  double dot = vector.Dot(axis);
+//  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
+//  return etarel;
+}
+double ElectronPatSelector::parEta(const math::XYZVector& dir, const math::XYZVector& track){
+ double etapar  = -9999;
+ TVector3 trkdir(track.x(),track.y(),track.z());
+ TVector3 dirdir(dir.x(),dir.y(),dir.z());
+ double momPerp = trkdir.Perp(dirdir);
+ double energy  = std::sqrt(track.Mag2() + pow(0.0005,2));
+ if((energy - momPerp)!=0 && (energy + momPerp)!=0) etapar = 0.5 * log((energy + momPerp) / (energy - momPerp));
+ return etapar;
+//Old def
+//const math::XYZVector& vector, const math::XYZVector& axis){
+//  double etarel = 15; //Take this as a default value and in the end use min(etarel,15)
+//  double mag = vector.r() * axis.r();
+//  double dot = vector.Dot(axis);
+//  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
+//  return etarel;  
 }
 double ElectronPatSelector::get_lepWmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx){
   double lepWmass = 0;

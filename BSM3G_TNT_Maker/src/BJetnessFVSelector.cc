@@ -24,13 +24,14 @@ using namespace edm;
 using namespace reco;
 BJetnessFVSelector::BJetnessFVSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(name,tree,debug),
-  eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap")))
+  eleMVATrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVATrigIdMap"))),
+  eleMVAnonTrigIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAnonTrigIdMap")))
 {
-  vtx_h_               = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
-  electron_pat_        = ic.consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("patElectrons"));
-  muon_h_              = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
-  jets_                = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
-  rhopogHandle_        = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
+  vtx_h_              = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
+  electron_pat_       = ic.consumes<edm::View<pat::Electron> >(iConfig.getParameter<edm::InputTag>("patElectrons"));
+  muon_h_             = ic.consumes<edm::View<pat::Muon> >(iConfig.getParameter<edm::InputTag>("muons"));
+  jets_               = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
+  rhopogHandle_       = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhoJERHandle_       = ic.consumes<double>(edm::InputTag("fixedGridRhoAll"));
   _vtx_ndof_min       = iConfig.getParameter<int>("vtx_ndof_min");
   _vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
@@ -74,6 +75,8 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
   double rhoJER = *rhoJERHandle;
   edm::Handle<edm::ValueMap<bool>  > mvatrig_id_decisions;
   iEvent.getByToken(eleMVATrigIdMapToken_, mvatrig_id_decisions);
+  edm::Handle<edm::ValueMap<bool>  > mvanontrig_id_decisions;
+  iEvent.getByToken(eleMVAnonTrigIdMapToken_, mvanontrig_id_decisions);
   edm::ESHandle<TransientTrackBuilder> ttrkbuilder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder",ttrkbuilder);
   /////
@@ -104,12 +107,14 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
   //Electrons
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const Ptr<pat::Electron> elPtr(electron_pat, ele - electron_pat->begin() );
-    bool isPassMvatrig = (*mvatrig_id_decisions)[ elPtr ];
-    if(!(is_loose_electron(*ele,rhopog) && isPassMvatrig)) continue;
+    //bool isPassMvatrig = (*mvatrig_id_decisions)[ elPtr ];
+    //if(!(is_loose_electron(*ele,rhopog) && isPassMvatrig)) continue;
+    bool isPassMvanontrig = (*mvanontrig_id_decisions)[ elPtr ];
+    if(!(isPassMvanontrig)) continue;
     if(!(rel_iso_dbc_ele(*ele,rhopog)<0.15)) continue;
     const pat::Electron &lele = *ele;
     looseleps.push_back((const reco::Candidate*)&lele);
-    if(!(is_tight_electron(*ele,rhopog) && isPassMvatrig)) continue;
+    if(!(is_tight_electron(*ele,rhopog) && isPassMvanontrig)) continue;
     tightleps.push_back((const reco::Candidate*)&lele);
     //cout<<setw(20)<<"ElectronFV pt,eta,phi"<<setw(20)<<ele->pt()<<setw(20)<<ele->eta()<<setw(20)<<ele->phi()<<endl;
   }
@@ -128,13 +133,13 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
     bool jetmatchedlepts = false;
     for(uint gl=0; gl<looseleps.size(); gl++) if(deltaR(looseleps[gl]->p4(),j.p4())<0.4) jetmatchedlepts = true;
     if(jetmatchedlepts){jet_pos++; continue;}
-    double csvcurrjet = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    double csvcurrjet = j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags");
     jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
     BJetnessFV_jetcsv.push_back(csvcurrjet);
-    double cmvacurrjet = j.bDiscriminator("pfCombinedMVAV2BJetTags");
+    double cmvacurrjet = j.bDiscriminator("newpfCombinedMVAV2BJetTags");
     jet_cmva_pos.push_back(make_pair(cmvacurrjet,jet_pos));
     BJetnessFV_pfCombinedMVAV2BJetTags.push_back(cmvacurrjet);
-    double jetprobjet = j.bDiscriminator("pfJetProbabilityBJetTags");
+    double jetprobjet = j.bDiscriminator("newpfJetProbabilityBJetTags");
     BJetnessFV_pfJetProbabilityBJetTags.push_back(jetprobjet);
     if(csvcurrjet>0.8) jetb_num++;
     jet_pos++;
@@ -143,12 +148,12 @@ void BJetnessFVSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& i
   /////
   //   Select only TTHbb events (mainly lep sel)
   /////
-  //if(tightleps.size()==1 && looseleps.size()==1 && jet_num>=4 && jetb_num>=2) BJetnessFV_isSingleLepton = 1;
+  if(tightleps.size()==1 && looseleps.size()==1 && jet_num>=4 && jetb_num>=2) BJetnessFV_isSingleLepton = 1;
   //This selection is not really the dilepton one!
   //Ele pT for lead is from tightleps (pT>30 GeV)
   //Jet pT > 30 GeV (as in single lepton channel)
   //if(tightleps.size()==1 && looseleps.size()==2 && jet_num>=3 && jetb_num>=2) BJetnessFV_isDoubleLepton = 1;
-  //if(!(BJetnessFV_isSingleLepton==1 || BJetnessFV_isDoubleLepton==1)) return;
+  if(!(BJetnessFV_isSingleLepton==1 || BJetnessFV_isDoubleLepton==1)) return;
   /////
   //   You need to provide as input the jets selected in the event (selection according to the TTHbb analysis),
   //   which have to be ordered by decreasing b-tagging value

@@ -5,6 +5,10 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   vtx_h_        = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
   jets_         = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
   puppijets_    = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jetsPUPPI"));
+  qgToken_      = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+  axis2Token_   = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+  ptDToken_     = ic.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
+  multToken_    = ic.consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
   rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoAll"));
   jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
@@ -48,6 +52,14 @@ void JetSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(vtx_h_, vertices);
   edm::Handle<pat::JetCollection> jets;                                       
   iEvent.getByToken(jets_, jets);                                         
+  edm::Handle<edm::ValueMap<float>> qgHandle;
+  iEvent.getByToken(qgToken_, qgHandle);
+  edm::Handle<edm::ValueMap<float>> axis2Handle;
+  iEvent.getByToken(axis2Token_, axis2Handle);
+  edm::Handle<edm::ValueMap<float>> ptDHandle;
+  iEvent.getByToken(ptDToken_, ptDHandle);
+  edm::Handle<edm::ValueMap<int>> multHandle;
+  iEvent.getByToken(multToken_, multHandle);
   edm::Handle<pat::JetCollection> puppijets;                                       
   iEvent.getByToken(puppijets_, puppijets); 
   edm::Handle<double> rhoHandle;
@@ -61,9 +73,10 @@ void JetSelector::Fill(const edm::Event& iEvent){
   /////  
   //bool ajet = false;
   ////slimmedJets
+  int ij = 0;
   for(const pat::Jet &j : *jets){ 
     //Acceptance
-    if(j.pt()<_Jet_pt_min) continue;
+    if(j.pt()<_Jet_pt_min){ij++; continue;}
     //Kinematics
     Jet_pt.push_back(j.pt());  
     Jet_eta.push_back(j.eta());       
@@ -74,7 +87,33 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_py.push_back(j.py());          
     Jet_pz.push_back(j.pz());          
     Jet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
+    if(!_is_data){
+      if(j.genJet()){ 
+        Jet_genpt.push_back(j.genJet()->pt());
+        Jet_geneta.push_back(j.genJet()->eta());
+        Jet_genphi.push_back(j.genJet()->phi());
+        Jet_genenergy.push_back(j.genJet()->energy());
+        Jet_genmass.push_back(j.genJet()->mass());
+        Jet_genpx.push_back(j.genJet()->px());
+        Jet_genpy.push_back(j.genJet()->py());
+        Jet_genpz.push_back(j.genJet()->pz());
+      }else{
+        Jet_genpt.push_back(-999);
+        Jet_geneta.push_back(-999);
+        Jet_genphi.push_back(-999);
+        Jet_genenergy.push_back(-999);
+        Jet_genmass.push_back(-999);
+        Jet_genpx.push_back(-999);
+        Jet_genpy.push_back(-999);
+        Jet_genpz.push_back(-999);
+      }    
+    }
     //ID
+    Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags"));
+    Jet_newpfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("newpfCombinedMVAV2BJetTags"));
+    Jet_newpfJetProbabilityBJetTags.push_back(j.bDiscriminator("newpfJetProbabilityBJetTags"));
+    Jet_newpfCombinedCvsLJetTags.push_back(j.bDiscriminator("newpfCombinedCvsLJetTags"));
+    Jet_newpfCombinedCvsBJetTags.push_back(j.bDiscriminator("newpfCombinedCvsBJetTags"));
     Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     Jet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
     Jet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
@@ -83,6 +122,11 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_pileupId.push_back(j.userFloat("pileupJetId:fullDiscriminant"));
     Jet_isPFJet.push_back(j.isPFJet());
     Jet_isCaloJet.push_back(j.isCaloJet());
+    edm::Ref<pat::JetCollection> jetRef(jets, ij);
+    Jet_qg.push_back((*qgHandle)[jetRef]);
+    Jet_axis2.push_back((*axis2Handle)[jetRef]);
+    Jet_ptD.push_back((*ptDHandle)[jetRef]);
+    Jet_mult.push_back((*multHandle)[jetRef]);
     //Energy
     Jet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
     Jet_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
@@ -154,10 +198,11 @@ void JetSelector::Fill(const edm::Event& iEvent){
     //   TTH variables
     /////
     //cout<<setiosflags(ios::fixed)<<setprecision(5);
-    //if(!ajet){
-    //  cout<<setw(20)<<iEvent.id().event()<<setw(20)<<j.pt()<<setw(20)<<j.eta()<<setw(20)<<j.phi()<<setw(20)<<j.energy()<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20);
+    if(ij==0){
+      //cout<<"jet val are "<<setw(20)<<iEvent.id().event()<<setw(20)<<j.pt()<<setw(20)<<j.eta()<<setw(20)<<j.phi()<<setw(20)<<j.energy()<<setw(20)<<j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<setw(20);
     //  ajet = true;
-    //}
+    }
+    ij++;
   } 
   ////slimmedJetsPuppi
   if(_PuppiVar){
@@ -323,7 +368,20 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_py        ,"Jet_py");
   AddBranch(&Jet_pz        ,"Jet_pz");
   AddBranch(&Jet_Uncorr_pt ,"Jet_Uncorr_pt");
+  AddBranch(&Jet_genpt     ,"Jet_genpt");
+  AddBranch(&Jet_geneta    ,"Jet_geneta");
+  AddBranch(&Jet_genphi    ,"Jet_genphi");
+  AddBranch(&Jet_genenergy ,"Jet_genenergy");
+  AddBranch(&Jet_genmass   ,"Jet_genmass");
+  AddBranch(&Jet_genpx     ,"Jet_genpx");
+  AddBranch(&Jet_genpy     ,"Jet_genpy");
+  AddBranch(&Jet_genpz     ,"Jet_genpz");
   //ID
+  AddBranch(&Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags");
+  AddBranch(&Jet_newpfCombinedMVAV2BJetTags                      ,"Jet_newpfCombinedMVAV2BJetTags");
+  AddBranch(&Jet_newpfJetProbabilityBJetTags                     ,"Jet_newpfJetProbabilityBJetTags");
+  AddBranch(&Jet_newpfCombinedCvsLJetTags                        ,"Jet_newpfCombinedCvsLJetTags");
+  AddBranch(&Jet_newpfCombinedCvsBJetTags                        ,"Jet_newpfCombinedCvsBJetTags");
   AddBranch(&Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags ,"Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags");
   AddBranch(&Jet_pfCombinedMVAV2BJetTags                      ,"Jet_pfCombinedMVAV2BJetTags");
   AddBranch(&Jet_pfJetProbabilityBJetTags                     ,"Jet_pfJetProbabilityBJetTags");
@@ -332,6 +390,10 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_pileupId                                     ,"Jet_pileupId");
   AddBranch(&Jet_isPFJet                                      ,"Jet_isPFJet");
   AddBranch(&Jet_isCaloJet                                    ,"Jet_isCaloJet");
+  AddBranch(&Jet_qg               ,"Jet_qg");
+  AddBranch(&Jet_axis2            ,"Jet_axis2");
+  AddBranch(&Jet_ptD              ,"Jet_ptD");
+  AddBranch(&Jet_mult             ,"Jet_mult");
   //Energy
   AddBranch(&Jet_neutralHadEnergyFraction    ,"Jet_neutralHadEnergyFraction");
   AddBranch(&Jet_neutralEmEnergyFraction     ,"Jet_neutralEmEnergyFraction");
@@ -424,7 +486,20 @@ void JetSelector::Clear(){
   Jet_py.clear();
   Jet_pz.clear();
   Jet_Uncorr_pt.clear();
+  Jet_genpt.clear();
+  Jet_geneta.clear();
+  Jet_genphi.clear();
+  Jet_genenergy.clear();
+  Jet_genmass.clear();
+  Jet_genpx.clear();
+  Jet_genpy.clear();
+  Jet_genpz.clear();
   //ID
+  Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
+  Jet_newpfCombinedMVAV2BJetTags.clear();
+  Jet_newpfJetProbabilityBJetTags.clear();
+  Jet_newpfCombinedCvsLJetTags.clear();
+  Jet_newpfCombinedCvsBJetTags.clear();
   Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags.clear();
   Jet_pfCombinedMVAV2BJetTags.clear();
   Jet_pfJetProbabilityBJetTags.clear();
@@ -433,6 +508,10 @@ void JetSelector::Clear(){
   Jet_pileupId.clear();
   Jet_isPFJet.clear();
   Jet_isCaloJet.clear();
+  Jet_qg.clear();
+  Jet_axis2.clear();
+  Jet_ptD.clear();
+  Jet_mult.clear();
   //Energy
   Jet_neutralHadEnergyFraction.clear();
   Jet_neutralEmEnergyFraction.clear();

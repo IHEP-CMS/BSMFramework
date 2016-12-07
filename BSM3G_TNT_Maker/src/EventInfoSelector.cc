@@ -4,6 +4,7 @@ EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, 
 {
   genEvtInfo_    = ic.consumes<GenEventInfoProduct>(edm::InputTag("generator"));
   lheEventProduct_ = ic.consumes<LHEEventProduct>(edm::InputTag("externalLHEProducer"));
+  lheEventProductSource_ = ic.consumes<LHEEventProduct>(edm::InputTag("source"));// -> per genWeights di HCMN
   rhopogHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhotthHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentralNeutral"));
   fixedGridRhoFastjetCentralHandle_  = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetCentral"));
@@ -15,6 +16,8 @@ EventInfoSelector::EventInfoSelector(std::string name, TTree* tree, bool debug, 
   SetBranches();
   read_PDFSet = new (LHAPDF::PDFSet)("NNPDF30_nlo_as_0118");
   _systPDFs = read_PDFSet->mkPDFs();
+  bjetnessproducer_ = iConfig.getParameter<bool>("bjetnessproducer");
+  bjetness_     = ic.consumes<vector<float> >(edm::InputTag("BJetness", "BJetnessValue"));
 }
 EventInfoSelector::~EventInfoSelector(){
   delete tree_;
@@ -30,17 +33,24 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(genEvtInfo_,genEvtInfo);
   edm::Handle<LHEEventProduct> lheEventProduct;
   iEvent.getByToken(lheEventProduct_, lheEventProduct);
+  edm::Handle<LHEEventProduct> lheEventProductSource;
+  iEvent.getByToken(lheEventProductSource_, lheEventProductSource);
   if(!_is_data){
     EVENT_genWeight_ = genEvtInfo->weight();
     const GenEventInfoProduct& genEventInfoW = *(genEvtInfo.product());
     const gen::PdfInfo* pdf = genEventInfoW.pdf();
-    EVENT_originalXWGTUP_ = lheEventProduct->originalXWGTUP();
     EVENT_scalePDF_ = pdf->scalePDF;
-    for (unsigned int i=0; i<lheEventProduct->weights().size(); i++){
-      EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
-      //Q2 for ttHbb synchronization
-      if (lheEventProduct->weights()[i].id == "1005") EVENT_Q2tthbbWeightUp_   = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
-      if (lheEventProduct->weights()[i].id == "1009") EVENT_Q2tthbbWeightDown_ = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+    if(lheEventProduct.isValid()){
+      EVENT_originalXWGTUP_ = lheEventProduct->originalXWGTUP();
+      for (unsigned int i=0; i<lheEventProduct->weights().size(); i++){
+        EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
+        //Q2 for ttHbb synchronization
+        if(lheEventProduct->weights()[i].id == "1005") EVENT_Q2tthbbWeightUp_   = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+        if(lheEventProduct->weights()[i].id == "1009") EVENT_Q2tthbbWeightDown_ = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+      }
+    }
+    if(lheEventProductSource.isValid()){
+      for(unsigned int i=0; i<lheEventProductSource->weights().size(); i++) EVENT_genWeightsSource_.push_back(lheEventProductSource->weights()[i].wgt);
     }
     //PDF for ttHbb synchronization
     auto pdfInfos = genEvtInfo->pdf();
@@ -82,6 +92,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     EVENT_originalXWGTUP_ = 1;
     EVENT_scalePDF_ = 1;
     EVENT_genWeights_.push_back(1);
+    EVENT_genWeightsSource_.push_back(1);
     EVENT_Q2tthbbWeightUp_    = 1;
     EVENT_Q2tthbbWeightDown_  = 1;
     EVENT_PDFtthbbWeightUp_   = 1;
@@ -137,6 +148,18 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     if(metNames.triggerName(i)=="Flag_trkPOG_logErrorTooManyClusters")     Flag_trkPOG_logErrorTooManyClusters     = metFilterBits->accept(i);
     if(metNames.triggerName(i)=="Flag_METFilters")                         Flag_METFilters                         = metFilterBits->accept(i);
   } //loop over met filters
+  //BJetness variables
+  if(bjetnessproducer_){
+    Handle<vector<float> > bjetness;
+    iEvent.getByToken(bjetness_, bjetness);
+    BJetness_jetpt0          = (*bjetness)[0]; 
+    BJetness_numleps         = (*bjetness)[1]; 
+    BJetness_npvTrkOVcollTrk = (*bjetness)[2];
+    BJetness_avip3dval       = (*bjetness)[3];
+    BJetness_avip3dsig       = (*bjetness)[4];
+    BJetness_avsip3dsig      = (*bjetness)[5];
+    BJetness_avip1dsig       = (*bjetness)[6];
+  }
 }
 void EventInfoSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -146,6 +169,7 @@ void EventInfoSelector::SetBranches(){
   AddBranch(&EVENT_lumiBlock_ ,"EVENT_lumiBlock");
   AddBranch(&EVENT_genWeight_ ,"EVENT_genWeight");
   AddBranch(&EVENT_genWeights_,"EVENT_genWeights");
+  AddBranch(&EVENT_genWeightsSource_,"EVENT_genWeightsSource");
   AddBranch(&EVENT_genHT      ,"EVENT_genHT");
   AddBranch(&EVENT_rhopog_    ,"EVENT_rhopog");
   AddBranch(&EVENT_rhotth_    ,"EVENT_rhotth");
@@ -176,6 +200,14 @@ void EventInfoSelector::SetBranches(){
   AddBranch(&Flag_trkPOG_toomanystripclus53X         ,"Flag_trkPOG_toomanystripclus53X");
   AddBranch(&Flag_trkPOG_logErrorTooManyClusters     ,"Flag_trkPOG_logErrorTooManyClusters");
   AddBranch(&Flag_METFilters                         ,"Flag_METFilters");
+  //BJetness variables
+  AddBranch(&BJetness_jetpt0               ,"BJetness_jetpt0");
+  AddBranch(&BJetness_numleps              ,"BJetness_numleps");
+  AddBranch(&BJetness_npvTrkOVcollTrk      ,"BJetness_npvTrkOVcollTrk");
+  AddBranch(&BJetness_avip3dval            ,"BJetness_avip3dval");
+  AddBranch(&BJetness_avip3dsig            ,"BJetness_avip3dsig");
+  AddBranch(&BJetness_avsip3dsig           ,"BJetness_avsip3dsig");
+  AddBranch(&BJetness_avip1dsig            ,"BJetness_avip1dsig");
 }
 void EventInfoSelector::Initialise(){
   //Event quantities
@@ -184,6 +216,7 @@ void EventInfoSelector::Initialise(){
   EVENT_lumiBlock_  = -9999;
   EVENT_genWeight_  = -9999;
   EVENT_genWeights_.clear();
+  EVENT_genWeightsSource_.clear();
   EVENT_genHT       = -9999;
   EVENT_rhopog_     = -9999;
   EVENT_rhotth_     = -9999; 
@@ -214,4 +247,12 @@ void EventInfoSelector::Initialise(){
   Flag_trkPOG_toomanystripclus53X         = -9999;
   Flag_trkPOG_logErrorTooManyClusters     = -9999;
   Flag_METFilters                         = -9999;
+  //BJetness variables
+  BJetness_jetpt0          = -9999;
+  BJetness_numleps         = -9999;
+  BJetness_npvTrkOVcollTrk = -9999;
+  BJetness_avip3dval       = -9999;
+  BJetness_avip3dsig       = -9999;
+  BJetness_avsip3dsig      = -9999;
+  BJetness_avip1dsig       = -9999;  
 }

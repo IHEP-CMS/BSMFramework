@@ -262,7 +262,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   AJVar     = cms.bool(False),
   tthlepVar = cms.bool(True),
   bjetnessselfilter = cms.bool(False),
-  bjetnessproducer  = cms.bool(True),
+  bjetnessproducer  = cms.bool(False),
   PuppiVar  = cms.bool(False),
   qglVar    = cms.bool(True),
   # Input tags 

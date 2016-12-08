@@ -420,7 +420,7 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
 )
 #process.p = cms.Path(process.printGenParticleList)
 #BJetness producer
-process.load('FlavorJetness.BJetness.BJetness_cfi')
+process.load('BJetnessTTHbb.BJetness.BJetness_cfi')
 process.BJetness = cms.EDProducer('BJetness')
 process.BJetness.is_data = cms.bool(True)
 process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")

@@ -50,7 +50,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 #####
 ##   BTAGGING WITH HIP MITIGATION
 #####
@@ -391,7 +391,7 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
 )
 #process.p = cms.Path(process.printGenParticleList)
 #BJetness producer
-process.load('FlavorJetness.BJetness.BJetness_cfi')
+process.load('BJetnessTTHbb.BJetness.BJetness_cfi')
 process.BJetness = cms.EDProducer('BJetness')
 process.BJetness.is_data = cms.bool(False)
 process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")

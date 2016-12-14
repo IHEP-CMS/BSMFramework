@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 #process.load("Configuration.StandardSequences.Geometry_cff")
 ##process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
@@ -14,7 +14,7 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 #process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-process.GlobalTag.globaltag = '80X_dataRun2_Prompt_ICHEP16JEC_v0'
+process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v5'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 #process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -83,9 +83,9 @@ process.source = cms.Source("PoolSource",
    #SEle re-reco 
    '/store/data/Run2016B/SingleElectron/MINIAOD/23Sep2016-v3/00000/00099863-E799-E611-A876-141877343E6D.root'
   ),
-  skipEvents = cms.untracked.uint32(0)
+  skipEvents = cms.untracked.uint32(1182)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2) )
 #####
 ##   BTAGGING WITH HIP MITIGATION
 #####
@@ -291,7 +291,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   AJVar     = cms.bool(False),
   tthlepVar = cms.bool(True),
   bjetnessselfilter = cms.bool(False),
-  bjetnessproducer  = cms.bool(False),
+  bjetnessproducer  = cms.bool(True),
   PuppiVar  = cms.bool(False),
   qglVar    = cms.bool(True),
   # Input tags 
@@ -317,7 +317,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   elemvaCategoriesMap_Trig     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   taus                = cms.InputTag("slimmedTaus"),
   #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),
-  jets                = cms.InputTag("selectedUpdatedPatJets"),#slimmedJets"),
+  jets                = cms.InputTag("slimmedJets"),
   jetsPUPPI           = cms.InputTag("slimmedJetsPuppi"),
   fatjets             = cms.InputTag("slimmedJetsAK8"),
   topsubjets          = cms.InputTag("slimmedJetsCMSTopTagCHSPacked", "SubJets"),
@@ -427,7 +427,7 @@ process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.BJetness.eleMVAnonTrigIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80")
 process.BJetness.patElectrons = cms.InputTag("slimmedElectrons")
 process.BJetness.muons = cms.InputTag("slimmedMuons")
-process.BJetness.jets = cms.InputTag("selectedUpdatedPatJets")#slimmedJets"),
+process.BJetness.jets = cms.InputTag("slimmedJets")
 process.BJetness.jecPayloadNamesAK4PFchsMC1 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L1FastJet_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC2 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC3 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt")
@@ -441,7 +441,7 @@ process.BJetness.jerAK4PFchs   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/da
 process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV6_MC_SF_AK4PFchs.txt")
 #QG likelihood
 process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-process.QGTagger.srcJets       = cms.InputTag('selectedUpdatedPatJets')
+process.QGTagger.srcJets       = cms.InputTag('slimmedJets')
 process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
 #Run analysis sequence
 process.p = cms.Path(

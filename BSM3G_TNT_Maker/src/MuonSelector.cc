@@ -92,12 +92,15 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //    break;
   //  }
   //}
-  //if(firstgoodVertex == vtx_h->end()) return;
-  //const reco::Vertex &firstGoodVertex = *firstgoodVertex;
-  if(vtx_h->empty()) return; // skip the event if no PV found
-  const reco::Vertex &firstGoodVertex = vtx_h->front();  
-  bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  if(!isgoodvtx) return;
+  ////if(firstgoodVertex == vtx_h->end()) return;
+  ////const reco::Vertex &firstGoodVertex = *firstgoodVertex;
+  //if(vtx_h->empty()) return; // skip the event if no PV found
+  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  //if(!isgoodvtx) return;
+  const reco::Vertex &firstGoodVertex = vtx_h->front();
+  bool vtxnotempty = true;
+  if(vtx_h->empty()) vtxnotempty = false;
   /////
   //   Get muon information
   /////
@@ -144,11 +147,14 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     //Charge
     Muon_charge.push_back(mu->charge());
     //ID
-    Muon_soft.push_back(mu->isSoftMuon(firstGoodVertex));
+    if(vtxnotempty) Muon_soft.push_back(mu->isSoftMuon(firstGoodVertex));
+    else            Muon_soft.push_back(-999);
     Muon_loose.push_back(mu->isLooseMuon());
     Muon_medium.push_back(mu->isMediumMuon());
-    Muon_tight.push_back(mu->isTightMuon(firstGoodVertex));
-    Muon_isHighPt.push_back(mu->isHighPtMuon(firstGoodVertex));
+    if(vtxnotempty) Muon_tight.push_back(mu->isTightMuon(firstGoodVertex));
+    else            Muon_tight.push_back(-999);
+    if(vtxnotempty) Muon_isHighPt.push_back(mu->isHighPtMuon(firstGoodVertex));
+    else            Muon_isHighPt.push_back(-999);
     Muon_POGisGood.push_back(muon::isGoodMuon(*mu, muon::TMOneStationTight));
     Muon_pdgId.push_back(mu->pdgId());
     Muon_pf.push_back(mu->isPFMuon());   
@@ -219,8 +225,10 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     Muon_segmentCompatibility.push_back(mu->segmentCompatibility());
     //IP
     if(mu->innerTrack().isNonnull()){
-      Muon_dz_pv.push_back(mu->innerTrack()->dz(firstGoodVertex.position()));
-      Muon_dxy_pv.push_back(mu->innerTrack()->dxy(firstGoodVertex.position()));
+      if(vtxnotempty) Muon_dz_pv.push_back(mu->innerTrack()->dz(firstGoodVertex.position()));
+      else            Muon_dz_pv.push_back(-999);
+      if(vtxnotempty) Muon_dxy_pv.push_back(mu->innerTrack()->dxy(firstGoodVertex.position()));
+      else            Muon_dxy_pv.push_back(-999);
       if(beamSpotHandle.isValid()){
         beamSpot = *beamSpotHandle;
         math::XYZPoint point(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
@@ -247,7 +255,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       Muon_vty.push_back(-999);
       Muon_vtz.push_back(-999);
     }
-    if(_AJVar){
+    if(_AJVar && vtxnotempty){
       if(beamSpotHandle.isValid() && mu->innerTrack().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
 	beamSpot = *beamSpotHandle;
 	GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
@@ -289,8 +297,10 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	Muon_trackFitErrorMatrix_22.push_back(-999);
       }
       if(mu->muonBestTrack().isNonnull()){
-	Muon_dz_bt.push_back(fabs(mu->muonBestTrack()->dz(firstGoodVertex.position())));
-	Muon_dxy_bt.push_back(fabs(mu->muonBestTrack()->dxy(firstGoodVertex.position())));
+	if(vtxnotempty) Muon_dz_bt.push_back(fabs(mu->muonBestTrack()->dz(firstGoodVertex.position())));
+        else            Muon_dz_bt.push_back(-999);          
+	if(vtxnotempty) Muon_dxy_bt.push_back(fabs(mu->muonBestTrack()->dxy(firstGoodVertex.position())));
+        else            Muon_dxy_bt.push_back(-999);
       }else{
 	Muon_dz_bt.push_back(-999);
 	Muon_dxy_bt.push_back(-999);
@@ -390,8 +400,10 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(mu->innerTrack().isNonnull()){
         TrackRef muit = mu->innerTrack();
         TransientTrack muttrk = ttrkbuilder->build(muit);
-        IP3D2D(muttrk,firstGoodVertex,mujetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
-        zIP1D(muttrk,firstGoodVertex,mujetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+        if(vtxnotempty){ 
+         IP3D2D(muttrk,firstGoodVertex,mujetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+         zIP1D(muttrk,firstGoodVertex,mujetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+        }
       }
       //Max Lep jet IP (the maximum IP for a tracks of the lepton jet)
       double lepjetMaxIP3D_val  = IP3D_val; 
@@ -434,7 +446,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       //Get values of Max and Av IP
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx]; 
-        lepjetIP(lepjet,firstGoodVertex,mujetgv,*ttrkbuilder,
+        lepjetIP(lepjet,vtxnotempty,firstGoodVertex,mujetgv,*ttrkbuilder,
                  lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
                  lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
                  denlepjetAvIP3D_val, denlepjetAvIP3D_sig, denlepjetAvsIP3D_val, denlepjetAvsIP3D_sig, denlepjetAvIP2D_val, denlepjetAvIP2D_sig, denlepjetAvsIP2D_val, denlepjetAvsIP2D_sig, denlepjetAvIP1D_val, denlepjetAvIP1D_sig, denlepjetAvsIP1D_val, denlepjetAvsIP1D_sig,
@@ -490,7 +502,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double lepjetndaus       = 0;
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
-        lepjetTrks(lepjet, firstGoodVertex, lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus);
+        lepjetTrks(lepjet, vtxnotempty, firstGoodVertex, lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus);
       }
       Muon_lepjetchtrks.push_back(lepjetchtrks);
       Muon_lepjetpvchtrks.push_back(lepjetpvchtrks);
@@ -501,7 +513,7 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       double lepjetnumno2trk = 0;
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
-        lepjetVtxCompatibility(lepjet, firstGoodVertex, *ttrkbuilder, lepjetpvchi2, lepjetnumno2trk);
+        lepjetVtxCompatibility(lepjet, vtxnotempty, firstGoodVertex, *ttrkbuilder, lepjetpvchi2, lepjetnumno2trk);
       }
       Muon_lepjetpvchi2.push_back(lepjetpvchi2);
       Muon_lepjetnumno2trk.push_back(lepjetnumno2trk);
@@ -1000,6 +1012,7 @@ void MuonSelector::get_mujet_info(const pat::Muon& mu, const edm::Event& iEvent,
   }
   mujet_pt       = mujet.pt();
   muptOVmujetpt  = min(mu.pt()/mujet.pt(), 1.5);
+  if(mujet_mindr<0.0001) muptOVmujetpt = 1;
   mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags = max(double(mujet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
   if(mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags!=mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags) mujet_pfCombinedInclusiveSecondaryVertexV2BJetTags = -996;
   mujet_pfJetProbabilityBJetTags = mujet.bDiscriminator("pfJetProbabilityBJetTags");
@@ -1235,7 +1248,7 @@ void MuonSelector::zIP1D(TransientTrack ttrk, const reco::Vertex& vtx, GlobalVec
    if(currIP.second.significance()==currIP.second.significance()) sIP1D_sig = currIP.second.significance();
  }
 }
-void MuonSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
+void MuonSelector::lepjetIP(const pat::Jet& jet, const bool vtxnotempty, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
                     double& lepjetMaxIP3D_val, double& lepjetMaxIP3D_sig, double& lepjetMaxsIP3D_val, double& lepjetMaxsIP3D_sig, double& lepjetMaxIP2D_val, double& lepjetMaxIP2D_sig, double& lepjetMaxsIP2D_val, double& lepjetMaxsIP2D_sig, double& lepjetMaxIP1D_val, double& lepjetMaxIP1D_sig, double& lepjetMaxsIP1D_val, double& lepjetMaxsIP1D_sig,
                     double& lepjetAvIP3D_val, double& lepjetAvIP3D_sig, double& lepjetAvsIP3D_val, double& lepjetAvsIP3D_sig, double& lepjetAvIP2D_val, double& lepjetAvIP2D_sig, double& lepjetAvsIP2D_val, double& lepjetAvsIP2D_sig, double& lepjetAvIP1D_val, double& lepjetAvIP1D_sig, double& lepjetAvsIP1D_val, double& lepjetAvsIP1D_sig,
                     double& denlepjetAvIP3D_val, double& denlepjetAvIP3D_sig, double& denlepjetAvsIP3D_val, double& denlepjetAvsIP3D_sig, double& denlepjetAvIP2D_val, double& denlepjetAvIP2D_sig, double& denlepjetAvsIP2D_val, double& denlepjetAvsIP2D_sig, double& denlepjetAvIP1D_val, double& denlepjetAvIP1D_sig, double& denlepjetAvsIP1D_val, double& denlepjetAvsIP1D_sig,
@@ -1248,7 +1261,8 @@ void MuonSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx, Global
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);
@@ -1351,7 +1365,7 @@ bool MuonSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
    ) isgoodtrk = true;
  return isgoodtrk;
 }
-void MuonSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus){
+void MuonSelector::lepjetTrks(const pat::Jet& jet, const bool vtxnotempty, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus){
  //Access jet daughters
  vector<CandidatePtr> jdaus(jet.daughterPtrVector());
  sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
@@ -1359,7 +1373,8 @@ void MuonSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, doub
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     //Get jet trk num
@@ -1373,7 +1388,7 @@ void MuonSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, doub
  }//Loop on jet daus
  lepjetndaus = jdaus.size();
 }
-void MuonSelector::lepjetVtxCompatibility(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr){
+void MuonSelector::lepjetVtxCompatibility(const pat::Jet& jet, const bool vtxnotempty, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr){
  //Access jet daughters
  vector<TransientTrack> jetttrks;
  vector<CandidatePtr> jdaus(jet.daughterPtrVector());
@@ -1382,7 +1397,8 @@ void MuonSelector::lepjetVtxCompatibility(const pat::Jet& jet, const reco::Verte
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);

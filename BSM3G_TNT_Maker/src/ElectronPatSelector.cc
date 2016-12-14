@@ -114,10 +114,13 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   //}
   //if(firstgoodVertex == vtx_h->end()) return;
   //const reco::Vertex &firstGoodVertex = *firstgoodVertex;
-  if(vtx_h->empty()) return; // skip the event if no PV found
-  const reco::Vertex &firstGoodVertex = vtx_h->front();  
-  bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  if(!isgoodvtx) return;
+  //if(vtx_h->empty()) return; // skip the event if no PV found
+  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  //if(!isgoodvtx) return;
+  const reco::Vertex &firstGoodVertex = vtx_h->front();
+  bool vtxnotempty = true;
+  if(vtx_h->empty()) vtxnotempty = false;
   /////
   //   Get electron information 
   /////
@@ -224,15 +227,21 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     }
     //IP
     if(el->gsfTrack().isNonnull()){
-      patElectron_gsfTrack_dz_pv.push_back(fabs(el->gsfTrack()->dz(firstGoodVertex.position())));
-      patElectron_gsfTrack_dxy_pv.push_back(fabs(el->gsfTrack()->dxy(firstGoodVertex.position())));
-      patElectron_d0.push_back((-1) * el->gsfTrack()->dxy(firstGoodVertex.position()));
+      if(vtxnotempty){
+        patElectron_gsfTrack_dz_pv.push_back(fabs(el->gsfTrack()->dz(firstGoodVertex.position())));
+        patElectron_gsfTrack_dxy_pv.push_back(fabs(el->gsfTrack()->dxy(firstGoodVertex.position())));
+        patElectron_d0.push_back((-1) * el->gsfTrack()->dxy(firstGoodVertex.position()));
+      }else{
+        patElectron_gsfTrack_dz_pv.push_back(-999);
+        patElectron_gsfTrack_dxy_pv.push_back(-999);
+        patElectron_d0.push_back(-999);
+      }
       patElectron_dzError.push_back(el->gsfTrack()->dzError());
       patElectron_dxyError.push_back(el->gsfTrack()->d0Error());
       patElectron_gsfTrack_vtx.push_back(el->gsfTrack()->vx());
       patElectron_gsfTrack_vty.push_back(el->gsfTrack()->vy());
       patElectron_gsfTrack_vtz.push_back(el->gsfTrack()->vz());
-      if(_AJVar){ 
+      if(_AJVar && vtxnotempty){ 
         if(beamSpotHandle.isValid() && el->closestCtfTrackRef().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
           beamSpot = *beamSpotHandle;
           math::XYZPoint point(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
@@ -409,8 +418,10 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       if(el->gsfTrack().isNonnull()){
         GsfTrackRef elegsft = el->gsfTrack();
         TransientTrack elettrk = ttrkbuilder->build(elegsft);
-        IP3D2D(elettrk,firstGoodVertex,elejetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
-        zIP1D(elettrk,firstGoodVertex,elejetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+        if(vtxnotempty){
+          IP3D2D(elettrk,firstGoodVertex,elejetgv,IP3D_val,IP3D_err,IP3D_sig,sIP3D_val,sIP3D_err,sIP3D_sig,IP2D_val,IP2D_err,IP2D_sig,sIP2D_val,sIP2D_err,sIP2D_sig);
+          zIP1D(elettrk,firstGoodVertex,elejetgv,IP1D_val,IP1D_err,IP1D_sig,sIP1D_val,sIP1D_err,sIP1D_sig);
+        }
       }
       //Max Lep jet IP (the maximum IP for a tracks of the lepton jet)
       double lepjetMaxIP3D_val  = IP3D_val; 
@@ -453,7 +464,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       //Get values of Max and Av IP
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx]; 
-        lepjetIP(lepjet,firstGoodVertex,elejetgv,*ttrkbuilder,
+        lepjetIP(lepjet,vtxnotempty,firstGoodVertex,elejetgv,*ttrkbuilder,
                  lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
                  lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
                  denlepjetAvIP3D_val, denlepjetAvIP3D_sig, denlepjetAvsIP3D_val, denlepjetAvsIP3D_sig, denlepjetAvIP2D_val, denlepjetAvIP2D_sig, denlepjetAvsIP2D_val, denlepjetAvsIP2D_sig, denlepjetAvIP1D_val, denlepjetAvIP1D_sig, denlepjetAvsIP1D_val, denlepjetAvsIP1D_sig,
@@ -509,7 +520,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       double lepjetndaus       = 0;
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
-        lepjetTrks(lepjet, firstGoodVertex, lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus);
+        lepjetTrks(lepjet, vtxnotempty, firstGoodVertex, lepjetchtrks, lepjetpvchtrks, lepjetnonpvchtrks, lepjetndaus);
       }
       patElectron_lepjetchtrks.push_back(lepjetchtrks);
       patElectron_lepjetpvchtrks.push_back(lepjetpvchtrks);
@@ -520,7 +531,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       double lepjetnumno2trk = 0;
       if(lepjetidx!=-1){
         const pat::Jet & lepjet = (*jets)[lepjetidx];
-        lepjetVtxCompatibility(lepjet, firstGoodVertex, *ttrkbuilder, lepjetpvchi2, lepjetnumno2trk);
+        lepjetVtxCompatibility(lepjet, vtxnotempty, firstGoodVertex, *ttrkbuilder, lepjetpvchi2, lepjetnumno2trk);
       }
       patElectron_lepjetpvchi2.push_back(lepjetpvchi2);
       patElectron_lepjetnumno2trk.push_back(lepjetnumno2trk);
@@ -1021,6 +1032,7 @@ void ElectronPatSelector::get_elejet_info(edm::View<pat::Electron>::const_iterat
   }
   elejet_pt       = elejet.pt();
   eleptOVelejetpt = min(ele->pt()/elejet.pt(), 1.5);
+  if(elejet_mindr<0.0001) eleptOVelejetpt = 1;
   elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags = max(double(elejet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")), 0.0);
   if(elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags!=elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags) elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags = -996;
   elejet_pfJetProbabilityBJetTags = elejet.bDiscriminator("pfJetProbabilityBJetTags");
@@ -1256,7 +1268,7 @@ void ElectronPatSelector::zIP1D(TransientTrack ttrk, const reco::Vertex& vtx, Gl
    if(currIP.second.significance()==currIP.second.significance()) sIP1D_sig = currIP.second.significance();
  }
 }
-void ElectronPatSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
+void ElectronPatSelector::lepjetIP(const pat::Jet& jet,  const bool vtxnotempty, const reco::Vertex& vtx, GlobalVector lepjetgv, const TransientTrackBuilder& ttrkbuilder,
                     double& lepjetMaxIP3D_val, double& lepjetMaxIP3D_sig, double& lepjetMaxsIP3D_val, double& lepjetMaxsIP3D_sig, double& lepjetMaxIP2D_val, double& lepjetMaxIP2D_sig, double& lepjetMaxsIP2D_val, double& lepjetMaxsIP2D_sig, double& lepjetMaxIP1D_val, double& lepjetMaxIP1D_sig, double& lepjetMaxsIP1D_val, double& lepjetMaxsIP1D_sig,
                     double& lepjetAvIP3D_val, double& lepjetAvIP3D_sig, double& lepjetAvsIP3D_val, double& lepjetAvsIP3D_sig, double& lepjetAvIP2D_val, double& lepjetAvIP2D_sig, double& lepjetAvsIP2D_val, double& lepjetAvsIP2D_sig, double& lepjetAvIP1D_val, double& lepjetAvIP1D_sig, double& lepjetAvsIP1D_val, double& lepjetAvsIP1D_sig,
                     double& denlepjetAvIP3D_val, double& denlepjetAvIP3D_sig, double& denlepjetAvsIP3D_val, double& denlepjetAvsIP3D_sig, double& denlepjetAvIP2D_val, double& denlepjetAvIP2D_sig, double& denlepjetAvsIP2D_val, double& denlepjetAvsIP2D_sig, double& denlepjetAvIP1D_val, double& denlepjetAvIP1D_sig, double& denlepjetAvsIP1D_val, double& denlepjetAvsIP1D_sig,
@@ -1269,7 +1281,8 @@ void ElectronPatSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx,
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);
@@ -1361,7 +1374,7 @@ void ElectronPatSelector::lepjetIP(const pat::Jet& jet, const reco::Vertex& vtx,
   }//Ch trks 
  }//Loop on jet daus
 }
-bool ElectronPatSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
+bool ElectronPatSelector::is_goodtrk(Track trk, const reco::Vertex& vtx){
  bool isgoodtrk = false;
  if(trk.pt()>1 &&
    trk.hitPattern().numberOfValidHits()>=8 &&
@@ -1372,7 +1385,7 @@ bool ElectronPatSelector::is_goodtrk(Track trk,const reco::Vertex& vtx){
    ) isgoodtrk = true;
  return isgoodtrk;
 }
-void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus){
+void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const bool vtxnotempty, const reco::Vertex& vtx, double& lepjetchtrks, double& lepjetpvchtrks, double& lepjetnonpvchtrks, double& lepjetndaus){
  //Access jet daughters
  vector<CandidatePtr> jdaus(jet.daughterPtrVector());
  sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
@@ -1380,7 +1393,8 @@ void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vt
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     //Get jet trk num
@@ -1394,7 +1408,7 @@ void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const reco::Vertex& vt
  }//Loop on jet daus
  lepjetndaus = jdaus.size();
 }
-void ElectronPatSelector::lepjetVtxCompatibility(const pat::Jet& jet, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr){
+void ElectronPatSelector::lepjetVtxCompatibility(const pat::Jet& jet, const bool vtxnotempty, const reco::Vertex& vtx, const TransientTrackBuilder& ttrkbuilder, double& lepjetpvchi2, double& lepjetnumno2tr){
  //Access jet daughters
  vector<TransientTrack> jetttrks;
  vector<CandidatePtr> jdaus(jet.daughterPtrVector());
@@ -1403,7 +1417,8 @@ void ElectronPatSelector::lepjetVtxCompatibility(const pat::Jet& jet, const reco
   const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
   if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
   Track trk = Track(jcand.pseudoTrack());
-  bool isgoodtrk = is_goodtrk(trk,vtx);
+  bool isgoodtrk = false;
+  if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
   //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);

@@ -17,24 +17,25 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
 {
   debug_                 = iConfig.getParameter<bool>("debug_");
   bjetnessselfilter      = iConfig.getParameter<bool>("bjetnessselfilter");
+  _analysisFilter        = iConfig.getParameter<bool>("analysisFilter");
   _is_data               = iConfig.getParameter<bool>("is_data");
-  _ifevtriggers          = iConfig.getParameter<bool>("ifevtriggers"); 
+  _ifevtriggers          = iConfig.getParameter<bool>("ifevtriggers");
   _evtriggers            = iConfig.getParameter<vector<string> >("evtriggers");
-  _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo"); 
+  _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo");
   _fillgenHFCategoryinfo = iConfig.getParameter<bool>("fillgenHFCategoryinfo");
-  _filleventinfo         = iConfig.getParameter<bool>("filleventinfo"); 
+  _filleventinfo         = iConfig.getParameter<bool>("filleventinfo");
   _filltriggerinfo       = iConfig.getParameter<bool>("filltriggerinfo");
-  _fillPVinfo            = iConfig.getParameter<bool>("fillPVinfo");  
+  _fillPVinfo            = iConfig.getParameter<bool>("fillPVinfo");
   _fillmuoninfo          = iConfig.getParameter<bool>("fillmuoninfo");
   _fillelectronpatinfo   = iConfig.getParameter<bool>("fillelectronpatinfo");
   _filltauinfo           = iConfig.getParameter<bool>("filltauinfo");
-  _filljetinfo           = iConfig.getParameter<bool>("filljetinfo"); 
-  _filltthjetinfo        = iConfig.getParameter<bool>("filltthjetinfo"); 
-  _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo"); 
-  _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
-  _fillTauJetnessinfo    = iConfig.getParameter<bool>("fillTauJetnessinfo"); 
-  _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
-  _fillBJetnessFVinfo    = iConfig.getParameter<bool>("fillBJetnessFVinfo"); 
+  _filljetinfo           = iConfig.getParameter<bool>("filljetinfo");
+  _filltthjetinfo        = iConfig.getParameter<bool>("filltthjetinfo");
+  _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo");
+  _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo");
+  _fillTauJetnessinfo    = iConfig.getParameter<bool>("fillTauJetnessinfo");
+  _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo");
+  _fillBJetnessFVinfo    = iConfig.getParameter<bool>("fillBJetnessFVinfo");
   _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
   _fillPileupReweight    = iConfig.getParameter<bool>("fillPileupReweight");
   _fillMETinfo           = iConfig.getParameter<bool>("fillMETinfo");
@@ -64,6 +65,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);
+  if(_analysisFilter)        eventselector   = new eventSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
 }
 BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 {
@@ -96,12 +98,17 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     edm::Handle<edm::TriggerResults> triggerBits;
     iEvent.getByToken(triggerBits_, triggerBits);
     const edm::TriggerNames &trigNames = iEvent.triggerNames(*triggerBits);
+
+    //for (uint i=0; i<trigNames.size();i++){
+    //    cout << i <<".) trigNames: " << trigNames.triggerName(i) << endl;
+    //}
+
     for(uint tb = 0; tb<triggerBits->size(); tb++){
       for(uint tn = 0; tn<_evtriggers.size(); tn++){
         if(strstr(trigNames.triggerName(tb).c_str(),_evtriggers[tn].c_str()) && triggerBits->accept(tb)){
           evtriggered = true;
           break;
-        } 
+        }
       }
     }
   }
@@ -112,14 +119,14 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     if((bjetnessselfilter && bjetnesssel_filter==1) || !bjetnessselfilter){
       //cout<<"bjetnesssel_filter aft "<<bjetnesssel_filter<<endl;
       if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
-      if(_fillgeninfo)           genselector->Fill(iEvent); 
+      if(_fillgeninfo)           genselector->Fill(iEvent);
       if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
       if(_filleventinfo)         eventinfoselector->Fill(iEvent);
       if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
-      if(_fillPVinfo)            pvselector->Fill(iEvent); 
+      if(_fillPVinfo)            pvselector->Fill(iEvent);
       if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
-      if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
-      if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
+      if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup);
+      if(_filltauinfo)           tauselector->Fill(iEvent,iSetup);
       if(_filljetinfo)           jetselector->Fill(iEvent);
       if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
       if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
@@ -138,7 +145,7 @@ void BSM3G_TNT_Maker::beginJob()
 {
 }
 // ------------ method called once each job just after ending the event loop  ------------
-void BSM3G_TNT_Maker::endJob() 
+void BSM3G_TNT_Maker::endJob()
 {
 }
 // ------------ method called when starting to processes a run  ------------

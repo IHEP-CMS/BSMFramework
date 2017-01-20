@@ -45,8 +45,8 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
       for (unsigned int i=0; i<lheEventProduct->weights().size(); i++){
         EVENT_genWeights_.push_back(lheEventProduct->weights()[i].wgt);
         //Q2 for ttHbb synchronization
-        if(lheEventProduct->weights()[i].id == "1005") EVENT_Q2tthbbWeightUp_   = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
-        if(lheEventProduct->weights()[i].id == "1009") EVENT_Q2tthbbWeightDown_ = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP(); 
+        if(lheEventProduct->weights()[i].id == "1005") EVENT_Q2tthbbWeightUp_   = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP();
+        if(lheEventProduct->weights()[i].id == "1009") EVENT_Q2tthbbWeightDown_ = lheEventProduct->weights()[i].wgt/lheEventProduct->originalXWGTUP();
       }
     }
     if(lheEventProductSource.isValid()){
@@ -71,7 +71,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     EVENT_PDFtthbbWeightUp_   = weight_up;
     EVENT_PDFtthbbWeightDown_ = weight_down;
     //gen Parton HT
-    //Definition taken from https://github.com/cmkuo/ggAnalysis/blob/a24edc65be23b402d761c75545192ce79cddf316/ggNtuplizer/plugins/ggNtuplizer_genParticles.cc#L201 
+    //Definition taken from https://github.com/cmkuo/ggAnalysis/blob/a24edc65be23b402d761c75545192ce79cddf316/ggNtuplizer/plugins/ggNtuplizer_genParticles.cc#L201
     //Zaixing has a somehow different, but likely equivalent implementation
     //https://github.com/zaixingmao/FSA/blob/miniAOD_dev_7_4_14/DataFormats/src/PATFinalStateEvent.cc#L153
     double lheHt = 0.;
@@ -84,7 +84,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
         int status = lheEvent.ISTUP[idxParticle];
         if(status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21)){ // quarks and gluons
           lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
-        } 
+        }
       }
     }
     EVENT_genHT = lheHt;
@@ -127,7 +127,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   edm::Handle<edm::TriggerResults> metFilterBits;
   iEvent.getByToken(metFilterBits_, metFilterBits);
   const edm::TriggerNames &metNames = iEvent.triggerNames(*metFilterBits);
-  for(unsigned int i = 0, n = metFilterBits->size(); i < n; ++i){ 
+  for(unsigned int i = 0, n = metFilterBits->size(); i < n; ++i){
     if(metNames.triggerName(i)=="Flag_HBHENoiseFilter")                    Flag_HBHENoiseFilter                    = metFilterBits->accept(i);
     if(metNames.triggerName(i)=="Flag_HBHENoiseIsoFilter")                 Flag_HBHENoiseIsoFilter                 = metFilterBits->accept(i);
     if(metNames.triggerName(i)=="Flag_CSCTightHaloFilter")                 Flag_CSCTightHaloFilter                 = metFilterBits->accept(i);
@@ -152,8 +152,8 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
   if(bjetnessproducer_){
     Handle<vector<float> > bjetness;
     iEvent.getByToken(bjetness_, bjetness);
-    BJetness_jetpt0          = (*bjetness)[0]; 
-    BJetness_numleps         = (*bjetness)[1]; 
+    BJetness_jetpt0          = (*bjetness)[0];
+    BJetness_numleps         = (*bjetness)[1];
     BJetness_npvTrkOVcollTrk = (*bjetness)[2];
     BJetness_avip3dval       = (*bjetness)[3];
     BJetness_avip3dsig       = (*bjetness)[4];
@@ -212,20 +212,20 @@ void EventInfoSelector::SetBranches(){
 void EventInfoSelector::Initialise(){
   //Event quantities
   EVENT_event_      = -9999;
-  EVENT_run_        = -9999; 
+  EVENT_run_        = -9999;
   EVENT_lumiBlock_  = -9999;
   EVENT_genWeight_  = -9999;
   EVENT_genWeights_.clear();
   EVENT_genWeightsSource_.clear();
   EVENT_genHT       = -9999;
   EVENT_rhopog_     = -9999;
-  EVENT_rhotth_     = -9999; 
-  EVENT_Q2tthbbWeightUp_    = -9999; 
-  EVENT_Q2tthbbWeightDown_  = -9999; 
-  EVENT_PDFtthbbWeightUp_   = -9999; 
-  EVENT_PDFtthbbWeightDown_ = -9999; 
+  EVENT_rhotth_     = -9999;
+  EVENT_Q2tthbbWeightUp_    = -9999;
+  EVENT_Q2tthbbWeightDown_  = -9999;
+  EVENT_PDFtthbbWeightUp_   = -9999;
+  EVENT_PDFtthbbWeightDown_ = -9999;
   EVENT_fixedGridRhoFastjetCentral              = -9999;
-  EVENT_fixedGridRhoFastjetCentralChargedPileUp = -9999; 
+  EVENT_fixedGridRhoFastjetCentralChargedPileUp = -9999;
   EVENT_fixedGridRhoFastjetCentralNeutral       = -9999;
   //Event filters
   Flag_HBHENoiseFilter                    = -9999;
@@ -254,5 +254,5 @@ void EventInfoSelector::Initialise(){
   BJetness_avip3dval       = -9999;
   BJetness_avip3dsig       = -9999;
   BJetness_avsip3dsig      = -9999;
-  BJetness_avip1dsig       = -9999;  
+  BJetness_avip1dsig       = -9999;
 }

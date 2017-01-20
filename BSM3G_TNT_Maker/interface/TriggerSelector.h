@@ -1,4 +1,4 @@
-#ifndef __TRIGGER_H_ 
+#ifndef __TRIGGER_H_
 #define __TRIGGER_H_
 #include <memory>
 /////
@@ -101,6 +101,13 @@ class TriggerSelector : public baseTree{
   int HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL;
   //Other
   int HLT_DoubleEle33_CaloIdL_GsfTrkIdVL;
+  //>>>>>>> Josh - Added dimuon trigger
+  int HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+  int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+  int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL;
+  int HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ;
+  int HLT_IsoMu24;
+  int HLT_IsoTkMu24;
   //Analysis
   int TTHbb_SL;
   int TTHbb_DL;

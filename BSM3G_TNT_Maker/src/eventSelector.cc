@@ -345,14 +345,14 @@ void eventSelector::FillJetVectors(const edm::Event& iEvent, std::vector<const r
     double csvcurrjet = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
     subleading_jets.push_back((const pat::Jet*)&j);
-    if(csvcurrjet>0.8) {
+    if(csvcurrjet>0.8484) {
       subleading_btags.push_back((const pat::Jet*)&j);
     }
 
     //=== Good leading jets ===
     if(!is_good_jet(j,rhopog,rhoJER,vtxsize,30)){jet_pos++; continue;}
     leading_jets.push_back((const pat::Jet*)&j);
-    if(csvcurrjet>0.8) {
+    if(csvcurrjet>0.8484) {
       leading_btags.push_back((const pat::Jet*)&j);
     }
     jet_pos++;

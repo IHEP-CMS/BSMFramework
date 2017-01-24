@@ -102,7 +102,7 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     //for (uint i=0; i<trigNames.size();i++){
     //    cout << i <<".) trigNames: " << trigNames.triggerName(i) << endl;
     //}
-
+    //cout << "HERE"<< endl;
     for(uint tb = 0; tb<triggerBits->size(); tb++){
       for(uint tn = 0; tn<_evtriggers.size(); tn++){
         if(strstr(trigNames.triggerName(tb).c_str(),_evtriggers[tn].c_str()) && triggerBits->accept(tb)){
@@ -136,6 +136,7 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
       if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
       if(_fillMETinfo)           metselector->Fill(iEvent);
       if(_fillphotoninfo)        photonselector->Fill(iEvent);
+      if(_analysisFilter)        eventselector->Fill(iEvent, iSetup);
       tree_->Fill();
     }
   }

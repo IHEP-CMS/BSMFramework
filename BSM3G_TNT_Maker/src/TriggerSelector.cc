@@ -14,11 +14,11 @@ TriggerSelector::~TriggerSelector(){
 void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   if(debug_)    std::cout<<"getting met info"<<std::endl;
   Clear();
-  //Trigget paths  
+  //Trigget paths
   edm::Handle<edm::TriggerResults> triggerBits;
   iEvent.getByLabel(triggerBits_, triggerBits);
   const edm::TriggerNames &trigNames = iEvent.triggerNames(*triggerBits);
-  for(double tv=0.; tv<=_maxtriggerversion; tv++){ 
+  for(double tv=0.; tv<=_maxtriggerversion; tv++){
     char buffer[10]; sprintf(buffer,"%g",tv);
     //Common
     //Electron
@@ -38,7 +38,7 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     uint HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v(trigNames.triggerIndex(("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"+string(buffer)).c_str()));
     if(HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v<triggerBits->size()) HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL = triggerBits->accept(HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v);
     //TTHbb
-    //Electron 
+    //Electron
     uint HLT_Ele105_CaloIdVT_GsfTrkIdT_v(trigNames.triggerIndex(("HLT_Ele105_CaloIdVT_GsfTrkIdT_v"+string(buffer)).c_str()));
     if(HLT_Ele105_CaloIdVT_GsfTrkIdT_v<triggerBits->size()) HLT_Ele105_CaloIdVT_GsfTrkIdT = triggerBits->accept(HLT_Ele105_CaloIdVT_GsfTrkIdT_v);
     uint HLT_Ele27_eta2p1_WP75_Gsf_v(trigNames.triggerIndex(("HLT_Ele27_eta2p1_WP75_Gsf_v"+string(buffer)).c_str()));
@@ -164,7 +164,7 @@ void TriggerSelector::SetBranches(){
 
 void TriggerSelector::Clear(){
   //Trigger_decision.clear();
-  //Trigger_names.clear(); 
+  //Trigger_names.clear();
   //Common
   //Electron
   HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ = -9999;
@@ -218,5 +218,5 @@ void TriggerSelector::Clear(){
 void TriggerSelector::startTrigger(edm::EventSetup const& iSetup, edm::Run const & iRun){
   bool changed(true);
   if(_is_data) hltConfig_.init(iRun,iSetup,"HLT",changed);
-  else         hltConfig_.init(iRun,iSetup,"HLT2",changed);
+  else         hltConfig_.init(iRun,iSetup,"HLT",changed);
 }

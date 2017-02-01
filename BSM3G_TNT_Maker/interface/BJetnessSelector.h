@@ -18,11 +18,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <TRandom3.h>
-#include <TBranch.h>                                                                    
+#include <TBranch.h>
 #include <TClonesArray.h>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
@@ -75,6 +76,12 @@
 #include "TrackingTools/PatternTools/interface/TwoTrackMinimumDistance.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "TMath.h"
+#include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/TTHbb_eventSelector.h"
+
 using namespace std;
 using namespace pat;
 using namespace edm;
@@ -94,6 +101,9 @@ class BJetnessSelector : public  baseTree{
     void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
   private:
     BJetnessSelector(){};
+
+    TTHbb_eventSelector          *evSel;
+
     /////
     //   Config variables
     /////
@@ -144,7 +154,7 @@ class BJetnessSelector : public  baseTree{
     //Gen info
     int BJetness_ngenbh, BJetness_ngenbt, BJetness_ngenb, BJetness_ngenc;
     vector<double> BJetness_partonFlavour, BJetness_hadronFlavour;
-    //Kinematics and csv 
+    //Kinematics and csv
     vector<double> BJetness_numjet;
     vector<double> BJetness_jetpt, BJetness_jeteta, BJetness_jetphi, BJetness_jetenergy;
     vector<double> BJetness_jetcsv, BJetness_pfJetProbabilityBJetTags, BJetness_pfCombinedMVAV2BJetTags, BJetness_pfCombinedCvsLJetTags, BJetness_pfCombinedCvsBJetTags;
@@ -165,12 +175,12 @@ class BJetnessSelector : public  baseTree{
     //ImpactParameter
     vector<double> BJetness_avip3d_val, BJetness_avip3d_sig, BJetness_avsip3d_val, BJetness_avsip3d_sig, BJetness_numip3dpos, BJetness_numip3dneg, BJetness_avip2d_val, BJetness_avip2d_sig, BJetness_avsip2d_val, BJetness_avsip2d_sig, BJetness_numip2dpos, BJetness_numip2dneg, BJetness_avip1d_val, BJetness_avip1d_sig, BJetness_avsip1d_val, BJetness_avsip1d_sig;
     /////
-    //   TTH methods 
+    //   TTH methods
     /////
     //bool is_soft_muon(const pat::PackedCandidate &jcand, edm::View<pat::Muon>& );
     bool is_loose_muon(const pat::Muon& mu, const reco::Vertex& vtx);
     bool is_tight_muon(const pat::Muon& mu, const reco::Vertex& vtx);
-    double rel_iso_dbc_mu(const pat::Muon& lepton);  
+    double rel_iso_dbc_mu(const pat::Muon& lepton);
     double rel_iso_dbc_ele(const pat::Electron& lepton, double rhopog);
     double get_effarea(double eta);
     bool is_good_jet(const pat::Jet &j, double rho, double rhoJER, int vtxsize);

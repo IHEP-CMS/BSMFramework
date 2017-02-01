@@ -2,8 +2,8 @@
 //
 //Package: MiniAOD/BSM3G_TNT_Maker
 //Class:   BSM3G_TNT_Maker
-// 
-#ifndef  TREE_MAKER_H                                                                                                                          
+//
+#ifndef  TREE_MAKER_H
 #define  TREE_MAKER_H
 /////
 //   User include files
@@ -33,6 +33,7 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/PileupReweight.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/METSelector.h"
 #include "BSMFramework/BSM3G_TNT_Maker/interface/PhotonSelector.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/TTHbb_eventSelector.h"
 #include "baseTree.h"
 #include <TBranch.h>
 #include <TTree.h>
@@ -72,7 +73,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   bool _fillgeninfo;
   bool _fillgenHFCategoryinfo;
   bool _filleventinfo;
-  bool _filltriggerinfo; 
+  bool _filltriggerinfo;
   bool _fillPVinfo;
   bool _fillmuoninfo;
   bool _fillelectronpatinfo;
@@ -88,8 +89,9 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   bool _fillPileupReweight;
   bool _fillMETinfo;
   bool _fillphotoninfo;
+  bool analysisFilter;
   /////
-  //   All 
+  //   All
   /////
   TFile* file;
   TTree* evtree_;
@@ -119,5 +121,6 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   PileupReweight         *pileupreweight;
   METSelector            *metselector;
   PhotonSelector         *photonselector;
+  TTHbb_eventSelector          *TTHbb_eventselector;
 };
-#endif 
+#endif

@@ -1,0 +1,34 @@
+#==========================================
+#	TTHEventSelector_setup.txt
+#==========================================
+#Developer: Joshuha Thomas-Wilsker
+#email: joshuha.thomas-wilsker@cern.ch
+#==========================================
+# NOTE: - If ‘install_mem.sh’ gives an error, remove MEMIntegratorStandalone
+#	  package. Replace line in script with the following:
+# 	  cp -R $CMSSW_BASE/src/TTH/MEIntegratorStandalone/libs/* $CMSSW_BASE/lib/$SCRAM_ARCH/
+#	- DO NOT ‘scram clean’ CommonClassifier as it removes OpenLoops libs.
+#	- ‘mem_test’ and ‘bdt_test’ simply run tests to ensure installation works.
+#==========================================
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+export SCRAM_ARCH="slc6_amd64_gcc530"
+export CMSSW_VERSION="CMSSW_8_0_24"
+cmsrel $CMSSW_VERSION
+cd $CMSSW_VERSION/src
+export CMSSW_SRC="$( pwd )"
+cmsenv
+git cms-init
+git clone -b TTHEventSelector_branch https://github.com/IHEP-CMS/BSMFramework.git
+git cms-merge-topic cms-met:METRecipe_8020
+git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
+git cms-merge-topic cms-met:fromCMSSW_8_0_20_postICHEPfilter
+git cms-merge-topic ikrav:egm_id_80X_v2
+git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
+mkdir TTH
+cd TTH
+git clone https://github.com/cms-ttH/CommonClassifier.git
+source CommonClassifier/setup/install_mem.sh
+cd $CMSSW_VERSION/src
+scram b
+mem_test
+bdt_test

@@ -1,9 +1,29 @@
-####################################################
-
+###########################################################
+		 	BSMFramework
+###########################################################
+	Institute of High Energy Physics, Beijing
+###########################################################
 This code is based on a preliminary version of the BSM3G code initiated by:
 Andres Florez (Los Andes), Alfredo Gurrola (Vanderbilt) and Amandeep Kalsi (Panjab) 
 (See https://github.com/florez/NtupleMaker_740)
 
 It has been extended and further developed by Francesco Romeo (IHEP) and Aniello Spiezia (IHEP).
+###########################################################
 
-####################################################
+Not all framework branches/tags are compatible with all CMSSW release
+and may require the user to update packages from a certain CMSSW release.
+For this reason we have added beneath a list of branches and associated 
+setup instructions for the framework. The associated setup instructions
+are kept in the same directory as this README. 
+
+The name of the developer of the branch should be in the setup script
+along with a contact email in case of problems. Alternatively, one can 
+check the git repository for more info:
+
+https://github.com/IHEP-CMS/BSMFramework/branches
+
+===================================================================
+=========== Branch ================== Framework setup script ======
+===================================================================
+TTHEventSelector_branch	      |TTHEventSelector_setup.sh
+

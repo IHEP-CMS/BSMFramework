@@ -162,6 +162,8 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   DL_jet_num = leading_jets.size();
   DL_jetb_num = subleading_btags.size();
 
+  if(debug_) std::cout << ("BJetnessSelector:Fill") << "DL_jet_num: " << DL_jet_num << " DL_jetb_num: " << DL_jetb_num << std::endl;
+
   //=======================
   //   Event Selection
   //=======================
@@ -185,7 +187,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   //===========================
   // NOTE: Currently only calculating BJetness variables for SL selection.
   //       Hence, only using leading_jet_csv_pos containing the csv and index of the leading jet in the jet* container.
-  
+
   if(debug_) std::cout << ("BJetnessSelector::Fill") << " Calculate BJetness variables . . . " << std::endl;
   sort(leading_jet_csv_pos.rbegin(), leading_jet_csv_pos.rend());
   if(jet_num!=0){

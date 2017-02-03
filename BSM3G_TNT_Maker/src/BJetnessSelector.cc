@@ -116,7 +116,9 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   if(debug_) std::cout << ("BJetnessSelector::Fill") << ": isDL_ " << isDL_ << std::endl;
 
   //Running only Single lepton selection for BJetness variables atm.
-  if (!isSL_) return;
+  if (!isSL_ && !isDL_) return;
+  BJetness_isSingleLepton = isSL_;
+  BJetness_isDoubleLepton = isDL_;
 
   if(debug_) std::cout << ("BJetnessSelector::Fill") << " Passed SL Selection " << std::endl;
 
@@ -170,15 +172,13 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   if(debug_) std::cout << ("BJetnessSelector:Fill") << ": jetb_num : " << jetb_num << std::endl;
   if(debug_) std::cout << ("BJetnessSelector:Fill") << ": leading_jet_csv_pos.size(): " << leading_jet_csv_pos.size() << std::endl;
 
-  if(tightleps.size()==1 && looseleps.size()==1 && jet_num>=4 && jetb_num>=2){
-    BJetness_isSingleLepton = 1;
-    bjetnesssel_filter      = 1;
-  }
-  if(bjetnesssel_filter==0) return; //This line must be comments if bjetnessselfilter is false in the config file
+  //if(tightleps.size()==1 && looseleps.size()==1 && jet_num>=4 && jetb_num>=2){
+    //BJetness_isSingleLepton = 1;
+  //  bjetnesssel_filter      = 1;
+  //}
+  //if(bjetnesssel_filter==0) return; //This line must be comments if bjetnessselfilter is false in the config file
 
-  if(tightleps.size()==1 && looseleps.size()==2 && DL_jet_num>=2 && DL_jetb_num>=1) BJetness_isDoubleLepton = 1;
-
-
+  //if(tightleps.size()==1 && looseleps.size()==2 && DL_jet_num>=2 && DL_jetb_num>=1) BJetness_isDoubleLepton = 1;
 
   //===========================
   //     BJetness Variables
@@ -232,19 +232,19 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       BJetness_jeteta.push_back(j.eta());
       BJetness_jetphi.push_back(j.phi());
       BJetness_jetenergy.push_back(j.correctedJet("Uncorrected").energy()*corrAK4PFchs*JERScaleFactor); //Note that this is not correct by JES/JER (expect if JES in globalTag are ok)
-      double jetcsv = j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags");
+      double jetcsv = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
       if(jetcsv!=jetcsv) jetcsv = -996;
       BJetness_jetcsv.push_back(jetcsv);
-      double jetbjetprob = j.bDiscriminator("newpfJetProbabilityBJetTags");
+      double jetbjetprob = j.bDiscriminator("pfJetProbabilityBJetTags");
       if(jetbjetprob!=jetbjetprob) jetbjetprob = -996;
       BJetness_pfJetProbabilityBJetTags.push_back(jetbjetprob);
-      double jetbjetcombmva = j.bDiscriminator("newpfCombinedMVAV2BJetTags");
+      double jetbjetcombmva = j.bDiscriminator("pfCombinedMVAV2BJetTags");
       if(jetbjetcombmva!=jetbjetcombmva) jetbjetcombmva = -996;
       BJetness_pfCombinedMVAV2BJetTags.push_back(jetbjetcombmva);
-      double jetpfCombinedCvsLJetTags = j.bDiscriminator("newpfCombinedCvsLJetTags");
+      double jetpfCombinedCvsLJetTags = j.bDiscriminator("pfCombinedCvsLJetTags");
       if(jetpfCombinedCvsLJetTags!=jetpfCombinedCvsLJetTags) jetpfCombinedCvsLJetTags = -996;
       BJetness_pfCombinedCvsLJetTags.push_back(jetpfCombinedCvsLJetTags);
-      double jetpfCombinedCvsBJetTags = j.bDiscriminator("newpfCombinedCvsBJetTags");
+      double jetpfCombinedCvsBJetTags = j.bDiscriminator("pfCombinedCvsBJetTags");
       if(jetpfCombinedCvsBJetTags!=jetpfCombinedCvsBJetTags) jetpfCombinedCvsBJetTags = -996;
       BJetness_pfCombinedCvsBJetTags.push_back(jetpfCombinedCvsBJetTags);
       //cout<<"Jet pf"<<setw(20)<<"hf"<<setw(20)<<"pt"<<setw(20)<<"eta"<<setw(20)<<"phi"<<setw(20)<<"energy"<<setw(20)<<"csv"<<endl;
@@ -579,6 +579,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
    BJetness_jetschisgoodtrk.push_back(-999);
    BJetness_jetschtrkpur.push_back(-999);
    BJetness_jetschpt.push_back(-999);
+   BJetness_jetscheta.push_back(-999);
    BJetness_jetschen.push_back(-999);
    //Num_of_trks
    BJetness_num_pdgid_eles.push_back(-999);
@@ -691,6 +692,7 @@ void BJetnessSelector::SetBranches(){
   AddBranch(&BJetness_jetschisgoodtrk          ,"BJetness_jetschisgoodtrk");
   AddBranch(&BJetness_jetschtrkpur             ,"BJetness_jetschtrkpur");
   AddBranch(&BJetness_jetschpt                 ,"BJetness_jetschpt");
+  AddBranch(&BJetness_jetscheta                ,"BJetness_jetscheta");
   AddBranch(&BJetness_jetschen                 ,"BJetness_jetschen");
   //Num_of_trks
   AddBranch(&BJetness_num_pdgid_eles           ,"BJetness_num_pdgid_eles");
@@ -799,6 +801,7 @@ void BJetnessSelector::Clear(){
   BJetness_jetschisgoodtrk.clear();
   BJetness_jetschtrkpur.clear();
   BJetness_jetschpt.clear();
+  BJetness_jetscheta.clear();
   BJetness_jetschen.clear();
   //Num_of_trks
   BJetness_num_pdgid_eles.clear();
@@ -1121,6 +1124,7 @@ void BJetnessSelector::get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx,
       BJetness_jetschisgoodtrk.push_back(isgoodtrk);
       BJetness_jetschtrkpur.push_back(jcand.trackHighPurity());
       BJetness_jetschpt.push_back(jcand.pt());
+      BJetness_jetscheta.push_back(jcand.eta());
       BJetness_jetschen.push_back(jcand.energy());
       //Trk info
       jetchtrks.push_back(trk);

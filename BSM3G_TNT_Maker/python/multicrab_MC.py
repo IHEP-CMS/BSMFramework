@@ -105,7 +105,8 @@ for d in range(0,len(datasetnames)):
     config.Data.inputDataset   = datasetinputs[d]
     config.Data.inputDBS       = 'global'
     config.Data.splitting      = 'FileBased'
-    config.Data.unitsPerJob    = 70
+    config.Data.totalUnits     = 2500 #With 'FileBased' splitting tells how many files to analyse
+    config.Data.unitsPerJob    = 3
     config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'
     config.Data.outputDatasetTag = datasetnames[d]
 

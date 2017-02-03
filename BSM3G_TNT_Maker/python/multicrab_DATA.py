@@ -284,7 +284,7 @@ for d in range(0,len(datasetnames)):
     config.Data.inputDataset   = datasetinputs[d]
     config.Data.inputDBS       = 'global'
     config.Data.splitting      = 'LumiBased'
-    config.Data.unitsPerJob    = 70
+    config.Data.unitsPerJob    = 30
     # Golden
     config.Data.lumiMask       = tempJSON
     config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'

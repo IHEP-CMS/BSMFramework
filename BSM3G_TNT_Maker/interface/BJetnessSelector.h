@@ -160,7 +160,7 @@ class BJetnessSelector : public  baseTree{
     vector<double> BJetness_jetcsv, BJetness_pfJetProbabilityBJetTags, BJetness_pfCombinedMVAV2BJetTags, BJetness_pfCombinedCvsLJetTags, BJetness_pfCombinedCvsBJetTags;
     vector<double> BJetness_pt, BJetness_eta, BJetness_phi, BJetness_en, BJetness_ptOVen;
     //PFcand info
-    vector<double> BJetness_jetschpvass, BJetness_jetschfrompv, BJetness_jetschip3dval, BJetness_jetschip3dsig, BJetness_jetschip2dval, BJetness_jetschip2dsig, BJetness_jetschisgoodtrk, BJetness_jetschtrkpur, BJetness_jetschpt, BJetness_jetschen;
+    vector<double> BJetness_jetschpvass, BJetness_jetschfrompv, BJetness_jetschip3dval, BJetness_jetschip3dsig, BJetness_jetschip2dval, BJetness_jetschip2dsig, BJetness_jetschisgoodtrk, BJetness_jetschtrkpur, BJetness_jetschpt, BJetness_jetscheta, BJetness_jetschen;
     //Num_of_trks
     vector<double> BJetness_num_pdgid_eles, BJetness_num_soft_eles, BJetness_num_vetonoipnoiso_eles, BJetness_num_loosenoipnoiso_eles, BJetness_num_veto_eles, BJetness_num_loose_eles, BJetness_num_medium_eles, BJetness_num_tight_eles, BJetness_num_mvatrig_eles, BJetness_num_mvanontrig_eles, BJetness_num_mvatrigwp90_eles, BJetness_num_mvanontrigwp90_eles, BJetness_num_heep_eles, BJetness_num_pdgid_mus, BJetness_num_loose_mus, BJetness_num_soft_mus, BJetness_num_medium_mus, BJetness_num_tight_mus, BJetness_num_highpt_mus, BJetness_num_POGisGood_mus;
     vector<double> BJetness_numjettrks, BJetness_numjettrkspv, BJetness_numjettrksnopv;

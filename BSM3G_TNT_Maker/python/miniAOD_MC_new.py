@@ -13,14 +13,14 @@ options = VarParsing.VarParsing('analysis')
 #
 
 # ===== Register new variables =====
-options.register('optionTriggerInfo', False,
-VarParsing.VarParsing.multiplicity.singleton,
-VarParsing.VarParsing.varType.bool,
-"Bool for accessing and keeping trigger info in MC")
-options.optionTriggerInfo = True #Set to true for tt+jets
+#options.register('optionTriggerInfo', False,
+#VarParsing.VarParsing.multiplicity.singleton,
+#VarParsing.VarParsing.varType.bool,
+#"Bool for accessing and keeping trigger info in MC")
+#options.optionTriggerInfo = True #Set to true for tt+jets
 
 options.register('ofName',
-'',
+'tempName',
 VarParsing.VarParsing.multiplicity.singleton,
 VarParsing.VarParsing.varType.string,
 "Name for output file."
@@ -55,7 +55,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(20) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 #####
 ##   BTAGGING WITH HIP MITIGATION
@@ -181,7 +181,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   fillgeninfo           = cms.bool(True),
   fillgenHFCategoryinfo = cms.bool(True),
   filleventinfo         = cms.bool(True),
-  filltriggerinfo       = cms.bool(options.optionTriggerInfo), #F, for samples without trigger
+  filltriggerinfo       = cms.bool(True), #F, for samples without trigger
   fillPVinfo            = cms.bool(True),
   fillmuoninfo          = cms.bool(True),
   fillelectronpatinfo   = cms.bool(True),
@@ -274,7 +274,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   # The following Data JEC will not be
   # used but are needed to prevent the
   # BSMFramework code from crashing.
-  jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath('BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK4PFchs.txt'),
   jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
   jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
   jecPayloadNamesAK4PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"),
@@ -366,7 +366,7 @@ process.BJetness.jerAK4PFchs   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/da
 process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt")
 #QG likelihood
 process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-process.QGTagger.srcJets       = cms.InputTag('slimmedJets') #selectedUpdatedPatJets #slimmedJets')
+process.QGTagger.srcJets       = cms.InputTag('slimmedJets')
 process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
 #Run analysis sequence
 process.p = cms.Path(

@@ -100,9 +100,7 @@ for d in range(0,len(datasetnames)):
     config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC_new.py'
     #config.JobType.allowUndistributedCMSSW = True
     ofParam = 'ofName=' + datasetnames[d]
-    config.JobType.pyCfgParams = [optionTriggerInfo,
-                                  ofParam
-                                  ]
+    config.JobType.pyCfgParams = [ofParam]
     config.section_('Data')
     config.Data.inputDataset   = datasetinputs[d]
     config.Data.inputDBS       = 'global'

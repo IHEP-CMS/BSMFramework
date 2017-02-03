@@ -1,30 +1,12 @@
 import FWCore.ParameterSet.Config as cms
-import FWCore.ParameterSet.VarParsing as VarParsing
-import copy
-options = VarParsing.VarParsing('analysis')
-# Variables one can control from the multicrab configuration file.
-# When connecting a variable you need to tell the module certain information
-# about the object.
-#                   - Object name.
-#                   - Default value.
-#                   - Is object a single number or a list.
-#                   - Object type.
-#                   - Details of object.
-#
 
-# ===== Register new variables =====
-options.register('optionTriggerInfo',
-False,
-VarParsing.VarParsing.multiplicity.singleton,
-VarParsing.VarParsing.varType.bool,
-"Bool for accessing and keeping trigger info in MC")
 
 #####
 ##   Initial standard configs
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring('info'), info = cms.untracked.PSet(threshold = cms.untracked.string('DEBUG')), default = cms.untracked.PSet(limit = cms.untracked.int32(-1)), debugModules = cms.untracked.vstring("TNT"))
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
@@ -38,14 +20,14 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 #####
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-    # ttH Synch file DAS record:
-    #   >>>>>>>>>>/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM
-    '/store/mc/RunIISummer16MiniAODv2/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0C0796F5-CFC6-E611-ADB6-008CFA0A58B4.root'
+    #ttjets Synch File
+    '/store/mc/RunIISummer16MiniAODv2/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/0693E0E7-97BE-E611-B32F-0CC47A78A3D8.root'
   ),
   skipEvents = cms.untracked.uint32(0)
 )
+
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 #####
 ##   BTAGGING WITH HIP MITIGATION
@@ -69,11 +51,6 @@ process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True
 # add the ValueMaps with ID decisions into the event data stream
 # Load tools and function definitions
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-#process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-#process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
-#process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('slimmedElectrons')
-#from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
-#process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
@@ -119,9 +96,8 @@ process.matchGenCHadron = matchGenCHadron.clone(
 ##   Output file
 #####
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("ttHbb_MC.root")
+  fileName = cms.string("ttjets_MC.root")
 )
-
 
 #####
 ##   Analysis parameters
@@ -132,6 +108,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   ifevtriggers      = cms.bool(False), # True means you want to require the triggers
   maxtriggerversion = cms.double(10), # please leave it as a double
   evtriggers        = cms.vstring(
+
     # ttH SL and DL triggers Jan 2017
     'HLT_IsoMu22_v',
     'HLT_IsoTkMu22_v',
@@ -139,9 +116,9 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
     'HLT_IsoTkMu24_v',
     'HLT_Ele27_eta2p1_WPTight_Gsf_v',
     'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',
+    'HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v',# Not in ttjets reHLT
     'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v',
-    'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v',
+    'HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v',# Not in ttjets reHLT
     'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v',
     'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
     'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v',
@@ -171,7 +148,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   fillgeninfo           = cms.bool(True),
   fillgenHFCategoryinfo = cms.bool(True),
   filleventinfo         = cms.bool(True),
-  filltriggerinfo       = cms.bool(options.optionTriggerInfo), #F, for samples without trigger
+  filltriggerinfo       = cms.bool(True), #F, for samples without trigger
   fillPVinfo            = cms.bool(True),
   fillmuoninfo          = cms.bool(True),
   fillelectronpatinfo   = cms.bool(True),
@@ -200,7 +177,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   PuppiVar  = cms.bool(False),
   qglVar    = cms.bool(True),
   # Input tags
-  bits                = cms.InputTag("TriggerResults","","HLT2"),
+  bits                = cms.InputTag("TriggerResults","","HLT"),
   prescales           = cms.InputTag("patTrigger"),
   objects             = cms.InputTag("selectedPatTrigger"),
   vertices            = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -222,7 +199,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   elemvaCategoriesMap_Trig     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Categories"),
   taus                = cms.InputTag("slimmedTaus"),
   #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),
-  jets                = cms.InputTag("slimmedJets"),#slimmedJets #slimmedJets"),
+  jets                = cms.InputTag("slimmedJets"), #selectedUpdatedPatJets #slimmedJets"),
   jetsPUPPI           = cms.InputTag("slimmedJetsPuppi"),
   fatjets             = cms.InputTag("slimmedJetsAK8"),
   topsubjets          = cms.InputTag("slimmedJetsCMSTopTagCHSPacked", "SubJets"),
@@ -241,45 +218,44 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   jerAK8PFchsSF   =  cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
   jerAK8PFPuppi   =  cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_PtResolution_AK8PFPuppi.txt"),
   jerAK8PFPuppiSF =  cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_SF_AK8PFchs.txt"),
-   # ===========  JEC - CORRECTIONS ON FLY ===========
-   #=== MC ===
-   # L1FastJet
-   # L2Relative
-   # L3Absolute
-   # MC_Uncertainty
-   jecPayloadNamesAK4PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK4PFchs.txt"),
-   jecPayloadNamesAK4PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK4PFchs.txt"),
-   jecPayloadNamesAK4PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK4PFchs.txt"),
-   jecPayloadNamesAK4PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt"),
-   jecPayloadNamesAK4PFPuppiMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK4PFPuppi.txt"),
-   jecPayloadNamesAK4PFPuppiMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK4PFPuppi.txt"),
-   jecPayloadNamesAK4PFPuppiMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK4PFPuppi.txt"),
-   jecPayloadNamesAK4PFPuppiMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFPuppi.txt"),
-   jecPayloadNamesAK8PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK8PFchs.txt"),
-   jecPayloadNamesAK8PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK8PFchs.txt"),
-   jecPayloadNamesAK8PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK8PFchs.txt"),
-   jecPayloadNamesAK8PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK8PFchs.txt"),
-  #=========== DATA ================
+  # ===========  JEC - CORRECTIONS ON FLY ===========
+  #=== MC ===
+  # L1FastJet
+  # L2Relative
+  # L3Absolute
+  # MC_Uncertainty
+  jecPayloadNamesAK4PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK4PFPuppi.txt"),
+  jecPayloadNamesAK8PFchsMC1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsMC2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsMC3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsMCUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_Uncertainty_AK8PFchs.txt"),
+  #=== DATA ===
   # Note that this is a config for MC.
   # The following Data JEC will not be
   # used but are needed to prevent the
   # BSMFramework code from crashing.
-    jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt"),
-    jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
-    jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
-    jecPayloadNamesAK4PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"),
-    jecPayloadNamesAK4PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt"),
-    jecPayloadNamesAK4PFPuppiDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFPuppi.txt"),
-    jecPayloadNamesAK4PFPuppiDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFPuppi.txt"),
-    jecPayloadNamesAK4PFPuppiDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFPuppi.txt"),
-    jecPayloadNamesAK4PFPuppiDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFPuppi.txt"),
-    jecPayloadNamesAK4PFPuppiDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFPuppi.txt"),
-    jecPayloadNamesAK8PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
-    jecPayloadNamesAK8PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
-    jecPayloadNamesAK8PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
-    jecPayloadNamesAK8PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
-    jecPayloadNamesAK8PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
-#=================
+  jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFPuppi.txt"),
   # PILEUP REWEIGHTING
   PUReweightfile      = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/PUReweight/PileUpReweighting2016.root"),
   # BTAG REWEIGHTING
@@ -343,7 +319,7 @@ process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.BJetness.eleMVAnonTrigIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80")
 process.BJetness.patElectrons = cms.InputTag("slimmedElectrons")
 process.BJetness.muons = cms.InputTag("slimmedMuons")
-process.BJetness.jets = cms.InputTag("slimmedJets")
+process.BJetness.jets = cms.InputTag("slimmedJets")#selectedUpdatedPatJets #slimmedJets"),
 process.BJetness.jecPayloadNamesAK4PFchsMC1 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L1FastJet_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC2 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L2Relative_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC3 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Spring16_23Sep2016V2_MC/Spring16_23Sep2016V2_MC_L3Absolute_AK4PFchs.txt")
@@ -357,7 +333,7 @@ process.BJetness.jerAK4PFchs   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/da
 process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt")
 #QG likelihood
 process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-process.QGTagger.srcJets       = cms.InputTag('slimmedJets')#selectedUpdatedPatJets #slimmedJets')
+process.QGTagger.srcJets       = cms.InputTag('slimmedJets') #selectedUpdatedPatJets #slimmedJets')
 process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
 #Run analysis sequence
 process.p = cms.Path(

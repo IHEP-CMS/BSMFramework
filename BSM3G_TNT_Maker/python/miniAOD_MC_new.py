@@ -34,7 +34,8 @@ options.parseArguments()
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring('info'), info = cms.untracked.PSet(threshold = cms.untracked.string('DEBUG')), default = cms.untracked.PSet(limit = cms.untracked.int32(-1)), debugModules = cms.untracked.vstring("TNT"))
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
+#process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring('info'), info = cms.untracked.PSet(threshold = cms.untracked.string('DEBUG')), default = cms.untracked.PSet(limit = cms.untracked.int32(-1)), debugModules = cms.untracked.vstring("TNT"))
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
@@ -55,7 +56,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 #####
 ##   BTAGGING WITH HIP MITIGATION
@@ -129,7 +130,8 @@ process.matchGenCHadron = matchGenCHadron.clone(
 # have to be transferred to the permanent storage element.
 options.ofName += ".root"
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string(options.ofName)
+  #fileName = cms.string(options.ofName)
+  fileName = cms.string("OutTree.root")
 )
 
 #####

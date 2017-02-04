@@ -128,7 +128,7 @@ options.parseArguments()
 # =====   Standard config variables =====
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 10
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
@@ -161,7 +161,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 #####
 ##   BTAGGING WITH HIP MITIGATION
 #####
@@ -237,7 +237,8 @@ process.matchGenCHadron = matchGenCHadron.clone(
 # have to be transferred to the permanent storage element.
 options.ofName += ".root"
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string(options.ofName)
+  #fileName = cms.string(options.ofName)
+  fileName = cms.string("OutTree.root")
 )
 
 ## Output Module Configuration (expects a path 'p')

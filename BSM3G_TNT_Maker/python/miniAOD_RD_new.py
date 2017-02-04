@@ -294,7 +294,10 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_TripleMu_12_10_5_v',
      'HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v',
      #Other
-     'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v',
+     'HLT_DoubleEle33_CaloIdL_MW_v',
+     'HLT_Mu50_v',
+     'HLT_TkMu50_v',
+     'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
   ),
   # Choose which information you want to use
   fillgeninfo           = cms.bool(False), #F

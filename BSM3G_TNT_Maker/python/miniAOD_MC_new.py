@@ -141,7 +141,6 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   ifevtriggers      = cms.bool(False), # True means you want to require the triggers
   maxtriggerversion = cms.double(10), # please leave it as a double
   evtriggers        = cms.vstring(
-
     # ttH SL and DL triggers Jan 2017
     'HLT_IsoMu22_v',
     'HLT_IsoTkMu22_v',
@@ -175,7 +174,10 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_TripleMu_12_10_5_v',
      'HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v',
      #Other
-     'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v',
+     'HLT_DoubleEle33_CaloIdL_MW_v',
+     'HLT_Mu50_v',
+     'HLT_TkMu50_v',
+     'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
   ),
   # Choose which information you want to use
   fillgeninfo           = cms.bool(True),

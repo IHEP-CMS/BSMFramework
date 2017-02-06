@@ -98,6 +98,7 @@ for d in range(0,len(datasetnames)):
     config.JobType.pluginName  = 'Analysis'
     # List of parameters to pass to CMSSW parameter-set configuration file:
     config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC_new.py'
+    config.JobType.sendExternalFolder = True
     #config.JobType.allowUndistributedCMSSW = True
     ofParam = 'ofName=' + datasetnames[d]
     config.JobType.pyCfgParams = [ofParam]

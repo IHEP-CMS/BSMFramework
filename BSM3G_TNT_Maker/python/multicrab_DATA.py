@@ -261,6 +261,7 @@ for d in range(0,len(datasetnames)):
     # List of parameters to pass to CMSSW parameter-set configuration file:
     config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD_new.py'
     config.JobType.allowUndistributedCMSSW = True
+    config.JobType.sendExternalFolder = True
     ofParam = 'ofName=' + datasetnames[d]
     config.JobType.pyCfgParams = [nameJECAK4PFchsDATA1,
                                   nameJECAK4PFchsDATA2,

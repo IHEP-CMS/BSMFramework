@@ -72,7 +72,7 @@ class TriggerSelector : public baseTree{
   int HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL;
   //TTHbb
   //Electron
-  int HLT_Ele105_CaloIdVT_GsfTrkIdT;
+  int HLT_Ele115_CaloIdVT_GsfTrkIdT;
   int HLT_Ele27_eta2p1_WP75_Gsf;
   int HLT_Ele27_WP85_Gsf;
   int HLT_Ele27_eta2p1_WPLoose_Gsf;
@@ -80,6 +80,7 @@ class TriggerSelector : public baseTree{
   //Muon
   int HLT_Mu45_eta2p1;
   int HLT_Mu50;
+  int HLT_TkMu50;
   int HLT_IsoMu17_eta2p1;
   int HLT_IsoMu24_eta2p1;
   int HLT_IsoMu18;
@@ -100,7 +101,7 @@ class TriggerSelector : public baseTree{
   int HLT_TripleMu_12_10_5;
   int HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL;
   //Other
-  int HLT_DoubleEle33_CaloIdL_GsfTrkIdVL;
+  int HLT_DoubleEle33_CaloIdL_MW;
   //Analysis
   int TTHbb_SL;
   int TTHbb_DL;

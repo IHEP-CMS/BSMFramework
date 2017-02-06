@@ -47,8 +47,8 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   //if(firstGoodVertex == vtx->end()) return; // skip event if there are no good PVs
   if(vtx_h->empty()) return; // skip the event if no PV found
   const reco::Vertex &firstGoodVertex = vtx_h->front();
-  bool isgoodvtx = isGoodVertex(firstGoodVertex);
-  if(!isgoodvtx) return;
+  //bool isgoodvtx = isGoodVertex(firstGoodVertex);
+  //if(!isgoodvtx) return;
   GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z());
   /////
   //   Get tau information 

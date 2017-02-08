@@ -11,7 +11,6 @@ using namespace std;
 // instead of member assignment e.g. Foo(int num){bar = num;} =>> FASTER!!
 TTHbb_eventSelector::TTHbb_eventSelector(string treeName, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
   baseTree(treeName,tree,debug),
-
   // Must register that module/helper will be making data access requests. Can be done
   // in constructor or 'beginJob' method:
   //
@@ -56,11 +55,9 @@ TTHbb_eventSelector::TTHbb_eventSelector(string treeName, TTree* tree, bool debu
   _vtx_position_z_max(iConfig.getParameter<double>("vtx_position_z_max")),
   _is_data(iConfig.getParameter<bool>("is_data"))
 {
-
   if(!_is_data) prunedGenToken_ = ic.consumes<edm::View<reco::GenParticle> >(iConfig.getParameter<edm::InputTag>("pruned"));
   JECInitialisation();
-//  SetBranches();
-
+  //SetBranches();
 }
 TTHbb_eventSelector::~TTHbb_eventSelector(){
   //delete TTree created by baseTree constructor:
@@ -74,7 +71,6 @@ void TTHbb_eventSelector::JECInitialisation(){
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC1_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC2_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC3_.fullPath());
-
   std::vector<JetCorrectorParameters> vParAK4PFchsMC;
   // Loop over vector of JEC files and create JetCorrectorParameters objects for each.
   // const_iterator used: we really dont want to be able to edit the original .txt file!!
@@ -86,7 +82,6 @@ void TTHbb_eventSelector::JECInitialisation(){
   jecAK4PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsMC) );
   // Get JEC uncertainty
   jecAK4PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsMCUnc_.fullPath()) );
-
   //AK4chs - DATA: Get the factorized jet corrector parameters.
   std::vector<std::string> jecPayloadNamesAK4PFchsDATA_;
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA1_.fullPath());
@@ -104,7 +99,7 @@ void TTHbb_eventSelector::JECInitialisation(){
 }
 
 void TTHbb_eventSelector::SetBranches(){
-  if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
+  if(debug_) std::cout<<"TTHbb_eventSelector::SetBranches >>> Setting branches: calling AddBranch of baseTree"<<std::endl;
   AddBranch(&is_singlelep,"is_singlelep");
   AddBranch(&is_dilepton,"is_dilepton");
 }
@@ -386,6 +381,7 @@ void TTHbb_eventSelector::FillLeptonVectors(const edm::Event& iEvent, std::vecto
   }
 
   //=== Electrons ===
+  // Also no Electron trigger requirements.
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const Ptr<pat::Electron> elPtr(electron_pat, ele - electron_pat->begin() );
     if(!(is_loose_electron(*ele,rhopog))) continue;
@@ -654,5 +650,15 @@ void TTHbb_eventSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   is_dilepton = dilepton_channel(iEvent,iSetup);
   if(debug_) std::cout << ("TTHbb_eventSelector:Fill") << ": is_singlelep = " << is_singlelep << std::endl;
   if(debug_) std::cout << ("TTHbb_eventSelector:Fill") << ": is_dilepton = " << is_dilepton << std::endl;
+  return;
+}
+
+void TTHbb_eventSelector::Clean(){
+
+  //delete *jecAK4PFchsMC_;
+  //delete *jecAK4PFchsMCUnc_;
+  //delete *jecAK4PFchsDATA_;
+  //delete *jecAK4PFchsDATAUnc_;
+
   return;
 }

@@ -100,6 +100,7 @@ for d in range(0,1):
     # List of parameters to pass to CMSSW parameter-set configuration file:
     config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC_new.py'
     config.JobType.sendExternalFolder = True
+    config.JobType.maxMemoryMB = 2000 # Default == 2Gb : maximum guaranteed to run on all sites
     #config.JobType.allowUndistributedCMSSW = True
     ofParam = 'ofName=' + datasetnames[d]
     config.JobType.pyCfgParams = [ofParam]
@@ -107,8 +108,8 @@ for d in range(0,1):
     config.Data.inputDataset   = datasetinputs[d]
     config.Data.inputDBS       = 'global'
     config.Data.splitting      = 'FileBased'
-    config.Data.totalUnits     = 2500 #With 'FileBased' splitting tells how many files to analyse
-    config.Data.unitsPerJob    = 3
+    config.Data.totalUnits     = 40000 #With 'FileBased' splitting tells how many files to analyse
+    config.Data.unitsPerJob    = 2
     config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'
     config.Data.outputDatasetTag = datasetnames[d]
 

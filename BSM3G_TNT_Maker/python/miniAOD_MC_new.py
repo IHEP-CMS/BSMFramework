@@ -34,8 +34,7 @@ options.parseArguments()
 #####
 process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
-#process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring('info'), info = cms.untracked.PSet(threshold = cms.untracked.string('DEBUG')), default = cms.untracked.PSet(limit = cms.untracked.int32(-1)), debugModules = cms.untracked.vstring("TNT"))
+process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring('info'), info = cms.untracked.PSet(threshold = cms.untracked.string('DEBUG')), default = cms.untracked.PSet(limit = cms.untracked.int32(-1)), debugModules = cms.untracked.vstring("TNT"))
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
@@ -56,7 +55,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 #####
 ##   BTAGGING WITH HIP MITIGATION
@@ -130,8 +129,7 @@ process.matchGenCHadron = matchGenCHadron.clone(
 # have to be transferred to the permanent storage element.
 options.ofName += ".root"
 process.TFileService = cms.Service("TFileService",
-  #fileName = cms.string(options.ofName)
-  fileName = cms.string("OutTree.root")
+  fileName = cms.string(options.ofName)
 )
 
 #####
@@ -143,6 +141,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   ifevtriggers      = cms.bool(False), # True means you want to require the triggers
   maxtriggerversion = cms.double(10), # please leave it as a double
   evtriggers        = cms.vstring(
+
     # ttH SL and DL triggers Jan 2017
     'HLT_IsoMu22_v',
     'HLT_IsoTkMu22_v',
@@ -176,10 +175,7 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
      'HLT_TripleMu_12_10_5_v',
      'HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v',
      #Other
-     'HLT_DoubleEle33_CaloIdL_MW_v',
-     'HLT_Mu50_v',
-     'HLT_TkMu50_v',
-     'HLT_Ele115_CaloIdVT_GsfTrkIdT_v',
+     'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v',
   ),
   # Choose which information you want to use
   fillgeninfo           = cms.bool(True),
@@ -279,20 +275,20 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   # used but are needed to prevent the
   # BSMFramework code from crashing.
   jecPayloadNamesAK4PFchsDATA1   = cms.FileInPath('BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK4PFchs.txt'),
-  jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt"),
-  jecPayloadNamesAK4PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt"),
-  jecPayloadNamesAK8PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK8PFchs.txt"),
-  jecPayloadNamesAK8PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt"),
-  jecPayloadNamesAK8PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt"),
-  jecPayloadNamesAK8PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt"),
-  jecPayloadNamesAK8PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFchs.txt"),
-  jecPayloadNamesAK4PFPuppiDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFPuppi.txt"),
-  jecPayloadNamesAK4PFPuppiDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFPuppi.txt"),
-  jecPayloadNamesAK4PFPuppiDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFPuppi.txt"),
-  jecPayloadNamesAK4PFPuppiDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFPuppi.txt"),
-  jecPayloadNamesAK4PFPuppiDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK4PFchs.txt"),
+  jecPayloadNamesAK4PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK4PFchs.txt"),
+  jecPayloadNamesAK8PFchsDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK4PFPuppi.txt"),
+  jecPayloadNamesAK8PFchsDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK4PFPuppi.txt"),
+  jecPayloadNamesAK8PFchsDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK4PFPuppi.txt"),
+  jecPayloadNamesAK8PFchsDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK4PFPuppi.txt"),
+  jecPayloadNamesAK8PFchsDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK4PFPuppi.txt"),
+  jecPayloadNamesAK4PFPuppiDATA1   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK8PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiDATA2   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK8PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiDATA3   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK8PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiDATA4   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK8PFchs.txt"),
+  jecPayloadNamesAK4PFPuppiDATAUnc = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK8PFchs.txt"),
   # PILEUP REWEIGHTING
   PUReweightfile      = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/PUReweight/PileUpReweightingMoriond17.root"),
   # BTAG REWEIGHTING

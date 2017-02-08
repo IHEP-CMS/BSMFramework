@@ -128,12 +128,13 @@ public:
   void FillJetVectors(const edm::Event& iEvent, std::vector<const reco::Candidate*> looseleps, std::vector<const pat::Jet*>& leading_jets, std::vector<const pat::Jet*>& subleading_jets ,std::vector<const pat::Jet*>& leading_btags, std::vector<const pat::Jet*>& subleading_btags, vector<pair<double,int> >& leading_jet_csv_pos, vector<pair<double,int> >& subleading_jet_csv_pos);
   int dilepton_channel(const edm::Event& iEvent, const edm::EventSetup& iSetup);
   int singlelepton_channel(const edm::Event& iEvent, const edm::EventSetup& iSetup);
+  void Clean();
 
   //void Clear();
   //bool ApplySelection();
 
 private:
-  //TTHbb_eventSelector(){};//Line may be deprecated.
+  //TTHbb_eventSelector(){};// Line deprecated.
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronVetoIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool>  > electronMediumIdMapToken_;
@@ -187,7 +188,6 @@ private:
 
   int is_singlelep,is_dilepton;
   int is_SL, is_DL;
-  vector<double> evSel_numjet,evSel_jetpt, evSel_jeteta, evSel_jetphi, evSel_jetenergy;
 
 };
 

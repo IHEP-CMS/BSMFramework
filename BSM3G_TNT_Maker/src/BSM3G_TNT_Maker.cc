@@ -67,7 +67,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);
-  if(analysisFilter)         TTHbb_eventselector      = new TTHbb_eventSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(analysisFilter)         {TTHbb_eventselector = new TTHbb_eventSelector("miniAOD", tree_, debug_, iConfig, consumesCollector()); TTHbb_eventselector->SetBranches();}
 }
 BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 {
@@ -114,8 +114,8 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     bjetnesssel_filter = 0;
     if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup, bjetnesssel_filter);
     if((bjetnessselfilter && bjetnesssel_filter==1) || !bjetnessselfilter){
-      //cout<<"bjetnesssel_filter aft "<<bjetnesssel_filter<<endl;
-      if(analysisFilter)         {TTHbb_eventselector->SetBranches(); TTHbb_eventselector->Fill(iEvent,iSetup);}
+      if(analysisFilter)         TTHbb_eventselector->Fill(iEvent,iSetup);
+      //if(analysisFilter)         {TTHbb_eventselector->SetBranches(); TTHbb_eventselector->Fill(iEvent,iSetup);}
       if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
       if(_fillgeninfo)           genselector->Fill(iEvent);
       if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);

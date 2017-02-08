@@ -320,6 +320,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       bjetness_eta += j.eta();
       bjetness_phi += j.phi();
       bjetness_en  += j.energy();
+      // Uses track info to build bjetness variables (passed into method by ref.)
       get_jettrks(j, PV, *ttrkbuilder,
                   jetschtrks, jetschtrkspv, jetschtrksnpv, jetsdir,
                   iEvent, electron_pat, muon_h,

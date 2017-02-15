@@ -94,6 +94,7 @@ for d in range(0,1):
     config.section_('General')
     config.General.requestName = datasetnames[d]
     config.General.workArea    = datasetnames[d]
+    config.General.transferLogs = True
 
     config.section_('JobType')
     config.JobType.pluginName  = 'Analysis'
@@ -110,13 +111,13 @@ for d in range(0,1):
     config.Data.splitting      = 'FileBased'
     config.Data.totalUnits     = 40000 #With 'FileBased' splitting tells how many files to analyse
     config.Data.unitsPerJob    = 2
-    config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'
+    config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'# First part of LFN for output files (must be /store/user/<username>/ or /store/group/<username>/  )
     config.Data.outputDatasetTag = datasetnames[d]
 
     print 'multicrab.py: outLFNDirBase = /store/user/jthomasw/TTHbb/BSMFramework/output/'
     #config.Data.publication = True
 
     config.section_('Site')
-    config.Site.storageSite    = 'T2_CN_Beijing'#'T2_CH_CERN'
+    config.Site.storageSite    = 'T2_CN_Beijing'#'T2_CH_CERN' # Site to which output is permenantly copied by crab3
     print 'multicrab.py: Submitting Jobs'
     submit(config)

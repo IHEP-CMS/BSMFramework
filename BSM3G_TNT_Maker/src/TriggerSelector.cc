@@ -37,6 +37,13 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     if(HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v<triggerBits->size()) HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL = triggerBits->accept(HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v);
     uint HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v(trigNames.triggerIndex(("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"+string(buffer)).c_str()));
     if(HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v<triggerBits->size()) HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL = triggerBits->accept(HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v);
+
+    uint HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v(trigNames.triggerIndex(("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v"+string(buffer)).c_str()));
+    if(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v<triggerBits->size()) HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL = triggerBits->accept(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v);
+    uint HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v(trigNames.triggerIndex(("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v"+string(buffer)).c_str()));
+    if(HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v<triggerBits->size()) HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL = triggerBits->accept(HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v);
+
+
     //TTHbb
     //Electron
     uint HLT_Ele115_CaloIdVT_GsfTrkIdT_v(trigNames.triggerIndex(("HLT_Ele115_CaloIdVT_GsfTrkIdT_v"+string(buffer)).c_str()));
@@ -69,6 +76,10 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     if(HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v<triggerBits->size()) HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL = triggerBits->accept(HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v);
     uint HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v(trigNames.triggerIndex(("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"+string(buffer)).c_str()));
     if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v<triggerBits->size()) HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL = triggerBits->accept(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v);
+    uint HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v(trigNames.triggerIndex(("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"+string(buffer)).c_str()));
+    if(HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v<triggerBits->size()) HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ = triggerBits->accept(HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v);
+    uint HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v(trigNames.triggerIndex(("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"+string(buffer)).c_str()));
+    if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v<triggerBits->size()) HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ = triggerBits->accept(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v);
     //TTHLep
     //Electron
     uint HLT_Ele23_WPLoose_Gsf_v(trigNames.triggerIndex(("HLT_Ele23_WPLoose_Gsf_v"+string(buffer)).c_str())); //Data
@@ -80,6 +91,10 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     if(HLT_IsoTkMu20_v<triggerBits->size()) HLT_IsoTkMu20 = triggerBits->accept(HLT_IsoTkMu20_v);
     uint HLT_IsoTkMu22_v(trigNames.triggerIndex(("HLT_IsoTkMu22_v"+string(buffer)).c_str()));
     if(HLT_IsoTkMu22_v<triggerBits->size()) HLT_IsoTkMu22 = triggerBits->accept(HLT_IsoTkMu22_v);
+    uint HLT_IsoMu24_v(trigNames.triggerIndex(("HLT_IsoMu24_v"+string(buffer)).c_str()));
+    if(HLT_IsoMu24_v<triggerBits->size()) HLT_IsoMu24 = triggerBits->accept(HLT_IsoMu24_v);
+    uint HLT_IsoTkMu24_v(trigNames.triggerIndex(("HLT_IsoTkMu24_v"+string(buffer)).c_str()));
+    if(HLT_IsoTkMu24_v<triggerBits->size()) HLT_IsoTkMu24 = triggerBits->accept(HLT_IsoTkMu24_v);
     //CrossEle-Mu
     uint HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v(trigNames.triggerIndex(("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v"+string(buffer)).c_str()));
     if(HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v<triggerBits->size()) HLT_DiMu9_Ele9_CaloIdL_TrackIdL = triggerBits->accept(HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v);
@@ -92,6 +107,9 @@ void TriggerSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSet
     //Other
     uint HLT_DoubleEle33_CaloIdL_MW_v(trigNames.triggerIndex(("HLT_DoubleEle33_CaloIdL_MW_v"+string(buffer)).c_str()));
     if(HLT_DoubleEle33_CaloIdL_MW_v<triggerBits->size()) HLT_DoubleEle33_CaloIdL_MW = triggerBits->accept(HLT_DoubleEle33_CaloIdL_MW_v);
+    uint HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v(trigNames.triggerIndex(("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v"+string(buffer)).c_str()));
+    if(HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v<triggerBits->size()) HLT_DoubleEle33_CaloIdL_GsfTrkIdVL = triggerBits->accept(HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v);
+
     //Analysis
     //uint TTHbb_SL_v(trigNames.triggerIndex(("TTHbb_SL_v"+string(buffer)).c_str()));
     //if(TTHbb_SL_v<triggerBits->size()) TTHbb_SL = triggerBits->accept(TTHbb_SL_v);
@@ -148,6 +166,13 @@ void TriggerSelector::SetBranches(){
   //Muon
   AddBranch(&HLT_IsoTkMu20                                   ,"HLT_IsoTkMu20");
   AddBranch(&HLT_IsoTkMu22                                   ,"HLT_IsoTkMu22");
+  AddBranch(&HLT_IsoMu24,"HLT_IsoMu24");
+  AddBranch(&HLT_IsoTkMu24,"HLT_IsoTkMu24");
+  AddBranch(&HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ,"HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ");
+  AddBranch(&HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ,"HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ");
+  AddBranch(&HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL,"HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
+  AddBranch(&HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL,"HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL");
+  AddBranch(&HLT_DoubleEle33_CaloIdL_GsfTrkIdVL,"HLT_DoubleEle33_CaloIdL_GsfTrkIdVL");
   //CrossEle-Mu
   AddBranch(&HLT_DiMu9_Ele9_CaloIdL_TrackIdL                 ,"HLT_DiMu9_Ele9_CaloIdL_TrackIdL");
   AddBranch(&HLT_Mu8_DiEle12_CaloIdL_TrackIdL                ,"HLT_Mu8_DiEle12_CaloIdL_TrackIdL");
@@ -203,6 +228,14 @@ void TriggerSelector::Clear(){
   //Muon
   HLT_IsoTkMu20 = -9999;
   HLT_IsoTkMu22 = -9999;
+  HLT_IsoMu24 = -9999;
+  HLT_IsoTkMu24 = -9999;
+  HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ = -9999;
+  HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ = -9999;
+  HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL = -9999;
+  HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL = -9999;
+  HLT_DoubleEle33_CaloIdL_GsfTrkIdVL = -9999;
+
   //CrossEle-Mu
   HLT_DiMu9_Ele9_CaloIdL_TrackIdL       = -9999;
   HLT_Mu8_DiEle12_CaloIdL_TrackIdL      = -9999;

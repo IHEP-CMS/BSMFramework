@@ -1,4 +1,4 @@
-#ifndef __TRIGGER_H_ 
+#ifndef __TRIGGER_H_
 #define __TRIGGER_H_
 #include <memory>
 /////
@@ -84,10 +84,16 @@ class TriggerSelector : public baseTree{
   int HLT_IsoMu17_eta2p1;
   int HLT_IsoMu24_eta2p1;
   int HLT_IsoMu18;
+  int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL;
+  int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL;
+  int HLT_IsoMu24;
+  int HLT_IsoTkMu24;
   //Cross
   int HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
   int HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
   int HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL;
+  int HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+  int HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ;
   //TTHLep
   //Electron
   int HLT_Ele23_WPLoose_Gsf; //Data
@@ -102,6 +108,7 @@ class TriggerSelector : public baseTree{
   int HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL;
   //Other
   int HLT_DoubleEle33_CaloIdL_MW;
+  int HLT_DoubleEle33_CaloIdL_GsfTrkIdVL;
   //Analysis
   int TTHbb_SL;
   int TTHbb_DL;

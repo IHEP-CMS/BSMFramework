@@ -1,4 +1,4 @@
-#ifndef __PV_HE_H_ 
+#ifndef __PV_HE_H_
 #define __PV_HE_H_
 /////
 //   Include files and namespaces
@@ -11,7 +11,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"   
+#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -113,13 +113,16 @@ class PVSelector : public baseTree{
   edm::EDGetTokenT<std::vector< PileupSummaryInfo> > PUInfo_;
   //Primary vertex cuts
   double _Pvtx_ndof_min;
-  double _Pvtx_vtx_max; 
+  double _Pvtx_vtx_max;
   double _Pvtx_vtxdxy_max;
+  /*double _vtx_ndof_min;
+  double _vtx_rho_max;
+  double _vtx_position_z_max;*/
   bool   _is_data;
   bool   _super_TNT;
   bool   _MiniAODv2;
   /////
-  //   BSM 
+  //   BSM
   /////
   //Variables
   int pvertex_notempty;
@@ -128,7 +131,7 @@ class PVSelector : public baseTree{
   double trueInteractions;
   vector<double> pvertex_x, pvertex_y, pvertex_z;
   vector<double> pvertex_xError, pvertex_yError, pvertex_zError;
-  vector<double> pvertex_ndof, pvertex_dxy;
+  vector<double> pvertex_ndof, pvertex_dxy, pvertex_Rho;
   vector<double> beamSpot_x0, beamSpot_y0, beamSpot_z0, beamSpot_xWidth, beamSpot_yWidth;
 };
 #endif

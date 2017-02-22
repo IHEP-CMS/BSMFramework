@@ -1,4 +1,3 @@
-
 #include "BSMFramework/BSM3G_TNT_Maker/interface/TTHbb_eventSelector.h"
 #include <iostream>
 #include <fstream>
@@ -226,59 +225,59 @@ void TTHbb_eventSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool A
   double cFactorJER = 1.0;
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
-  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
+  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Uncertai
   if( jetEta<0.5 ){
-    cFactorJER = 1.122;
-    cFactorJERdown = 1.122-0.026;
-    cFactorJERup   = 1.122+0.026;
+    cFactorJER = 1.109;
+    cFactorJERdown = 1.109-0.008;
+    cFactorJERup   = 1.109+0.008;
   } else if( jetEta<0.8 ){
-    cFactorJER = 1.167;
-    cFactorJERdown = 1.167-0.048;
-    cFactorJERup   = 1.167+0.048;
+    cFactorJER = 1.138;
+    cFactorJERdown = 1.138-0.013;
+    cFactorJERup   = 1.138+0.013;
   } else if( jetEta<1.1 ){
-    cFactorJER = 1.168;
-    cFactorJERdown = 1.168-0.046;
-    cFactorJERup   = 1.168+0.046;
+    cFactorJER = 1.114;
+    cFactorJERdown = 1.114-0.013;
+    cFactorJERup   = 1.114+0.013;
   } else if( jetEta<1.3 ){
-    cFactorJER = 1.029;
-    cFactorJERdown = 1.029-0.066;
-    cFactorJERup   = 1.029+0.066;
+    cFactorJER = 1.123;
+    cFactorJERdown = 1.123-0.024;
+    cFactorJERup   = 1.123+0.024;
   } else if( jetEta<1.7 ){
-    cFactorJER = 1.115;
-    cFactorJERdown = 1.115-0.030;
-    cFactorJERup   = 1.115+0.030;
+    cFactorJER = 1.084;
+    cFactorJERdown = 1.084-0.011;
+    cFactorJERup   = 1.084+0.011;
   } else if( jetEta<1.9 ){
-    cFactorJER = 1.041;
-    cFactorJERdown = 1.041-0.062;
-    cFactorJERup   = 1.041+0.062;
+    cFactorJER = 1.082;
+    cFactorJERdown = 1.082-0.035;
+    cFactorJERup   = 1.082+0.035;
   } else if( jetEta<2.1 ){
-    cFactorJER = 1.167;
-    cFactorJERdown = 1.167-0.086;
-    cFactorJERup   = 1.167+0.086;
+    cFactorJER = 1.140;
+    cFactorJERdown = 1.140-0.047;
+    cFactorJERup   = 1.140+0.047;
   } else if( jetEta<2.3 ){
-    cFactorJER = 1.094;
-    cFactorJERdown = 1.094-0.093;
-    cFactorJERup   = 1.094+0.093;
+    cFactorJER = 1.067;
+    cFactorJERdown = 1.067-0.053;
+    cFactorJERup   = 1.067+0.053;
   } else if( jetEta<2.5 ){
-    cFactorJER = 1.168;
-    cFactorJERdown = 1.168-0.120;
-    cFactorJERup   = 1.168+0.120;
+    cFactorJER = 1.177;
+    cFactorJERdown = 1.177-0.041;
+    cFactorJERup   = 1.177+0.041;
   } else if( jetEta<2.8 ){
-    cFactorJER = 1.266;
-    cFactorJERdown = 1.266-0.132;
-    cFactorJERup   = 1.266+0.132;
+    cFactorJER = 1.364;
+    cFactorJERdown = 1.364-0.039;
+    cFactorJERup   = 1.364+0.039;
   } else if( jetEta<3.0 ){
-    cFactorJER = 1.595;
-    cFactorJERdown = 1.595-0.175;
-    cFactorJERup   = 1.595+0.175;
+    cFactorJER = 1.857;
+    cFactorJERdown = 1.857-0.071;
+    cFactorJERup   = 1.857+0.071;
   } else if( jetEta<3.2 ){
-    cFactorJER = 0.998;
-    cFactorJERdown = 0.998-0.066;
-    cFactorJERup   = 0.998+0.066;
+    cFactorJER = 0.328;
+    cFactorJERdown = 0.328-0.022;
+    cFactorJERup   = 0.328+0.022;
   } else if( jetEta<5.0 ){
-    cFactorJER = 1.226;
-    cFactorJERdown = 1.226-0.145;
-    cFactorJERup   = 1.226+0.145;
+    cFactorJER = 1.160;
+    cFactorJERdown = 1.160-0.029;
+    cFactorJERup   = 1.160+0.029;
   }
   //double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
   double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
@@ -495,11 +494,11 @@ int TTHbb_eventSelector::dilepton_channel(const edm::Event& iEvent, const edm::E
   //Ele pT for lead is from tightleps (pT>30 GeV)
   //Jet pT > 30 GeV (as in single lepton channel)
 
-  if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": DL selection" << std::endl;
-  if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # tightleps: " << tightleps.size() << std::endl;
-  if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # looseleps: " << looseleps.size() << std::endl;
-  if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # jet_num: " << jet_num << std::endl;
-  if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # jetb_num : " << jetb_num << std::endl;
+  //if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": DL selection" << std::endl;
+  //if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # tightleps: " << tightleps.size() << std::endl;
+  //if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # looseleps: " << looseleps.size() << std::endl;
+  //if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # jet_num: " << jet_num << std::endl;
+  //if(debug_) std::cout << ("TTHbb_eventSelector:dilepton") << ": # jetb_num : " << jetb_num << std::endl;
 
   if(tightleps.size()>=1 && looseleps.size()==2 && jet_num>=2 && jetb_num>=1) {
       if (loose_muons.size()==1 && loose_electrons.size()==1){

@@ -6,10 +6,13 @@ PVSelector::PVSelector(std::string name, TTree* tree, bool debug, const pset& iC
   if(debug) std::cout<<"in pileup constructor: calling SetBrances()"<<std::endl;
   vtx_             = ic.consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
   beamSpot_        = ic.consumes<reco::BeamSpot>(edm::InputTag("offlineBeamSpot"));
-  PUInfo_          = ic.consumes<std::vector< PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo")); 
+  PUInfo_          = ic.consumes<std::vector< PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo"));
   _Pvtx_ndof_min   = iConfig.getParameter<double>("Pvtx_ndof_min");
   _Pvtx_vtx_max    = iConfig.getParameter<double>("Pvtx_vtx_max");
   _Pvtx_vtxdxy_max = iConfig.getParameter<double>("Pvtx_vtxdxy_max");
+  /*_vtx_ndof_min = iConfig.getParameter<double>("vtx_ndof_min");
+  _vtx_rho_max = iConfig.getParameter<double>("vtx_rho_max");
+  _vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");*/
   _is_data         = iConfig.getParameter<bool>("is_data");
   _super_TNT       = iConfig.getParameter<bool>("super_TNT");
   _MiniAODv2       = iConfig.getParameter<bool>("MiniAODv2");
@@ -19,11 +22,11 @@ PVSelector::~PVSelector(){
   delete tree_;
 }
 void PVSelector::Fill(const edm::Event& iEvent){
-  Clear(); 
+  Clear();
   if(debug_) std::cout<<"getting pileup info"<<std::endl;
   /////
   //   Recall collections
-  /////  
+  /////
   edm::Handle<reco::VertexCollection> vtx;
   iEvent.getByToken(vtx_,vtx);
   reco::BeamSpot beamSpot;
@@ -31,15 +34,23 @@ void PVSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(beamSpot_, beamSpotHandle);
   /////
   //   Get vertex information
-  /////  
-  if(!vtx->empty()) pvertex_notempty = 1; 
+  /////
+  if(!vtx->empty()) pvertex_notempty = 1;
   for(reco::VertexCollection::const_iterator vtxIt = vtx->begin(); vtxIt!= vtx->end(); ++vtxIt){
     if((vtxIt->isValid()) && !(vtxIt->isFake())){
-      //if(vtxIt->ndof() < _Pvtx_ndof_min) continue; 
+      //if(vtxIt->ndof() < _Pvtx_ndof_min) continue;
       //if(abs(vtxIt->z()) >= _Pvtx_vtx_max) continue;
+
+      // >>>>>>>>> ttHbb PV selection added <<<<<<<<<<<<<
+      //if(vtxIt->ndof() < _vtx_ndof_min) continue;
+      //if(abs(vtxIt->position().Rho()) >= _vtx_rho_max) continue;
+      //if(abs(vtxIt->z()) >= _vtx_position_z_max) continue;
+      //>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<
+
       double vtxdxy = sqrt((vtxIt->x()*vtxIt->x())+(vtxIt->y()*vtxIt->y()));
-      //if(vtxdxy >=  _Pvtx_vtxdxy_max) continue; 
+      //if(vtxdxy >=  _Pvtx_vtxdxy_max) continue;
       nBestVtx++;
+      pvertex_Rho.push_back(vtxIt->position().Rho());
       pvertex_ndof.push_back(vtxIt->ndof());
       pvertex_dxy.push_back(vtxdxy);
       pvertex_x.push_back(vtxIt->x());
@@ -52,11 +63,11 @@ void PVSelector::Fill(const edm::Event& iEvent){
   }
   /////
   //   Get pileup information
-  /////   
+  /////
   std::vector<PileupSummaryInfo>::const_iterator PVI;
   if(!_is_data){
     Handle<std::vector< PileupSummaryInfo > >  PUInfo;
-    iEvent.getByToken(PUInfo_, PUInfo); 
+    iEvent.getByToken(PUInfo_, PUInfo);
     for(PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI){
       if(PVI->getBunchCrossing() == -1){npuVerticesm1 += PVI->getPU_NumInteractions();}
       if(PVI->getBunchCrossing() ==  1){npuVerticesp1 += PVI->getPU_NumInteractions();}
@@ -69,11 +80,11 @@ void PVSelector::Fill(const edm::Event& iEvent){
       }
       if(debug_)std::cout << " Pileup Information: bunchXing, nvtx,true nvtx: " << PVI->getBunchCrossing() << " " << PVI->getPU_NumInteractions()<< " "<< PVI->getTrueNumInteractions()<< std::endl;
     }//loop over pileup info
-  }  
+  }
   if(debug_) std::cout<<"got pileup info"<<std::endl;
   /////
   //   Get beamspot information
-  /////   
+  /////
   if(beamSpotHandle.isValid()){
     beamSpot = *beamSpotHandle;
   }else{
@@ -103,6 +114,7 @@ void PVSelector::SetBranches(){
   AddBranch(&pvertex_xError  ,"pvertex_xError");
   AddBranch(&pvertex_yError  ,"pvertex_yError");
   AddBranch(&pvertex_zError  ,"pvertex_zError");
+  AddBranch(&pvertex_Rho     ,"pvertex_Rho");
   AddBranch(&beamSpot_x0     ,"beamSpot_x0");
   AddBranch(&beamSpot_y0     ,"beamSpot_y0");
   AddBranch(&beamSpot_z0     ,"beamSpot_z0");
@@ -111,18 +123,19 @@ void PVSelector::SetBranches(){
   if(debug_)    std::cout<<"set branches"<<std::endl;
 }
 void PVSelector::Clear(){
-  pvertex_notempty = 0; 
-  nBestVtx         = 0; 
+  pvertex_notempty = 0;
+  nBestVtx         = 0;
   npuVertices      = 0;
   ootnpuVertices   = 0;
   npuVerticesm1    = 0;
   npuVerticesp1    = 0;
   trueInteractions = 0;
   pvertex_ndof.clear();
+  pvertex_Rho.clear();
   pvertex_dxy.clear();
   pvertex_x.clear();
   pvertex_y.clear();
-  pvertex_z.clear(); 
+  pvertex_z.clear();
   pvertex_xError.clear();
   pvertex_yError.clear();
   pvertex_zError.clear();

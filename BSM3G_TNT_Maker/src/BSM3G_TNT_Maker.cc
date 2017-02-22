@@ -46,6 +46,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   evtree_->Branch("eventnum",&eventnum,"eventnum/I");
   evtree_->Branch("eventnumnegative",&eventnumnegative,"eventnumnegative/I");
   tree_   = fs->make<TTree>("BOOM","BOOM");
+  cout << "BSM3G_TNT_Maker:BSM3G_TNT_Maker >> Number of entries in TTree = " << tree_->GetEntries() << endl;
 
   //> Register helper classes to the framework.
   if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
@@ -87,6 +88,9 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Event info for all the events you read
   eventnum = -1;
   eventnum = iEvent.id().event();
+  //if (eventnum == 315650){
+  //  if(debug_) cout << ">>>>>>>>>>>>>>>>>>>>>>>>>> " << eventnum << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< I'M HERE!" << endl;
+  //}
   eventnumnegative = 1;
   if(!_is_data){
     edm::Handle<GenEventInfoProduct> genEvtInfo;
@@ -94,9 +98,8 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     eventnumnegative = (genEvtInfo->weight())/abs(genEvtInfo->weight());
   }
   evtree_->Fill();
-  //Require trigger on the event
   bool evtriggered = false;
-  if(_ifevtriggers){
+  if(_ifevtriggers){//Flag to reqeust a trigger was fired in order to save event
     edm::Handle<edm::TriggerResults> triggerBits;
     iEvent.getByToken(triggerBits_, triggerBits);
     const edm::TriggerNames &trigNames = iEvent.triggerNames(*triggerBits);
@@ -110,12 +113,13 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     }
   }
   //Call classes
-  if((_ifevtriggers && evtriggered) || !_ifevtriggers){
+  // Any if statment here works as the ONLY form of event selection.
+  // Otherwise there should be no reason an event is not saved.
+  if((_ifevtriggers && evtriggered) || !_ifevtriggers){//Require trigger on the event if flag, otherwise save without requirement.
     bjetnesssel_filter = 0;
     if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup, bjetnesssel_filter);
     if((bjetnessselfilter && bjetnesssel_filter==1) || !bjetnessselfilter){
       if(analysisFilter)         TTHbb_eventselector->Fill(iEvent,iSetup);
-      //if(analysisFilter)         {TTHbb_eventselector->SetBranches(); TTHbb_eventselector->Fill(iEvent,iSetup);}
       if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
       if(_fillgeninfo)           genselector->Fill(iEvent);
       if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);

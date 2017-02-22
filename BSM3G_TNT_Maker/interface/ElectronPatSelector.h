@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <TRandom3.h>
-#include <TBranch.h>                                                                    
+#include <TBranch.h>
 #include <TClonesArray.h>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -66,6 +66,7 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
+//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include "TMath.h"
 using namespace std;
 using namespace pat;
@@ -90,6 +91,7 @@ class ElectronPatSelector : public  baseTree{
  private:
   ElectronPatSelector(){};
   EGammaMvaEleEstimatorFWLite* mvaID_;
+//  EffectiveAreas _effectiveAreas;
   /////
   //   Config variables
   /////
@@ -125,7 +127,7 @@ class ElectronPatSelector : public  baseTree{
   bool   _qglVar;
   bool   _is_data;
   /////
-  //   BSM 
+  //   BSM
   /////
   //Variables
   //Kinematics
@@ -138,13 +140,13 @@ class ElectronPatSelector : public  baseTree{
   //Isolation
   vector<double> patElectron_isoChargedHadrons, patElectron_isoNeutralHadrons, patElectron_isoPhotons, patElectron_isoPU, patElectron_relIsoDeltaBeta, patElectron_relIsoRhoEA, patElectron_dr03EcalRecHitSumEt, patElectron_dr03HcalDepth1TowerSumEt, patElectron_isolPtTracks, patElectron_ecalPFClusterIso, patElectron_hcalPFClusterIso;
   //Shape, Track related variables, other prop
-  vector<double> patElectron_dEtaIn, patElectron_dPhiIn, 
+  vector<double> patElectron_dEtaIn, /*patElectron_dEtaInSeed,*/ patElectron_dPhiIn,
                  patElectron_full5x5_sigmaIetaIeta, patElectron_full5x5_e2x5Max, patElectron_full5x5_e5x5, patElectron_full5x5_e1x5,
-                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2; 
+                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2;
   //IP
   vector<double> patElectron_gsfTrack_dz_pv, patElectron_gsfTrack_dxy_pv, patElectron_d0, patElectron_gsfTrack_dz_bs, patElectron_gsfTrack_dxy_bs, patElectron_dzError, patElectron_dxyError, patElectron_gsfTrack_vtx, patElectron_gsfTrack_vty, patElectron_gsfTrack_vtz;
   vector<double> patElectron_gsfTrack_PCAx_pv, patElectron_gsfTrack_PCAy_pv, patElectron_gsfTrack_PCAz_pv,
-                 patElectron_gsfTrack_PCAx_bs, patElectron_gsfTrack_PCAy_bs, patElectron_gsfTrack_PCAz_bs,  
+                 patElectron_gsfTrack_PCAx_bs, patElectron_gsfTrack_PCAy_bs, patElectron_gsfTrack_PCAz_bs,
                  patElectron_gsfTrackFitErrorMatrix_00, patElectron_gsfTrackFitErrorMatrix_01, patElectron_gsfTrackFitErrorMatrix_02, patElectron_gsfTrackFitErrorMatrix_11, patElectron_gsfTrackFitErrorMatrix_12, patElectron_gsfTrackFitErrorMatrix_22;
   //patElectron_relIsoDeltaBeta,patElectron_relIsoRhoEA;
   /////
@@ -157,7 +159,7 @@ class ElectronPatSelector : public  baseTree{
   double get_effarea(double eta);
   void get_elejet_info(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                        double& elejet_mindr, double& elejet_pt, double& eleptOVelejetpt,
-                       double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,                       
+                       double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,
                        double& jx, double& jy, double& jz, double& eleptrel, double& eleparel, double& eleparelsub,
                        int& lepjetidx);
   int pvassociation(edm::View<pat::Electron>::const_iterator& ele, const pat::PackedCandidateCollection& pcc);

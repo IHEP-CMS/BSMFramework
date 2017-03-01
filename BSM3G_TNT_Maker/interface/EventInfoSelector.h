@@ -1,4 +1,4 @@
-#ifndef __EVENTINFO_HE_H_ 
+#ifndef __EVENTINFO_HE_H_
 #define __EVENTINFO_HE_H_
 /////
 //   Include files and namespaces
@@ -11,7 +11,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"   
+#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -121,17 +121,21 @@ class EventInfoSelector : public baseTree{
   edm::EDGetTokenT<double> fixedGridRhoFastjetCentralChargedPileUpHandle_;
   edm::EDGetTokenT<double> fixedGridRhoFastjetCentralNeutralHandle_;
   edm::EDGetTokenT<edm::TriggerResults> metFilterBits_;
+  edm::EDGetTokenT<bool> badGlobalMuonTagger_;
+  edm::EDGetTokenT<bool> cloneGlobalMuonTagger_;
   void Initialise();
   //Event quantities
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
   double EVENT_genWeight_, EVENT_genHT;
-  bool _is_data; 
-  double EVENT_rhopog_, EVENT_rhotth_; 
+  bool _is_data;
+  double EVENT_rhopog_, EVENT_rhotth_;
   double EVENT_originalXWGTUP_, EVENT_scalePDF_;
   double EVENT_PDFtthbbWeightUp_, EVENT_PDFtthbbWeightDown_, EVENT_Q2tthbbWeightUp_, EVENT_Q2tthbbWeightDown_;
   vector<double> EVENT_genWeights_;
   vector<double> EVENT_genWeightsSource_;
   double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;
+  bool EVENT_filterBadGlobalMuonTagger;
+  bool EVENT_filtercloneGlobalMuonTagger;
   //Event filters
   int Flag_HBHENoiseFilter;
   int Flag_HBHENoiseIsoFilter;
@@ -152,13 +156,17 @@ class EventInfoSelector : public baseTree{
   int Flag_trkPOG_toomanystripclus53X;
   int Flag_trkPOG_logErrorTooManyClusters;
   int Flag_METFilters;
+  int Flag_globalTightHalo2016Filter;
+  //int badGlobalMuonTagger;
+  //int cloneGlobalMuonTagger;
+  //int Flag_badMuons;
   double BJetness_jetpt0;
   double BJetness_numleps;
   double BJetness_npvTrkOVcollTrk;
   double BJetness_avip3dval;
   double BJetness_avip3dsig;
   double BJetness_avsip3dsig;
-  double BJetness_avip1dsig;  
+  double BJetness_avip1dsig;
   LHAPDF::PDFSet *read_PDFSet;
   std::vector<LHAPDF::PDF*> _systPDFs;
   bool bjetnessproducer_;

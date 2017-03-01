@@ -46,7 +46,7 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   evtree_->Branch("eventnum",&eventnum,"eventnum/I");
   evtree_->Branch("eventnumnegative",&eventnumnegative,"eventnumnegative/I");
   tree_   = fs->make<TTree>("BOOM","BOOM");
-  cout << "BSM3G_TNT_Maker:BSM3G_TNT_Maker >> Number of entries in TTree = " << tree_->GetEntries() << endl;
+  //cout << "BSM3G_TNT_Maker:BSM3G_TNT_Maker >> Number of entries in TTree = " << tree_->GetEntries() << endl;
 
   //> Register helper classes to the framework.
   if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());

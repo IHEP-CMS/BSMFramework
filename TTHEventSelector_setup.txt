@@ -12,28 +12,62 @@
 #==========================================
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export SCRAM_ARCH="slc6_amd64_gcc530"
-export CMSSW_VERSION="CMSSW_8_0_24"
+export CMSSW_VERSION="CMSSW_8_0_26_patch2"
+
 cmsrel $CMSSW_VERSION
 cd $CMSSW_VERSION/src
-export CMSSW_SRC="$( pwd )"
 cmsenv
+
 git cms-init
+
 git clone -b TTHEventSelector_branch https://github.com/IHEP-CMS/BSMFramework.git
-git cms-merge-topic cms-met:METRecipe_8020
-git cms-merge-topic ahinzmann:METRecipe_8020_Moriond17
-git cms-merge-topic cms-met:fromCMSSW_8_0_20_postICHEPfilter
-git cms-merge-topic ikrav:egm_id_80X_v2
 git clone https://github.com/IHEP-CMS/BJetnessTTHbb.git
+
+# deterministic seed producer
+git cms-merge-topic riga:deterministicSeeds
+
+# updated MET tools
+# this topic is branched from the official cms-met:METRecipe_8020 but fixes the badGlobalMuonTagger
+# so that it works like any other MET filter module
+git cms-merge-topic riga:badGlobalMuonTagger_fix
+git cms-merge-topic cms-met:METRecipe_80X_part2
+
+# updated MET phi corrections
+git clone https://github.com/cms-met/MetTools.git
+
+# EGMSmearer and data
+# this topic is branched from cms-egamma:EGM_gain_v1 and makes the EGMSmearer use our deterministic
+# seeds (and also stores the pt before calibration as a userFloat which we need later for
+# lepton/trigger scale factors)
+git cms-merge-topic riga:deterministicEGMSmearer_v2
+cd EgammaAnalysis/ElectronTools/data
+git clone https://github.com/ECALELFS/ScalesSmearings.git -b Moriond17_gainSwitch_unc
+cd $CMSSW_BASE/src
+
+# ttHFGenFilter
+# (only required when you use the ttHF filtered ttJets dataset)
+git cms-merge-topic riga:ttHFGenFilter_tagging
+
+# update PUJetId values
+git remote add ahinzmann https://github.com/ahinzmann/cmssw.git
+git fetch ahinzmann PUidMiniAODfix80
+git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
+
+# boosted object definitions
+# git clone https://github.com/cms-ttH/MiniAOD.git --branch TODO --depth 1
+
+# common classifier
 mkdir TTH
 cd TTH
-git clone https://github.com/cms-ttH/CommonClassifier.git
-source CommonClassifier/setup/install_mem.sh
+git clone https://gitlab.cern.ch/ttH/CommonClassifier.git TTH/CommonClassifier
+source TTH/CommonClassifier/setup/install_mem.sh
+# when your ssh client is configured property, you can also use
+# ssh://git@gitlab.cern.ch:7999/ttH/CommonClassifier.git
 cd $CMSSW_VERSION/src
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout  #brings in HEEP V70 into VID
 git cms-merge-topic ikrav:egm_id_80X_v3 # For other E/gamma IDs in VID if you wish to have them
 git cms-merge-topic Sam-Harper:PackedCandNoPuppi # Only necessary to run HEEP V70 on AOD (it will crash if this is not present looking for puppi candidates
 mkdir -p ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/ #we need this for the mva weights which runs in VID regardless if you need it or not
 git clone https://github.com/cms-data/RecoEgamma-ElectronIdentification ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/data #we need this for the mva weights which runs in VID regardless if you need it or not
-scram b # -j 3
-mem_test
-bdt_test
+
+scram b -j

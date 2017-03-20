@@ -63,7 +63,7 @@ git clone https://gitlab.cern.ch/ttH/CommonClassifier.git TTH/CommonClassifier
 source TTH/CommonClassifier/setup/install_mem.sh
 # when your ssh client is configured property, you can also use
 # ssh://git@gitlab.cern.ch:7999/ttH/CommonClassifier.git
-cd $CMSSW_VERSION/src
+cd $CMSSW_BASE/src
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout  #brings in HEEP V70 into VID
 git cms-merge-topic ikrav:egm_id_80X_v3 # For other E/gamma IDs in VID if you wish to have them
 git cms-merge-topic Sam-Harper:PackedCandNoPuppi # Only necessary to run HEEP V70 on AOD (it will crash if this is not present looking for puppi candidates

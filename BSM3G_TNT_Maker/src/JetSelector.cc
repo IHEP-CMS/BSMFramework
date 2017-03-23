@@ -11,6 +11,7 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   multToken_    = ic.consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
   rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoAll"));
+  //rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoCentral"));
   jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
   jecPayloadNamesAK4PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC2");
   jecPayloadNamesAK4PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC3");
@@ -185,7 +186,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
     float JERScaleFactor     = 1;
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
-    if(!_is_data) GetJER(j, corrAK4PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    if(!_is_data) GetJER(j, corrAK4PFchs, rho, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -286,7 +287,7 @@ void JetSelector::Fill(const edm::Event& iEvent){
       float JERScaleFactor     = 1;
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
-      if(!_is_data) GetJER(j, corrAK4PFPuppi, rhoJER, false, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      if(!_is_data) GetJER(j, corrAK4PFPuppi, rho, false, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -664,11 +665,17 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs,
     resolution = JME::JetResolution(jerAK4PFPuppi_);
     res_sf = JME::JetResolutionScaleFactor(jerAK4PFPuppiSF_);
   }
+
+  /*cout << "JetParameters:: jet.pt() = " << jet.pt() << endl;
+  cout << "JetParameters:: jet.eta() = " << jet.eta() << endl;
+  cout << "JetParameters:: rhoJER = " << rhoJER << endl;*/
   JME::JetParameters parameters;
   parameters.setJetPt(jet.pt());
   parameters.setJetEta(jet.eta());
   parameters.setRho(rhoJER);
+
   float relpterr = resolution.getResolution(parameters);
+
   if(genJetPt>0. && deltaR(jet.eta(),jet.phi(),jet.genJet()->eta(),jet.genJet()->phi())<0.2
      && (abs(jet.pt()-jet.genJet()->pt())<3*relpterr*jet.pt())) {
     JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;

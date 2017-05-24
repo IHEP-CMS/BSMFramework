@@ -371,6 +371,39 @@ process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/da
 process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
 process.QGTagger.srcJets       = cms.InputTag('slimmedJets')
 process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
+
+
+# Access badGlobalMuonTagger and cloneGlobalMuonTagger
+# "_cff" files need to be associated with the process before you can access them/their methods via your process object.
+# In order to do so one needs to make a clone of the python script template:
+
+process.load("RecoMET.METFilters.BadPFMuonFilter_cfi")
+from RecoMET.METFilters.BadPFMuonFilter_cfi import BadPFMuonFilter
+process.BadPFMuonFilter = BadPFMuonFilter.clone(
+    muons = cms.InputTag("slimmedMuons"),
+    PFCandidates = cms.InputTag("packedPFCandidates"),
+)
+
+
+process.load("RecoMET.METFilters.BadChargedCandidateFilter_cfi")
+from RecoMET.METFilters.BadChargedCandidateFilter_cfi import BadChargedCandidateFilter
+process.BadChargedCandidateFilter = BadChargedCandidateFilter.clone(
+    muons = cms.InputTag("slimmedMuons"),
+    PFCandidates = cms.InputTag("packedPFCandidates"),
+)
+
+process.load("RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff")
+from RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff import badGlobalMuonTaggerMAOD
+
+process.badGlobalMuonTagger = badGlobalMuonTaggerMAOD.clone(
+    taggingMode = cms.bool(True),
+)
+
+from RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff import cloneGlobalMuonTaggerMAOD
+process.cloneGlobalMuonTagger = cloneGlobalMuonTaggerMAOD.clone(
+    taggingMode = cms.bool(True),
+)
+
 #Run analysis sequence
 process.p = cms.Path(
 process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenCHadron*process.matchGenBHadron*

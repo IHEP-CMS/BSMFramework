@@ -406,9 +406,16 @@ process.cloneGlobalMuonTagger = cloneGlobalMuonTaggerMAOD.clone(
 
 #Run analysis sequence
 process.p = cms.Path(
-process.selectedHadronsAndPartons*process.genJetFlavourInfos*process.matchGenCHadron*process.matchGenBHadron*
-process.egmGsfElectronIDSequence*
-process.BJetness*
+process.selectedHadronsAndPartons
+*process.genJetFlavourInfos
+*process.matchGenCHadron
+*process.matchGenBHadron
+*process.egmGsfElectronIDSequence
+*process.BJetness
+*process.BadPFMuonFilter
+*process.BadChargedCandidateFilter
+*process.badGlobalMuonTagger
+*process.cloneGlobalMuonTagger
 process.TNT
 )
 #process.e = cms.EndPath(process.out)

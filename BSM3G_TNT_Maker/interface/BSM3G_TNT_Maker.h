@@ -95,7 +95,7 @@ class BSM3G_TNT_Maker : public edm::EDAnalyzer {
   /////
   TFile* file;
   TTree* evtree_;
-  int eventnum;
+  long long eventnum;
   int eventnumnegative;
   TTree* tree_;
   const size_t MaxN;

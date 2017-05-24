@@ -68,7 +68,7 @@ if __name__ == '__main__':
 #'TTHbb_MuEGBlockH2'
                  ]
  datasetinputs = [
- # Events were stored in SingleElectron dataset due to the presence of AT LEAST 1 high-energy electron in the event.
+ # SingleElectron dataset : AT LEAST 1 high-energy electron in the event.
  '/SingleElectron/Run2016B-23Sep2016-v3/MINIAOD'
  #'/SingleElectron/Run2016C-23Sep2016-v1/MINIAOD',
  #'/SingleElectron/Run2016D-23Sep2016-v1/MINIAOD',
@@ -78,7 +78,7 @@ if __name__ == '__main__':
  #'/SingleElectron/Run2016G-23Sep2016-v1/MINIAOD',
  #'/SingleElectron/Run2016H-PromptReco-v2/MINIAOD',
  #'/SingleElectron/Run2016H-PromptReco-v3/MINIAOD,',
- # Events were stored in SingleMuon dataset due to the presence of AT LEAST 1 high-energy muon in the event.
+ # SingleMuon dataset : AT LEAST 1 high-energy muon in the event.
  #'/SingleMuon/Run2016B-23Sep2016-v3/MINIAOD',
  #'/SingleMuon/Run2016C-23Sep2016-v1/MINIAOD',
  #'/SingleMuon/Run2016D-23Sep2016-v1/MINIAOD',
@@ -118,81 +118,81 @@ if __name__ == '__main__':
                  ]
 
 JECBlockBCD = [
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L1FastJet_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2Relative_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV3_DATA/Summer16_23Sep2016BCDV3_DATA_Uncertainty_AK8PFchs.txt'
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L1FastJet_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2Relative_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L3Absolute_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2L3Residual_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_Uncertainty_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L1FastJet_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2Relative_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L3Absolute_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2L3Residual_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_Uncertainty_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L1FastJet_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2Relative_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L3Absolute_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_L2L3Residual_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016BCDV4_DATA/Summer16_23Sep2016BCDV4_DATA_Uncertainty_AK8PFchs.txt'
 ]
 
 JECBlockEF = [
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L1FastJet_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2Relative_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L3Absolute_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2L3Residual_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_Uncertainty_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L1FastJet_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2Relative_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L3Absolute_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2L3Residual_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_Uncertainty_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L1FastJet_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2Relative_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L3Absolute_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_L2L3Residual_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV3_DATA/Summer16_23Sep2016EFV3_DATA_Uncertainty_AK8PFchs.txt'
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L1FastJet_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2Relative_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L3Absolute_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2L3Residual_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_Uncertainty_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L1FastJet_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2Relative_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L3Absolute_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2L3Residual_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_Uncertainty_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L1FastJet_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2Relative_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L3Absolute_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_L2L3Residual_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016EFV4_DATA/Summer16_23Sep2016EFV4_DATA_Uncertainty_AK8PFchs.txt'
 ]
 
 JECBlockG = [
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L1FastJet_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2Relative_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L3Absolute_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2L3Residual_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_Uncertainty_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L1FastJet_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2Relative_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L3Absolute_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2L3Residual_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_Uncertainty_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L1FastJet_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2Relative_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L3Absolute_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_L2L3Residual_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV3_DATA/Summer16_23Sep2016GV3_DATA_Uncertainty_AK8PFchs.txt'
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L1FastJet_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2Relative_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L3Absolute_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2L3Residual_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_Uncertainty_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L1FastJet_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2Relative_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L3Absolute_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2L3Residual_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_Uncertainty_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L1FastJet_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2Relative_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L3Absolute_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_L2L3Residual_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016GV4_DATA/Summer16_23Sep2016GV4_DATA_Uncertainty_AK8PFchs.txt'
 ]
 
 JECBlockH = [
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L1FastJet_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2Relative_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L3Absolute_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2L3Residual_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_Uncertainty_AK4PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L1FastJet_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2Relative_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L3Absolute_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2L3Residual_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_Uncertainty_AK4PFPuppi.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L1FastJet_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2Relative_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L3Absolute_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_L2L3Residual_AK8PFchs.txt',
-'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV3_DATA/Summer16_23Sep2016HV3_DATA_Uncertainty_AK8PFchs.txt'
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L1FastJet_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2Relative_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L3Absolute_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2L3Residual_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_Uncertainty_AK4PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L1FastJet_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2Relative_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L3Absolute_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2L3Residual_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_Uncertainty_AK4PFPuppi.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L1FastJet_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2Relative_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L3Absolute_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_L2L3Residual_AK8PFchs.txt',
+'BSMFramework/BSM3G_TNT_Maker/data/JEC/DATA/Summer16_23Sep2016HV4_DATA/Summer16_23Sep2016HV4_DATA_Uncertainty_AK8PFchs.txt'
 ]
 
 goodRunsLists = [
-'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/runF_split_JSON/Cert_276831-278801_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/runF_split_JSON/Cert_278802-280385_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
-'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/GOLDEN/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
+'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/runF_split_JSON/Cert_276831-278801_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
+'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/runF_split_JSON/Cert_278802-280385_13TeV_23Sep2016ReReco_Collisions16_JSON.txt',
+'/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/data/JSON/GOLDEN/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 ]
 
 #for d in range(0,len(datasetnames)):
@@ -262,7 +262,7 @@ for d in range(0,1):
     config.section_('JobType')
     config.JobType.pluginName  = 'Analysis'
     # List of parameters to pass to CMSSW parameter-set configuration file:
-    config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_24/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD_new.py'
+    config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_RD_new.py'
     config.JobType.allowUndistributedCMSSW = True
     config.JobType.sendExternalFolder = True
     ofParam = 'ofName=' + datasetnames[d]

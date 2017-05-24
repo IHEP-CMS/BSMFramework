@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <TRandom3.h>
-#include <TBranch.h>                                                                    
+#include <TBranch.h>
 #include <TClonesArray.h>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -75,6 +75,8 @@
 #include "TrackingTools/PatternTools/interface/TwoTrackMinimumDistance.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
+#include "BSMFramework/BSM3G_TNT_Maker/interface/TTHbb_eventSelector.h"
+
 using namespace std;
 using namespace pat;
 using namespace edm;
@@ -94,6 +96,10 @@ class BJetnessFVSelector : public  baseTree{
     void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
   private:
     BJetnessFVSelector(){};
+
+    TTHbb_eventSelector          *evSel;
+
+
     /////
     //   Config variables
     /////
@@ -137,12 +143,12 @@ class BJetnessFVSelector : public  baseTree{
     //ImpactParameter
     vector<double> BJetnessFV_avip3d_val, BJetnessFV_avip3d_sig, BJetnessFV_avsip3d_sig, BJetnessFV_avip1d_sig;
     /////
-    //   Methods 
+    //   Methods
     /////
-    //Methods to be aligned to the TTHbb selection 
+    //Methods to be aligned to the TTHbb selection
     bool is_loose_muon(const pat::Muon& mu, const reco::Vertex& vtx);
     bool is_tight_muon(const pat::Muon& mu, const reco::Vertex& vtx);
-    double rel_iso_dbc_mu(const pat::Muon& lepton);  
+    double rel_iso_dbc_mu(const pat::Muon& lepton);
     bool is_loose_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     bool is_tight_electron(const pat::Electron& ele, double rhopog);//, const reco::Vertex& vtx);
     double rel_iso_dbc_ele(const pat::Electron& lepton, double rhopog);

@@ -125,7 +125,9 @@ class EventInfoSelector : public baseTree{
   edm::EDGetTokenT<bool> cloneGlobalMuonTagger_;
   void Initialise();
   //Event quantities
-  int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
+  uint64_t EVENT_event_;
+  //int EVENT_event_,
+  int EVENT_run_, EVENT_lumiBlock_;
   double EVENT_genWeight_, EVENT_genHT;
   bool _is_data;
   double EVENT_rhopog_, EVENT_rhotth_;

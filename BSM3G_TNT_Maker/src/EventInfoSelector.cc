@@ -165,7 +165,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     //if(metNames.triggerName(i)=="Flag_badMuons") Flag_badMuons=metFilterBits->accept(i);
   } //loop over met filters
   //BJetness variables
-  if(bjetnessproducer_){
+  /*if(bjetnessproducer_){
     Handle<vector<float> > bjetness;
     iEvent.getByToken(bjetness_, bjetness);
     BJetness_jetpt0          = (*bjetness)[0];
@@ -175,7 +175,7 @@ void EventInfoSelector::Fill(const edm::Event& iEvent){
     BJetness_avip3dsig       = (*bjetness)[4];
     BJetness_avsip3dsig      = (*bjetness)[5];
     BJetness_avip1dsig       = (*bjetness)[6];
-  }
+  }*/
 }
 void EventInfoSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -223,13 +223,13 @@ void EventInfoSelector::SetBranches(){
   //AddBranch(&badGlobalMuonTagger                     ,"badGlobalMuonTagger");
   //AddBranch(&Flag_badMuons,"Flag_badMuons");
   //BJetness variables
-  AddBranch(&BJetness_jetpt0               ,"BJetness_jetpt0");
+  /*AddBranch(&BJetness_jetpt0               ,"BJetness_jetpt0");
   AddBranch(&BJetness_numleps              ,"BJetness_numleps");
   AddBranch(&BJetness_npvTrkOVcollTrk      ,"BJetness_npvTrkOVcollTrk");
   AddBranch(&BJetness_avip3dval            ,"BJetness_avip3dval");
   AddBranch(&BJetness_avip3dsig            ,"BJetness_avip3dsig");
   AddBranch(&BJetness_avsip3dsig           ,"BJetness_avsip3dsig");
-  AddBranch(&BJetness_avip1dsig            ,"BJetness_avip1dsig");
+  AddBranch(&BJetness_avip1dsig            ,"BJetness_avip1dsig");*/
 }
 void EventInfoSelector::Initialise(){
   //Event quantities
@@ -275,11 +275,11 @@ void EventInfoSelector::Initialise(){
   EVENT_filterBadGlobalMuonTagger                     = -9999;
   EVENT_filtercloneGlobalMuonTagger                   = -9999;
   //BJetness variables
-  BJetness_jetpt0          = -9999;
+  /*BJetness_jetpt0          = -9999;
   BJetness_numleps         = -9999;
   BJetness_npvTrkOVcollTrk = -9999;
   BJetness_avip3dval       = -9999;
   BJetness_avip3dsig       = -9999;
   BJetness_avsip3dsig      = -9999;
-  BJetness_avip1dsig       = -9999;
+  BJetness_avip1dsig       = -9999;*/
 }

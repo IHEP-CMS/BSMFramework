@@ -1,4 +1,4 @@
-#ifndef __BTAGREWEIGHT_HE_H_ 
+#ifndef __BTAGREWEIGHT_HE_H_
 #define __BTAGREWEIGHT_HE_H_
 /////
 //   Include files and namespaces
@@ -99,7 +99,7 @@ class BTagReweight : public baseTree{
   edm::FileInPath BTAGReweightfile2_;
   void fillCSVhistos(TFile *fileHF, TFile *fileLF);
   double get_csv_wgt( std::vector<double> jetPts, std::vector<double> jetEtas, std::vector<double> jetCSVs, std::vector<int> jetFlavors, int iSys, double &csvWgtHF, double &csvWgtLF, double &csvWgtCF );
-  // CSV reweighting
+  // CSV reweighting (2 x 2D array, 1 x 3D array)
   TH1D* h_csv_wgt_hf[9][6];
   TH1D* c_csv_wgt_hf[9][6];
   TH1D* h_csv_wgt_lf[9][4][3];

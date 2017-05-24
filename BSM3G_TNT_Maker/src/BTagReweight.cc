@@ -1,4 +1,4 @@
-//Please note that 
+//Please note that
 // else if(jetPt >=160 && jetPt<100000) iPt = 5; was originally else if(jetPt >=160 && jetPt<10000) iPt = 5;
 // but it could crash if jetPt>10000, so I temporarily changed the value to 100000
 // I do not know what it changes in the analysis, but since we are not really use this class right now, I think it is temporarily ok
@@ -33,7 +33,7 @@ BTagReweight::BTagReweight(std::string name, TTree* tree, bool debug, const pset
   const char *filePathLF = BTAGReweightfile2_.fullPath().c_str();
   TFile* f_CSVwgt_HF = new TFile (filePathHF);
   TFile* f_CSVwgt_LF = new TFile (filePathLF);
-  fillCSVhistos(f_CSVwgt_HF, f_CSVwgt_LF);	
+  fillCSVhistos(f_CSVwgt_HF, f_CSVwgt_LF);
   SetBranches();
 }
 BTagReweight::~BTagReweight(){
@@ -59,7 +59,7 @@ void BTagReweight::Fill(const edm::Event& iEvent){
     std::vector<int> jetFlavors;
     vector<TLorentzVector> LeptonsForDeltaRWithJets;
     GetLeptonsForDeltaRWithJets(LeptonsForDeltaRWithJets,iEvent);
-    for(const pat::Jet &j : *jets){ 
+    for(const pat::Jet &j : *jets){
       //Jet Energy Corrections and Uncertainties
       double corrAK4PFchs     = 1;
       reco::Candidate::LorentzVector uncorrJetAK4PFchs = j.correctedP4(0);
@@ -71,7 +71,7 @@ void BTagReweight::Fill(const edm::Event& iEvent){
       jecAK4PFchsMC_->setJetA  ( j.jetArea()	     );
       corrAK4PFchs = jecAK4PFchsMC_->getCorrection();
       //JER scale factor and uncertainties
-      float JERScaleFactor     = 1; 
+      float JERScaleFactor     = 1;
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
       GetJER(j, corrAK4PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
@@ -94,12 +94,11 @@ void BTagReweight::Fill(const edm::Event& iEvent){
       if(!(deltaRJetLepBoolean==true)) continue;
       jetPts.push_back(uncorrJetAK4PFchs.pt()*corrAK4PFchs*JERScaleFactor);
       jetEtas.push_back(j.eta());
-      if(j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags")<1.0) jetCSVs.push_back(j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      if(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<1.0) jetCSVs.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       else jetCSVs.push_back(1);
-      //jetFlavors.push_back(j.partonFlavour());
       jetFlavors.push_back(j.hadronFlavour());
     }
-    double wgt_csv_hf, wgt_csv_lf, wgt_csv_cf;	
+    double wgt_csv_hf, wgt_csv_lf, wgt_csv_cf;
     bWeight             = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors, 0, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
     bWeightLFup         = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors, 9, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
     bWeightLFdown       = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors,10, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
@@ -119,7 +118,7 @@ void BTagReweight::Fill(const edm::Event& iEvent){
     bWeightCErr2down    = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors,24, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
     bWeightJESup        = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors, 7, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
     bWeightJESdown      = get_csv_wgt(jetPts,jetEtas,jetCSVs,jetFlavors, 8, wgt_csv_hf, wgt_csv_lf, wgt_csv_cf);
-  } else {	
+  } else {
     bWeight             = 1.;
     bWeightLFup         = 1.;
     bWeightLFdown       = 1.;
@@ -223,7 +222,7 @@ void BTagReweight::fillCSVhistos(TFile* fileHF, TFile* fileLF){
       syst_csv_suffix_hf = "final_Stats2Down"; syst_csv_suffix_lf = "final_Stats2Down";
       break;
     }
-    for(int iPt=0; iPt<5; iPt++) h_csv_wgt_hf[iSys][iPt] = (TH1D*)fileHF->Get( Form("csv_ratio_Pt%i_Eta0_%s",iPt,syst_csv_suffix_hf.Data()) );
+    for(int iPt=0; iPt<5; iPt++) h_csv_wgt_hf[iSys][iPt] = (TH1D*)fileHF->Get( Form("csv_ratio_Pt%i_Eta0_%s",iPt,syst_csv_suffix_hf.Data()) );//Creates strings in format of BTag reqeight file histograms.
     if(iSys<5){
       for(int iPt=0; iPt<5; iPt++) c_csv_wgt_hf[iSys][iPt] = (TH1D*)fileHF->Get( Form("c_csv_ratio_Pt%i_Eta0_%s",iPt,syst_csv_suffix_c.Data()) );
     }
@@ -326,7 +325,7 @@ void BTagReweight::GetLeptonsForDeltaRWithJets(vector<TLorentzVector> &LeptonsFo
   edm::Handle<edm::ValueMap<bool> > mvanontrig_id_decisions;
   iEvent.getByToken(eleMVAnonTrigIdMap_, mvanontrig_id_decisions);
   if(vtx_h->empty()) return; // skip the event if no PV found
-  const reco::Vertex &firstGoodVertex = vtx_h->front();  
+  const reco::Vertex &firstGoodVertex = vtx_h->front();
   bool isgoodvtx = isGoodVertex(firstGoodVertex);
   if(!isgoodvtx) return;
   //LEPTON SELECTION - MUON
@@ -338,7 +337,7 @@ void BTagReweight::GetLeptonsForDeltaRWithJets(vector<TLorentzVector> &LeptonsFo
     double SumNeutralCorrEt = std::max( 0.0, SumNeuHadEt+SumPhotonEt - 0.5*SumPU );
     double relIsoDeltaBeta = (SumChHadPt + SumNeutralCorrEt)/mu->pt();
     if(!(mu->pt()>15))                         continue;
-    if(!(fabs(mu->eta())<2.4))                 continue;  
+    if(!(fabs(mu->eta())<2.4))                 continue;
     if(!(mu->isTightMuon(firstGoodVertex)==1)) continue;
     if(!(relIsoDeltaBeta<0.25))                continue;
     TLorentzVector muon = TLorentzVector(mu->px(),mu->py(),mu->pz(),mu->p4().E());
@@ -352,13 +351,13 @@ void BTagReweight::GetLeptonsForDeltaRWithJets(vector<TLorentzVector> &LeptonsFo
     double EleSCeta    = el->superCluster()->position().eta();
     double SumChHadPt  = el->pfIsolationVariables().sumChargedHadronPt;
     double SumNeuHadEt = el->pfIsolationVariables().sumNeutralHadronEt;
-    double SumPhotonEt = el->pfIsolationVariables().sumPhotonEt; 
+    double SumPhotonEt = el->pfIsolationVariables().sumPhotonEt;
     double EffArea = get_effarea(el->superCluster()->position().eta());
     double SumNeutralCorrEt = std::max( 0.0, SumNeuHadEt+SumPhotonEt - rhopog*EffArea );
     double relIsoRhoEA = (SumChHadPt + SumNeutralCorrEt)/el->pt();
     if(!(el->pt()>15))                                   continue;
-    if(!(fabs(el->eta())<2.4))                           continue; 
-    if((fabs(EleSCeta)>1.4442 && fabs(EleSCeta)<1.5660)) continue; 
+    if(!(fabs(el->eta())<2.4))                           continue;
+    if((fabs(EleSCeta)>1.4442 && fabs(EleSCeta)<1.5660)) continue;
     if(!(isPassMvanontrig==1))                           continue;
     if(!(relIsoRhoEA<0.15))                              continue;
     //bool isPassMvatrig = (*mvatrig_id_decisions) [ elPtr ];
@@ -405,7 +404,7 @@ bool BTagReweight::isGoodVertex(const reco::Vertex& vtx){
 }
 
 void BTagReweight::JECInitialization(){
-  //AK4chs - MC: Get the factorized jet corrector parameters. 
+  //AK4chs - MC: Get the factorized jet corrector parameters.
   std::vector<std::string> jecPayloadNamesAK4PFchsMC_;
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC1_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC2_.fullPath());
@@ -423,60 +422,60 @@ void BTagReweight::JECInitialization(){
 void BTagReweight::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
-  double cFactorJER = 1.0; 
+  double cFactorJER = 1.0;
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
   //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
-  if( jetEta<0.5 ){ 
-    cFactorJER = 1.122; 
+  if( jetEta<0.5 ){
+    cFactorJER = 1.122;
     cFactorJERdown = 1.122-0.026;
-    cFactorJERup   = 1.122+0.026; 
-  } else if( jetEta<0.8 ){ 
-    cFactorJER = 1.167; 
+    cFactorJERup   = 1.122+0.026;
+  } else if( jetEta<0.8 ){
+    cFactorJER = 1.167;
     cFactorJERdown = 1.167-0.048;
-    cFactorJERup   = 1.167+0.048; 
-  } else if( jetEta<1.1 ){ 
-    cFactorJER = 1.168; 
+    cFactorJERup   = 1.167+0.048;
+  } else if( jetEta<1.1 ){
+    cFactorJER = 1.168;
     cFactorJERdown = 1.168-0.046;
-    cFactorJERup   = 1.168+0.046; 
-  } else if( jetEta<1.3 ){ 
-    cFactorJER = 1.029; 
+    cFactorJERup   = 1.168+0.046;
+  } else if( jetEta<1.3 ){
+    cFactorJER = 1.029;
     cFactorJERdown = 1.029-0.066;
-    cFactorJERup   = 1.029+0.066; 
-  } else if( jetEta<1.7 ){ 
-    cFactorJER = 1.115; 
+    cFactorJERup   = 1.029+0.066;
+  } else if( jetEta<1.7 ){
+    cFactorJER = 1.115;
     cFactorJERdown = 1.115-0.030;
-    cFactorJERup   = 1.115+0.030; 
-  } else if( jetEta<1.9 ){ 
-    cFactorJER = 1.041; 
+    cFactorJERup   = 1.115+0.030;
+  } else if( jetEta<1.9 ){
+    cFactorJER = 1.041;
     cFactorJERdown = 1.041-0.062;
-    cFactorJERup   = 1.041+0.062; 
-  } else if( jetEta<2.1 ){ 
-    cFactorJER = 1.167; 
+    cFactorJERup   = 1.041+0.062;
+  } else if( jetEta<2.1 ){
+    cFactorJER = 1.167;
     cFactorJERdown = 1.167-0.086;
-    cFactorJERup   = 1.167+0.086; 
-  } else if( jetEta<2.3 ){ 
-    cFactorJER = 1.094; 
+    cFactorJERup   = 1.167+0.086;
+  } else if( jetEta<2.3 ){
+    cFactorJER = 1.094;
     cFactorJERdown = 1.094-0.093;
-    cFactorJERup   = 1.094+0.093; 
-  } else if( jetEta<2.5 ){ 
-    cFactorJER = 1.168; 
+    cFactorJERup   = 1.094+0.093;
+  } else if( jetEta<2.5 ){
+    cFactorJER = 1.168;
     cFactorJERdown = 1.168-0.120;
-    cFactorJERup   = 1.168+0.120; 
-  } else if( jetEta<2.8 ){ 
-    cFactorJER = 1.266; 
+    cFactorJERup   = 1.168+0.120;
+  } else if( jetEta<2.8 ){
+    cFactorJER = 1.266;
     cFactorJERdown = 1.266-0.132;
-    cFactorJERup   = 1.266+0.132; 
-  } else if( jetEta<3.0 ){ 
-    cFactorJER = 1.595; 
+    cFactorJERup   = 1.266+0.132;
+  } else if( jetEta<3.0 ){
+    cFactorJER = 1.595;
     cFactorJERdown = 1.595-0.175;
-    cFactorJERup   = 1.595+0.175; 
-  } else if( jetEta<3.2 ){ 
-    cFactorJER = 0.998; 
+    cFactorJERup   = 1.595+0.175;
+  } else if( jetEta<3.2 ){
+    cFactorJER = 0.998;
     cFactorJERdown = 0.998-0.066;
-    cFactorJERup   = 0.998+0.066; 
-  } else if( jetEta<5.0 ){ 
-    cFactorJER = 1.226; 
+    cFactorJERup   = 0.998+0.066;
+  } else if( jetEta<5.0 ){
+    cFactorJER = 1.226;
     cFactorJERdown = 1.226-0.145;
     cFactorJERup   = 1.226+0.145;
   }
@@ -502,5 +501,5 @@ void BTagReweight::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs
     JERScaleFactor     = 1.;
     JERScaleFactorUP   = 1.;
     JERScaleFactorDOWN = 1.;
-  } 
+  }
 }

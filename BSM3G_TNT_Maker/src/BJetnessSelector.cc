@@ -54,7 +54,6 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
   // It has a name and you can take its address. Its just the type of that lvalue is rvalue reference to key.
   // You need to pass in an rvalue - use std::move.
   evSel = new TTHbb_eventSelector("miniAOD", tree, debug, iConfig, std::move(ic));
-
 }
 BJetnessSelector::~BJetnessSelector(){
   delete tree_;
@@ -230,7 +229,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetpt = (j.correctedJet("Uncorrected").pt()*corrAK4PFchs*JERScaleFactor);
       //The code related to "Jet Energy Corrections and Uncertainties" should go in a function
       if(debug_) std::cout << ("BJetnessSelector::Fill") << " Set variables from jets " << std::endl;
-      BJetness_jetpt.push_back(jetpt); //Note that this is not correct by JES/JER (expect if JES in globalTag are ok)
+      BJetness_jetpt.push_back(jetpt);
       BJetness_jeteta.push_back(j.eta());
       BJetness_jetphi.push_back(j.phi());
       BJetness_jetenergy.push_back(j.correctedJet("Uncorrected").energy()*corrAK4PFchs*JERScaleFactor); //Note that this is not correct by JES/JER (expect if JES in globalTag are ok)
@@ -553,7 +552,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       BJetness_avsip1d_val.push_back(-998);
       BJetness_avsip1d_sig.push_back(-998);
     }
- }else{//if(jet_num!=0)
+ }else{
    BJetness_partonFlavour.push_back(-999);
    BJetness_hadronFlavour.push_back(-999);
    BJetness_numjet.push_back(-999);
@@ -1203,8 +1202,8 @@ void BJetnessSelector::get_avreljet(vector<Track> trks, vector<tuple<double, dou
   for(uint t=0; t<trks.size(); t++){
     TVector3 trkdir(trks[t].px(),trks[t].py(),trks[t].pz());
     TVector3 axis(get<0>(jetsdir[t]),get<1>(jetsdir[t]),get<2>(jetsdir[t]));
-    jetchtrks_avprel += trkdir.Perp(axis);
-    jetchtrks_avppar += trkdir.Dot(axis.Unit());
+    jetchtrks_avprel += trkdir.Perp(axis);//Projection of track vector perpendicular to jet "axis"
+    jetchtrks_avppar += trkdir.Dot(axis.Unit());//Projection of track vector parallel to jet "axis"
     double energy = std::sqrt(trkdir.Mag2() + pow(0.13957,2));
     if((energy - trkdir.Perp(axis))!=0 && (energy + trkdir.Perp(axis))!=0) jetchtrks_avetarel += 0.5 * log((energy + trkdir.Perp(axis)) / (energy - trkdir.Perp(axis)));
     if((energy - trkdir.Dot(axis.Unit()))!=0 && (energy + trkdir.Dot(axis.Unit()))!=0) jetchtrks_avetapar += 0.5 * log((energy + trkdir.Dot(axis.Unit())) / (energy - trkdir.Dot(axis.Unit())));

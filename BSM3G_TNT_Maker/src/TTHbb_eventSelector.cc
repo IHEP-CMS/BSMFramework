@@ -362,6 +362,10 @@ void TTHbb_eventSelector::FillLeptonVectors(const edm::Event& iEvent, std::vecto
   double rhopog = *rhopogHandle;
   edm::Handle<edm::ValueMap<bool>  > mvanontrig_id_decisions;
   iEvent.getByToken(eleMVAnonTrigIdMap_,mvanontrig_id_decisions);
+
+  edm::Handle<edm::ValueMap<bool>  > medium_id_decisions;
+  iEvent.getByToken(electronMediumIdMapToken_,medium_id_decisions);
+
   edm::Handle<edm::View<pat::Electron> > electron_pat;
   iEvent.getByToken(electron_pat_, electron_pat);
   edm::Handle<edm::View<pat::Muon> > muon_h;
@@ -380,12 +384,13 @@ void TTHbb_eventSelector::FillLeptonVectors(const edm::Event& iEvent, std::vecto
   }
 
   //=== Electrons ===
-  // Also no Electron trigger requirements.
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const Ptr<pat::Electron> elPtr(electron_pat, ele - electron_pat->begin() );
     if(!(is_loose_electron(*ele,rhopog))) continue;
-    bool isPassMvanontrig = (*mvanontrig_id_decisions)[ elPtr ];
-    if(!(isPassMvanontrig)) continue;
+    //bool isPassMvanontrig = (*mvanontrig_id_decisions)[ elPtr ];
+    //if(!(isPassMvanontrig)) continue;
+    bool isPassEletrig = (*medium_id_decisions)[ elPtr ];
+    if(!(isPassEletrig)) continue;
     if(!(rel_iso_dbc_ele(*ele,rhopog)<0.15)) continue;
     const pat::Electron &lele = *ele;
     looseleps.push_back((const reco::Candidate*)&lele);
@@ -623,10 +628,10 @@ int TTHbb_eventSelector::singlelepton_channel(const edm::Event& iEvent, const ed
 
   //=== SL ===
   if(tightleps.size()==1 && looseleps.size()==1 && jet_num>=4 && jetb_num>=2){
-    if(tight_muons.size()==1 && loose_muons.size()==1){
+    if(tight_muons.size()==1 && loose_electrons.size()==0){
       is_SL = 1;
     }
-    if(tight_electrons.size()==1 && loose_electrons.size()==1){
+    if(tight_electrons.size()==1 && loose_muons.size()==0){
       is_SL = 2;
     }
   }

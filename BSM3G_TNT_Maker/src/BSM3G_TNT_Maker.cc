@@ -81,6 +81,7 @@ BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
 // ------------ method called for each event  ------------
 void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+
   //Namespace
   using namespace edm;
   using namespace pat;
@@ -88,8 +89,8 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Event info for all the events you read
   eventnum = -1;
   eventnum = iEvent.id().event();
-  //if (eventnum == 315650){
-  //  if(debug_) cout << ">>>>>>>>>>>>>>>>>>>>>>>>>> " << eventnum << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< I'M HERE!" << endl;
+  //if (eventnum == 2424579171){
+  //  cout << ">>>>>>>>>>>>>>>>>>>>>>>>>> " << eventnum << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< I'M HERE!" << endl;
   //}
   eventnumnegative = 1;
   if(!_is_data){
@@ -153,6 +154,7 @@ void BSM3G_TNT_Maker::endJob()
 // ------------ method called when starting to processes a run  ------------
 void BSM3G_TNT_Maker::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup)
 {
+  std::cout << "Begin run" << std::endl;
   if( _filltriggerinfo) trselector->startTrigger(iSetup, iRun);
 }
 // ------------ method called when ending the processing of a run  ------------

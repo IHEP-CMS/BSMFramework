@@ -23,6 +23,8 @@ class baseTree{
 
   void AddBranch(unsigned int* x, std::string name);
   void AddBranch(int* x, std::string name);
+  void AddBranch(uint64_t* x, std::string name);
+
   void AddBranch(float* x, std::string name);
   void AddBranch(double* x, std::string name);
   void AddBranch(bool* x, std::string name);

@@ -1,6 +1,6 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/baseTree.h"
 baseTree::baseTree(std::string identifier, TTree* tree, bool debug){
-  identifier_  = identifier; 
+  identifier_  = identifier;
   tree_        = tree;
   debug_       = debug;
 }
@@ -12,6 +12,10 @@ void baseTree::AddBranch(unsigned int* x, std::string name){
 void baseTree::AddBranch(int* x, std::string name){
   std::string brName = name;
   tree_->Branch(brName.c_str(),x,(brName+"/I").c_str());
+}
+void baseTree::AddBranch(uint64_t* x, std::string name){
+  std::string brName = name;
+  tree_->Branch(brName.c_str(),x,(brName+"/l").c_str());
 }
 void baseTree::AddBranch(float* x, std::string name){
   std::string brName = name;

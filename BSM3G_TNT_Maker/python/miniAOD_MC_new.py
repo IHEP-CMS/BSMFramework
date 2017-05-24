@@ -333,6 +333,9 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   genCHadFlavour            = cms.InputTag("matchGenCHadron", "genCHadFlavour"),
   genCHadFromTopWeakDecay   = cms.InputTag("matchGenCHadron", "genCHadFromTopWeakDecay"),
   genCHadBHadronId          = cms.InputTag("matchGenCHadron", "genCHadBHadronId"),
+  badGlobalMuonTagger       = cms.InputTag("badGlobalMuonTagger"),
+  cloneGlobalMuonTagger     = cms.InputTag("cloneGlobalMuonTagger"),
+
 )
 #####
 ##   Dump gen particle list

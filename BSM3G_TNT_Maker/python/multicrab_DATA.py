@@ -289,7 +289,7 @@ for d in range(0,1):
     config.Data.inputDBS       = 'global'
     config.Data.splitting      = 'LumiBased'
     config.Data.unitsPerJob    = 30
-    # Golden
+    # Golden JSON (GRL)
     config.Data.lumiMask       = tempJSON
     config.Data.outLFNDirBase = '/store/user/jthomasw/TTHbb/BSMFramework/output/'
     print 'multicrab.py: outLFNDirBase = /store/user/jthomasw/TTHbb/BSMFramework/output/'

@@ -39,7 +39,7 @@ process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -416,6 +416,6 @@ process.selectedHadronsAndPartons
 *process.BadChargedCandidateFilter
 *process.badGlobalMuonTagger
 *process.cloneGlobalMuonTagger
-process.TNT
+*process.TNT
 )
 #process.e = cms.EndPath(process.out)

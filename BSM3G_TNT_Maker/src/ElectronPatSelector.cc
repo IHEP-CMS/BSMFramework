@@ -1,5 +1,5 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/ElectronPatSelector.h"
-ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic): 
   baseTree(name,tree,debug),
   electronVetoIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronVetoIdMap"))),
   electronLooseIdMapToken_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("electronLooseIdMap"))),
@@ -13,7 +13,14 @@ ElectronPatSelector::ElectronPatSelector(std::string name, TTree* tree, bool deb
   elemvaValuesMapToken_nonTrig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_nonTrig"))),
   elemvaCategoriesMapToken_nonTrig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_nonTrig"))),
   elemvaValuesMapToken_Trig_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_Trig"))),
-  elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig")))
+  elemvaCategoriesMapToken_Trig_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_Trig"))),
+  eleMVAGPwp90IdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAGPwp90IdMap"))),
+  eleMVAGPwp80IdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAGPwp80IdMap"))),
+  eleMVAHZZwpLooseIdMap_(ic.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMVAHZZwpLooseIdMap"))),
+  elemvaValuesMapToken_GP_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_GP"))),
+  elemvaCategoriesMapToken_GP_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_GP"))),
+  elemvaValuesMapToken_HZZ_(ic.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("elemvaValuesMap_HZZ"))),
+  elemvaCategoriesMapToken_HZZ_(ic.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("elemvaCategoriesMap_HZZ")))
 {
   vtx_h_               = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
   beamSpot_            = ic.consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamSpot"));
@@ -56,7 +63,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   Clear();
   /////
   //   Recall collections
-  /////
+  /////  
   edm::Handle<reco::VertexCollection> vtx_h;
   iEvent.getByToken(vtx_h_, vtx_h);
   reco::BeamSpot beamSpot;
@@ -89,21 +96,35 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   edm::Handle<edm::ValueMap<int> >   elemvaCategories_nonTrig;
   edm::Handle<edm::ValueMap<float> > elemvaValues_Trig;
   edm::Handle<edm::ValueMap<int> >   elemvaCategories_Trig;
+  edm::Handle<edm::ValueMap<float> > elemvaValues_GP;
+  edm::Handle<edm::ValueMap<int> >   elemvaCategories_GP;
+  edm::Handle<edm::ValueMap<float> > elemvaValues_HZZ;
+  edm::Handle<edm::ValueMap<int> >   elemvaCategories_HZZ;
+  edm::Handle<edm::ValueMap<bool>  > mvagpwp90_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvagpwp80_id_decisions;
+  edm::Handle<edm::ValueMap<bool>  > mvahzzwploose_id_decisions;
   iEvent.getByToken(electronVetoIdMapToken_,   veto_id_decisions);
   iEvent.getByToken(electronLooseIdMapToken_,  loose_id_decisions);
   iEvent.getByToken(electronMediumIdMapToken_, medium_id_decisions);
-  iEvent.getByToken(electronTightIdMapToken_,  tight_id_decisions);
-  iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);
-  iEvent.getByToken(eleMVAnonTrigIdMap_,       mvanontrig_id_decisions);
-  iEvent.getByToken(eleMVATrigwp90IdMap_,      mvatrigwp90_id_decisions);
-  iEvent.getByToken(eleMVAnonTrigwp90IdMap_,   mvanontrigwp90_id_decisions);
+  iEvent.getByToken(electronTightIdMapToken_,  tight_id_decisions);  
+  iEvent.getByToken(eleMVATrigIdMapToken_,     mvatrig_id_decisions);  
+  iEvent.getByToken(eleMVAnonTrigIdMap_,       mvanontrig_id_decisions);  
+  iEvent.getByToken(eleMVATrigwp90IdMap_,      mvatrigwp90_id_decisions);  
+  iEvent.getByToken(eleMVAnonTrigwp90IdMap_,   mvanontrigwp90_id_decisions);  
   iEvent.getByToken(eleHEEPIdMapToken_,        heep_id_decisions);
   iEvent.getByToken(elemvaValuesMapToken_nonTrig_,     elemvaValues_nonTrig);
   iEvent.getByToken(elemvaCategoriesMapToken_nonTrig_, elemvaCategories_nonTrig);
   iEvent.getByToken(elemvaValuesMapToken_Trig_,        elemvaValues_Trig);
   iEvent.getByToken(elemvaCategoriesMapToken_Trig_,    elemvaCategories_Trig);
+  iEvent.getByToken(eleMVAGPwp90IdMap_,      mvagpwp90_id_decisions);  
+  iEvent.getByToken(eleMVAGPwp80IdMap_,      mvagpwp80_id_decisions);  
+  iEvent.getByToken(eleMVAHZZwpLooseIdMap_,      mvahzzwploose_id_decisions);  
+  iEvent.getByToken(elemvaValuesMapToken_GP_,     elemvaValues_GP);
+  iEvent.getByToken(elemvaCategoriesMapToken_GP_, elemvaCategories_GP);
+  iEvent.getByToken(elemvaValuesMapToken_HZZ_,     elemvaValues_HZZ);
+  iEvent.getByToken(elemvaCategoriesMapToken_HZZ_, elemvaCategories_HZZ);
   /////
-  //   Require a good vertex
+  //   Require a good vertex 
   /////
   //reco::VertexCollection::const_iterator firstgoodVertex = vtx_h->end();
   //for(reco::VertexCollection::const_iterator it = vtx_h->begin(); it != firstgoodVertex; it++){
@@ -115,20 +136,20 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
   //if(firstgoodVertex == vtx_h->end()) return;
   //const reco::Vertex &firstGoodVertex = *firstgoodVertex;
   //if(vtx_h->empty()) return; // skip the event if no PV found
-  //const reco::Vertex &firstGoodVertex = vtx_h->front();
+  //const reco::Vertex &firstGoodVertex = vtx_h->front();  
   //bool isgoodvtx = isGoodVertex(firstGoodVertex);
   //if(!isgoodvtx) return;
   const reco::Vertex &firstGoodVertex = vtx_h->front();
   bool vtxnotempty = true;
   if(vtx_h->empty()) vtxnotempty = false;
   /////
-  //   Get electron information
+  //   Get electron information 
   /////
   for(edm::View<pat::Electron>::const_iterator el = electron_pat->begin(); el != electron_pat->end(); el++){
     //Acceptance
     if(el->pt() < _patElectron_pt_min)         continue;
-    if(fabs(el->eta()) > _patElectron_eta_max) continue;
-    //Kinematics
+    if(fabs(el->eta()) > _patElectron_eta_max) continue;  
+    //Kinematics    
     patElectron_pt.push_back(el->pt());
     patElectron_eta.push_back(el->eta());
     patElectron_phi.push_back(el->phi());
@@ -145,7 +166,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     //Charge
     patElectron_charge.push_back(el->charge());
     patElectron_isGsfCtfScPixChargeConsistent.push_back(el->isGsfCtfScPixChargeConsistent());
-    patElectron_isGsfScPixChargeConsistent.push_back(el->isGsfScPixChargeConsistent());
+    patElectron_isGsfScPixChargeConsistent.push_back(el->isGsfScPixChargeConsistent());    
     //ID
     const Ptr<pat::Electron> elPtr(electron_pat, el - electron_pat->begin() );
     bool isPassVeto    = (*veto_id_decisions)  [ elPtr ];
@@ -156,11 +177,18 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     bool isPassMvanontrig     = (*mvanontrig_id_decisions) [ elPtr ];
     bool isPassMvatrigwp90    = (*mvatrigwp90_id_decisions) [ elPtr ];
     bool isPassMvanontrigwp90 = (*mvanontrigwp90_id_decisions) [ elPtr ];
+    bool isPassMvagpwp90    = (*mvagpwp90_id_decisions) [ elPtr ];
+    bool isPassMvagpwp80    = (*mvagpwp80_id_decisions) [ elPtr ];
+    bool isPassMvahzzwploose    = (*mvahzzwploose_id_decisions) [ elPtr ];
     bool isHEEPId      = (*heep_id_decisions)  [ elPtr ];
     float mvaval_nonTrig  = (*elemvaValues_nonTrig)[ elPtr ];
     float mvacat_nonTrig  = (*elemvaCategories_nonTrig)[ elPtr ];
     float mvaval_Trig     = (*elemvaValues_Trig)[ elPtr ];
     float mvacat_Trig     = (*elemvaCategories_Trig)[ elPtr ];
+    float mvaval_GP  = (*elemvaValues_GP)[ elPtr ];
+    float mvacat_GP  = (*elemvaCategories_GP)[ elPtr ];
+    float mvaval_HZZ  = (*elemvaValues_HZZ)[ elPtr ];
+    float mvacat_HZZ  = (*elemvaCategories_HZZ)[ elPtr ];
     passVetoId_.push_back  ( isPassVeto   );
     passLooseId_.push_back ( isPassLoose  );
     passMediumId_.push_back( isPassMedium );
@@ -169,20 +197,26 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     passMvanontrigId_.push_back( isPassMvanontrig );
     passMvatrigwp90Id_.push_back( isPassMvatrigwp90 );
     passMvanontrigwp90Id_.push_back( isPassMvanontrigwp90 );
-    passHEEPId_.push_back  ( isHEEPId     );
+    passMvaGPwp90Id_.push_back( isPassMvagpwp90 );
+    passMvaGPwp80Id_.push_back( isPassMvagpwp80 );
+    passMvaHZZwpLooseId_.push_back( isPassMvahzzwploose );
+    passHEEPId_.push_back  ( isHEEPId     );   
     patElectron_mvaValue_nonTrig_.push_back(mvaval_nonTrig);
     patElectron_mvaCategory_nonTrig_.push_back(mvacat_nonTrig);
     patElectron_mvaValue_Trig_.push_back(mvaval_Trig);
     patElectron_mvaCategory_Trig_.push_back(mvacat_Trig);
+    patElectron_mvaValue_GP_.push_back(mvaval_GP);
+    patElectron_mvaCategory_GP_.push_back(mvacat_GP);
+    patElectron_mvaValue_HZZ_.push_back(mvaval_HZZ);
+    patElectron_mvaCategory_HZZ_.push_back(mvacat_HZZ);
     patElectron_pdgId.push_back(el->pdgId());
     patElectron_isEcalDriven.push_back(el->ecalDriven());
     //Isolation
     //reco::GsfElectron::PflowIsolationVariables pfIso = el->pfIsolationVariables();
     double SumChHadPt       = el->pfIsolationVariables().sumChargedHadronPt;
     double SumNeuHadEt      = el->pfIsolationVariables().sumNeutralHadronEt;
-    double SumPhotonEt      = el->pfIsolationVariables().sumPhotonEt;
+    double SumPhotonEt      = el->pfIsolationVariables().sumPhotonEt; 
     double SumPU            = el->pfIsolationVariables().sumPUPt;
-    //float eA = _effectiveAreas.getEffectiveArea( absEta );
     patElectron_isoChargedHadrons.push_back( SumChHadPt );
     patElectron_isoNeutralHadrons.push_back( SumNeuHadEt );
     patElectron_isoPhotons.push_back( SumPhotonEt );
@@ -201,8 +235,6 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     patElectron_hcalPFClusterIso.push_back(el->hcalPFClusterIso());
     //Shape, Track related variables, other prop
     double dEtaIn = el->deltaEtaSuperClusterTrackAtVtx();
-    // Include dEtaInSeed for El ID
-    //double dEtaInSeed = el->superCluster().isNonnull() && el->superCluster()->seed().isNonnull() ? el->deltaEtaSuperClusterTrackAtVtx() - el->superCluster()->position().eta() + el->superCluster()->seed().eta() : std::numeric_limits<float>::max();
     double dPhiIn = el->deltaPhiSuperClusterTrackAtVtx();
     double full5x5_sigmaIetaIeta = el->full5x5_sigmaIetaIeta();
     double hOverE = el->hcalOverEcal();
@@ -211,7 +243,6 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     else if(!std::isfinite(el->ecalEnergy())) ooEmooP = 1e30;
     else                                      ooEmooP = 1.0/el->ecalEnergy() - el->eSuperClusterOverP()/el->ecalEnergy();
     patElectron_dEtaIn.push_back(dEtaIn);
-    //patElectron_dEtaInSeed.push_back(dEtaInSeed);
     patElectron_dPhiIn.push_back(dPhiIn);
     patElectron_full5x5_sigmaIetaIeta.push_back(full5x5_sigmaIetaIeta);
     patElectron_full5x5_e2x5Max.push_back(el->full5x5_e2x5Max());
@@ -245,15 +276,15 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_gsfTrack_vtx.push_back(el->gsfTrack()->vx());
       patElectron_gsfTrack_vty.push_back(el->gsfTrack()->vy());
       patElectron_gsfTrack_vtz.push_back(el->gsfTrack()->vz());
-      if(_AJVar && vtxnotempty){
+      if(_AJVar && vtxnotempty){ 
         if(beamSpotHandle.isValid() && el->closestCtfTrackRef().isNonnull()){//AJ vars (both pv and bs are in this if condition, tought for pv is not mandatory)
           beamSpot = *beamSpotHandle;
           math::XYZPoint point(beamSpot.x0(),beamSpot.y0(), beamSpot.z0());
           patElectron_gsfTrack_dz_bs.push_back(el->gsfTrack()->dz(point));
           patElectron_gsfTrack_dxy_bs.push_back(el->gsfTrack()->dxy(point));
-          GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0());
+          GlobalPoint thebs(beamSpot.x0(),beamSpot.y0(),beamSpot.z0()); 
           GlobalPoint thepv(firstGoodVertex.position().x(),firstGoodVertex.position().y(),firstGoodVertex.position().z());
-          TrackRef eletr = el->closestCtfTrackRef();
+          TrackRef eletr = el->closestCtfTrackRef(); 
           TransientTrack elecTransTkPtr = ttrkbuilder->build(eletr);
           GlobalPoint patElectron_pca_pv = elecTransTkPtr.trajectoryStateClosestToPoint(thepv).position();
           GlobalPoint patElectron_pca_bs = elecTransTkPtr.trajectoryStateClosestToPoint(thebs).position();
@@ -291,7 +322,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
           patElectron_gsfTrackFitErrorMatrix_12.push_back(-998);
           patElectron_gsfTrackFitErrorMatrix_22.push_back(-998);
         }
-      }
+      } 
     }else{
       patElectron_gsfTrack_dz_pv.push_back(-999);
       patElectron_gsfTrack_dxy_pv.push_back(-999);
@@ -320,7 +351,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
     }
     /////
     //   TTH variables
-    /////
+    ///// 
     if(_tthlepVar){
       double miniIso      = 999;
       double miniIsoCh    = 999;
@@ -360,14 +391,14 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_elejet_pfCombinedMVABJetTags.push_back(elejet_pfCombinedMVABJetTags);
       patElectron_elejet_qgl.push_back(elejet_qgl);
       patElectron_IP3Dsig.push_back(fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D));
-      if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) patElectron_eleMVASpring15NonTrig25ns.push_back(el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"));
-      else                                                                        patElectron_eleMVASpring15NonTrig25ns.push_back(-999);
+      if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) patElectron_eleMVASpring15NonTrig25ns.push_back(el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"));   
+      else                                                                        patElectron_eleMVASpring15NonTrig25ns.push_back(-999); 
       bool nontrigelemva_vl = false;
-      double ntelemva = mvaval_nonTrig;
+      double ntelemva = mvaval_nonTrig; 
       double eleta    = fabs(el->superCluster()->position().eta());
       if((eleta < 0.8                   && ntelemva > -0.70) ||
-         (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.83) ||
-         (1.479 <= eleta && eleta < 500 && ntelemva > -0.92)
+         (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.83) || 
+         (1.479 <= eleta && eleta < 500 && ntelemva > -0.92)         
         ){
         nontrigelemva_vl = true;
       }
@@ -399,7 +430,7 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
       patElectron_elejet_Wmass.push_back(elewmass);
       patElectron_elejet_Topmass.push_back(eletopmass);
       patElectron_elejet_WTopmass.push_back(elewtopmass);
-      //Ele IP
+      //Ele IP 
       GlobalVector elejetgv(elejetx,elejety,elejetz);
       double IP3D_val  = -9999;
       double IP3D_err  = -9999;
@@ -428,52 +459,52 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
         }
       }
       //Max Lep jet IP (the maximum IP for a tracks of the lepton jet)
-      double lepjetMaxIP3D_val  = IP3D_val;
-      double lepjetMaxIP3D_sig  = IP3D_sig;
-      double lepjetMaxsIP3D_val = sIP3D_val;
-      double lepjetMaxsIP3D_sig = sIP3D_sig;
-      double lepjetMaxIP2D_val  = IP2D_val;
-      double lepjetMaxIP2D_sig  = IP2D_sig;
-      double lepjetMaxsIP2D_val = sIP2D_val;
-      double lepjetMaxsIP2D_sig = sIP2D_sig;
-      double lepjetMaxIP1D_val  = IP1D_val;
-      double lepjetMaxIP1D_sig  = IP1D_sig;
-      double lepjetMaxsIP1D_val = sIP1D_val;
-      double lepjetMaxsIP1D_sig = sIP1D_sig;
-      //Av Lep jet IP (the average IP of the lepton jet tracks)
+      double lepjetMaxIP3D_val  = IP3D_val; 
+      double lepjetMaxIP3D_sig  = IP3D_sig; 
+      double lepjetMaxsIP3D_val = sIP3D_val; 
+      double lepjetMaxsIP3D_sig = sIP3D_sig; 
+      double lepjetMaxIP2D_val  = IP2D_val; 
+      double lepjetMaxIP2D_sig  = IP2D_sig; 
+      double lepjetMaxsIP2D_val = sIP2D_val; 
+      double lepjetMaxsIP2D_sig = sIP2D_sig; 
+      double lepjetMaxIP1D_val  = IP1D_val; 
+      double lepjetMaxIP1D_sig  = IP1D_sig; 
+      double lepjetMaxsIP1D_val = sIP1D_val; 
+      double lepjetMaxsIP1D_sig = sIP1D_sig; 
+      //Av Lep jet IP (the average IP of the lepton jet tracks)   
       double lepjetAvIP3D_val  = 0; double denlepjetAvIP3D_val  = 0;
-      if(IP3D_val!=-9999){lepjetAvIP3D_val   = IP3D_val; denlepjetAvIP3D_val   = 1;}
+      if(IP3D_val!=-9999){lepjetAvIP3D_val   = IP3D_val; denlepjetAvIP3D_val   = 1;} 
       double lepjetAvIP3D_sig  = 0; double denlepjetAvIP3D_sig  = 0;
       if(IP3D_sig!=-9999){lepjetAvIP3D_sig   = IP3D_sig; denlepjetAvIP3D_sig   = 1;}
       double lepjetAvsIP3D_val = 0; double denlepjetAvsIP3D_val = 0;
-      if(sIP3D_val!=-9999){lepjetAvsIP3D_val = sIP3D_val; denlepjetAvsIP3D_val = 1;}
+      if(sIP3D_val!=-9999){lepjetAvsIP3D_val = sIP3D_val; denlepjetAvsIP3D_val = 1;} 
       double lepjetAvsIP3D_sig = 0; double denlepjetAvsIP3D_sig = 0;
-      if(sIP3D_sig!=-9999){lepjetAvsIP3D_sig = sIP3D_sig; denlepjetAvsIP3D_sig = 1;}
+      if(sIP3D_sig!=-9999){lepjetAvsIP3D_sig = sIP3D_sig; denlepjetAvsIP3D_sig = 1;} 
       double lepjetAvIP2D_val  = 0; double denlepjetAvIP2D_val  = 0;
-      if(IP2D_val!=-9999){lepjetAvIP2D_val   = IP2D_val; denlepjetAvIP2D_val   = 1;}
+      if(IP2D_val!=-9999){lepjetAvIP2D_val   = IP2D_val; denlepjetAvIP2D_val   = 1;} 
       double lepjetAvIP2D_sig  = 0; double denlepjetAvIP2D_sig  = 0;
-      if(IP2D_sig!=-9999){lepjetAvIP2D_sig   = IP2D_sig; denlepjetAvIP2D_sig   = 1;}
+      if(IP2D_sig!=-9999){lepjetAvIP2D_sig   = IP2D_sig; denlepjetAvIP2D_sig   = 1;} 
       double lepjetAvsIP2D_val = 0; double denlepjetAvsIP2D_val = 0;
-      if(sIP2D_val!=-9999){lepjetAvsIP2D_val = sIP2D_val; denlepjetAvsIP2D_val = 1;}
+      if(sIP2D_val!=-9999){lepjetAvsIP2D_val = sIP2D_val; denlepjetAvsIP2D_val = 1;} 
       double lepjetAvsIP2D_sig = 0; double denlepjetAvsIP2D_sig = 0;
-      if(sIP2D_sig!=-9999){lepjetAvsIP2D_sig = sIP2D_sig; denlepjetAvsIP2D_sig = 1;}
+      if(sIP2D_sig!=-9999){lepjetAvsIP2D_sig = sIP2D_sig; denlepjetAvsIP2D_sig = 1;} 
       double lepjetAvIP1D_val  = 0; double denlepjetAvIP1D_val  = 0;
-      if(IP1D_val!=-9999){lepjetAvIP1D_val   = IP1D_val; denlepjetAvIP1D_val   = 1;}
+      if(IP1D_val!=-9999){lepjetAvIP1D_val   = IP1D_val; denlepjetAvIP1D_val   = 1;} 
       double lepjetAvIP1D_sig  = 0; double denlepjetAvIP1D_sig  = 0;
-      if(IP1D_sig!=-9999){lepjetAvIP1D_sig   = IP1D_sig; denlepjetAvIP1D_sig   = 1;}
+      if(IP1D_sig!=-9999){lepjetAvIP1D_sig   = IP1D_sig; denlepjetAvIP1D_sig   = 1;} 
       double lepjetAvsIP1D_val = 0; double denlepjetAvsIP1D_val = 0;
-      if(sIP1D_val!=-9999){lepjetAvsIP1D_val = sIP1D_val; denlepjetAvsIP1D_val = 1;}
+      if(sIP1D_val!=-9999){lepjetAvsIP1D_val = sIP1D_val; denlepjetAvsIP1D_val = 1;} 
       double lepjetAvsIP1D_sig = 0; double denlepjetAvsIP1D_sig = 0;
-      if(sIP1D_sig!=-9999){lepjetAvsIP1D_sig = sIP1D_sig; denlepjetAvsIP1D_sig = 1;}
+      if(sIP1D_sig!=-9999){lepjetAvsIP1D_sig = sIP1D_sig; denlepjetAvsIP1D_sig = 1;} 
       //Get values of Max and Av IP
       if(lepjetidx!=-1){
-        const pat::Jet & lepjet = (*jets)[lepjetidx];
+        const pat::Jet & lepjet = (*jets)[lepjetidx]; 
         lepjetIP(lepjet,vtxnotempty,firstGoodVertex,elejetgv,*ttrkbuilder,
                  lepjetMaxIP3D_val, lepjetMaxIP3D_sig, lepjetMaxsIP3D_val, lepjetMaxsIP3D_sig, lepjetMaxIP2D_val, lepjetMaxIP2D_sig, lepjetMaxsIP2D_val, lepjetMaxsIP2D_sig, lepjetMaxIP1D_val, lepjetMaxIP1D_sig, lepjetMaxsIP1D_val, lepjetMaxsIP1D_sig,
                  lepjetAvIP3D_val, lepjetAvIP3D_sig, lepjetAvsIP3D_val, lepjetAvsIP3D_sig, lepjetAvIP2D_val, lepjetAvIP2D_sig, lepjetAvsIP2D_val, lepjetAvsIP2D_sig, lepjetAvIP1D_val, lepjetAvIP1D_sig, lepjetAvsIP1D_val, lepjetAvsIP1D_sig,
                  denlepjetAvIP3D_val, denlepjetAvIP3D_sig, denlepjetAvsIP3D_val, denlepjetAvsIP3D_sig, denlepjetAvIP2D_val, denlepjetAvIP2D_sig, denlepjetAvsIP2D_val, denlepjetAvsIP2D_sig, denlepjetAvIP1D_val, denlepjetAvIP1D_sig, denlepjetAvsIP1D_val, denlepjetAvsIP1D_sig,
-                 IP3D_val
-                );
+                 IP3D_val   
+                );                                                                    
       }
       patElectron_IP3D_val.push_back(IP3D_val);
       patElectron_IP3D_err.push_back(IP3D_err);
@@ -553,6 +584,18 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
         patElectron_gen_pdgId.push_back(genpart->pdgId());
         patElectron_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
         patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
+	const reco::Candidate* genMother = GetGenMotherNoFsr(el->genParticle());
+        patElectron_genMother_pt.push_back(genMother->pt());
+        patElectron_genMother_eta.push_back(genMother->eta());
+        patElectron_genMother_phi.push_back(genMother->phi());
+        patElectron_genMother_en.push_back(genMother->energy());
+        patElectron_genMother_pdgId.push_back(genMother->pdgId());
+	const reco::Candidate* genGrandMother = GetGenMotherNoFsr(genMother);        
+        patElectron_genGrandMother_pt.push_back(genGrandMother->pt());
+        patElectron_genGrandMother_eta.push_back(genGrandMother->eta());
+        patElectron_genGrandMother_phi.push_back(genGrandMother->phi());
+        patElectron_genGrandMother_en.push_back(genGrandMother->energy());
+        patElectron_genGrandMother_pdgId.push_back(genGrandMother->pdgId());
       }else{
         patElectron_gen_pt.push_back(-999);
         patElectron_gen_eta.push_back(-999);
@@ -561,13 +604,41 @@ void ElectronPatSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& 
         patElectron_gen_pdgId.push_back(-999);
         patElectron_gen_isPromptFinalState.push_back(-999);
         patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+        patElectron_genMother_pt.push_back(-999);
+        patElectron_genMother_eta.push_back(-999);
+        patElectron_genMother_phi.push_back(-999);
+        patElectron_genMother_en.push_back(-999);
+        patElectron_genMother_pdgId.push_back(-999);
+        patElectron_genGrandMother_pt.push_back(-999);
+        patElectron_genGrandMother_eta.push_back(-999);
+        patElectron_genGrandMother_phi.push_back(-999);
+        patElectron_genGrandMother_en.push_back(-999);
+        patElectron_genGrandMother_pdgId.push_back(-999);
       }
+    }else{
+        patElectron_gen_pt.push_back(-999);
+        patElectron_gen_eta.push_back(-999);
+        patElectron_gen_phi.push_back(-999);
+        patElectron_gen_en.push_back(-999);
+        patElectron_gen_pdgId.push_back(-999);
+        patElectron_gen_isPromptFinalState.push_back(-999);
+        patElectron_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+        patElectron_genMother_pt.push_back(-999);
+        patElectron_genMother_eta.push_back(-999);
+        patElectron_genMother_phi.push_back(-999);
+        patElectron_genMother_en.push_back(-999);
+        patElectron_genMother_pdgId.push_back(-999);
+        patElectron_genGrandMother_pt.push_back(-999);
+        patElectron_genGrandMother_eta.push_back(-999);
+        patElectron_genGrandMother_phi.push_back(-999);
+        patElectron_genGrandMother_en.push_back(-999);
+        patElectron_genGrandMother_pdgId.push_back(-999);
     }
   }
 }
 void ElectronPatSelector::SetBranches(){
   if(debug_) std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
-  //Kinematics
+  //Kinematics     
   AddBranch(&patElectron_pt           ,"patElectron_pt");
   AddBranch(&patElectron_eta          ,"patElectron_eta");
   AddBranch(&patElectron_phi          ,"patElectron_phi");
@@ -584,7 +655,7 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&patElectron_isGsfCtfScPixChargeConsistent            ,"patElectron_isGsfCtfScPixChargeConsistent");
   AddBranch(&patElectron_isGsfScPixChargeConsistent               ,"patElectron_isGsfScPixChargeConsistent");
   //ID
-  AddBranch(&passVetoId_              ,"patElectron_isPassVeto");
+  AddBranch(&passVetoId_              ,"patElectron_isPassVeto");          
   AddBranch(&passLooseId_             ,"patElectron_isPassLoose");
   AddBranch(&passMediumId_            ,"patElectron_isPassMedium");
   AddBranch(&passTightId_             ,"patElectron_isPassTight");
@@ -593,12 +664,19 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&passMvanontrigId_        ,"patElectron_isPassMvanontrig");
   AddBranch(&passMvatrigwp90Id_       ,"patElectron_isPassMvatrigwp90");
   AddBranch(&passMvanontrigwp90Id_    ,"patElectron_isPassMvanontrigwp90");
+  AddBranch(&passMvaGPwp90Id_       ,"patElectron_isPassMvaGPwp90");
+  AddBranch(&passMvaGPwp80Id_       ,"patElectron_isPassMvaGPwp80");
+  AddBranch(&passMvaHZZwpLooseId_       ,"patElectron_isPassMvaHZZwpLoose");
   AddBranch(&patElectron_pdgId        ,"patElectron_pdgId");
   AddBranch(&patElectron_isEcalDriven ,"patElectron_isEcalDriven");
   AddBranch(&patElectron_mvaValue_nonTrig_    ,"patElectron_mvaValue_nonTrig");
   AddBranch(&patElectron_mvaCategory_nonTrig_ ,"patElectron_mvaCategory_nonTrig");
   AddBranch(&patElectron_mvaValue_Trig_    ,"patElectron_mvaValue_Trig");
   AddBranch(&patElectron_mvaCategory_Trig_ ,"patElectron_mvaCategory_Trig");
+  AddBranch(&patElectron_mvaValue_GP_    ,"patElectron_mvaValue_GP");
+  AddBranch(&patElectron_mvaCategory_GP_ ,"patElectron_mvaCategory_GP");
+  AddBranch(&patElectron_mvaValue_HZZ_    ,"patElectron_mvaValue_HZZ");
+  AddBranch(&patElectron_mvaCategory_HZZ_ ,"patElectron_mvaCategory_HZZ");
   //Isolation
   AddBranch(&patElectron_isoChargedHadrons        ,"patElectron_isoChargedHadrons");
   AddBranch(&patElectron_isoNeutralHadrons        ,"patElectron_isoNeutralHadrons");
@@ -613,7 +691,6 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&patElectron_hcalPFClusterIso         ,"patElectron_hcalPFClusterIso");
   //Shape, Track related variables, other prop
   AddBranch(&patElectron_dEtaIn                ,"patElectron_dEtaIn");
-  //AddBranch(&patElectron_dEtaInSeed                ,"patElectron_dEtaInSeed");
   AddBranch(&patElectron_dPhiIn                ,"patElectron_dPhiIn");
   AddBranch(&patElectron_full5x5_sigmaIetaIeta ,"patElectron_full5x5_sigmaIetaIeta");
   AddBranch(&patElectron_full5x5_e2x5Max       ,"patElectron_full5x5_e2x5Max");
@@ -621,7 +698,7 @@ void ElectronPatSelector::SetBranches(){
   AddBranch(&patElectron_full5x5_e1x5          ,"patElectron_full5x5_e1x5");
   AddBranch(&patElectron_hOverE                ,"patElectron_hOverE");
   AddBranch(&patElectron_ooEmooP               ,"patElectron_ooEmooP");
-  AddBranch(&passConversionVeto_               ,"patElectron_passConversionVeto");
+  AddBranch(&passConversionVeto_               ,"patElectron_passConversionVeto"); 
   AddBranch(&expectedMissingInnerHits          ,"patElectron_expectedMissingInnerHits");
   AddBranch(&patElectron_gsfTrack_ndof         ,"patElectron_gsfTrack_ndof");
   AddBranch(&patElectron_gsfTrack_normChi2     ,"patElectron_gsfTrack_normChi2");
@@ -731,7 +808,6 @@ void ElectronPatSelector::SetBranches(){
     AddBranch(&patElectron_lepjetnumno2trk    ,"patElectron_lepjetnumno2trk");
   }
   //MC info
-  if(!_is_data){
     AddBranch(&patElectron_gen_pt                                      ,"patElectron_gen_pt");
     AddBranch(&patElectron_gen_eta                                     ,"patElectron_gen_eta");
     AddBranch(&patElectron_gen_phi                                     ,"patElectron_gen_phi");
@@ -739,11 +815,20 @@ void ElectronPatSelector::SetBranches(){
     AddBranch(&patElectron_gen_pdgId                                   ,"patElectron_gen_pdgId");
     AddBranch(&patElectron_gen_isPromptFinalState                      ,"patElectron_gen_isPromptFinalState");
     AddBranch(&patElectron_gen_isDirectPromptTauDecayProductFinalState ,"patElectron_gen_isDirectPromptTauDecayProductFinalState");
-  }
+    AddBranch(&patElectron_genMother_pt                                      ,"patElectron_genMother_pt");
+    AddBranch(&patElectron_genMother_eta                                     ,"patElectron_genMother_eta");
+    AddBranch(&patElectron_genMother_phi                                     ,"patElectron_genMother_phi");
+    AddBranch(&patElectron_genMother_en                                      ,"patElectron_genMother_en");
+    AddBranch(&patElectron_genMother_pdgId                                   ,"patElectron_genMother_pdgId");
+    AddBranch(&patElectron_genGrandMother_pt                                      ,"patElectron_genGrandMother_pt");
+    AddBranch(&patElectron_genGrandMother_eta                                     ,"patElectron_genGrandMother_eta");
+    AddBranch(&patElectron_genGrandMother_phi                                     ,"patElectron_genGrandMother_phi");
+    AddBranch(&patElectron_genGrandMother_en                                      ,"patElectron_genGrandMother_en");
+    AddBranch(&patElectron_genGrandMother_pdgId                                   ,"patElectron_genGrandMother_pdgId");
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void ElectronPatSelector::Clear(){
-  //Kinematics
+  //Kinematics     
   patElectron_pt.clear();
   patElectron_eta.clear();
   patElectron_phi.clear();
@@ -756,14 +841,14 @@ void ElectronPatSelector::Clear(){
   patElectron_SCeta.clear();
   patElectron_inCrack.clear();
   //Charge
-  patElectron_charge.clear();
+  patElectron_charge.clear(); 
   patElectron_isGsfCtfScPixChargeConsistent.clear();
   patElectron_isGsfScPixChargeConsistent.clear();
   //ID
   passVetoId_.clear();
   passLooseId_.clear();
   passMediumId_.clear();
-  passTightId_.clear();
+  passTightId_.clear();  
   passHEEPId_.clear();
   passMvatrigId_.clear();
   passMvanontrigId_.clear();
@@ -775,6 +860,13 @@ void ElectronPatSelector::Clear(){
   patElectron_mvaCategory_nonTrig_.clear();
   patElectron_mvaValue_Trig_.clear();
   patElectron_mvaCategory_Trig_.clear();
+  passMvaGPwp90Id_.clear();
+  passMvaGPwp80Id_.clear();
+  passMvaHZZwpLooseId_.clear();
+  patElectron_mvaValue_GP_.clear();
+  patElectron_mvaCategory_GP_.clear();
+  patElectron_mvaValue_HZZ_.clear();
+  patElectron_mvaCategory_HZZ_.clear();
   //Isolation
   patElectron_isoChargedHadrons.clear();
   patElectron_isoNeutralHadrons.clear();
@@ -789,7 +881,6 @@ void ElectronPatSelector::Clear(){
   patElectron_hcalPFClusterIso.clear();
   //Shape, Track related variables, other prop
   patElectron_dEtaIn.clear();
-  //patElectron_dEtaInSeed.clear();
   patElectron_dPhiIn.clear();
   patElectron_full5x5_sigmaIetaIeta.clear();
   patElectron_full5x5_e2x5Max.clear();
@@ -907,7 +998,6 @@ void ElectronPatSelector::Clear(){
     patElectron_lepjetnumno2trk.clear();
   }
   //MC info
-  if(!_is_data){
     patElectron_gen_pt.clear();
     patElectron_gen_eta.clear();
     patElectron_gen_phi.clear();
@@ -915,7 +1005,16 @@ void ElectronPatSelector::Clear(){
     patElectron_gen_pdgId.clear();
     patElectron_gen_isPromptFinalState.clear();
     patElectron_gen_isDirectPromptTauDecayProductFinalState.clear();
-  }
+    patElectron_genMother_pt.clear();
+    patElectron_genMother_eta.clear();
+    patElectron_genMother_phi.clear();
+    patElectron_genMother_en.clear();
+    patElectron_genMother_pdgId.clear();
+    patElectron_genGrandMother_pt.clear();
+    patElectron_genGrandMother_eta.clear();
+    patElectron_genGrandMother_phi.clear();
+    patElectron_genGrandMother_en.clear();
+    patElectron_genGrandMother_pdgId.clear();
 }
 bool ElectronPatSelector::isGoodVertex(const reco::Vertex& vtx){
   if(vtx.isFake())                                   return false;
@@ -988,7 +1087,7 @@ double ElectronPatSelector::get_isosumraw(const std::vector<const pat::PackedCan
   for(IT pc = pccbegin; pc<pccend; ++pc){
     //pdgId veto
     if(pdgId>0 && abs((*pc)->pdgId())!=pdgId) continue;
-    //pT requirement
+    //pT requirement 
     if(ptTh>0 && (*pc)->pt()<ptTh) continue;
     //cone region
     double dr2 = reco::deltaR2(**pc, cand);
@@ -1070,9 +1169,9 @@ int ElectronPatSelector::pvassociation(edm::View<pat::Electron>::const_iterator&
   int pvass = -1;
   double mindr = 0.3;
   for(const pat::PackedCandidate &cpf : pcc){
-    if(deltaR(ele->p4(),cpf.p4())<mindr             //dR is the standard geometrical way to associate
+    if(deltaR(ele->p4(),cpf.p4())<mindr             //dR is the standard geometrical way to associate 
        && (fabs(ele->pt()-cpf.pt())/ele->pt())<0.05   //Check in pT, because ele,tau are usually faked by jets (many trks) and dR may not be enough
-       && cpf.charge()!=0 && cpf.numberOfHits()>0 //Leptons are charged and built from tracks, also to be consistent with PV tracks
+       && cpf.charge()!=0 && cpf.numberOfHits()>0 //Leptons are charged and built from tracks, also to be consistent with PV tracks  
     ){
       mindr = deltaR(ele->p4(),cpf.p4());
       pvass = cpf.fromPV();
@@ -1108,18 +1207,18 @@ double ElectronPatSelector::parEta(const math::XYZVector& dir, const math::XYZVe
 //  double mag = vector.r() * axis.r();
 //  double dot = vector.Dot(axis);
 //  if((mag-dot)!=0 && (mag+dot)!=0) etarel = -log((mag-dot)/(mag+dot)) / 2;
-//  return etarel;
+//  return etarel;  
 }
 double ElectronPatSelector::get_lepWmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx){
   double lepWmass = 0;
   double minchi2  = 999;
-  //Take lepjet lv
+  //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
-    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy());
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
   }else{
     lepjet.SetPtEtaPhiE(ele->pt(),ele->eta(),ele->phi(),ele->energy());
   }
@@ -1133,7 +1232,7 @@ double ElectronPatSelector::get_lepWmass(edm::View<pat::Electron>::const_iterato
       ) continue;
     TLorentzVector jet_lv = TLorentzVector(j.px(),j.py(),j.pz(),j.p4().E());
     double currmass = (lepjet+jet_lv).M();
-    double currchi2 = pow((currmass-80.385)/25,2);
+    double currchi2 = pow((currmass-80.385)/25,2); 
     if(currchi2<minchi2){
       minchi2 = currchi2;
       lepWmass = currmass;
@@ -1144,13 +1243,13 @@ double ElectronPatSelector::get_lepWmass(edm::View<pat::Electron>::const_iterato
 double ElectronPatSelector::get_lepTopmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx){
   double lepTopmass = 0;
   double minchi2  = 999;
-  //Take lepjet lv
+  //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
-    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy());
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
   }else{
     lepjet.SetPtEtaPhiE(ele->pt(),ele->eta(),ele->phi(),ele->energy());
   }
@@ -1171,17 +1270,17 @@ double ElectronPatSelector::get_lepTopmass(edm::View<pat::Electron>::const_itera
          && jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89
           )
         ) continue;
-      TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());
-      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());
+      TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());      
+      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());      
       TLorentzVector W_lv   = jet1_lv+jet2_lv;
-      TLorentzVector Top_lv = W_lv+lepjet;
-      double currmassw   = W_lv.M();
-      double currmasstop = Top_lv.M();
+      TLorentzVector Top_lv = W_lv+lepjet;    
+      double currmassw   = W_lv.M();  
+      double currmasstop = Top_lv.M(); 
       double currchi2 = pow((currmassw-80.385)/25,2) + pow((currmasstop-173.34)/50,2);
       if(currchi2<minchi2){
         minchi2 = currchi2;
         lepTopmass = currmasstop;
-      }
+      }    
     }
   }
   return lepTopmass;
@@ -1189,13 +1288,13 @@ double ElectronPatSelector::get_lepTopmass(edm::View<pat::Electron>::const_itera
 double ElectronPatSelector::get_lepWTopmass(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, int& lepjetidx){
   double lepWTopmass = 0;
   double minchi2  = 999;
-  //Take lepjet lv
+  //Take lepjet lv 
   edm::Handle<pat::JetCollection> jets;
   iEvent.getByToken(jets_, jets);
   TLorentzVector lepjet;
   if(lepjetidx!=-1){
     const pat::Jet & jet = (*jets)[lepjetidx];
-    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy());
+    lepjet.SetPtEtaPhiE(jet.pt(),jet.eta(),jet.phi(),jet.energy()); 
   }else{
     lepjet.SetPtEtaPhiE(ele->pt(),ele->eta(),ele->phi(),ele->energy());
   }
@@ -1208,7 +1307,7 @@ double ElectronPatSelector::get_lepWTopmass(edm::View<pat::Electron>::const_iter
        && jet1.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<0.89
         )
       ) continue;
-    TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());
+    TLorentzVector jet1_lv = TLorentzVector(jet1.px(),jet1.py(),jet1.pz(),jet1.p4().E());         
     TLorentzVector W_lv    = jet1_lv+lepjet;
     for(uint j2 = j1+1; j2 < jets->size(); j2++){
       const pat::Jet & jet2 = (*jets)[j2];
@@ -1218,15 +1317,15 @@ double ElectronPatSelector::get_lepWTopmass(edm::View<pat::Electron>::const_iter
          && jet2.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.605
           )
         ) continue;
-      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());
-      TLorentzVector Top_lv = W_lv+jet2_lv;
-      double currmassw   = W_lv.M();
-      double currmasstop = Top_lv.M();
+      TLorentzVector jet2_lv = TLorentzVector(jet2.px(),jet2.py(),jet2.pz(),jet2.p4().E());      
+      TLorentzVector Top_lv = W_lv+jet2_lv;    
+      double currmassw   = W_lv.M();  
+      double currmasstop = Top_lv.M(); 
       double currchi2 = pow((currmassw-80.385)/25,2) + pow((currmasstop-173.34)/50,2);
       if(currchi2<minchi2){
         minchi2 = currchi2;
         lepWTopmass = currmassw;
-      }
+      }    
     }
   }
   return lepWTopmass;
@@ -1247,14 +1346,14 @@ void ElectronPatSelector::IP3D2D(TransientTrack ttrk, const reco::Vertex& vtx, G
    if(currIP.second.error()==currIP.second.error())               sIP3D_err = currIP.second.error();
    if(currIP.second.significance()==currIP.second.significance()) sIP3D_sig = currIP.second.significance();
  }
- //2D
+ //2D 
  currIP = IPTools::absoluteTransverseImpactParameter(ttrk,vtx);
  if(currIP.first){
    if(currIP.second.value()==currIP.second.value())               IP2D_val = currIP.second.value();
    if(currIP.second.error()==currIP.second.error())               IP2D_err = currIP.second.error();
    if(currIP.second.significance()==currIP.second.significance()) IP2D_sig = currIP.second.significance();
  }
- //s2D
+ //s2D 
  currIP = IPTools::signedTransverseImpactParameter(ttrk,gv,vtx);
  if(currIP.first){
    if(currIP.second.value()==currIP.second.value())               sIP2D_val = currIP.second.value();
@@ -1289,10 +1388,10 @@ void ElectronPatSelector::lepjetIP(const pat::Jet& jet,  const bool vtxnotempty,
   Track trk = Track(jcand.pseudoTrack());
   bool isgoodtrk = false;
   if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
-  //Minimal conditions for a track
+  //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);
-    //Current IP values
+    //Current IP values 
     double IP3D_val  = -9999;
     double IP3D_err  = -9999;
     double IP3D_sig  = -9999;
@@ -1377,7 +1476,7 @@ void ElectronPatSelector::lepjetIP(const pat::Jet& jet,  const bool vtxnotempty,
         denlepjetAvsIP1D_sig += 1;
       }
     }
-  }//Ch trks
+  }//Ch trks 
  }//Loop on jet daus
 }
 bool ElectronPatSelector::is_goodtrk(Track trk, const reco::Vertex& vtx){
@@ -1401,7 +1500,7 @@ void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const bool vtxnotempty
   Track trk = Track(jcand.pseudoTrack());
   bool isgoodtrk = false;
   if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
-  //Minimal conditions for a track
+  //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     //Get jet trk num
     lepjetchtrks++;
@@ -1410,7 +1509,7 @@ void ElectronPatSelector::lepjetTrks(const pat::Jet& jet, const bool vtxnotempty
     }else{
       lepjetnonpvchtrks++;
     }
-  }//Ch trks
+  }//Ch trks 
  }//Loop on jet daus
  lepjetndaus = jdaus.size();
 }
@@ -1425,11 +1524,11 @@ void ElectronPatSelector::lepjetVtxCompatibility(const pat::Jet& jet, const bool
   Track trk = Track(jcand.pseudoTrack());
   bool isgoodtrk = false;
   if(vtxnotempty) isgoodtrk = is_goodtrk(trk,vtx);
-  //Minimal conditions for a track
+  //Minimal conditions for a track 
   if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
     TransientTrack ttrk = ttrkbuilder.build(&trk);
     jetttrks.push_back(ttrk);
-  }//Ch trks
+  }//Ch trks 
  }//Loop on jet daus
  //LepJet vertex chi2
  TransientVertex tv;
@@ -1456,30 +1555,43 @@ void ElectronPatSelector::get_2trksinfo(vector<TransientTrack> ttrks, double& nu
   }
  }
 }
+const reco::Candidate* ElectronPatSelector::GetGenMotherNoFsr(const reco::Candidate* theobj)
+{
+  if (theobj->numberOfMothers()>0)
+    {
+      const reco::Candidate* mother = theobj->mother(0);
+      if (mother->pdgId() != theobj->pdgId()) return mother;
+      else return GetGenMotherNoFsr(mother);
+    }
+  else 
+    {
+      return theobj;
+    }
+}
 //TTHLep synch
 /*
-    //cout<<"Ele sel "<<distance(electron_pat->begin(),el)<<" "<<el->gsfTrack().isNonnull()<<" "<<el->pt()<<" "<<fabs(el->eta())<<" "<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<" "<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<" "<<miniIso/el->pt()<<" "<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<" "<<nontrigelemva_vl<<" "<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<" "<<el->passConversionVeto()<<endl;
+    //cout<<"Ele sel "<<distance(electron_pat->begin(),el)<<" "<<el->gsfTrack().isNonnull()<<" "<<el->pt()<<" "<<fabs(el->eta())<<" "<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<" "<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<" "<<miniIso/el->pt()<<" "<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<" "<<nontrigelemva_vl<<" "<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<" "<<el->passConversionVeto()<<endl;    
     //if(el->pt()>7) cout<<"Ele"<<setw(20)<<iEvent.id().event()<<setw(20)<<distance(electron_pat->begin(),el)<<setw(20)<<el->pt()<<setw(20)<<fabs(el->eta())<<setw(20)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(20)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<setw(20)<<miniIso/el->pt()<<setw(20)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(20)<<nontrigelemva_vl<<setw(20)<<el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<<setw(20)<<el->passConversionVeto()<<setw(20)<<miniIso<<setw(20)<<miniIsoCh<<setw(20)<<miniIsoPUsub<<endl;
     if(!aele && el->gsfTrack().isNonnull()
        && el->pt()>7 && fabs(el->eta())<2.5
        && fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<=0.05 && fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<0.1
        && miniIso/el->pt()<0.4 && fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<8
-       && nontrigelemva_vl
-       && el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1 && el->passConversionVeto()
+       && nontrigelemva_vl 
+       && el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1 && el->passConversionVeto() 
       ){
       //cout<<setw(10)<<"event"<<setw(10)<<"pT"<<setw(10)<<"Eta"<<setw(10)<<"Phi"<<setw(10)<<"E"<<setw(5)<<"pdgID"<<setw(5)<<"charge"<<setw(15)<<"miniIso"<<setw(15)<<"miniIsoCharged"<<setw(15)<<"miniIsoNeutral"<<setw(10)<<"jetPtRel"<<setw(10)<<"jetCSV"<<setw(10)<<"jetPtRatio"<<setw(10)<<"sipi3D"<<setw(10)<<"dxy"<<setw(10)<<"dz"<<setw(21)<<"segmentCompatibility"<<endl;
       cout<<"El"<<setw(10)<<iEvent.id().event()<<setw(10)<<el->pt()<<setw(10)<<el->eta()<<setw(10)<<el->phi()<<setw(10)<<el->energy()<<setw(5)<<el->pdgId()<<setw(5)<<el->charge()<<setw(15)<<miniIso/el->pt()<<setw(15)<<miniIsoCh<<setw(15)<<miniIsoPUsub<<setw(10)<<eleptrel<<setw(10)<<elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags<<setw(10)<<el->pt()/elejet_pt<<setw(10)<<fabs(el->dB(pat::Electron::PV3D))/el->edB(pat::Electron::PV3D)<<setw(10)<<fabs(el->gsfTrack()->dxy(firstGoodVertex.position()))<<setw(10)<<fabs(el->gsfTrack()->dz(firstGoodVertex.position()))<<setw(21)<<mvaval_nonTrig<<endl;
       //if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")) cout<<setw(21)<<el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")<<endl;
       //else cout<<setw(21)<<"No Ele MVA"<<endl;
       aele = true;
-      //trigelemva from miniAOD (to be used at some point)
+      //trigelemva from miniAOD (to be used at some point) 
       //bool nontrigelemva_vl = false;
       //if(el->hasUserFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values")){
       //  double ntelemva = el->userFloat("ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values");
       //  double eleta   = fabs(el->eta());
       //  if((eleta < 0.8                           && ntelemva > -0.11) ||
-      //       (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.35) ||
-      //       (1.479 <= eleta && eleta < 500 && ntelemva > -0.55)
+      //       (0.8 <= eleta && eleta < 1.479 && ntelemva > -0.35) || 
+      //       (1.479 <= eleta && eleta < 500 && ntelemva > -0.55)         
       //      ){
       //      nontrigelemva_vl = true;
       //  }

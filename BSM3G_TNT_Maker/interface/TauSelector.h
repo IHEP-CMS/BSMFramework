@@ -104,6 +104,7 @@ class TauSelector : public baseTree{
   int _Tau_vtx_rho_max;
   double _Tau_vtx_position_z_max;
   bool _super_TNT;
+  bool  _is_data;
   bool _MiniAODv2;
   /////
   //   BSM variables
@@ -149,5 +150,10 @@ class TauSelector : public baseTree{
   vector<double> Tau_defaultDxy, Tau_defaultDxyError, Tau_defaultDxySig, Tau_packedLeadTauCand_dxy, Tau_packedLeadTauCand_dz, Tau_packedLeadTauCand_dxyError, Tau_packedLeadTauCand_dzError, Tau_defaultFlightLengthX, Tau_defaultFlightLengthY, Tau_defaultFlightLengthZ, Tau_defaultFlightLengthSig, Tau_default_PCAx_pv, Tau_default_PCAy_pv, Tau_default_PCAz_pv;
   vector<double> Tau_leadChargedCandDz_pv, Tau_leadChargedCandDxy_pv, Tau_leadChargedCandDz_bs, Tau_leadChargedCandDxy_bs, Tau_leadChargedCandDzError, Tau_leadChargedCandDxyError, Tau_leadChargedCandVtx, Tau_leadChargedCandVty, Tau_leadChargedCandVtz;
   vector<double> Tau_leadChargedCandTrack_PCAx_bs, Tau_leadChargedCandTrack_PCAy_bs, Tau_leadChargedCandTrack_PCAz_bs, Tau_leadChargedCandTrack_PCAx_pv, Tau_leadChargedCandTrack_PCAy_pv, Tau_leadChargedCandTrack_PCAz_pv, Tau_leadChargedCandTrackFitErrorMatrix_00, Tau_leadChargedCandTrackFitErrorMatrix_01, Tau_leadChargedCandTrackFitErrorMatrix_02, Tau_leadChargedCandTrackFitErrorMatrix_11, Tau_leadChargedCandTrackFitErrorMatrix_12, Tau_leadChargedCandTrackFitErrorMatrix_22;
+ //MC
+  vector<double> Tau_gen_pt, Tau_gen_eta, Tau_gen_phi, Tau_gen_en,Tau_gen_pdgId;
+  vector<double> Tau_genMother_pt, Tau_genMother_eta, Tau_genMother_phi, Tau_genMother_en,Tau_genMother_pdgId;
+  vector<double> Tau_genGrandMother_pt, Tau_genGrandMother_eta, Tau_genGrandMother_phi, Tau_genGrandMother_en,Tau_genGrandMother_pdgId;
+  const reco::Candidate* GetGenMotherNoFsr(const reco::Candidate* theobj);
 };
 #endif

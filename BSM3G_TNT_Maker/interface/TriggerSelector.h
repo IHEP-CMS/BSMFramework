@@ -98,10 +98,16 @@ class TriggerSelector : public baseTree{
   //Electron
   int HLT_Ele23_WPLoose_Gsf; //Data
   int HLT_Ele23_CaloIdL_TrackIdL_IsoVL; //MC
+  int HLT_Ele27_WPTight_Gsf;
+  int HLT_Ele25_eta2p1_WPTight_Gsf;
   //Muon
   int HLT_IsoTkMu20;
+  int HLT_IsoMu22_eta2p1;
+  int HLT_IsoTkMu22_eta2p1;
   int HLT_IsoTkMu22;
   //CrossEle-Mu
+  int HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL;
+  int HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ;
   int HLT_DiMu9_Ele9_CaloIdL_TrackIdL;
   int HLT_Mu8_DiEle12_CaloIdL_TrackIdL;
   int HLT_TripleMu_12_10_5;

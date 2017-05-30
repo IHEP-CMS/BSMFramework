@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <TRandom3.h>
-#include <TBranch.h>
+#include <TBranch.h>                                                                    
 #include <TClonesArray.h>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -66,7 +66,6 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "RecoBTag/BTagTools/interface/SignedTransverseImpactParameter.h"
-//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include "TMath.h"
 using namespace std;
 using namespace pat;
@@ -91,7 +90,6 @@ class ElectronPatSelector : public  baseTree{
  private:
   ElectronPatSelector(){};
   EGammaMvaEleEstimatorFWLite* mvaID_;
-//  EffectiveAreas _effectiveAreas;
   /////
   //   Config variables
   /////
@@ -117,6 +115,13 @@ class ElectronPatSelector : public  baseTree{
   edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_nonTrig_;
   edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_Trig_;
   edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_Trig_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAGPwp90IdMap_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAGPwp80IdMap_;
+  edm::EDGetTokenT<edm::ValueMap<bool>  > eleMVAHZZwpLooseIdMap_;
+  edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_GP_;
+  edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_GP_;
+  edm::EDGetTokenT<edm::ValueMap<float> > elemvaValuesMapToken_HZZ_;
+  edm::EDGetTokenT<edm::ValueMap<int>   > elemvaCategoriesMapToken_HZZ_;
   double _patElectron_pt_min;
   double _patElectron_eta_max;
   int    _vtx_ndof_min;
@@ -127,7 +132,7 @@ class ElectronPatSelector : public  baseTree{
   bool   _qglVar;
   bool   _is_data;
   /////
-  //   BSM
+  //   BSM 
   /////
   //Variables
   //Kinematics
@@ -137,16 +142,18 @@ class ElectronPatSelector : public  baseTree{
   //ID
   vector<int>  passVetoId_, passLooseId_, passMediumId_, passTightId_, passHEEPId_, passMvatrigId_, passMvanontrigId_, passMvatrigwp90Id_, passMvanontrigwp90Id_, patElectron_mvaCategory_, patElectron_pdgId, patElectron_isEcalDriven;
   vector<float> patElectron_mvaValue_nonTrig_, patElectron_mvaCategory_nonTrig_, patElectron_mvaValue_Trig_, patElectron_mvaCategory_Trig_;
+  vector<int>    passMvaGPwp90Id_, passMvaGPwp80Id_,passMvaHZZwpLooseId_;
+  vector<float> patElectron_mvaValue_HZZ_, patElectron_mvaCategory_HZZ_, patElectron_mvaValue_GP_, patElectron_mvaCategory_GP_;
   //Isolation
   vector<double> patElectron_isoChargedHadrons, patElectron_isoNeutralHadrons, patElectron_isoPhotons, patElectron_isoPU, patElectron_relIsoDeltaBeta, patElectron_relIsoRhoEA, patElectron_dr03EcalRecHitSumEt, patElectron_dr03HcalDepth1TowerSumEt, patElectron_isolPtTracks, patElectron_ecalPFClusterIso, patElectron_hcalPFClusterIso;
   //Shape, Track related variables, other prop
-  vector<double> patElectron_dEtaIn, /*patElectron_dEtaInSeed,*/ patElectron_dPhiIn,
+  vector<double> patElectron_dEtaIn, patElectron_dPhiIn, 
                  patElectron_full5x5_sigmaIetaIeta, patElectron_full5x5_e2x5Max, patElectron_full5x5_e5x5, patElectron_full5x5_e1x5,
-                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2;
+                 patElectron_hOverE, patElectron_ooEmooP, passConversionVeto_, expectedMissingInnerHits, patElectron_gsfTrack_ndof, patElectron_gsfTrack_normChi2; 
   //IP
   vector<double> patElectron_gsfTrack_dz_pv, patElectron_gsfTrack_dxy_pv, patElectron_d0, patElectron_gsfTrack_dz_bs, patElectron_gsfTrack_dxy_bs, patElectron_dzError, patElectron_dxyError, patElectron_gsfTrack_vtx, patElectron_gsfTrack_vty, patElectron_gsfTrack_vtz;
   vector<double> patElectron_gsfTrack_PCAx_pv, patElectron_gsfTrack_PCAy_pv, patElectron_gsfTrack_PCAz_pv,
-                 patElectron_gsfTrack_PCAx_bs, patElectron_gsfTrack_PCAy_bs, patElectron_gsfTrack_PCAz_bs,
+                 patElectron_gsfTrack_PCAx_bs, patElectron_gsfTrack_PCAy_bs, patElectron_gsfTrack_PCAz_bs,  
                  patElectron_gsfTrackFitErrorMatrix_00, patElectron_gsfTrackFitErrorMatrix_01, patElectron_gsfTrackFitErrorMatrix_02, patElectron_gsfTrackFitErrorMatrix_11, patElectron_gsfTrackFitErrorMatrix_12, patElectron_gsfTrackFitErrorMatrix_22;
   //patElectron_relIsoDeltaBeta,patElectron_relIsoRhoEA;
   /////
@@ -159,7 +166,7 @@ class ElectronPatSelector : public  baseTree{
   double get_effarea(double eta);
   void get_elejet_info(edm::View<pat::Electron>::const_iterator& ele, const edm::Event& iEvent, const edm::EventSetup& iSetup,
                        double& elejet_mindr, double& elejet_pt, double& eleptOVelejetpt,
-                       double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,
+                       double& elejet_pfCombinedInclusiveSecondaryVertexV2BJetTags, double& elejet_pfJetProbabilityBJetTags, double& elejet_pfCombinedMVABJetTags, double& elejet_qgl,                       
                        double& jx, double& jy, double& jz, double& eleptrel, double& eleparel, double& eleparelsub,
                        int& lepjetidx);
   int pvassociation(edm::View<pat::Electron>::const_iterator& ele, const pat::PackedCandidateCollection& pcc);
@@ -194,5 +201,8 @@ class ElectronPatSelector : public  baseTree{
   /////
   vector<double> patElectron_gen_pt, patElectron_gen_eta, patElectron_gen_phi, patElectron_gen_en;
   vector<int>    patElectron_gen_pdgId, patElectron_gen_isPromptFinalState, patElectron_gen_isDirectPromptTauDecayProductFinalState;
+  vector<double> patElectron_genMother_pt, patElectron_genMother_eta, patElectron_genMother_phi, patElectron_genMother_en,patElectron_genMother_pdgId;
+  vector<double> patElectron_genGrandMother_pt, patElectron_genGrandMother_eta, patElectron_genGrandMother_phi, patElectron_genGrandMother_en,patElectron_genGrandMother_pdgId;
+  const reco::Candidate* GetGenMotherNoFsr(const reco::Candidate* theobj);
 };
 #endif

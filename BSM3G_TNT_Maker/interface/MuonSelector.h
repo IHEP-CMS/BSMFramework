@@ -171,5 +171,8 @@ class MuonSelector : public  baseTree{
   /////
   vector<double> Muon_gen_pt, Muon_gen_eta, Muon_gen_phi, Muon_gen_en;
   vector<int> Muon_gen_pdgId, Muon_gen_isPromptFinalState, Muon_gen_isDirectPromptTauDecayProductFinalState;
+  vector<double> Muon_genMother_pt, Muon_genMother_eta, Muon_genMother_phi, Muon_genMother_en,Muon_genMother_pdgId;
+  vector<double> Muon_genGrandMother_pt, Muon_genGrandMother_eta, Muon_genGrandMother_phi, Muon_genGrandMother_en,Muon_genGrandMother_pdgId;
+  const reco::Candidate* GetGenMotherNoFsr(const reco::Candidate* theobj);
 };
 #endif

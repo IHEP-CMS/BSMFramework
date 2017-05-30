@@ -28,6 +28,8 @@
 <use name="JetMETCorrections/Algorithms"/>
 <use name="JetMETCorrections/JetCorrector"/>
 <use name="JetMETCorrections/Modules"/>
+<use name="CondFormats/BTauObjects"/>
+<use name="CondTools/BTau"/>
 <use name="LHAPDF"/>
 <use name="clhep"/>
 <use name="root"/>

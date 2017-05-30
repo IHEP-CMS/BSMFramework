@@ -59,6 +59,8 @@
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
+#include "CondTools/BTau/interface/BTagCalibrationReader.h"
 #include "baseTree.h"
 using namespace std;
 using namespace pat;
@@ -126,6 +128,14 @@ class JetSelector : public  baseTree{
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiMCUnc_;
   boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFPuppiDATA_;
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiDATAUnc_;
+  ////
+  // BTag ReWeighting
+  //// 
+  edm::FileInPath BTAGReweightfile3_;
+  BTagCalibrationReader reader_;
+  double btagweight(double csv, double pt, double eta, double flavor, const std::string& sys="central"); 
+  vector<double> Jet_btag_sf, Jet_btag_jesup, Jet_btag_hfup, Jet_btag_hfstat1up, Jet_btag_hfstat2up, Jet_btag_lfup, Jet_btag_lfstat1up, Jet_btag_lfstat2up, Jet_btag_cerr1up, Jet_btag_cerr2up;
+  vector<double> Jet_btag_jesdown, Jet_btag_hfdown, Jet_btag_hfstat1down, Jet_btag_hfstat2down, Jet_btag_lfdown, Jet_btag_lfstat1down, Jet_btag_lfstat2down, Jet_btag_cerr1down, Jet_btag_cerr2down;
   /////
   //   BSM variables
   /////
@@ -144,6 +154,9 @@ class JetSelector : public  baseTree{
   vector<double> Jet_JesSF, Jet_JesSFup, Jet_JesSFdown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
   //MC 
   vector<double> Jet_partonFlavour, Jet_hadronFlavour;
+  vector<double> Jet_genMother_pt, Jet_genMother_eta, Jet_genMother_phi, Jet_genMother_en,Jet_genMother_pdgId;
+  vector<double> Jet_genGrandMother_pt, Jet_genGrandMother_eta, Jet_genGrandMother_phi, Jet_genGrandMother_en,Jet_genGrandMother_pdgId;
+  const reco::Candidate* GetGenMotherNoFsr(const reco::Candidate* theobj);
   ////slimmedJetsPuppi
   //Kinematics
   vector<double> Jet_puppi_pt, Jet_puppi_eta, Jet_puppi_phi, Jet_puppi_energy, Jet_puppi_mass, Jet_puppi_px, Jet_puppi_py, Jet_puppi_pz, Jet_puppi_Uncorr_pt;

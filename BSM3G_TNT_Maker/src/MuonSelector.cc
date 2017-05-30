@@ -531,6 +531,18 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         Muon_gen_pdgId.push_back(genpart->pdgId());
         Muon_gen_isPromptFinalState.push_back(genpart->isPromptFinalState());
         Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(genpart->isDirectPromptTauDecayProductFinalState());
+	const reco::Candidate* genMother = GetGenMotherNoFsr(mu->genParticle());
+        Muon_genMother_pt.push_back(genMother->pt());
+        Muon_genMother_eta.push_back(genMother->eta());
+        Muon_genMother_phi.push_back(genMother->phi());
+        Muon_genMother_en.push_back(genMother->energy());
+        Muon_genMother_pdgId.push_back(genMother->pdgId());
+	const reco::Candidate* genGrandMother = GetGenMotherNoFsr(genMother);        
+        Muon_genGrandMother_pt.push_back(genGrandMother->pt());
+        Muon_genGrandMother_eta.push_back(genGrandMother->eta());
+        Muon_genGrandMother_phi.push_back(genGrandMother->phi());
+        Muon_genGrandMother_en.push_back(genGrandMother->energy());
+        Muon_genGrandMother_pdgId.push_back(genGrandMother->pdgId());
       }else{
         Muon_gen_pt.push_back(-999);
         Muon_gen_eta.push_back(-999);
@@ -539,7 +551,35 @@ void MuonSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         Muon_gen_pdgId.push_back(-999);
         Muon_gen_isPromptFinalState.push_back(-999);
         Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+        Muon_genMother_pt.push_back(-999);
+        Muon_genMother_eta.push_back(-999);
+        Muon_genMother_phi.push_back(-999);
+        Muon_genMother_en.push_back(-999);
+        Muon_genMother_pdgId.push_back(-999);
+        Muon_genGrandMother_pt.push_back(-999);
+        Muon_genGrandMother_eta.push_back(-999);
+        Muon_genGrandMother_phi.push_back(-999);
+        Muon_genGrandMother_en.push_back(-999);
+        Muon_genGrandMother_pdgId.push_back(-999);
       }
+    }else{
+        Muon_gen_pt.push_back(-999);
+        Muon_gen_eta.push_back(-999);
+        Muon_gen_phi.push_back(-999);
+        Muon_gen_en.push_back(-999);
+        Muon_gen_pdgId.push_back(-999);
+        Muon_gen_isPromptFinalState.push_back(-999);
+        Muon_gen_isDirectPromptTauDecayProductFinalState.push_back(-999);
+        Muon_genMother_pt.push_back(-999);
+        Muon_genMother_eta.push_back(-999);
+        Muon_genMother_phi.push_back(-999);
+        Muon_genMother_en.push_back(-999);
+        Muon_genMother_pdgId.push_back(-999);
+        Muon_genGrandMother_pt.push_back(-999);
+        Muon_genGrandMother_eta.push_back(-999);
+        Muon_genGrandMother_phi.push_back(-999);
+        Muon_genGrandMother_en.push_back(-999);
+        Muon_genGrandMother_pdgId.push_back(-999);
     }
   }
 }
@@ -714,7 +754,6 @@ void MuonSelector::SetBranches(){
     AddBranch(&Muon_lepjetnumno2trk    ,"Muon_lepjetnumno2trk");
   }
   //MC info
-  if(!_is_data){
     AddBranch(&Muon_gen_pt                                      ,"Muon_gen_pt");
     AddBranch(&Muon_gen_eta                                     ,"Muon_gen_eta");
     AddBranch(&Muon_gen_phi                                     ,"Muon_gen_phi");
@@ -722,7 +761,16 @@ void MuonSelector::SetBranches(){
     AddBranch(&Muon_gen_pdgId                                   ,"Muon_gen_pdgId");
     AddBranch(&Muon_gen_isPromptFinalState                      ,"Muon_gen_isPromptFinalState");
     AddBranch(&Muon_gen_isDirectPromptTauDecayProductFinalState ,"Muon_gen_isDirectPromptTauDecayProductFinalState");
-  }
+    AddBranch(&Muon_genMother_pt                                      ,"Muon_genMother_pt");
+    AddBranch(&Muon_genMother_eta                                     ,"Muon_genMother_eta");
+    AddBranch(&Muon_genMother_phi                                     ,"Muon_genMother_phi");
+    AddBranch(&Muon_genMother_en                                      ,"Muon_genMother_en");
+    AddBranch(&Muon_genMother_pdgId                                   ,"Muon_genMother_pdgId");
+    AddBranch(&Muon_genGrandMother_pt                                      ,"Muon_genGrandMother_pt");
+    AddBranch(&Muon_genGrandMother_eta                                     ,"Muon_genGrandMother_eta");
+    AddBranch(&Muon_genGrandMother_phi                                     ,"Muon_genGrandMother_phi");
+    AddBranch(&Muon_genGrandMother_en                                      ,"Muon_genGrandMother_en");
+    AddBranch(&Muon_genGrandMother_pdgId                                   ,"Muon_genGrandMother_pdgId");
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
 void MuonSelector::Clear(){
@@ -895,7 +943,6 @@ void MuonSelector::Clear(){
     Muon_lepjetnumno2trk.clear();
   }
   //MC info
-  if(!_is_data){
     Muon_gen_pt.clear();
     Muon_gen_eta.clear();
     Muon_gen_phi.clear();
@@ -903,7 +950,16 @@ void MuonSelector::Clear(){
     Muon_gen_pdgId.clear();
     Muon_gen_isPromptFinalState.clear();
     Muon_gen_isDirectPromptTauDecayProductFinalState.clear();
-  }
+    Muon_genMother_pt.clear();
+    Muon_genMother_eta.clear();
+    Muon_genMother_phi.clear();
+    Muon_genMother_en.clear();
+    Muon_genMother_pdgId.clear();
+    Muon_genGrandMother_pt.clear();
+    Muon_genGrandMother_eta.clear();
+    Muon_genGrandMother_phi.clear();
+    Muon_genGrandMother_en.clear();
+    Muon_genGrandMother_pdgId.clear();
 }
 bool MuonSelector::isGoodVertex(const reco::Vertex& vtx){
   if(vtx.isFake())                                   return false;
@@ -1429,6 +1485,19 @@ void MuonSelector::get_2trksinfo(vector<TransientTrack> ttrks, double& num2v, do
    }
   }
  }
+}
+const reco::Candidate* MuonSelector::GetGenMotherNoFsr(const reco::Candidate* theobj)
+{
+  if (theobj->numberOfMothers()>0)
+    {
+      const reco::Candidate* mother = theobj->mother(0);
+      if (mother->pdgId() != theobj->pdgId()) return mother;
+      else return GetGenMotherNoFsr(mother);
+    }
+  else 
+    {
+      return theobj;
+    }
 }
 //TTHLep synch
   //const JetCorrector* corrector = JetCorrector::getJetCorrector( "ak4PFCHSL1L2L3Residual", iSetup );

@@ -53,21 +53,21 @@ git remote add ahinzmann https://github.com/ahinzmann/cmssw.git
 git fetch ahinzmann PUidMiniAODfix80
 git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
 
-# boosted object definitions
-# git clone https://github.com/cms-ttH/MiniAOD.git --branch TODO --depth 1
 
 # common classifier
 mkdir TTH
 cd TTH
 git clone https://gitlab.cern.ch/ttH/CommonClassifier.git TTH/CommonClassifier
 source TTH/CommonClassifier/setup/install_mem.sh
-# when your ssh client is configured property, you can also use
-# ssh://git@gitlab.cern.ch:7999/ttH/CommonClassifier.git
+source TTH/CommonClassifier/setup/install_recoLikelihood.sh
+
+
 cd $CMSSW_BASE/src
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout  #brings in HEEP V70 into VID
 git cms-merge-topic ikrav:egm_id_80X_v3 # For other E/gamma IDs in VID if you wish to have them
 git cms-merge-topic Sam-Harper:PackedCandNoPuppi # Only necessary to run HEEP V70 on AOD (it will crash if this is not present looking for puppi candidates
-mkdir -p ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/ #we need this for the mva weights which runs in VID regardless if you need it or not
-git clone https://github.com/cms-data/RecoEgamma-ElectronIdentification ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/data #we need this for the mva weights which runs in VID regardless if you need it or not
 
-scram b -j
+#mkdir -p ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/ #we need this for the mva weights which runs in VID regardless if you need it or not
+#git clone https://github.com/cms-data/RecoEgamma-ElectronIdentification ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/data #we need this for the mva #weights which runs in VID regardless if you need it or not
+
+scram b

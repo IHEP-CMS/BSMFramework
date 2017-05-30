@@ -1,6 +1,17 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/JetSelector.h"
 JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
-  baseTree(name,tree,debug)
+  baseTree(name,tree,debug),
+  reader_(BTagEntry::OP_RESHAPING, "central",
+    	{ "up_jes", "down_jes",
+    	  "up_hf", "down_hf",
+    	  "up_hfstats1", "down_hfstats1",
+    	  "up_hfstats2", "down_hfstats2",
+    	  "up_lf", "down_lf",
+    	  "up_lfstats1", "down_lfstats1",
+    	  "up_lfstats2", "down_lfstats2",
+    	  "up_cferr1", "down_cferr1",
+    	  "up_cferr2", "down_cferr2"
+         })
 {
   vtx_h_        = ic.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
   jets_         = ic.consumes<pat::JetCollection >(iConfig.getParameter<edm::InputTag>("jets"));
@@ -11,7 +22,6 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   multToken_    = ic.consumes<edm::ValueMap<int>>(edm::InputTag("QGTagger", "mult"));
   rhopogHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoFastjetAll"));
   rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoAll"));
-  //rhoJERHandle_ = ic.consumes<double>(edm::InputTag("fixedGridRhoCentral"));
   jecPayloadNamesAK4PFchsMC1_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC1");
   jecPayloadNamesAK4PFchsMC2_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC2");
   jecPayloadNamesAK4PFchsMC3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFchsMC3");
@@ -30,10 +40,20 @@ JetSelector::JetSelector(std::string name, TTree* tree, bool debug, const pset& 
   jecPayloadNamesAK4PFPuppiDATA3_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA3");
   jecPayloadNamesAK4PFPuppiDATA4_   = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATA4");
   jecPayloadNamesAK4PFPuppiDATAUnc_ = iConfig.getParameter<edm::FileInPath>("jecPayloadNamesAK4PFPuppiDATAUnc");
+  BTAGReweightfile3_ = iConfig.getParameter<edm::FileInPath>("BTAGReweightfile3");
   jerAK4PFchs_     = iConfig.getParameter<edm::FileInPath>("jerAK4PFchs").fullPath();
   jerAK4PFchsSF_   = iConfig.getParameter<edm::FileInPath>("jerAK4PFchsSF").fullPath();
   jerAK4PFPuppi_   = iConfig.getParameter<edm::FileInPath>("jerAK4PFPuppi").fullPath();
   jerAK4PFPuppiSF_ = iConfig.getParameter<edm::FileInPath>("jerAK4PFPuppiSF").fullPath();
+  const char *filePath = BTAGReweightfile3_.fullPath().c_str();
+    
+  BTagCalibration calib("csvv2", filePath);
+  
+  reader_.load(calib, BTagEntry::FLAV_B, "iterativefit");
+  reader_.load(calib, BTagEntry::FLAV_C, "iterativefit");
+  reader_.load(calib, BTagEntry::FLAV_UDSG, "iterativefit");
+
+  //default constructor
   _Jet_pt_min     = iConfig.getParameter<double>("Jet_pt_min");
   _super_TNT      = iConfig.getParameter<bool>("super_TNT");
   _is_data = iConfig.getParameter<bool>("is_data");
@@ -48,11 +68,11 @@ void JetSelector::Fill(const edm::Event& iEvent){
   Clear();
   /////
   //   Recall collections
-  /////
+  /////  
   edm::Handle<reco::VertexCollection> vertices;
   iEvent.getByToken(vtx_h_, vertices);
-  edm::Handle<pat::JetCollection> jets;
-  iEvent.getByToken(jets_, jets);
+  edm::Handle<pat::JetCollection> jets;                                       
+  iEvent.getByToken(jets_, jets);                                         
   edm::Handle<edm::ValueMap<float>> qgHandle;
   iEvent.getByToken(qgToken_, qgHandle);
   edm::Handle<edm::ValueMap<float>> axis2Handle;
@@ -61,8 +81,8 @@ void JetSelector::Fill(const edm::Event& iEvent){
   iEvent.getByToken(ptDToken_, ptDHandle);
   edm::Handle<edm::ValueMap<int>> multHandle;
   iEvent.getByToken(multToken_, multHandle);
-  edm::Handle<pat::JetCollection> puppijets;
-  iEvent.getByToken(puppijets_, puppijets);
+  edm::Handle<pat::JetCollection> puppijets;                                       
+  iEvent.getByToken(puppijets_, puppijets); 
   edm::Handle<double> rhoHandle;
   iEvent.getByToken(rhopogHandle_,rhoHandle);
   double rho = *rhoHandle;
@@ -71,25 +91,25 @@ void JetSelector::Fill(const edm::Event& iEvent){
   double rhoJER = *rhoJERHandle;
   /////
   //   Get jet information
-  /////
+  /////  
   //bool ajet = false;
   ////slimmedJets
   int ij = 0;
-  for(const pat::Jet &j : *jets){
+  for(const pat::Jet &j : *jets){ 
     //Acceptance
     if(j.pt()<_Jet_pt_min){ij++; continue;}
     //Kinematics
-    Jet_pt.push_back(j.pt());
-    Jet_eta.push_back(j.eta());
-    Jet_phi.push_back(j.phi());
+    Jet_pt.push_back(j.pt());  
+    Jet_eta.push_back(j.eta());       
+    Jet_phi.push_back(j.phi());       
     Jet_energy.push_back(j.energy());
-    Jet_mass.push_back(j.mass());
-    Jet_px.push_back(j.px());
-    Jet_py.push_back(j.py());
-    Jet_pz.push_back(j.pz());
-    Jet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());
+    Jet_mass.push_back(j.mass()); 
+    Jet_px.push_back(j.px());   
+    Jet_py.push_back(j.py());          
+    Jet_pz.push_back(j.pz());          
+    Jet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
     if(!_is_data){
-      if(j.genJet()){
+      if(j.genJet()){ 
         Jet_genpt.push_back(j.genJet()->pt());
         Jet_geneta.push_back(j.genJet()->eta());
         Jet_genphi.push_back(j.genJet()->phi());
@@ -107,7 +127,16 @@ void JetSelector::Fill(const edm::Event& iEvent){
         Jet_genpx.push_back(-999);
         Jet_genpy.push_back(-999);
         Jet_genpz.push_back(-999);
-      }
+      }    
+    }else{
+        Jet_genpt.push_back(-999);
+        Jet_geneta.push_back(-999);
+        Jet_genphi.push_back(-999);
+        Jet_genenergy.push_back(-999);
+        Jet_genmass.push_back(-999);
+        Jet_genpx.push_back(-999);
+        Jet_genpy.push_back(-999);
+        Jet_genpz.push_back(-999);
     }
     //ID
     Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("newpfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -129,17 +158,17 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_ptD.push_back((*ptDHandle)[jetRef]);
     Jet_mult.push_back((*multHandle)[jetRef]);
     //Energy
-    Jet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());
-    Jet_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());
-    Jet_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());
-    Jet_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());
-    Jet_muonEnergyFraction.push_back(j.muonEnergyFraction());
-    Jet_electronEnergy.push_back(j.electronEnergy());
-    Jet_photonEnergy.push_back(j.photonEnergy());
+    Jet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
+    Jet_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
+    Jet_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());                               
+    Jet_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());                              
+    Jet_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
+    Jet_electronEnergy.push_back(j.electronEnergy());                               
+    Jet_photonEnergy.push_back(j.photonEnergy());                                 
     if(j.isCaloJet()) Jet_emEnergyFraction.push_back(j.emEnergyFraction());
     else              Jet_emEnergyFraction.push_back(-999);
     //Other prop
-    Jet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());
+    Jet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
     Jet_chargedMultiplicity.push_back(j.chargedMultiplicity());
     Jet_vtxMass.push_back(j.userFloat("vtxMass"));
     Jet_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
@@ -183,10 +212,10 @@ void JetSelector::Fill(const edm::Event& iEvent){
     Jet_JesSFup.push_back(corrUpAK4PFchs);
     Jet_JesSFdown.push_back(corrDownAK4PFchs);
     //JER scale factor and uncertainties
-    float JERScaleFactor     = 1;
+    float JERScaleFactor     = 1; 
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
-    if(!_is_data) GetJER(j, corrAK4PFchs, rho, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+    if(!_is_data) GetJER(j, corrAK4PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
     Jet_JerSF.push_back(JERScaleFactor);
     Jet_JerSFup.push_back(JERScaleFactorUP);
     Jet_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -194,7 +223,109 @@ void JetSelector::Fill(const edm::Event& iEvent){
     if(!_is_data) {
       Jet_partonFlavour.push_back(j.partonFlavour());
       Jet_hadronFlavour.push_back(j.hadronFlavour());
+      if(j.genParton()){
+       const reco::Candidate* genMother = GetGenMotherNoFsr(j.genParton());
+       Jet_genMother_pt.push_back(genMother->pt());
+       Jet_genMother_eta.push_back(genMother->eta());
+       Jet_genMother_phi.push_back(genMother->phi());
+       Jet_genMother_en.push_back(genMother->energy());
+       Jet_genMother_pdgId.push_back(genMother->pdgId());
+       const reco::Candidate* genGrandMother = GetGenMotherNoFsr(genMother);        
+       Jet_genGrandMother_pt.push_back(genGrandMother->pt());
+       Jet_genGrandMother_eta.push_back(genGrandMother->eta());
+       Jet_genGrandMother_phi.push_back(genGrandMother->phi());
+       Jet_genGrandMother_en.push_back(genGrandMother->energy());
+       Jet_genGrandMother_pdgId.push_back(genGrandMother->pdgId());
+      }else{
+       Jet_genMother_pt.push_back(-999);
+       Jet_genMother_eta.push_back(-999);
+       Jet_genMother_phi.push_back(-999);
+       Jet_genMother_en.push_back(-999);
+       Jet_genMother_pdgId.push_back(-999);
+       Jet_genGrandMother_pt.push_back(-999);
+       Jet_genGrandMother_eta.push_back(-999);
+       Jet_genGrandMother_phi.push_back(-999);
+       Jet_genGrandMother_en.push_back(-999);
+       Jet_genGrandMother_pdgId.push_back(-999);
+      }
+    }else{
+      Jet_partonFlavour.push_back(-999);
+      Jet_hadronFlavour.push_back(-999);
+      Jet_genMother_pt.push_back(-999);
+      Jet_genMother_eta.push_back(-999);
+      Jet_genMother_phi.push_back(-999);
+      Jet_genMother_en.push_back(-999);
+      Jet_genMother_pdgId.push_back(-999);
+      Jet_genGrandMother_pt.push_back(-999);
+      Jet_genGrandMother_eta.push_back(-999);
+      Jet_genGrandMother_phi.push_back(-999);
+      Jet_genGrandMother_en.push_back(-999);
+      Jet_genGrandMother_pdgId.push_back(-999);
     }
+    double btag_sf=1.;
+    double btag_jes_up=1.;
+    double btag_hf_up=1.;
+    double btag_hfstat1_up=1.;
+    double btag_hfstat2_up=1.;
+    double btag_lf_up=1.;
+    double btag_lfstat1_up=1.;
+    double btag_lfstat2_up=1.;
+    double btag_cerr1_up=1.;
+    double btag_cerr2_up=1.;
+    double btag_jes_down=1.;
+    double btag_hf_down=1.;
+    double btag_hfstat1_down=1.;
+    double btag_hfstat2_down=1.;
+    double btag_lf_down=1.;
+    double btag_lfstat1_down=1.;
+    double btag_lfstat2_down=1.;
+    double btag_cerr1_down=1.;
+    double btag_cerr2_down=1.;
+    //BTag Reweight
+    if(!_is_data){
+      double JetPt = uncorrJetAK4PFchs.pt()*corrAK4PFchs*JERScaleFactor; 
+      double JetEta = j.eta();
+      double JetCSV = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<1.0?j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"):1.0;
+      double JetFlavor = j.hadronFlavour();
+      btag_sf = btagweight(JetCSV, JetPt, JetEta, JetFlavor);
+      btag_jes_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_jes");
+      btag_hf_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_hf");
+      btag_hfstat1_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_hfstats1");
+      btag_hfstat2_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_hfstats2");
+      btag_lf_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_lf");
+      btag_lfstat1_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_lfstats1");
+      btag_lfstat2_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_lfstats2");
+      btag_cerr1_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_cferr1");
+      btag_cerr2_up = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"up_cferr2");
+      btag_jes_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_jes");
+      btag_hf_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_hf");
+      btag_hfstat1_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_hfstats1");
+      btag_hfstat2_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_hfstats2");
+      btag_lf_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_lf");
+      btag_lfstat1_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_lfstats1");
+      btag_lfstat2_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_lfstats2");
+      btag_cerr1_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_cferr1");
+      btag_cerr2_down = btagweight(JetCSV, JetPt, JetEta, JetFlavor,"down_cferr2");
+    }
+    Jet_btag_sf.push_back(btag_sf); 
+    Jet_btag_jesup.push_back(btag_jes_up); 
+    Jet_btag_hfup.push_back(btag_hf_up); 
+    Jet_btag_hfstat1up.push_back(btag_hfstat1_up); 
+    Jet_btag_hfstat2up.push_back(btag_hfstat2_up); 
+    Jet_btag_lfup.push_back(btag_lf_up); 
+    Jet_btag_lfstat1up.push_back(btag_lfstat1_up); 
+    Jet_btag_lfstat2up.push_back(btag_lfstat2_up); 
+    Jet_btag_cerr1up.push_back(btag_cerr1_up); 
+    Jet_btag_cerr2up.push_back(btag_cerr2_up);
+    Jet_btag_jesdown.push_back(btag_jes_down); 
+    Jet_btag_hfdown.push_back(btag_hf_down); 
+    Jet_btag_hfstat1down.push_back(btag_hfstat1_down); 
+    Jet_btag_hfstat2down.push_back(btag_hfstat2_down); 
+    Jet_btag_lfdown.push_back(btag_lf_down); 
+    Jet_btag_lfstat1down.push_back(btag_lfstat1_down); 
+    Jet_btag_lfstat2down.push_back(btag_lfstat2_down); 
+    Jet_btag_cerr1down.push_back(btag_cerr1_down); 
+    Jet_btag_cerr2down.push_back(btag_cerr2_down);
     /////
     //   TTH variables
     /////
@@ -204,22 +335,22 @@ void JetSelector::Fill(const edm::Event& iEvent){
     //  ajet = true;
     }
     ij++;
-  }
+  } 
   ////slimmedJetsPuppi
   if(_PuppiVar){
-    for(const pat::Jet &j : *puppijets){
+    for(const pat::Jet &j : *puppijets){ 
       //Acceptance
       if(j.pt() < _Jet_pt_min) continue;
       //Kinematics
-      Jet_puppi_pt.push_back(j.pt());
-      Jet_puppi_eta.push_back(j.eta());
-      Jet_puppi_phi.push_back(j.phi());
+      Jet_puppi_pt.push_back(j.pt());  
+      Jet_puppi_eta.push_back(j.eta());       
+      Jet_puppi_phi.push_back(j.phi());       
       Jet_puppi_energy.push_back(j.energy());
-      Jet_puppi_mass.push_back(j.mass());
-      Jet_puppi_px.push_back(j.px());
-      Jet_puppi_py.push_back(j.py());
-      Jet_puppi_pz.push_back(j.pz());
-      Jet_puppi_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());
+      Jet_puppi_mass.push_back(j.mass()); 
+      Jet_puppi_px.push_back(j.px());   
+      Jet_puppi_py.push_back(j.py());          
+      Jet_puppi_pz.push_back(j.pz());          
+      Jet_puppi_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());                
       //ID
       Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       Jet_puppi_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
@@ -230,17 +361,17 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_isPFJet.push_back(j.isPFJet());
       Jet_puppi_isCaloJet.push_back(j.isCaloJet());
       //Energy
-      Jet_puppi_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());
-      Jet_puppi_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());
-      Jet_puppi_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());
-      Jet_puppi_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());
-      Jet_puppi_muonEnergyFraction.push_back(j.muonEnergyFraction());
-      Jet_puppi_electronEnergy.push_back(j.electronEnergy());
-      Jet_puppi_photonEnergy.push_back(j.photonEnergy());
+      Jet_puppi_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
+      Jet_puppi_neutralEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
+      Jet_puppi_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());                               
+      Jet_puppi_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());                              
+      Jet_puppi_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
+      Jet_puppi_electronEnergy.push_back(j.electronEnergy());                               
+      Jet_puppi_photonEnergy.push_back(j.photonEnergy());                                 
       if(j.isCaloJet()) Jet_puppi_emEnergyFraction.push_back(j.emEnergyFraction());
       else              Jet_puppi_emEnergyFraction.push_back(-999);
       //Other prop
-      Jet_puppi_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());
+      Jet_puppi_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
       Jet_puppi_chargedMultiplicity.push_back(j.chargedMultiplicity());
       Jet_puppi_vtxMass.push_back(j.userFloat("vtxMass"));
       Jet_puppi_vtxNtracks.push_back(j.userFloat("vtxNtracks"));
@@ -284,10 +415,10 @@ void JetSelector::Fill(const edm::Event& iEvent){
       Jet_puppi_JesSFup.push_back(corrUpAK4PFPuppi);
       Jet_puppi_JesSFdown.push_back(corrDownAK4PFPuppi);
       //JER scale factor and uncertainties
-      float JERScaleFactor     = 1;
+      float JERScaleFactor     = 1; 
       float JERScaleFactorUP   = 1;
       float JERScaleFactorDOWN = 1;
-      if(!_is_data) GetJER(j, corrAK4PFPuppi, rho, false, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
+      if(!_is_data) GetJER(j, corrAK4PFPuppi, rhoJER, false, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
       Jet_puppi_JerSF.push_back(JERScaleFactor);
       Jet_puppi_JerSFup.push_back(JERScaleFactorUP);
       Jet_puppi_JerSFdown.push_back(JERScaleFactorDOWN);
@@ -296,12 +427,15 @@ void JetSelector::Fill(const edm::Event& iEvent){
       if(!_is_data) {
 	Jet_puppi_partonFlavour.push_back(j.partonFlavour());
 	Jet_puppi_hadronFlavour.push_back(j.hadronFlavour());
-      }
+      }else{
+	Jet_puppi_partonFlavour.push_back(-999);
+	Jet_puppi_hadronFlavour.push_back(-999);
+      } 
     }
   }
 }
 void JetSelector::JECInitialization(){
-  //AK4chs - MC: Get the factorized jet corrector parameters.
+  //AK4chs - MC: Get the factorized jet corrector parameters. 
   std::vector<std::string> jecPayloadNamesAK4PFchsMC_;
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC1_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC2_.fullPath());
@@ -314,7 +448,7 @@ void JetSelector::JECInitialization(){
   }
   jecAK4PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsMC) );
   jecAK4PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsMCUnc_.fullPath()) );
-  //AK4chs - DATA: Get the factorized jet corrector parameters.
+  //AK4chs - DATA: Get the factorized jet corrector parameters. 
   std::vector<std::string> jecPayloadNamesAK4PFchsDATA_;
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA1_.fullPath());
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA2_.fullPath());
@@ -328,7 +462,7 @@ void JetSelector::JECInitialization(){
   }
   jecAK4PFchsDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsDATA) );
   jecAK4PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsDATAUnc_.fullPath()) );
-  //AK4Puppi - MC: Get the factorized jet corrector parameters.
+  //AK4Puppi - MC: Get the factorized jet corrector parameters. 
   std::vector<std::string> jecPayloadNamesAK4PFPuppiMC_;
   jecPayloadNamesAK4PFPuppiMC_.push_back(jecPayloadNamesAK4PFPuppiMC1_.fullPath());
   jecPayloadNamesAK4PFPuppiMC_.push_back(jecPayloadNamesAK4PFPuppiMC2_.fullPath());
@@ -341,7 +475,7 @@ void JetSelector::JECInitialization(){
   }
   jecAK4PFPuppiMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFPuppiMC) );
   jecAK4PFPuppiMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFPuppiMCUnc_.fullPath()) );
-  //AK4Puppi - DATA: Get the factorized jet corrector parameters.
+  //AK4Puppi - DATA: Get the factorized jet corrector parameters. 
   std::vector<std::string> jecPayloadNamesAK4PFPuppiDATA_;
   jecPayloadNamesAK4PFPuppiDATA_.push_back(jecPayloadNamesAK4PFPuppiDATA1_.fullPath());
   jecPayloadNamesAK4PFPuppiDATA_.push_back(jecPayloadNamesAK4PFPuppiDATA2_.fullPath());
@@ -418,11 +552,39 @@ void JetSelector::SetBranches(){
   AddBranch(&Jet_JerSF                ,"Jet_JerSF");
   AddBranch(&Jet_JerSFup              ,"Jet_JerSFup");
   AddBranch(&Jet_JerSFdown            ,"Jet_JerSFdown");
+  //BTag Reweight
+  AddBranch(&Jet_btag_sf               ,"Jet_btag_sf");
+  AddBranch(&Jet_btag_jesup               ,"Jet_btag_jesup");
+  AddBranch(&Jet_btag_hfup               ,"Jet_btag_hfup");
+  AddBranch(&Jet_btag_hfstat1up               ,"Jet_btag_hfstat1up");
+  AddBranch(&Jet_btag_hfstat2up               ,"Jet_btag_hfstat2up");
+  AddBranch(&Jet_btag_lfup               ,"Jet_btag_lfup");
+  AddBranch(&Jet_btag_lfstat1up               ,"Jet_btag_lfstat1up");
+  AddBranch(&Jet_btag_lfstat2up               ,"Jet_btag_lfstat2up");
+  AddBranch(&Jet_btag_cerr1up               ,"Jet_btag_cerr1up");
+  AddBranch(&Jet_btag_cerr2up               ,"Jet_btag_cerr2up");
+  AddBranch(&Jet_btag_jesdown               ,"Jet_btag_jesdown");
+  AddBranch(&Jet_btag_hfdown               ,"Jet_btag_hfdown");
+  AddBranch(&Jet_btag_hfstat1down               ,"Jet_btag_hfstat1down");
+  AddBranch(&Jet_btag_hfstat2down               ,"Jet_btag_hfstat2down");
+  AddBranch(&Jet_btag_lfdown               ,"Jet_btag_lfdown");
+  AddBranch(&Jet_btag_lfstat1down               ,"Jet_btag_lfstat1down");
+  AddBranch(&Jet_btag_lfstat2down               ,"Jet_btag_lfstat2down");
+  AddBranch(&Jet_btag_cerr1down               ,"Jet_btag_cerr1down");
+  AddBranch(&Jet_btag_cerr2down               ,"Jet_btag_cerr2down");
   //MC
-  if(!_is_data) {
     AddBranch(&Jet_partonFlavour        ,"Jet_partonFlavour");
     AddBranch(&Jet_hadronFlavour        ,"Jet_hadronFlavour");
-  }
+    AddBranch(&Jet_genMother_pt                                      ,"Jet_genMother_pt");
+    AddBranch(&Jet_genMother_eta                                     ,"Jet_genMother_eta");
+    AddBranch(&Jet_genMother_phi                                     ,"Jet_genMother_phi");
+    AddBranch(&Jet_genMother_en                                      ,"Jet_genMother_en");
+    AddBranch(&Jet_genMother_pdgId                                   ,"Jet_genMother_pdgId");
+    AddBranch(&Jet_genGrandMother_pt                                      ,"Jet_genGrandMother_pt");
+    AddBranch(&Jet_genGrandMother_eta                                     ,"Jet_genGrandMother_eta");
+    AddBranch(&Jet_genGrandMother_phi                                     ,"Jet_genGrandMother_phi");
+    AddBranch(&Jet_genGrandMother_en                                      ,"Jet_genGrandMother_en");
+    AddBranch(&Jet_genGrandMother_pdgId                                   ,"Jet_genGrandMother_pdgId");
   ////slimmedJetsPuppi
   if(_PuppiVar){
     //Kinematics
@@ -468,10 +630,8 @@ void JetSelector::SetBranches(){
     AddBranch(&Jet_puppi_JerSFup              ,"Jet_puppi_JerSFup");
     AddBranch(&Jet_puppi_JerSFdown            ,"Jet_puppi_JerSFdown");
     //MC
-    if(!_is_data) {
       AddBranch(&Jet_puppi_partonFlavour        ,"Jet_puppi_partonFlavour");
       AddBranch(&Jet_puppi_hadronFlavour        ,"Jet_puppi_hadronFlavour");
-    }
   }
   if(debug_) std::cout<<"set branches"<<std::endl;
 }
@@ -535,12 +695,40 @@ void JetSelector::Clear(){
   Jet_JesSFdown.clear();
   Jet_JerSF.clear();
   Jet_JerSFup.clear();
-  Jet_JerSFdown.clear();
+  Jet_JerSFdown.clear(); 
+  //BTag Reweight
+  Jet_btag_sf.clear(); 
+  Jet_btag_jesup.clear(); 
+  Jet_btag_hfup.clear(); 
+  Jet_btag_hfstat1up.clear(); 
+  Jet_btag_hfstat2up.clear(); 
+  Jet_btag_lfup.clear(); 
+  Jet_btag_lfstat1up.clear(); 
+  Jet_btag_lfstat2up.clear(); 
+  Jet_btag_cerr1up.clear(); 
+  Jet_btag_cerr2up.clear();
+  Jet_btag_jesdown.clear(); 
+  Jet_btag_hfdown.clear(); 
+  Jet_btag_hfstat1down.clear(); 
+  Jet_btag_hfstat2down.clear(); 
+  Jet_btag_lfdown.clear(); 
+  Jet_btag_lfstat1down.clear(); 
+  Jet_btag_lfstat2down.clear(); 
+  Jet_btag_cerr1down.clear(); 
+  Jet_btag_cerr2down.clear();
   //MC
-  if(!_is_data) {
     Jet_partonFlavour.clear();
     Jet_hadronFlavour.clear();
-  }
+    Jet_genMother_pt.clear();
+    Jet_genMother_eta.clear();
+    Jet_genMother_phi.clear();
+    Jet_genMother_en.clear();
+    Jet_genMother_pdgId.clear();
+    Jet_genGrandMother_pt.clear();
+    Jet_genGrandMother_eta.clear();
+    Jet_genGrandMother_phi.clear();
+    Jet_genGrandMother_en.clear();
+    Jet_genGrandMother_pdgId.clear();
   ////slimmedJetsPuppi
   if(_PuppiVar){
     //Kinematics
@@ -584,21 +772,19 @@ void JetSelector::Clear(){
     Jet_puppi_JesSFdown.clear();
     Jet_puppi_JerSF.clear();
     Jet_puppi_JerSFup.clear();
-    Jet_puppi_JerSFdown.clear();
+    Jet_puppi_JerSFdown.clear(); 
     //MC
-    if(!_is_data) {
       Jet_puppi_partonFlavour.clear();
       Jet_puppi_hadronFlavour.clear();
-    }
   }
 }
 void JetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
-  double cFactorJER = 1.0;
+  double cFactorJER = 1.0; 
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
-  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Uncertai
+  //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
   if( jetEta<0.5 ){
     cFactorJER = 1.109;
     cFactorJERdown = 1.109-0.008;
@@ -665,17 +851,11 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs,
     resolution = JME::JetResolution(jerAK4PFPuppi_);
     res_sf = JME::JetResolutionScaleFactor(jerAK4PFPuppiSF_);
   }
-
-  /*cout << "JetParameters:: jet.pt() = " << jet.pt() << endl;
-  cout << "JetParameters:: jet.eta() = " << jet.eta() << endl;
-  cout << "JetParameters:: rhoJER = " << rhoJER << endl;*/
   JME::JetParameters parameters;
   parameters.setJetPt(jet.pt());
   parameters.setJetEta(jet.eta());
   parameters.setRho(rhoJER);
-
   float relpterr = resolution.getResolution(parameters);
-
   if(genJetPt>0. && deltaR(jet.eta(),jet.phi(),jet.genJet()->eta(),jet.genJet()->phi())<0.2
      && (abs(jet.pt()-jet.genJet()->pt())<3*relpterr*jet.pt())) {
     JERScaleFactor     = (std::max(0., genJetPt + cFactorJER*diffPt))/recoJetPt;
@@ -685,5 +865,48 @@ void JetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs,
     JERScaleFactor     = 1.;
     JERScaleFactorUP   = 1.;
     JERScaleFactorDOWN = 1.;
-  }
+  } 
+}
+double JetSelector::btagweight(double csv, double pt, double eta, double flavor, const std::string& sys){
+    static const std::vector<std::string> bsys{
+      "up_jes", "up_lf", "up_hfstats1", "up_hfstats2",
+	"down_jes", "down_lf", "down_hfstats1", "down_hfstats2"
+	};
+    static const std::vector<std::string> lsys{
+      "up_jes", "up_hf", "up_lfstats1", "up_lfstats2",
+	"down_jes", "down_hf", "down_lfstats1", "down_lfstats2"
+	};
+    static const std::vector<std::string> csys{
+      "up_cferr1", "up_cferr2",
+	"down_cferr1", "down_cferr2"
+	};
+    
+    double jw = 1.;
+    if (std::abs(flavor) == 5) {
+	std::string use = sys;
+	if (std::find(bsys.begin(), bsys.end(), sys) == bsys.end())use = "central";
+	jw = reader_.eval_auto_bounds(use, BTagEntry::FLAV_B, eta, pt, csv);
+    } else if (std::abs(flavor) == 4) {
+	std::string use = sys;
+	if (std::find(csys.begin(), csys.end(), sys) == csys.end())use = "central";
+	jw = reader_.eval_auto_bounds(use, BTagEntry::FLAV_C, eta, pt, csv);
+    } else {
+	std::string use = sys;
+	if (std::find(lsys.begin(), lsys.end(), sys) == lsys.end())use = "central";
+	jw = reader_.eval_auto_bounds(use, BTagEntry::FLAV_UDSG, eta, pt, csv);
+    }
+ return jw;
+}; 
+const reco::Candidate* JetSelector::GetGenMotherNoFsr(const reco::Candidate* theobj)
+{
+  if (theobj->numberOfMothers()>0)
+    {
+      const reco::Candidate* mother = theobj->mother(0);
+      if (mother->pdgId() != theobj->pdgId()) return mother;
+      else return GetGenMotherNoFsr(mother);
+    }
+  else 
+    {
+      return theobj;
+    }
 }

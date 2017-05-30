@@ -12,6 +12,7 @@ TauSelector::TauSelector(std::string name, TTree* tree, bool debug, const pset& 
   _Tau_vtx_rho_max        = iConfig.getParameter<int>("vtx_rho_max");
   _Tau_vtx_position_z_max = iConfig.getParameter<double>("vtx_position_z_max");
   _super_TNT      	  = iConfig.getParameter<bool>("super_TNT");
+  _is_data                = iConfig.getParameter<bool>("is_data");
   _MiniAODv2      	  = iConfig.getParameter<bool>("MiniAODv2");
   SetBranches();
 }
@@ -292,6 +293,63 @@ void TauSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSetup){
       Tau_leadChargedCandVtz.push_back(-999);
 
     }
+  //////
+  //  MC Info
+  //////
+    if(!_is_data){
+      const reco::GenParticle * genpart = tau->genParticle(); 
+      if(genpart){
+        Tau_gen_pt.push_back(genpart->pt());
+        Tau_gen_eta.push_back(genpart->eta());
+        Tau_gen_phi.push_back(genpart->phi());
+        Tau_gen_en.push_back(genpart->energy());
+        Tau_gen_pdgId.push_back(genpart->pdgId());
+	const reco::Candidate* genMother = GetGenMotherNoFsr(tau->genParticle());
+        Tau_genMother_pt.push_back(genMother->pt());
+        Tau_genMother_eta.push_back(genMother->eta());
+        Tau_genMother_phi.push_back(genMother->phi());
+        Tau_genMother_en.push_back(genMother->energy());
+        Tau_genMother_pdgId.push_back(genMother->pdgId());
+	const reco::Candidate* genGrandMother = GetGenMotherNoFsr(genMother);        
+        Tau_genGrandMother_pt.push_back(genGrandMother->pt());
+        Tau_genGrandMother_eta.push_back(genGrandMother->eta());
+        Tau_genGrandMother_phi.push_back(genGrandMother->phi());
+        Tau_genGrandMother_en.push_back(genGrandMother->energy());
+        Tau_genGrandMother_pdgId.push_back(genGrandMother->pdgId());
+      }else{
+        Tau_gen_pt.push_back(-999);
+        Tau_gen_eta.push_back(-999);
+        Tau_gen_phi.push_back(-999);
+        Tau_gen_en.push_back(-999);
+        Tau_gen_pdgId.push_back(-999);
+        Tau_genMother_pt.push_back(-999);
+        Tau_genMother_eta.push_back(-999);
+        Tau_genMother_phi.push_back(-999);
+        Tau_genMother_en.push_back(-999);
+        Tau_genMother_pdgId.push_back(-999);
+        Tau_genGrandMother_pt.push_back(-999);
+        Tau_genGrandMother_eta.push_back(-999);
+        Tau_genGrandMother_phi.push_back(-999);
+        Tau_genGrandMother_en.push_back(-999);
+        Tau_genGrandMother_pdgId.push_back(-999);
+      }
+    }else{
+        Tau_gen_pt.push_back(-999);
+        Tau_gen_eta.push_back(-999);
+        Tau_gen_phi.push_back(-999);
+        Tau_gen_en.push_back(-999);
+        Tau_gen_pdgId.push_back(-999);
+        Tau_genMother_pt.push_back(-999);
+        Tau_genMother_eta.push_back(-999);
+        Tau_genMother_phi.push_back(-999);
+        Tau_genMother_en.push_back(-999);
+        Tau_genMother_pdgId.push_back(-999);
+        Tau_genGrandMother_pt.push_back(-999);
+        Tau_genGrandMother_eta.push_back(-999);
+        Tau_genGrandMother_phi.push_back(-999);
+        Tau_genGrandMother_en.push_back(-999);
+        Tau_genGrandMother_pdgId.push_back(-999);
+    }
   }
 }
 
@@ -445,6 +503,22 @@ void TauSelector::SetBranches(){
   AddBranch(&Tau_leadChargedCandTrackFitErrorMatrix_11 ,"Tau_leadChargedCandTrackFitErrorMatrix_11");
   AddBranch(&Tau_leadChargedCandTrackFitErrorMatrix_12 ,"Tau_leadChargedCandTrackFitErrorMatrix_12");
   AddBranch(&Tau_leadChargedCandTrackFitErrorMatrix_22 ,"Tau_leadChargedCandTrackFitErrorMatrix_22");
+  //MC info
+    AddBranch(&Tau_gen_pt                                      ,"Tau_gen_pt");
+    AddBranch(&Tau_gen_eta                                     ,"Tau_gen_eta");
+    AddBranch(&Tau_gen_phi                                     ,"Tau_gen_phi");
+    AddBranch(&Tau_gen_en                                      ,"Tau_gen_en");
+    AddBranch(&Tau_gen_pdgId                                   ,"Tau_gen_pdgId");
+    AddBranch(&Tau_genMother_pt                                      ,"Tau_genMother_pt");
+    AddBranch(&Tau_genMother_eta                                     ,"Tau_genMother_eta");
+    AddBranch(&Tau_genMother_phi                                     ,"Tau_genMother_phi");
+    AddBranch(&Tau_genMother_en                                      ,"Tau_genMother_en");
+    AddBranch(&Tau_genMother_pdgId                                   ,"Tau_genMother_pdgId");
+    AddBranch(&Tau_genGrandMother_pt                                      ,"Tau_genGrandMother_pt");
+    AddBranch(&Tau_genGrandMother_eta                                     ,"Tau_genGrandMother_eta");
+    AddBranch(&Tau_genGrandMother_phi                                     ,"Tau_genGrandMother_phi");
+    AddBranch(&Tau_genGrandMother_en                                      ,"Tau_genGrandMother_en");
+    AddBranch(&Tau_genGrandMother_pdgId                                   ,"Tau_genGrandMother_pdgId");
 }
 
 void TauSelector::Clear(){
@@ -595,6 +669,22 @@ void TauSelector::Clear(){
   Tau_leadChargedCandTrackFitErrorMatrix_11.clear();
   Tau_leadChargedCandTrackFitErrorMatrix_12.clear();
   Tau_leadChargedCandTrackFitErrorMatrix_22.clear();
+  //MC info
+    Tau_gen_pt.clear();
+    Tau_gen_eta.clear();
+    Tau_gen_phi.clear();
+    Tau_gen_en.clear();
+    Tau_gen_pdgId.clear();
+    Tau_genMother_pt.clear();
+    Tau_genMother_eta.clear();
+    Tau_genMother_phi.clear();
+    Tau_genMother_en.clear();
+    Tau_genMother_pdgId.clear();
+    Tau_genGrandMother_pt.clear();
+    Tau_genGrandMother_eta.clear();
+    Tau_genGrandMother_phi.clear();
+    Tau_genGrandMother_en.clear();
+    Tau_genGrandMother_pdgId.clear();
 }
 bool TauSelector::isGoodVertex(const reco::Vertex& vtxxx) {
   if (vtxxx.isFake()) return false;
@@ -602,4 +692,17 @@ bool TauSelector::isGoodVertex(const reco::Vertex& vtxxx) {
   if (vtxxx.position().Rho() > _Tau_vtx_rho_max) return false;
   if (fabs(vtxxx.position().Z()) > _Tau_vtx_position_z_max) return false;
   return true;
+}
+const reco::Candidate* TauSelector::GetGenMotherNoFsr(const reco::Candidate* theobj)
+{
+  if (theobj->numberOfMothers()>0)
+    {
+      const reco::Candidate* mother = theobj->mother(0);
+      if (mother->pdgId() != theobj->pdgId()) return mother;
+      else return GetGenMotherNoFsr(mother);
+    }
+  else 
+    {
+      return theobj;
+    }
 }

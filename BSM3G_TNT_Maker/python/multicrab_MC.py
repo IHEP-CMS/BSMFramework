@@ -21,14 +21,14 @@ if __name__ == '__main__':
  ##   Crab configuration
  #####
  datasetnames  = [
-'TTHbb_MC_ttHbb'
-#'TTHbb_MC_ttHnobb',
+'TTHbb_MC_ttHbb',
+'TTHbb_MC_ttHnobb'
 #'TTHbb_MC_ttjets',
 #'TTToSemilepton'
                  ]
  datasetinputs = [
- '/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
- #'/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
+ '/ttHTobb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
+ '/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'
  #'/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
  #'/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
  #'/TTToSemilepton_ttbbFilter_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_TTbbWithttHFGenFilter_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM',
@@ -107,8 +107,9 @@ for d in range(0,1):
     config.section_('JobType')
     config.JobType.pluginName  = 'Analysis'
     # List of parameters to pass to CMSSW parameter-set configuration file:
+    config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_fresh/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC_bingEdit.py'
     #config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/python/miniAOD_MC_new.py'
-    config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/python/synch_MC_ttH.py'
+    #config.JobType.psetName    = '/afs/cern.ch/work/j/jthomasw/private/IHEP/CMSSW/CMSSW_8_0_26_patch2/src/BSMFramework/BSM3G_TNT_Maker/python/synch_MC_ttH.py'
     config.JobType.sendExternalFolder = True
     config.JobType.maxMemoryMB = 2000 # Default == 2Gb : maximum guaranteed to run on all sites
     #config.JobType.allowUndistributedCMSSW = True

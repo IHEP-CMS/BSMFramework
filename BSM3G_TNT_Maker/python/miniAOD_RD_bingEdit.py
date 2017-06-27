@@ -132,7 +132,7 @@ process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
-process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v15'
+process.GlobalTag.globaltag = '80X_dataRun2_2016SeptRepro_v7'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 #####
@@ -144,7 +144,7 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #####
 ##   BTAGGING WITH HIP MITIGATION
 #####

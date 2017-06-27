@@ -206,6 +206,7 @@ bool TTHbb_eventSelector::is_good_jet(const pat::Jet &j,double rho, double rhoJE
   if(!_is_data) GetJER(j, corrAK4PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
   //Acceptance
   double jetpt = (j.correctedJet("Uncorrected").pt()*corrAK4PFchs*JERScaleFactor);
+
   if(jetpt < channel_jpt_cut)        isgoodjet = false; //Please note that this requirement is for the SL channel, while for DL channel we require pT > 20!
   if(fabs(j.eta())>2.4) isgoodjet = false;
   //ID requirements
@@ -325,15 +326,24 @@ void TTHbb_eventSelector::FillJetVectors(const edm::Event& iEvent, std::vector<c
   // OR performed using 'subleading' jets definition.
   // Leading jets are subset of subleading jets.
 
+ //cout << "======== TTHbb_eventSelector::FillJetVectors ========" << endl;
   int jet_pos = 0; //This counter helps to order jets
   for(const pat::Jet &j : *jets){
+    //std::cout << "TTHbb_eventSelector::jet_pos = " << jet_pos << endl;
     int vtxsize = vtx_h->size();
-
     //=== Good subleading jets ===
-    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,20)){jet_pos++; continue;}
+    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,20)){
+      jet_pos++;
+      //cout<< "TTHbb_eventSelector::failed sublead is_good_jet" << endl;
+      continue;
+    }
+
     bool jetmatchedlepts = false;
     for(uint gl=0; gl<looseleps.size(); gl++) if(deltaR(looseleps[gl]->p4(),j.p4())<0.4) jetmatchedlepts = true;
-    if(jetmatchedlepts){jet_pos++; continue;}
+    if(jetmatchedlepts){jet_pos++;
+      //cout<< "TTHbb_eventSelector::failed jetmatchedlepts" << endl;
+      continue;
+    }
     double csvcurrjet = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     subleading_jets.push_back((const pat::Jet*)&j);
     subleading_jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
@@ -342,8 +352,13 @@ void TTHbb_eventSelector::FillJetVectors(const edm::Event& iEvent, std::vector<c
     }
 
     //=== Good leading jets ===
-    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,30)){jet_pos++; continue;}
+    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,30)){jet_pos++;
+      //cout<< "TTHbb_eventSelector::failed lead is_good_jet" << endl;
+      continue;
+    }
+    //cout<< "TTHbb_eventSelector::passed !!!" << endl;
     leading_jets.push_back((const pat::Jet*)&j);
+    //cout << "THbb_eventSelector::j.correctedJet(Uncorrected).pt() = " << j.correctedJet("Uncorrected").pt() << endl;
     leading_jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
     if(csvcurrjet>0.8484) {
       leading_btags.push_back((const pat::Jet*)&j);

@@ -63,6 +63,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   if(debug_) std::cout << ("BJetnessSelector:Fill") << std::endl;
   int tmp_evtNum     = iEvent.id().event();
   if(debug_) std::cout << ("BJetnessSelector:Fill") << ": Event Number = " << tmp_evtNum << std::endl;
+
   /////
   //   Recall collections
   /////
@@ -115,7 +116,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   if(debug_) std::cout << ("BJetnessSelector::Fill") << ": isDL_ " << isDL_ << std::endl;
 
   //Running only Single lepton selection for BJetness variables atm.
-  if (!isSL_ && !isDL_) return;
+  if (!isSL_ && !isDL_) {return;}
   BJetness_isSingleLepton = isSL_;
   BJetness_isDoubleLepton = isDL_;
 
@@ -154,7 +155,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   evSel->FillLeptonVectors(iEvent, looseleps, loose_electrons, loose_muons, tightleps, tight_electrons, tight_muons);
   if(debug_) std::cout << ("BJetnessSelector::Fill") << " FillJetVectors " << std::endl;
   evSel->FillJetVectors(iEvent, looseleps, leading_jets, subleading_jets, leading_btags, subleading_btags, leading_jet_csv_pos, subleading_jet_csv_pos);
-
   jet_num = leading_jets.size();
   jetb_num = leading_btags.size();
 
@@ -190,9 +190,9 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
   if(debug_) std::cout << ("BJetnessSelector::Fill") << " Calculate BJetness variables . . . " << std::endl;
   sort(leading_jet_csv_pos.rbegin(), leading_jet_csv_pos.rend());
   if(jet_num!=0){
-    //cout<<"Num of jet is"<<setw(20)<<jet_num<<" "<<jetb_num<<endl;
+
     BJetness_numjet.push_back(jet_num);
-    for(int jn=0; jn<jet_num; jn++){
+    for(int jn=1; jn<jet_num; jn++){
       if(debug_) std::cout << ("BJetnessSelector:Fill") << ": jet index = " << jn << std::endl;
 
       const pat::Jet & j = (*jets)[leading_jet_csv_pos[jn].second];
@@ -258,7 +258,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     //   Gen info
     /////
     if(debug_) std::cout << ("BJetnessSelector::Fill") << " Gen info " << std::endl;
-
     if(!_is_data){
       BJetness_ngenbh = 0;
       BJetness_ngenbt = 0;
@@ -289,6 +288,7 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     vector<Track> jetschtrks; jetschtrks.clear();
     vector<Track> jetschtrkspv; jetschtrkspv.clear();
     vector<Track> jetschtrksnpv; jetschtrksnpv.clear();
+    vector<Track> jetschtrks_IPOrder; jetschtrks_IPOrder.clear();
     vector<tuple<double, double, double> > jetsdir; jetsdir.clear();
     double bjetness_num_pdgid_eles          = 0;
     double bjetness_num_soft_eles           = 0;
@@ -315,17 +315,21 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     if(jet_num<maxjetnum)  maxjetnum = jet_num;
     for(int jn=1; jn<maxjetnum; jn++){
       const pat::Jet & j = (*jets)[leading_jet_csv_pos[jn].second];
-      bjetness_pt  += j.pt();
+      bjetness_pt  += j.pt();//No JEC corrected
       bjetness_eta += j.eta();
       bjetness_phi += j.phi();
       bjetness_en  += j.energy();
       // Uses track info to build bjetness variables (passed into method by ref.)
+
+      //cout << "BJetnessSelector::Uncorrected pt " << j.correctedJet("Uncorrected").pt() << endl;
+      //std::cout << "BJetnessSelector::leading_jet_csv_pos[jn].second  = " << leading_jet_csv_pos[jn].second << endl;
       get_jettrks(j, PV, *ttrkbuilder,
                   jetschtrks, jetschtrkspv, jetschtrksnpv, jetsdir,
                   iEvent, electron_pat, muon_h,
                   bjetness_num_pdgid_eles, bjetness_num_soft_eles, bjetness_num_vetonoipnoiso_eles, bjetness_num_loosenoipnoiso_eles, bjetness_num_veto_eles, bjetness_num_loose_eles, bjetness_num_medium_eles, bjetness_num_tight_eles, bjetness_num_mvatrig_eles, bjetness_num_mvanontrig_eles, bjetness_num_mvatrigwp90_eles, bjetness_num_mvanontrigwp90_eles, bjetness_num_heep_eles, bjetness_num_pdgid_mus, bjetness_num_loose_mus, bjetness_num_soft_mus, bjetness_num_medium_mus, bjetness_num_tight_mus, bjetness_num_highpt_mus, bjetness_num_POGisGood_mus
                  );
     }
+
     //PFCand info
     /////
     //   Get info to evaluate the event BJetness
@@ -361,8 +365,10 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     //cout<<setw(20)<<"Num_of_trks"<<setw(20)<<jetschtrks.size()<<setw(20)<<jetschtrkspv.size()<<setw(20)<<jetschtrksnpv.size()<<endl;
     if(jetschtrks.size()!=0){
       //Num of trks and their pT/En
-      BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/double(jetschtrks.size()));
-      BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/double(jetschtrks.size()));
+      //BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/double(jetschtrks.size()));
+      BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/5);
+      //BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/double(jetschtrks.size()));
+      BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/5);
       if(jetschtrkspv.size()!=0) BJetness_npvTrkOVpvTrk.push_back(double(jetschtrksnpv.size())/double(jetschtrkspv.size()));
       else                       BJetness_npvTrkOVpvTrk.push_back(-997);
       double ptjettrks    = 0;
@@ -384,11 +390,11 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetchtrks_avetapar = 0;
       double jetchtrks_avdr     = 0;
       get_avreljet(jetschtrks,jetsdir,jetchtrks_avprel,jetchtrks_avppar,jetchtrks_avetarel,jetchtrks_avetapar,jetchtrks_avdr);
-      BJetness_avprel.push_back(jetchtrks_avprel/double(jetschtrks.size()));
-      BJetness_avppar.push_back(jetchtrks_avppar/double(jetschtrks.size()));
-      BJetness_avetarel.push_back(jetchtrks_avetarel/double(jetschtrks.size()));
-      BJetness_avetapar.push_back(jetchtrks_avetapar/double(jetschtrks.size()));
-      BJetness_avdr.push_back(jetchtrks_avdr/double(jetschtrks.size()));
+      BJetness_avprel.push_back(jetchtrks_avprel/5);
+      BJetness_avppar.push_back(jetchtrks_avppar/5);
+      BJetness_avetarel.push_back(jetchtrks_avetarel/5);
+      BJetness_avetapar.push_back(jetchtrks_avetapar/5);
+      BJetness_avdr.push_back(jetchtrks_avdr/5);
       BJetness_avpreljetpt.push_back(jetchtrks_avprel/bjetness_pt);
       BJetness_avpreljeten.push_back(jetchtrks_avprel/bjetness_en);
       BJetness_avpparjetpt.push_back(jetchtrks_avppar/bjetness_pt);
@@ -454,6 +460,11 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetchtrks_numip3dneg  = 0;
       get_avip3d(jetschtrks, *ttrkbuilder, PV, jetsdir, jetchtrks_avip3d_val,jetchtrks_avip3d_sig,jetchtrks_avsip3d_val,jetchtrks_avsip3d_sig,jetchtrks_numip3dpos,jetchtrks_numip3dneg);
       ip_valtemp = jetchtrks_avip3d_val/jetschtrks.size();
+
+      /*std::cout << "BJetness::jetschtrks.size() = " << jetschtrks.size() << std::endl;
+      std::cout << "BJetness::jetchtrks_avip3d_val = " << jetchtrks_avip3d_val << std::endl;
+      std::cout << "BJetness::BJetness_avip3d_val = " << ip_valtemp << std::endl;*/
+
       if(ip_valtemp==ip_valtemp) BJetness_avip3d_val.push_back(ip_valtemp);
       else                       BJetness_avip3d_val.push_back(-996);
       ip_valtemp = jetchtrks_avip3d_sig/jetschtrks.size();
@@ -1098,22 +1109,54 @@ void BJetnessSelector::get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx,
   //Access jet daughters
   vector<CandidatePtr> jdaus(jet.daughterPtrVector());
   sort(jdaus.begin(), jdaus.end(), [](const reco::CandidatePtr &p1, const reco::CandidatePtr &p2) {return p1->pt() > p2->pt();});
+
+  ///// Jet track ordering by IP /////
+  std::map<double, uint, std::greater<double> > IP_jdIndex;
+  ////////////////////////////////////
+
   for(uint jd=0; jd<jdaus.size(); jd++){
     const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
     if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
-    /////
+    Track trk = Track(jcand.pseudoTrack());
+    bool isgoodtrk = is_goodtrk(trk,vtx);
+
+
+    //Minimal conditions for a track
+    //if((isgoodtrk || jcand.trackHighPurity()) && jcand.charge()!=0 && jcand.fromPV()>1){ //&& jcand.vertexRef().key()==0){// && jcand.pt()>5){
+    if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){ //&& jcand.vertexRef().key()==0){// && jcand.pt()>5){
+      TransientTrack ttrk = ttrkbuilder.build(&trk);
+      double valtemp = IPTools::absoluteImpactParameter3D(ttrk,vtx).second.value();
+      if(valtemp==valtemp) {IP_jdIndex[valtemp]=jd;}//c++ maps sorted automatically by keys (ascending)
+      else                 {IP_jdIndex[0]=jd;}
+    }
+  }
+
+
+
+  int num_trks = 0;
+  for(uint jd=0; jd<jdaus.size(); jd++){
+  //cout << "============== Loop IP_jdIndex map ================" << endl;
+  //for(std::map<double,uint>::const_iterator it = IP_jdIndex.begin(); it != IP_jdIndex.end(); it++){
+    //uint jd = it->second;
+    num_trks = num_trks+1;
+
+    const pat::PackedCandidate &jcand = dynamic_cast<const pat::PackedCandidate &>(*jdaus[jd]);
+    if(deltaR(jcand.p4(),jet.p4())>0.4) continue;
+    ////
     //   Trk information
     /////
     Track trk = Track(jcand.pseudoTrack());
     bool isgoodtrk = is_goodtrk(trk,vtx);
     //Minimal conditions for a track
-    if((isgoodtrk || jcand.trackHighPurity()) && jcand.charge()!=0 && jcand.fromPV()>1 && jcand.vertexRef().key()==0){
+    //if((isgoodtrk || jcand.trackHighPurity()) && jcand.charge()!=0 && jcand.fromPV()>1 && jcand.vertexRef().key()==0){// && jcand.pt()>5){
+    if(isgoodtrk && jcand.charge()!=0 && jcand.fromPV()>1){
       BJetness_jetschpvass.push_back(jcand.pvAssociationQuality());
       BJetness_jetschfrompv.push_back(jcand.fromPV());
       TransientTrack ttrk = ttrkbuilder.build(&trk);
       double valtemp = IPTools::absoluteImpactParameter3D(ttrk,vtx).second.value();
-      if(valtemp==valtemp) BJetness_jetschip3dval.push_back(valtemp);
-      else                 BJetness_jetschip3dval.push_back(0);
+
+      if(valtemp==valtemp) {BJetness_jetschip3dval.push_back(valtemp);}
+      else                 {BJetness_jetschip3dval.push_back(0);}
       valtemp = IPTools::absoluteImpactParameter3D(ttrk,vtx).second.significance();
       if(valtemp==valtemp) BJetness_jetschip3dsig.push_back(valtemp);
       else                 BJetness_jetschip3dsig.push_back(0);
@@ -1130,6 +1173,9 @@ void BJetnessSelector::get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx,
       BJetness_jetschen.push_back(jcand.energy());
       //Trk info
       jetchtrks.push_back(trk);
+      /*std::cout << "BJetnessSelector::jd = " << jd << std::endl;
+      std::cout << "BJetnessSelector::jcand.pt() = " << jcand.pt() << std::endl;
+      std::cout << "BJetnessSelector::jcand.eta() = " << jcand.eta() << std::endl;*/
       //Other conditions on jet daughters
       //Using fromPV method
       if(jcand.fromPV()==pat::PackedCandidate::PVUsedInFit){
@@ -1196,6 +1242,7 @@ void BJetnessSelector::get_jettrks(const pat::Jet& jet, const reco::Vertex& vtx,
       }
     }
   }//Loop on jet daus
+
 }
 //Get trk kin properties
 void BJetnessSelector::get_avreljet(vector<Track> trks, vector<tuple<double, double, double> >& jetsdir, double& jetchtrks_avprel, double& jetchtrks_avppar, double& jetchtrks_avetarel, double& jetchtrks_avetapar, double& jetchtrks_avdr){

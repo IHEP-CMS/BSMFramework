@@ -57,7 +57,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 #####
 ##   BTAGGING WITH HIP MITIGATION

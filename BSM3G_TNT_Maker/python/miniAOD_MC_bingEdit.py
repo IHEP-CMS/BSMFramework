@@ -1,7 +1,10 @@
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 import copy
+
 options = VarParsing.VarParsing('analysis')
+#options = VarParsing("python")
+
 # Variables one can control from the multicrab configuration file.
 # When connecting a variable you need to tell the module certain information
 # about the object.
@@ -26,6 +29,33 @@ VarParsing.VarParsing.varType.string,
 "Name for output file."
 )
 
+options.register("deterministicSeeds",
+True,
+VarParsing.VarParsing.multiplicity.singleton,
+VarParsing.VarParsing.varType.bool,
+"create collections with deterministic seeds" )
+
+options.register("electronRegression",
+"GT",
+VarParsing.VarParsing.multiplicity.singleton,
+VarParsing.VarParsing.varType.string,
+"'GT' or an absolute path to a sqlite file for electron energy regression")
+
+options.register("electronSmearing",
+"Moriond17_23Jan",
+VarParsing.VarParsing.multiplicity.singleton,
+VarParsing.VarParsing.varType.string,
+"correction type for electron energy smearing" )
+
+
+# Changed to True for Data configs
+options.register("realData",
+False,
+VarParsing.VarParsing.multiplicity.singleton,
+VarParsing.VarParsing.varType.bool,
+"input dataset contains real data" )
+
+
 # ===== Get & parse any command line arguments =====
 options.parseArguments()
 
@@ -40,10 +70,11 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_38T_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-#process.GlobalTag.globaltag = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 process.prefer("GlobalTag")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+
+
 #####
 ##   Input files
 #####
@@ -56,25 +87,100 @@ process.source = cms.Source("PoolSource",
   ),
   skipEvents = cms.untracked.uint32(0)
 )
-
 #>>>> Set limit on number events to process (for testing purposes only) <<<<
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
-#####
-##   BTAGGING WITH HIP MITIGATION
-#####
-process.load("Configuration.StandardSequences.MagneticField_cff")
-process.load("Configuration.Geometry.GeometryRecoDB_cff")
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-updateJetCollection(
-  process,
-  jetSource = cms.InputTag('slimmedJets'),
-  jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
-  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfCombinedMVAV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedCvsLJetTags', 'pfCombinedCvsBJetTags'],
-  runIVF=True,
-  btagPrefix = 'new' # optional, in case interested in accessing both the old and new discriminator values
-)
-process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
+
+#======= Object Collections =======
+#Default Collections
+electronCollection = cms.InputTag("slimmedElectrons", "", "PAT")
+photonCollection   = cms.InputTag("slimmedPhotons", "", "PAT")
+muonCollection     = cms.InputTag("slimmedMuons", "", "PAT")
+tauCollection      = cms.InputTag("slimmedTaus", "", "PAT")
+METCollection      = cms.InputTag("slimmedMETs", "", "PAT")
+METPuppiCollection = cms.InputTag("slimmedMETsPuppi")
+jetCollection      = cms.InputTag("slimmedJets", "", "PAT")
+jetPuppiCollection = cms.InputTag("slimmedJetsPuppi", "", "PAT")
+fatjetCollection   = cms.InputTag("slimmedJetsAK8")
+topsubjetCollection = cms.InputTag("slimmedJetsCMSTopTagCHSPacked", "SubJets")
+#==================================
+
+
+
+'''# ===== Implementation of Deterministic seed =====
+
+if options.deterministicSeeds:
+    process.load("PhysicsTools.PatUtils.deterministicSeeds_cfi")
+    process.deterministicSeeds.produceCollections = cms.bool(True)
+    process.deterministicSeeds.produceValueMaps   = cms.bool(False)
+    process.deterministicSeeds.electronCollection = electronCollection
+    process.deterministicSeeds.muonCollection     = muonCollection
+    process.deterministicSeeds.tauCollection      = tauCollection
+    process.deterministicSeeds.photonCollection   = photonCollection
+    process.deterministicSeeds.jetCollection      = jetCollection
+    process.deterministicSeeds.METCollection      = METCollection
+    # overwrite output collections
+    electronCollection = cms.InputTag("deterministicSeeds", "electronsWithSeed", process.name_())
+    muonCollection     = cms.InputTag("deterministicSeeds", "muonsWithSeed", process.name_())
+    tauCollection      = cms.InputTag("deterministicSeeds", "tausWithSeed", process.name_())
+    photonCollection   = cms.InputTag("deterministicSeeds", "photonsWithSeed", process.name_())
+    jetCollection      = cms.InputTag("deterministicSeeds", "jetsWithSeed", process.name_())
+    METCollection      = cms.InputTag("deterministicSeeds", "METsWithSeed", process.name_())
+
+# ===== Implementation of Electron Regression =====
+if options.electronRegression:
+    if options.electronRegression == "GT":
+        from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+        process = regressionWeights(process)
+    else:
+        from EgammaAnalysis.ElectronTools.regressionWeights_local_cfi import GBRDWrapperRcd
+        GBRDWrapperRcd.connect = cms.string("sqlite_file:" + options.electronRegression)
+        process.regressions = GBRDWrapperRcd
+        process.regressions.DumpStat = cms.untracked.bool(False)
+        process.es_prefer_regressions = cms.ESPrefer("PoolDBESSource", "regressions")
+    process.load("EgammaAnalysis.ElectronTools.regressionApplication_cff")
+
+    # set the electron and photon sources
+    process.slimmedElectrons.src = electronCollection
+    process.slimmedPhotons.src = photonCollection
+    # overwrite output collections
+    electronCollection = cms.InputTag("slimmedElectrons", "", process.name_())
+    photonCollection = cms.InputTag("slimmedPhotons", "", process.name_())
+
+
+# ===== Implementation of Electron Smearing =====
+if options.electronSmearing and options.electronRegression:
+    # the smearing procedure requires a preselection
+    process.selectedElectrons = cms.EDFilter("PATElectronSelector",
+        src = electronCollection,
+        cut = cms.string("pt>5 && abs(superCluster.eta)<2.5")
+    )
+    electronCollection = cms.InputTag("selectedElectrons", "", process.name_())
+
+    # setup the smearing
+    process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
+    from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import files
+    process.calibratedPatElectrons.isMC           = cms.bool(not options.realData)
+    process.calibratedPatElectrons.correctionFile = cms.string(files[options.electronSmearing])
+    process.calibratedPatElectrons.electrons      = electronCollection
+
+    # use our deterministic seeds or a random generator service
+    if options.deterministicSeeds:
+        process.calibratedPatElectrons.seedUserInt = process.deterministicSeeds.seedUserInt
+    else:
+        process.load("Configuration.StandardSequences.Services_cff")
+        process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+            calibratedPatElectrons = cms.PSet(
+                initialSeed = cms.untracked.uint32(81),
+                engineName  = cms.untracked.string("TRandom3")
+            )
+        )
+
+    # overwrite output collections
+    electronCollection = cms.InputTag("calibratedPatElectrons", "", process.name_())'''
+
+
+
 #####
 ##   ELECTRON ID SECTION
 #####
@@ -93,6 +199,31 @@ my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElect
 # Add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+# update some VID modules to work with potentially changed electron collections
+'''process.egmGsfElectronIDs.physicsObjectSrc = electronCollection
+process.electronRegressionValueMapProducer.srcMiniAOD = electronCollection
+process.electronMVAValueMapProducer.srcMiniAOD = electronCollection'''
+
+
+#####
+##   BTAGGING WITH HIP MITIGATION
+#####
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Configuration.Geometry.GeometryRecoDB_cff")
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+  process,
+  jetSource = jetCollection,
+  jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet','L2Relative','L3Absolute']), 'None'),
+  btagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags', 'pfCombinedMVAV2BJetTags', 'pfJetProbabilityBJetTags', 'pfCombinedCvsLJetTags', 'pfCombinedCvsBJetTags'],
+  runIVF=True,
+  btagPrefix = 'new' # optional, in case interested in accessing both the old and new discriminator values
+)
+process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
+
+
+
 
 #####
 ##   For tt+X
@@ -229,8 +360,8 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   objects             = cms.InputTag("selectedPatTrigger"),
   vertices            = cms.InputTag("offlineSlimmedPrimaryVertices"),
   beamSpot            = cms.InputTag("offlineBeamSpot"),
-  muons               = cms.InputTag("slimmedMuons"),
-  patElectrons        = cms.InputTag("slimmedElectrons"),
+  muons               = muonCollection,
+  patElectrons        = electronCollection,
   electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"),
   electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose"),
   electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium"),
@@ -251,16 +382,15 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   elemvaCategoriesMap_GP       = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories"),
   elemvaValuesMap_HZZ          = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16HZZV1Values"),
   elemvaCategoriesMap_HZZ      = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16HZZV1Categories"),
-  taus                = cms.InputTag("slimmedTaus"),
-  #jets                = cms.InputTag("selectedPatJetsAK8PFCHS"),
-  jets                = cms.InputTag("slimmedJets"), #selectedUpdatedPatJets #slimmedJets"),
-  jetsPUPPI           = cms.InputTag("slimmedJetsPuppi"),
-  fatjets             = cms.InputTag("slimmedJetsAK8"),
-  topsubjets          = cms.InputTag("slimmedJetsCMSTopTagCHSPacked", "SubJets"),
-  mets                = cms.InputTag("slimmedMETs"),
-  metsPUPPI           = cms.InputTag("slimmedMETsPuppi"),
+  taus                = tauCollection,
+  jets                = jetCollection,
+  jetsPUPPI           = jetPuppiCollection,
+  fatjets             = fatjetCollection,
+  topsubjets          = topsubjetCollection,
+  mets                = METCollection,
+  metsPUPPI           = METPuppiCollection,
   metFilterBits       = cms.InputTag("TriggerResults", "", "PAT"),
-  photons             = cms.InputTag("slimmedPhotons"),
+  photons             = photonCollection,
   packedPFCandidates  = cms.InputTag("packedPFCandidates"),
   pruned              = cms.InputTag("prunedGenParticles"),
   # =========== JER (Only applied to MC) ============
@@ -359,6 +489,10 @@ process.TNT = cms.EDAnalyzer("BSM3G_TNT_Maker",
   cloneGlobalMuonTagger     = cms.InputTag("cloneGlobalMuonTagger"),
 
 )
+
+
+
+
 #####
 ##   Dump gen particle list
 #####
@@ -368,6 +502,9 @@ process.printGenParticleList = cms.EDAnalyzer("ParticleListDrawer",
   printVertex = cms.untracked.bool(True),
   src = cms.InputTag("prunedGenParticles")
 )
+
+
+
 #process.p = cms.Path(process.printGenParticleList)
 #BJetness producer
 process.load('BJetnessTTHbb.BJetness.BJetness_cfi')
@@ -375,9 +512,9 @@ process.BJetness = cms.EDProducer('BJetness')
 process.BJetness.is_data = cms.bool(False)
 process.BJetness.vertices = cms.InputTag("offlineSlimmedPrimaryVertices")
 process.BJetness.eleMVAnonTrigIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80")
-process.BJetness.patElectrons = cms.InputTag("slimmedElectrons")
-process.BJetness.muons = cms.InputTag("slimmedMuons")
-process.BJetness.jets = cms.InputTag("slimmedJets")#selectedUpdatedPatJets #slimmedJets"),
+process.BJetness.patElectrons = electronCollection
+process.BJetness.muons = muonCollection
+process.BJetness.jets = jetCollection
 process.BJetness.jecPayloadNamesAK4PFchsMC1 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L1FastJet_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC2 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L2Relative_AK4PFchs.txt")
 process.BJetness.jecPayloadNamesAK4PFchsMC3 = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JEC/MC/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L3Absolute_AK4PFchs.txt")
@@ -391,7 +528,7 @@ process.BJetness.jerAK4PFchs   = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/da
 process.BJetness.jerAK4PFchsSF = cms.FileInPath("BSMFramework/BSM3G_TNT_Maker/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt")
 #QG likelihood
 process.load('BSMFramework.BSM3G_TNT_Maker.QGTagger_cfi')
-process.QGTagger.srcJets       = cms.InputTag('slimmedJets')
+process.QGTagger.srcJets       = jetCollection
 process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
 
 
@@ -402,7 +539,7 @@ process.QGTagger.jetsLabel     = cms.string('QGL_AK4PFchs')
 process.load("RecoMET.METFilters.BadPFMuonFilter_cfi")
 from RecoMET.METFilters.BadPFMuonFilter_cfi import BadPFMuonFilter
 process.BadPFMuonFilter = BadPFMuonFilter.clone(
-    muons = cms.InputTag("slimmedMuons"),
+    muons = muonCollection,
     PFCandidates = cms.InputTag("packedPFCandidates"),
 )
 
@@ -410,7 +547,7 @@ process.BadPFMuonFilter = BadPFMuonFilter.clone(
 process.load("RecoMET.METFilters.BadChargedCandidateFilter_cfi")
 from RecoMET.METFilters.BadChargedCandidateFilter_cfi import BadChargedCandidateFilter
 process.BadChargedCandidateFilter = BadChargedCandidateFilter.clone(
-    muons = cms.InputTag("slimmedMuons"),
+    muons = muonCollection,
     PFCandidates = cms.InputTag("packedPFCandidates"),
 )
 
@@ -428,6 +565,8 @@ process.cloneGlobalMuonTagger = cloneGlobalMuonTaggerMAOD.clone(
 
 #Run analysis sequence
 process.p = cms.Path(
+#process.regressionApplication
+#*process.calibratedPatElectrons
 process.selectedHadronsAndPartons
 *process.genJetFlavourInfos
 *process.matchGenCHadron

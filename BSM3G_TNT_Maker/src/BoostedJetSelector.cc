@@ -30,11 +30,11 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
   Clear();
   /////
   //   Recall collections
-  /////  
+  /////
   edm::Handle<reco::VertexCollection> vertices;
-  iEvent.getByToken(vtx_h_, vertices);                                        
-  edm::Handle<pat::JetCollection> fatjets;                                       
-  iEvent.getByToken(fatjets_, fatjets); 
+  iEvent.getByToken(vtx_h_, vertices);
+  edm::Handle<pat::JetCollection> fatjets;
+  iEvent.getByToken(fatjets_, fatjets);
   edm::Handle<double> rhoHandle;
   iEvent.getByToken(rhopogHandle_,rhoHandle);
   double rho = *rhoHandle;
@@ -43,36 +43,36 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
   double rhoJER = *rhoJERHandle;
   /////
   //   Get fatjet information
-  /////  
-  for(const pat::Jet &j : *fatjets){ 
+  /////
+  for(const pat::Jet &j : *fatjets){
     //if (j.pt() < _Jet_pt_min) continue;
     //Kinematic
-    BoostedJet_pt.push_back(j.pt());         
-    BoostedJet_eta.push_back(j.eta());       
-    BoostedJet_phi.push_back(j.phi());       
+    BoostedJet_pt.push_back(j.pt());
+    BoostedJet_eta.push_back(j.eta());
+    BoostedJet_phi.push_back(j.phi());
     BoostedJet_energy.push_back(j.energy());
-    BoostedJet_mass.push_back(j.mass()); 
-    BoostedJet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());    
+    BoostedJet_mass.push_back(j.mass());
+    BoostedJet_Uncorr_pt.push_back(j.correctedJet("Uncorrected").pt());
     //ID
-    BoostedJet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));              
-    BoostedJet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));              
-    BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));              
+    BoostedJet_pfJetProbabilityBJetTags.push_back(j.bDiscriminator("pfJetProbabilityBJetTags"));
+    BoostedJet_pfCombinedMVAV2BJetTags.push_back(j.bDiscriminator("pfCombinedMVAV2BJetTags"));
+    BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags.push_back(j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     BoostedJet_pfCombinedCvsLJetTags.push_back(j.bDiscriminator("pfCombinedCvsLJetTags"));
     BoostedJet_pfCombinedCvsBJetTags.push_back(j.bDiscriminator("pfCombinedCvsBJetTags"));
     //Energy related variables
-    BoostedJet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());                               
-    BoostedJet_neutralEmEmEnergyFraction.push_back(j.neutralEmEnergyFraction());                                   
-    BoostedJet_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());                               
-    BoostedJet_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());                              
-    BoostedJet_muonEnergyFraction.push_back(j.muonEnergyFraction());                                  
-    BoostedJet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());                                  
+    BoostedJet_neutralHadEnergyFraction.push_back(j.neutralHadronEnergyFraction());
+    BoostedJet_neutralEmEmEnergyFraction.push_back(j.neutralEmEnergyFraction());
+    BoostedJet_chargedHadronEnergyFraction.push_back(j.chargedHadronEnergyFraction());
+    BoostedJet_chargedEmEnergyFraction.push_back(j.chargedEmEnergyFraction());
+    BoostedJet_muonEnergyFraction.push_back(j.muonEnergyFraction());
+    BoostedJet_numberOfConstituents.push_back(j.chargedMultiplicity() + j.neutralMultiplicity());
     BoostedJet_chargedMultiplicity.push_back(j.chargedMultiplicity());
-    BoostedJet_electronEnergy.push_back(j.electronEnergy());                               
+    BoostedJet_electronEnergy.push_back(j.electronEnergy());
     BoostedJet_photonEnergy.push_back(j.photonEnergy());
-    //Boosted jet prop 
+    //Boosted jet prop
     BoostedJet_tau1.push_back(j.userFloat("NjettinessAK8:tau1"));    //
     BoostedJet_tau2.push_back(j.userFloat("NjettinessAK8:tau2"));    //  Access the n-subjettiness variables
-    BoostedJet_tau3.push_back(j.userFloat("NjettinessAK8:tau3"));    // 
+    BoostedJet_tau3.push_back(j.userFloat("NjettinessAK8:tau3"));    //
     BoostedJet_softdrop_mass.push_back(j.userFloat("ak8PFJetsCHSSoftDropMass")); // access to soft drop mass
     //BoostedJet_trimmed_mass.push_back(j.userFloat("ak8PFJetsCHSTrimmedMass"));   // access to trimmed mass
     BoostedJet_pruned_mass.push_back(j.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
@@ -115,7 +115,7 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     BoostedJet_JesSFup.push_back(corrUpAK8PFchs);
     BoostedJet_JesSFdown.push_back(corrDownAK8PFchs);
     //JER scale factor and uncertainties
-    float JERScaleFactor     = 1; 
+    float JERScaleFactor     = 1;
     float JERScaleFactorUP   = 1;
     float JERScaleFactorDOWN = 1;
     if(!_is_data) GetJER(j, corrAK8PFchs, rhoJER, true, JERScaleFactor, JERScaleFactorUP, JERScaleFactorDOWN);
@@ -138,10 +138,26 @@ void BoostedJetSelector::Fill(const edm::Event& iEvent){
     TopTagging_minMass.push_back(MinMass);
     TopTagging_wMass.push_back(WMass);
     TopTagging_nSubJets.push_back(NSubJets);
-  } 
+  }
 }
 void BoostedJetSelector::JECInitialization(){
-  //AK8chs - MC: Get the factorized jet corrector parameters. 
+  // Procedure for running JEC and JECUnc on crab: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorFWLite
+
+  //===== Instantiate uncertainty sources =====
+  const int nsrc = 33;
+  const char* srcnames[nsrc] = {"Absolute", "HighPtExtra",  "SinglePionECAL", "SinglePionHCAL",
+   "FlavorQCD", "Time",
+   "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF",
+   "RelativePtBB","RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeFSR",
+   "RelativeStatEC2", "RelativeStatHF",
+   "PileUpDataMC",
+   "PileUpPtBB", "PileUpPtEC", "PileUpPtHF","PileUpBias",
+   "SubTotalPileUp","SubTotalRelative","SubTotalPt","SubTotalMC",
+   "Total","TotalNoFlavor",
+   "FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom"};
+
+
+  //AK8chs - MC: Get the factorized jet corrector parameters.
   std::vector<std::string> jecPayloadNamesAK8PFchsMC_;
   jecPayloadNamesAK8PFchsMC_.push_back(jecPayloadNamesAK8PFchsMC1_.fullPath());
   jecPayloadNamesAK8PFchsMC_.push_back(jecPayloadNamesAK8PFchsMC2_.fullPath());
@@ -153,8 +169,23 @@ void BoostedJetSelector::JECInitialization(){
     vParAK8PFchsMC.push_back(pars);
   }
   jecAK8PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK8PFchsMC) );
-  jecAK8PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsMCUnc_.fullPath()) );
-  //AK8chs - DATA: Get the factorized jet corrector parameters. 
+  //jecAK8PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsMCUnc_.fullPath()) );
+
+
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK8PFchs_mc(nsrc);
+
+   for (int isrc = 0; isrc < nsrc; isrc++){
+     const char* tempname = srcnames[isrc];
+     boost::shared_ptr<JetCorrectionUncertainty> unc = boost::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK8PFchsMCUnc_.fullPath(), tempname))));
+     vsrc_AK8PFchs_mc[isrc] = unc;
+   }
+
+  // Total uncertainty for reference
+  jecAK8PFchsMCUnc_   = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK8PFchsMCUnc_.fullPath(), "Total"))));
+
+
+
+  //AK8chs - DATA: Get the factorized jet corrector parameters.
   std::vector<std::string> jecPayloadNamesAK8PFchsDATA_;
   jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA1_.fullPath());
   jecPayloadNamesAK8PFchsDATA_.push_back(jecPayloadNamesAK8PFchsDATA2_.fullPath());
@@ -167,7 +198,20 @@ void BoostedJetSelector::JECInitialization(){
     vParAK8PFchsDATA.push_back(pars);
   }
   jecAK8PFchsDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK8PFchsDATA) );
-  jecAK8PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsDATAUnc_.fullPath()) );
+  //jecAK8PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK8PFchsDATAUnc_.fullPath()) );
+
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK8PFchs_data(nsrc);
+
+   for (int isrc = 0; isrc < nsrc; isrc++){
+     const char* tempname = srcnames[isrc];
+     boost::shared_ptr<JetCorrectionUncertainty> unc = boost::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK8PFchsDATAUnc_.fullPath(), tempname))));
+     vsrc_AK8PFchs_data[isrc] = unc;
+   }
+
+  // Total uncertainty for reference
+  jecAK8PFchsDATAUnc_   = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK8PFchsDATAUnc_.fullPath(), "Total"))));
+
+
 }
 void BoostedJetSelector::SetBranches(){
   if(debug_)    std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
@@ -194,7 +238,7 @@ void BoostedJetSelector::SetBranches(){
   AddBranch(&BoostedJet_chargedMultiplicity,         "BoostedJet_chargedMultiplicity");
   AddBranch(&BoostedJet_electronEnergy,              "BoostedJet_electronEnergy");
   AddBranch(&BoostedJet_photonEnergy,                "BoostedJet_photonEnergy");
-  //Boosted jet prop 
+  //Boosted jet prop
   AddBranch(&BoostedJet_tau1,           "BoostedJet_tau1");
   AddBranch(&BoostedJet_tau2,           "BoostedJet_tau2");
   AddBranch(&BoostedJet_tau3,           "BoostedJet_tau3");
@@ -240,7 +284,7 @@ void BoostedJetSelector::Clear(){
   BoostedJet_chargedMultiplicity.clear();
   BoostedJet_electronEnergy.clear();
   BoostedJet_photonEnergy.clear();
-  //Boosted jet prop 
+  //Boosted jet prop
   BoostedJet_tau1.clear();
   BoostedJet_tau2.clear();
   BoostedJet_tau3.clear();
@@ -264,60 +308,60 @@ void BoostedJetSelector::Clear(){
 void BoostedJetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK8PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
-  double cFactorJER = 1.0; 
+  double cFactorJER = 1.0;
   double cFactorJERdown = 1.0;
   double cFactorJERup = 1.0;
   //https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution#JER_Scaling_factors_and_Unce_AN1
-  if( jetEta<0.5 ){ 
-    cFactorJER = 1.122; 
+  if( jetEta<0.5 ){
+    cFactorJER = 1.122;
     cFactorJERdown = 1.122-0.026;
-    cFactorJERup   = 1.122+0.026; 
-  } else if( jetEta<0.8 ){ 
-    cFactorJER = 1.167; 
+    cFactorJERup   = 1.122+0.026;
+  } else if( jetEta<0.8 ){
+    cFactorJER = 1.167;
     cFactorJERdown = 1.167-0.048;
-    cFactorJERup   = 1.167+0.048; 
-  } else if( jetEta<1.1 ){ 
-    cFactorJER = 1.168; 
+    cFactorJERup   = 1.167+0.048;
+  } else if( jetEta<1.1 ){
+    cFactorJER = 1.168;
     cFactorJERdown = 1.168-0.046;
-    cFactorJERup   = 1.168+0.046; 
-  } else if( jetEta<1.3 ){ 
-    cFactorJER = 1.029; 
+    cFactorJERup   = 1.168+0.046;
+  } else if( jetEta<1.3 ){
+    cFactorJER = 1.029;
     cFactorJERdown = 1.029-0.066;
-    cFactorJERup   = 1.029+0.066; 
-  } else if( jetEta<1.7 ){ 
-    cFactorJER = 1.115; 
+    cFactorJERup   = 1.029+0.066;
+  } else if( jetEta<1.7 ){
+    cFactorJER = 1.115;
     cFactorJERdown = 1.115-0.030;
-    cFactorJERup   = 1.115+0.030; 
-  } else if( jetEta<1.9 ){ 
-    cFactorJER = 1.041; 
+    cFactorJERup   = 1.115+0.030;
+  } else if( jetEta<1.9 ){
+    cFactorJER = 1.041;
     cFactorJERdown = 1.041-0.062;
-    cFactorJERup   = 1.041+0.062; 
-  } else if( jetEta<2.1 ){ 
-    cFactorJER = 1.167; 
+    cFactorJERup   = 1.041+0.062;
+  } else if( jetEta<2.1 ){
+    cFactorJER = 1.167;
     cFactorJERdown = 1.167-0.086;
-    cFactorJERup   = 1.167+0.086; 
-  } else if( jetEta<2.3 ){ 
-    cFactorJER = 1.094; 
+    cFactorJERup   = 1.167+0.086;
+  } else if( jetEta<2.3 ){
+    cFactorJER = 1.094;
     cFactorJERdown = 1.094-0.093;
-    cFactorJERup   = 1.094+0.093; 
-  } else if( jetEta<2.5 ){ 
-    cFactorJER = 1.168; 
+    cFactorJERup   = 1.094+0.093;
+  } else if( jetEta<2.5 ){
+    cFactorJER = 1.168;
     cFactorJERdown = 1.168-0.120;
-    cFactorJERup   = 1.168+0.120; 
-  } else if( jetEta<2.8 ){ 
-    cFactorJER = 1.266; 
+    cFactorJERup   = 1.168+0.120;
+  } else if( jetEta<2.8 ){
+    cFactorJER = 1.266;
     cFactorJERdown = 1.266-0.132;
-    cFactorJERup   = 1.266+0.132; 
-  } else if( jetEta<3.0 ){ 
-    cFactorJER = 1.595; 
+    cFactorJERup   = 1.266+0.132;
+  } else if( jetEta<3.0 ){
+    cFactorJER = 1.595;
     cFactorJERdown = 1.595-0.175;
-    cFactorJERup   = 1.595+0.175; 
-  } else if( jetEta<3.2 ){ 
-    cFactorJER = 0.998; 
+    cFactorJERup   = 1.595+0.175;
+  } else if( jetEta<3.2 ){
+    cFactorJER = 0.998;
     cFactorJERdown = 0.998-0.066;
-    cFactorJERup   = 0.998+0.066; 
-  } else if( jetEta<5.0 ){ 
-    cFactorJER = 1.226; 
+    cFactorJERup   = 0.998+0.066;
+  } else if( jetEta<5.0 ){
+    cFactorJER = 1.226;
     cFactorJERdown = 1.226-0.145;
     cFactorJERup   = 1.226+0.145;
   }
@@ -347,5 +391,5 @@ void BoostedJetSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK
     JERScaleFactor     = 1.;
     JERScaleFactorUP   = 1.;
     JERScaleFactorDOWN = 1.;
-  } 
+  }
 }

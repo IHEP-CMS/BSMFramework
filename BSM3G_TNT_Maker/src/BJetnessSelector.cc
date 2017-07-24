@@ -45,6 +45,7 @@ BJetnessSelector::BJetnessSelector(std::string name, TTree* tree, bool debug, co
   jerAK4PFchs_     = iConfig.getParameter<edm::FileInPath>("jerAK4PFchs").fullPath();
   jerAK4PFchsSF_   = iConfig.getParameter<edm::FileInPath>("jerAK4PFchsSF").fullPath();
   JECInitialization();
+  std::cout << "Post JECInitialization" << std::endl;
   SetBranches();
   // Helper class of helper class. Registration to framework required.
   // consumesCollector may be static - one per helper class.
@@ -366,9 +367,9 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
     if(jetschtrks.size()!=0){
       //Num of trks and their pT/En
       //BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/double(jetschtrks.size()));
-      BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/5);
+      BJetness_npvTrkOVcollTrk.push_back(double(jetschtrksnpv.size())/jetschtrks.size());
       //BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/double(jetschtrks.size()));
-      BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/5);
+      BJetness_pvTrkOVcollTrk.push_back(double(jetschtrkspv.size())/jetschtrks.size());
       if(jetschtrkspv.size()!=0) BJetness_npvTrkOVpvTrk.push_back(double(jetschtrksnpv.size())/double(jetschtrkspv.size()));
       else                       BJetness_npvTrkOVpvTrk.push_back(-997);
       double ptjettrks    = 0;
@@ -390,11 +391,11 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       double jetchtrks_avetapar = 0;
       double jetchtrks_avdr     = 0;
       get_avreljet(jetschtrks,jetsdir,jetchtrks_avprel,jetchtrks_avppar,jetchtrks_avetarel,jetchtrks_avetapar,jetchtrks_avdr);
-      BJetness_avprel.push_back(jetchtrks_avprel/5);
-      BJetness_avppar.push_back(jetchtrks_avppar/5);
-      BJetness_avetarel.push_back(jetchtrks_avetarel/5);
-      BJetness_avetapar.push_back(jetchtrks_avetapar/5);
-      BJetness_avdr.push_back(jetchtrks_avdr/5);
+      BJetness_avprel.push_back(jetchtrks_avprel/jetschtrks.size());
+      BJetness_avppar.push_back(jetchtrks_avppar/jetschtrks.size());
+      BJetness_avetarel.push_back(jetchtrks_avetarel/jetschtrks.size());
+      BJetness_avetapar.push_back(jetchtrks_avetapar/jetschtrks.size());
+      BJetness_avdr.push_back(jetchtrks_avdr/jetschtrks.size());
       BJetness_avpreljetpt.push_back(jetchtrks_avprel/bjetness_pt);
       BJetness_avpreljeten.push_back(jetchtrks_avprel/bjetness_en);
       BJetness_avpparjetpt.push_back(jetchtrks_avppar/bjetness_pt);
@@ -461,10 +462,6 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       get_avip3d(jetschtrks, *ttrkbuilder, PV, jetsdir, jetchtrks_avip3d_val,jetchtrks_avip3d_sig,jetchtrks_avsip3d_val,jetchtrks_avsip3d_sig,jetchtrks_numip3dpos,jetchtrks_numip3dneg);
       ip_valtemp = jetchtrks_avip3d_val/jetschtrks.size();
 
-      /*std::cout << "BJetness::jetschtrks.size() = " << jetschtrks.size() << std::endl;
-      std::cout << "BJetness::jetchtrks_avip3d_val = " << jetchtrks_avip3d_val << std::endl;
-      std::cout << "BJetness::BJetness_avip3d_val = " << ip_valtemp << std::endl;*/
-
       if(ip_valtemp==ip_valtemp) BJetness_avip3d_val.push_back(ip_valtemp);
       else                       BJetness_avip3d_val.push_back(-996);
       ip_valtemp = jetchtrks_avip3d_sig/jetschtrks.size();
@@ -478,6 +475,8 @@ void BJetnessSelector::Fill(const edm::Event& iEvent, const edm::EventSetup& iSe
       else                       BJetness_avsip3d_sig.push_back(-996);
       BJetness_numip3dpos.push_back(jetchtrks_numip3dpos);
       BJetness_numip3dneg.push_back(jetchtrks_numip3dneg);
+
+
       double jetchtrks_avip2d_val  = 0;
       double jetchtrks_avip2d_sig  = 0;
       double jetchtrks_avsip2d_val = 0;
@@ -895,34 +894,81 @@ bool BJetnessSelector::isGoodVertex(const reco::Vertex& vtx){
 }
 
 void BJetnessSelector::JECInitialization(){
-  //AK4chs - MC: Get the factorized jet corrector parameters.
+  // Procedure for running JEC and JECUnc on crab: https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetEnCorFWLite
+
+  //===== Instantiate uncertainty sources =====
+  const int nsrc = 33;
+  const char* srcnames[nsrc] = {"Absolute", "HighPtExtra",  "SinglePionECAL", "SinglePionHCAL",
+   "FlavorQCD", "Time",
+   "RelativeJEREC1", "RelativeJEREC2", "RelativeJERHF",
+   "RelativePtBB","RelativePtEC1", "RelativePtEC2", "RelativePtHF", "RelativeFSR",
+   "RelativeStatEC2", "RelativeStatHF",
+   "PileUpDataMC",
+   "PileUpPtBB", "PileUpPtEC", "PileUpPtHF","PileUpBias",
+   "SubTotalPileUp","SubTotalRelative","SubTotalPt","SubTotalMC",
+   "Total","TotalNoFlavor",
+   "FlavorZJet","FlavorPhotonJet","FlavorPureGluon","FlavorPureQuark","FlavorPureCharm","FlavorPureBottom"};
+
+  //====== AK4chs - MC: Get the factorized jet corrector parameters. ======
   std::vector<std::string> jecPayloadNamesAK4PFchsMC_;
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC1_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC2_.fullPath());
   jecPayloadNamesAK4PFchsMC_.push_back(jecPayloadNamesAK4PFchsMC3_.fullPath());
+
   std::vector<JetCorrectorParameters> vParAK4PFchsMC;
   for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFchsMC_.begin(),
           payloadEnd = jecPayloadNamesAK4PFchsMC_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
     JetCorrectorParameters pars(*ipayload);
     vParAK4PFchsMC.push_back(pars);
   }
+
   jecAK4PFchsMC_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsMC) );
-  jecAK4PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsMCUnc_.fullPath()) );
-  //AK4chs - DATA: Get the factorized jet corrector parameters.
+  //jecAK4PFchsMCUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsMCUnc_.fullPath()) );
+
+
+   std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFchs_mc(nsrc);
+
+   for (int isrc = 0; isrc < nsrc; isrc++){
+     const char* tempname = srcnames[isrc];
+     boost::shared_ptr<JetCorrectionUncertainty> unc = boost::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK4PFchsMCUnc_.fullPath(), tempname))));
+     vsrc_AK4PFchs_mc[isrc] = unc;
+   }
+
+  // Total uncertainty for reference
+  jecAK4PFchsMCUnc_   = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK4PFchsMCUnc_.fullPath(), "Total"))));
+
+
+  //====== AK4chs - DATA: Get the factorized jet corrector parameters. ======
   std::vector<std::string> jecPayloadNamesAK4PFchsDATA_;
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA1_.fullPath());
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA2_.fullPath());
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA3_.fullPath());
   jecPayloadNamesAK4PFchsDATA_.push_back(jecPayloadNamesAK4PFchsDATA4_.fullPath());
+
   std::vector<JetCorrectorParameters> vParAK4PFchsDATA;
   for ( std::vector<std::string>::const_iterator payloadBegin = jecPayloadNamesAK4PFchsDATA_.begin(),
           payloadEnd = jecPayloadNamesAK4PFchsDATA_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
     JetCorrectorParameters pars(*ipayload);
     vParAK4PFchsDATA.push_back(pars);
   }
+
   jecAK4PFchsDATA_    = boost::shared_ptr<FactorizedJetCorrector>  ( new FactorizedJetCorrector(vParAK4PFchsDATA) );
-  jecAK4PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsDATAUnc_.fullPath()) );
+
+
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFchs_data(nsrc);
+  //===== Instantiate uncertainty sources =====
+  for (int isrc = 0; isrc < nsrc; isrc++){
+    const char* tempname = srcnames[isrc];
+    boost::shared_ptr<JetCorrectionUncertainty> unc = boost::shared_ptr<JetCorrectionUncertainty>(new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK4PFchsDATAUnc_.fullPath(), tempname))));
+    vsrc_AK4PFchs_data[isrc] = unc;
+  }
+
+  //jecAK4PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(jecPayloadNamesAK4PFchsDATAUnc_.fullPath()) );
+  jecAK4PFchsDATAUnc_ = boost::shared_ptr<JetCorrectionUncertainty>( new JetCorrectionUncertainty(*(new JetCorrectorParameters(jecPayloadNamesAK4PFchsDATAUnc_.fullPath(), "Total"))));
+
 }
+
+
 void BJetnessSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN){
   if(!jet.genJet()) return;
   double jetEta=fabs(jet.eta());
@@ -1028,13 +1074,27 @@ bool BJetnessSelector::is_vetoPOGNoIPNoIso_jetelectron(const pat::Electron &lele
   if(lele.ecalEnergy()==0)                   ooEmooP = 1e30;
   else if(!std::isfinite(lele.ecalEnergy())) ooEmooP = 1e30;
   else                                       ooEmooP = fabs(1.0/lele.ecalEnergy() - lele.eSuperClusterOverP()/lele.ecalEnergy());
-  if(lele.full5x5_sigmaIetaIeta()<0.012 && fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.0126 && fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.107
-     && lele.hcalOverEcal()<0.186 && ooEmooP<0.239
-     //&& fabs((-1) * lele.gsfTrack()->dxy(vtx.position()))<0.0227 && fabs(lele.gsfTrack()->dz(vtx.position()))<0.379
-     && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=2 && lele.passConversionVeto()
-    ) isele = true;
+
+  if(!(fabs(lele.superCluster()->position().eta()) > 1.4442 && fabs(lele.superCluster()->position().eta()) < 1.5660)){
+
+    if(fabs(lele.superCluster()->position().eta())<=1.4442 && lele.full5x5_sigmaIetaIeta()<0.0115 && fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00749 && fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.228
+       && lele.hcalOverEcal()<0.356 && ooEmooP<0.299 && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=2 && lele.passConversionVeto()
+     ) {isele = true;}
+    if(fabs(lele.superCluster()->position().eta())>1.5660
+       && (lele.full5x5_sigmaIetaIeta()<0.037)
+       && (lele.hcalOverEcal()<0.211)
+       && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00895)
+       && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.213)
+       && ooEmooP<0.15
+       && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=3
+       && lele.passConversionVeto()
+      ) {isele = true;}
+  }
   return isele;
+
 }
+
+//Updated
 bool BJetnessSelector::is_loosePOGNoIPNoIso_jetelectron(const pat::Electron &lele){
   bool isele = false;
   double ooEmooP = 999;
@@ -1042,23 +1102,23 @@ bool BJetnessSelector::is_loosePOGNoIPNoIso_jetelectron(const pat::Electron &lel
   else if(!std::isfinite(lele.ecalEnergy())) ooEmooP = 1e30;
   else                                       ooEmooP = fabs(1.0/lele.ecalEnergy() - lele.eSuperClusterOverP()/lele.ecalEnergy());
   if(!(fabs(lele.superCluster()->position().eta()) > 1.4442 && fabs(lele.superCluster()->position().eta()) < 1.5660)){
-    if(fabs(lele.superCluster()->position().eta())<1.4442
-      && (lele.full5x5_sigmaIetaIeta()<0.0103)
-      && (lele.hcalOverEcal()<0.104)
-      && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.0105)
-      && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.115)
-      && ooEmooP<0.102
-      && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=2
+    if(fabs(lele.superCluster()->position().eta())<=1.4442
+      && (lele.full5x5_sigmaIetaIeta()<0.011)
+      && (lele.hcalOverEcal()<0.298)
+      && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00477)
+      && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.222)
+      && ooEmooP<0.241
+      && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1
       && lele.passConversionVeto()
       ){
         isele = true;
     }
     if(fabs(lele.superCluster()->position().eta())>1.5660
-      && (lele.full5x5_sigmaIetaIeta()<0.0301)
-      && (lele.hcalOverEcal()<0.0897)
-      && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00814)
-      && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.182)
-      && ooEmooP<0.126
+      && (lele.full5x5_sigmaIetaIeta()<0.0314)
+      && (lele.hcalOverEcal()<0.101)
+      && (fabs(lele.deltaEtaSuperClusterTrackAtVtx())<0.00868)
+      && (fabs(lele.deltaPhiSuperClusterTrackAtVtx())<0.213)
+      && ooEmooP<0.14
       && lele.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1
       && lele.passConversionVeto()
       ){

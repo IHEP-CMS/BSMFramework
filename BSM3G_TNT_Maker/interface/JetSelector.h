@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <TRandom3.h>
-#include <TBranch.h>                                                                    
+#include <TBranch.h>
 #include <TClonesArray.h>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
@@ -122,18 +122,125 @@ class JetSelector : public  baseTree{
   /////
   boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsMC_;
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_;
+
+  //===========================================================================
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_AbsoluteStat;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_AbsoluteScale;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_AbsoluteFlavMap;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_AbsoluteMPFBias;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_Fragmentation;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SinglePionECAL;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SinglePionHCAL;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorQCD;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_TimePtEta;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeJEREC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeJEREC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeJERHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativePtBB;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativePtEC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativePtEC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativePtHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeBal;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeFSR;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeStatFSR;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeStatEC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_RelativeStatHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpDataMC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpPtRef;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpPtBB;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpPtEC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpPtEC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpPtHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpBias;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpMuZero;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_PileUpEnvelope;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalPileUp;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalRelative;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalPt;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalScale;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalAbsolute;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_SubTotalMC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_TotalNoFlavor;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_TotalNoTime;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_TotalNoFlavorNoTime;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorZJet;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorPhotonJet;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorPureGluon;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorPureQuark;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorPureCharm;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsMCUnc_FlavorPureBottom;
+  //===========================================================================
+
   boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFchsDATA_;
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_;
+
+  //===========================================================================
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_AbsoluteStat;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_AbsoluteScale;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_AbsoluteFlavMap;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_AbsoluteMPFBias;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_Fragmentation;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SinglePionECAL;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SinglePionHCAL;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorQCD;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_TimePtEta;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeJEREC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeJEREC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeJERHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativePtBB;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativePtEC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativePtEC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativePtHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeBal;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeFSR;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeStatFSR;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeStatEC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_RelativeStatHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpDataMC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpPtRef;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpPtBB;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpPtEC1;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpPtEC2;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpPtHF;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpBias;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpMuZero;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_PileUpEnvelope;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalPileUp;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalRelative;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalPt;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalScale;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalAbsolute;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_SubTotalMC;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_TotalNoFlavor;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_TotalNoTime;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_TotalNoFlavorNoTime;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorZJet;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorPhotonJet;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorPureGluon;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorPureQuark;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorPureCharm;
+  boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFchsDATAUnc_FlavorPureBottom;
+  //===========================================================================
+
   boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFPuppiMC_;
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiMCUnc_;
   boost::shared_ptr<FactorizedJetCorrector>   jecAK4PFPuppiDATA_;
   boost::shared_ptr<JetCorrectionUncertainty> jecAK4PFPuppiDATAUnc_;
+
+
+  const int nsrc = 44;
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFchs_mc;
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFchs_data;
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFPuppi_mc;
+  std::vector< boost::shared_ptr<JetCorrectionUncertainty> > vsrc_AK4PFPuppi_data;
+
+
   ////
   // BTag ReWeighting
-  //// 
+  ////
   edm::FileInPath BTAGReweightfile3_;
   BTagCalibrationReader reader_;
-  double btagweight(double csv, double pt, double eta, double flavor, const std::string& sys="central"); 
+  double btagweight(double csv, double pt, double eta, double flavor, const std::string& sys="central");
   vector<double> Jet_btag_sf, Jet_btag_jesup, Jet_btag_hfup, Jet_btag_hfstat1up, Jet_btag_hfstat2up, Jet_btag_lfup, Jet_btag_lfstat1up, Jet_btag_lfstat2up, Jet_btag_cerr1up, Jet_btag_cerr2up;
   vector<double> Jet_btag_jesdown, Jet_btag_hfdown, Jet_btag_hfstat1down, Jet_btag_hfstat2down, Jet_btag_lfdown, Jet_btag_lfstat1down, Jet_btag_lfstat2down, Jet_btag_cerr1down, Jet_btag_cerr2down;
   /////
@@ -145,14 +252,104 @@ class JetSelector : public  baseTree{
   //ID
   vector<double> Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_pfCombinedMVAV2BJetTags, Jet_pfJetProbabilityBJetTags, Jet_pfCombinedCvsLJetTags, Jet_pfCombinedCvsBJetTags, Jet_pileupId, Jet_isPFJet, Jet_isCaloJet;
   vector<double> Jet_newpfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_newpfCombinedMVAV2BJetTags, Jet_newpfJetProbabilityBJetTags, Jet_newpfCombinedCvsLJetTags, Jet_newpfCombinedCvsBJetTags;
-  vector<double> Jet_qg, Jet_axis2, Jet_ptD, Jet_mult;  
+  vector<double> Jet_qg, Jet_axis2, Jet_ptD, Jet_mult;
   //Energy
   vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction;
   //Other prop
   vector<double> Jet_numberOfConstituents, Jet_chargedMultiplicity, Jet_vtxMass, Jet_vtxNtracks, Jet_vtx3DVal, Jet_vtx3DSig;
   //Jet Energy Corrections and Uncertainties
-  vector<double> Jet_JesSF, Jet_JesSFup, Jet_JesSFdown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
-  //MC 
+  vector<double> Jet_JesSF, Jet_JesSFup, Jet_JesSFdown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown;
+
+  vector<double> Jet_JesSF_AbsoluteStat_up;
+  vector<double> Jet_JesSF_AbsoluteStat_down;
+  vector<double> Jet_JesSF_AbsoluteScale_up;
+  vector<double> Jet_JesSF_AbsoluteScale_down;
+  vector<double> Jet_JesSF_AbsoluteFlavMap_up;
+  vector<double> Jet_JesSF_AbsoluteFlavMap_down;
+  vector<double> Jet_JesSF_AbsoluteMPFBias_up;
+  vector<double> Jet_JesSF_AbsoluteMPFBias_down;
+  vector<double> Jet_JesSF_Fragmentation_up;
+  vector<double> Jet_JesSF_Fragmentation_down;
+  vector<double> Jet_JesSF_SinglePionECAL_up;
+  vector<double> Jet_JesSF_SinglePionECAL_down;
+  vector<double> Jet_JesSF_SinglePionHCAL_up;
+  vector<double> Jet_JesSF_SinglePionHCAL_down;
+  vector<double> Jet_JesSF_FlavorQCD_up;
+  vector<double> Jet_JesSF_FlavorQCD_down;
+  vector<double> Jet_JesSF_TimePtEta_up;
+  vector<double> Jet_JesSF_TimePtEta_down;
+  vector<double> Jet_JesSF_RelativeJEREC1_up;
+  vector<double> Jet_JesSF_RelativeJEREC1_down;
+  vector<double> Jet_JesSF_RelativeJEREC2_up;
+  vector<double> Jet_JesSF_RelativeJEREC2_down;
+  vector<double> Jet_JesSF_RelativeJERHF_up;
+  vector<double> Jet_JesSF_RelativeJERHF_down;
+  vector<double> Jet_JesSF_RelativePtBB_up;
+  vector<double> Jet_JesSF_RelativePtBB_down;
+  vector<double> Jet_JesSF_RelativePtEC1_up;
+  vector<double> Jet_JesSF_RelativePtEC1_down;
+  vector<double> Jet_JesSF_RelativePtEC2_up;
+  vector<double> Jet_JesSF_RelativePtEC2_down;
+  vector<double> Jet_JesSF_RelativePtHF_up;
+  vector<double> Jet_JesSF_RelativePtHF_down;
+  vector<double> Jet_JesSF_RelativeBal_up;
+  vector<double> Jet_JesSF_RelativeBal_down;
+  vector<double> Jet_JesSF_RelativeFSR_up;
+  vector<double> Jet_JesSF_RelativeFSR_down;
+  vector<double> Jet_JesSF_RelativeStatFSR_up;
+  vector<double> Jet_JesSF_RelativeStatFSR_down;
+  vector<double> Jet_JesSF_RelativeStatEC_up;
+  vector<double> Jet_JesSF_RelativeStatEC_down;
+  vector<double> Jet_JesSF_RelativeStatHF_up;
+  vector<double> Jet_JesSF_RelativeStatHF_down;
+  vector<double> Jet_JesSF_PileUpDataMC_up;
+  vector<double> Jet_JesSF_PileUpDataMC_down;
+  vector<double> Jet_JesSF_PileUpPtRef_up;
+  vector<double> Jet_JesSF_PileUpPtRef_down;
+  vector<double> Jet_JesSF_PileUpPtBB_up;
+  vector<double> Jet_JesSF_PileUpPtBB_down;
+  vector<double> Jet_JesSF_PileUpPtEC1_up;
+  vector<double> Jet_JesSF_PileUpPtEC1_down;
+  vector<double> Jet_JesSF_PileUpPtEC2_up;
+  vector<double> Jet_JesSF_PileUpPtEC2_down;
+  vector<double> Jet_JesSF_PileUpPtHF_up;
+  vector<double> Jet_JesSF_PileUpPtHF_down;
+  vector<double> Jet_JesSF_PileUpMuZero_up;
+  vector<double> Jet_JesSF_PileUpMuZero_down;
+  vector<double> Jet_JesSF_PileUpEnvelope_up;
+  vector<double> Jet_JesSF_PileUpEnvelope_down;
+  vector<double> Jet_JesSF_SubTotalPileUp_up;
+  vector<double> Jet_JesSF_SubTotalPileUp_down;
+  vector<double> Jet_JesSF_SubTotalRelative_up;
+  vector<double> Jet_JesSF_SubTotalRelative_down;
+  vector<double> Jet_JesSF_SubTotalPt_up;
+  vector<double> Jet_JesSF_SubTotalPt_down;
+  vector<double> Jet_JesSF_SubTotalScale_up;
+  vector<double> Jet_JesSF_SubTotalScale_down;
+  vector<double> Jet_JesSF_SubTotalAbsolute_up;
+  vector<double> Jet_JesSF_SubTotalAbsolute_down;
+  vector<double> Jet_JesSF_SubTotalMC_up;
+  vector<double> Jet_JesSF_SubTotalMC_down;
+  vector<double> Jet_JesSF_TotalNoFlavor_up;
+  vector<double> Jet_JesSF_TotalNoFlavor_down;
+  vector<double> Jet_JesSF_TotalNoTime_up;
+  vector<double> Jet_JesSF_TotalNoTime_down;
+  vector<double> Jet_JesSF_TotalNoFlavorNoTime_up;
+  vector<double> Jet_JesSF_TotalNoFlavorNoTime_down;
+  vector<double> Jet_JesSF_FlavorZJet_up;
+  vector<double> Jet_JesSF_FlavorZJet_down;
+  vector<double> Jet_JesSF_FlavorPhotonJet_up;
+  vector<double> Jet_JesSF_FlavorPhotonJet_down;
+  vector<double> Jet_JesSF_FlavorPureGluon_up;
+  vector<double> Jet_JesSF_FlavorPureGluon_down;
+  vector<double> Jet_JesSF_FlavorPureQuark_up;
+  vector<double> Jet_JesSF_FlavorPureQuark_down;
+  vector<double> Jet_JesSF_FlavorPureCharm_up;
+  vector<double> Jet_JesSF_FlavorPureCharm_down;
+  vector<double> Jet_JesSF_FlavorPureBottom_up;
+  vector<double> Jet_JesSF_FlavorPureBottom_down;
+
+  //MC
   vector<double> Jet_partonFlavour, Jet_hadronFlavour;
   vector<double> Jet_genMother_pt, Jet_genMother_eta, Jet_genMother_phi, Jet_genMother_en,Jet_genMother_pdgId;
   vector<double> Jet_genGrandMother_pt, Jet_genGrandMother_eta, Jet_genGrandMother_phi, Jet_genGrandMother_en,Jet_genGrandMother_pdgId;
@@ -167,8 +364,8 @@ class JetSelector : public  baseTree{
   //Other prop
   vector<double> Jet_puppi_numberOfConstituents, Jet_puppi_chargedMultiplicity, Jet_puppi_vtxMass, Jet_puppi_vtxNtracks, Jet_puppi_vtx3DVal, Jet_puppi_vtx3DSig;
   //Jet Energy Corrections and Uncertainties
-  vector<double> Jet_puppi_JesSF, Jet_puppi_JesSFup, Jet_puppi_JesSFdown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown; 
-  //MC 
+  vector<double> Jet_puppi_JesSF, Jet_puppi_JesSFup, Jet_puppi_JesSFdown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown;
+  //MC
   vector<double> Jet_puppi_partonFlavour, Jet_puppi_hadronFlavour;
 };
 #endif

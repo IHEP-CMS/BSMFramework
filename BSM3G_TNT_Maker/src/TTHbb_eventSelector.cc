@@ -160,16 +160,15 @@ bool TTHbb_eventSelector::is_tight_muon(const pat::Muon& mu, const reco::Vertex&
 
 bool TTHbb_eventSelector::is_loose_electron(const pat::Electron& ele, double rhopog){
   bool isele = false;
-  if(ele.pt()>15 && TMath::Abs(ele.eta())<2.4 &&
-     !(fabs(ele.superCluster()->position().eta()) > 1.4442 && fabs(ele.superCluster()->position().eta()) < 1.5660)){//Check if in crack.
+  if(ele.pt()>15 && TMath::Abs(ele.eta())<2.4 && !(fabs(ele.superCluster()->position().eta()) > 1.4442 && fabs(ele.superCluster()->position().eta()) < 1.5660)){//Check if in crack.
      isele = true;
   }
   return isele;
 }
+
 bool TTHbb_eventSelector::is_tight_electron(const pat::Electron& ele, double rhopog){
   bool isele = false;
-  if(ele.pt()>30 && TMath::Abs(ele.eta())<2.1 &&
-     !(fabs(ele.superCluster()->position().eta()) > 1.4442 && fabs(ele.superCluster()->position().eta()) < 1.5660)){//check if in crack.
+  if(ele.pt()>30 && TMath::Abs(ele.eta())<2.1 && !(fabs(ele.superCluster()->position().eta()) > 1.4442 && fabs(ele.superCluster()->position().eta()) < 1.5660)){//check if in crack.
      isele = true;
   }
   return isele;
@@ -280,7 +279,7 @@ void TTHbb_eventSelector::GetJER(pat::Jet jet, float JesSF, float rhoJER, bool A
     cFactorJERdown = 1.160-0.029;
     cFactorJERup   = 1.160+0.029;
   }
-  //double recoJetPt = jet.pt();//(jet.correctedJet("Uncorrected").pt())*JesSF;
+
   double recoJetPt = (jet.correctedJet("Uncorrected").pt())*JesSF;
   double genJetPt  = jet.genJet()->pt();
   double diffPt    = recoJetPt - genJetPt;
@@ -329,21 +328,12 @@ void TTHbb_eventSelector::FillJetVectors(const edm::Event& iEvent, std::vector<c
  //cout << "======== TTHbb_eventSelector::FillJetVectors ========" << endl;
   int jet_pos = 0; //This counter helps to order jets
   for(const pat::Jet &j : *jets){
-    //std::cout << "TTHbb_eventSelector::jet_pos = " << jet_pos << endl;
     int vtxsize = vtx_h->size();
     //=== Good subleading jets ===
-    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,20)){
-      jet_pos++;
-      //cout<< "TTHbb_eventSelector::failed sublead is_good_jet" << endl;
-      continue;
-    }
-
+    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,20)){jet_pos++; continue;}
     bool jetmatchedlepts = false;
     for(uint gl=0; gl<looseleps.size(); gl++) if(deltaR(looseleps[gl]->p4(),j.p4())<0.4) jetmatchedlepts = true;
-    if(jetmatchedlepts){jet_pos++;
-      //cout<< "TTHbb_eventSelector::failed jetmatchedlepts" << endl;
-      continue;
-    }
+    if(jetmatchedlepts){jet_pos++; continue;}
     double csvcurrjet = j.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     subleading_jets.push_back((const pat::Jet*)&j);
     subleading_jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
@@ -352,13 +342,8 @@ void TTHbb_eventSelector::FillJetVectors(const edm::Event& iEvent, std::vector<c
     }
 
     //=== Good leading jets ===
-    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,30)){jet_pos++;
-      //cout<< "TTHbb_eventSelector::failed lead is_good_jet" << endl;
-      continue;
-    }
-    //cout<< "TTHbb_eventSelector::passed !!!" << endl;
+    if(!is_good_jet(j,rhopog,rhoJER,vtxsize,30)){jet_pos++; continue;}
     leading_jets.push_back((const pat::Jet*)&j);
-    //cout << "THbb_eventSelector::j.correctedJet(Uncorrected).pt() = " << j.correctedJet("Uncorrected").pt() << endl;
     leading_jet_csv_pos.push_back(make_pair(csvcurrjet,jet_pos));
     if(csvcurrjet>0.8484) {
       leading_btags.push_back((const pat::Jet*)&j);
@@ -380,6 +365,8 @@ void TTHbb_eventSelector::FillLeptonVectors(const edm::Event& iEvent, std::vecto
 
   edm::Handle<edm::ValueMap<bool>  > medium_id_decisions;
   iEvent.getByToken(electronMediumIdMapToken_,medium_id_decisions);
+  edm::Handle<edm::ValueMap<bool>  > tight_id_decisions;
+  iEvent.getByToken(electronTightIdMapToken_,tight_id_decisions);
 
   edm::Handle<edm::View<pat::Electron> > electron_pat;
   iEvent.getByToken(electron_pat_, electron_pat);
@@ -402,9 +389,7 @@ void TTHbb_eventSelector::FillLeptonVectors(const edm::Event& iEvent, std::vecto
   for(edm::View<pat::Electron>::const_iterator ele = electron_pat->begin(); ele != electron_pat->end(); ele++){
     const Ptr<pat::Electron> elPtr(electron_pat, ele - electron_pat->begin() );
     if(!(is_loose_electron(*ele,rhopog))) continue;
-    //bool isPassMvanontrig = (*mvanontrig_id_decisions)[ elPtr ];
-    //if(!(isPassMvanontrig)) continue;
-    bool isPassEletrig = (*medium_id_decisions)[ elPtr ];
+    bool isPassEletrig = (*tight_id_decisions)[ elPtr ];
     if(!(isPassEletrig)) continue;
     if(!(rel_iso_dbc_ele(*ele,rhopog)<0.15)) continue;
     const pat::Electron &lele = *ele;

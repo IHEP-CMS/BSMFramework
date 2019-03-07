@@ -1,8 +1,10 @@
 #!/bin/bash
 #Specify needed variables
-obj=patElectron_
+obj=
 varType=double
-varList=(eleMVASpring15NonTrig25ns_VL expectedMissingInnerHits passConversionVeto)
+varList=(
+Tau_packedLeadTauCand_dxy Tau_packedLeadTauCand_dz
+)
 varLast=
 varCount=p
 #Print info
@@ -25,7 +27,7 @@ echo " "
 pos=0
 for count in ${varList[@]}; 
 do
-  echo "    $obj${varList[$pos]}.push_back();"
+  echo "    $obj${varList[$pos]}.push_back();" #-999);"
   let pos=pos+1
 done
 echo " "

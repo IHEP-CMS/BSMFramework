@@ -71,6 +71,7 @@
 #include "boost/regex.hpp"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "PhysicsTools/JetMCUtils/interface/JetMCTag.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -95,7 +96,7 @@ using namespace edm;
 /////
 class METSelector : public baseTree{
  public:
-  METSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  METSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~METSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
@@ -105,11 +106,9 @@ class METSelector : public baseTree{
   /////
   //   Config variables
   /////
-  edm::InputTag metToken_;
-  edm::InputTag puppi_metToken_;
+  edm::EDGetTokenT<pat::METCollection> mets_;
+  edm::EDGetTokenT<pat::METCollection> puppimets_;
   bool _is_data;
-  bool _super_TNT; 
-  bool _MiniAODv2;
   bool _PuppiVar;
   /////
   //   BSM 
@@ -118,14 +117,10 @@ class METSelector : public baseTree{
   ////slimmedMETs
   //Kinematic
   double Met_type1PF_pt, Met_type1PF_px, Met_type1PF_py, Met_type1PF_pz, Met_type1PF_phi, Met_type1PF_sumEt;
-  //Corrections/Systematics
-  double Met_type1PF_shiftedPtUp, Met_type1PF_shiftedPtDown;
   //MC
   double Gen_type1PF_Met;
   ////slimmedMETsPUPPI
   double Met_puppi_pt, Met_puppi_px, Met_puppi_py, Met_puppi_pz, Met_puppi_phi, Met_puppi_sumEt;
-  //Corrections/Systematics
-  double Met_puppi_shiftedPtUp, Met_puppi_shiftedPtDown;
   //MC
   double Gen_puppi_Met;
 };

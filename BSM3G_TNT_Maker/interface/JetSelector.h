@@ -43,6 +43,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -57,6 +58,7 @@
 #include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "baseTree.h"
 using namespace std;
 using namespace pat;
@@ -66,21 +68,23 @@ using namespace edm;
 /////
 class JetSelector : public  baseTree{
  public:
-  JetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  JetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~JetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void JECInitialization();
   void Clear();
-  void GetJER(pat::Jet jet, float JesSF, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK4PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
  private:
   JetSelector(){};
   /////
   //   Config variables
   /////
-  edm::InputTag jetToken_;
-  edm::InputTag puppi_jetToken_;
-  edm::InputTag _vertexInputTag;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<pat::JetCollection> jets_;
+  edm::EDGetTokenT<pat::JetCollection> puppijets_;
+  edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhoJERHandle_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK4PFchsMC3_;
@@ -99,10 +103,15 @@ class JetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA3_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATA4_;
   edm::FileInPath jecPayloadNamesAK4PFPuppiDATAUnc_;
+  std::string jerAK4PFchs_;
+  std::string jerAK4PFchsSF_;
+  std::string jerAK4PFPuppi_;
+  std::string jerAK4PFPuppiSF_;
   double _Jet_pt_min;
-  bool _super_TNT;
   bool _PuppiVar;
   bool _is_data;
+  bool _MC2016;
+  bool _reduced;
   /////
   //   JEC
   /////
@@ -119,13 +128,11 @@ class JetSelector : public  baseTree{
   /////
   ////slimmedJets
   //Kinematics
-  vector<double> Jet_pt, Jet_eta, Jet_phi, Jet_energy, Jet_mass, Jet_px, Jet_py, Jet_pz, Jet_Uncorr_pt;
+  vector<double> Jet_pt, Jet_eta, Jet_phi, Jet_energy, Jet_mass, Jet_px, Jet_py, Jet_pz, Jet_Uncorr_pt, Jet_L1corr_pt;
   //ID
-  vector<double> Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_pfCombinedMVABJetTags, Jet_pfJetProbabilityBJetTags, Jet_pileupId, Jet_isPFJet, Jet_isCaloJet;
+  vector<double> Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_pfCombinedMVAV2BJetTags, Jet_pfJetProbabilityBJetTags, Jet_pfCombinedCvsLJetTags, Jet_pfCombinedCvsBJetTags, Jet_pileupId, Jet_isPFJet, Jet_isCaloJet, Jet_pfDeepCSVCvsLJetTags, Jet_pfDeepCSVCvsBJetTags, Jet_pfDeepCSVBJetTags;
   //Energy
-  vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction;
-  //Other prop
-  vector<double> Jet_numberOfConstituents, Jet_chargedMultiplicity, Jet_vtxMass, Jet_vtxNtracks, Jet_vtx3DVal, Jet_vtx3DSig;
+  vector<double> Jet_neutralHadEnergyFraction, Jet_neutralEmEnergyFraction, Jet_chargedHadronEnergyFraction, Jet_chargedEmEnergyFraction, Jet_muonEnergyFraction, Jet_electronEnergy, Jet_photonEnergy, Jet_emEnergyFraction, Jet_numberOfConstituents, Jet_chargedMultiplicity;
   //Jet Energy Corrections and Uncertainties
   vector<double> Jet_JesSF, Jet_JesSFup, Jet_JesSFdown, Jet_JerSF, Jet_JerSFup, Jet_JerSFdown; 
   //MC 
@@ -134,11 +141,9 @@ class JetSelector : public  baseTree{
   //Kinematics
   vector<double> Jet_puppi_pt, Jet_puppi_eta, Jet_puppi_phi, Jet_puppi_energy, Jet_puppi_mass, Jet_puppi_px, Jet_puppi_py, Jet_puppi_pz, Jet_puppi_Uncorr_pt;
   //ID
-  vector<double> Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_puppi_pfCombinedMVABJetTags, Jet_puppi_pfJetProbabilityBJetTags, Jet_puppi_pileupId, Jet_puppi_isPFJet, Jet_puppi_isCaloJet;
+  vector<double> Jet_puppi_pfCombinedInclusiveSecondaryVertexV2BJetTags, Jet_puppi_pfCombinedMVAV2BJetTags, Jet_puppi_pfJetProbabilityBJetTags, Jet_puppi_pfCombinedCvsLJetTags, Jet_puppi_pfCombinedCvsBJetTags, Jet_puppi_pileupId, Jet_puppi_isPFJet, Jet_puppi_isCaloJet;
   //Energy
-  vector<double> Jet_puppi_neutralHadEnergyFraction, Jet_puppi_neutralEmEnergyFraction, Jet_puppi_chargedHadronEnergyFraction, Jet_puppi_chargedEmEnergyFraction, Jet_puppi_muonEnergyFraction, Jet_puppi_electronEnergy, Jet_puppi_photonEnergy, Jet_puppi_emEnergyFraction;
-  //Other prop
-  vector<double> Jet_puppi_numberOfConstituents, Jet_puppi_chargedMultiplicity, Jet_puppi_vtxMass, Jet_puppi_vtxNtracks, Jet_puppi_vtx3DVal, Jet_puppi_vtx3DSig;
+  vector<double> Jet_puppi_neutralHadEnergyFraction, Jet_puppi_neutralEmEnergyFraction, Jet_puppi_chargedHadronEnergyFraction, Jet_puppi_chargedEmEnergyFraction, Jet_puppi_muonEnergyFraction, Jet_puppi_electronEnergy, Jet_puppi_photonEnergy, Jet_puppi_emEnergyFraction, Jet_puppi_numberOfConstituents, Jet_puppi_chargedMultiplicity;
   //Jet Energy Corrections and Uncertainties
   vector<double> Jet_puppi_JesSF, Jet_puppi_JesSFup, Jet_puppi_JesSFdown, Jet_puppi_JerSF, Jet_puppi_JerSFup, Jet_puppi_JerSFdown; 
   //MC 

@@ -74,6 +74,12 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
+#include "GeneratorInterface/LHEInterface/interface/LHEEvent.h"
+#include "SimDataFormats/GeneratorProducts/interface/PdfInfo.h"
+#include "LHAPDF/LHAPDF.h"
 #include <TH1.h>
 #include <TH2.h>
 #include <TFile.h>
@@ -93,21 +99,55 @@
 #include "TClonesArray.h"
 using namespace std;
 using namespace edm;
+using namespace reco;
+using namespace pat;
 /////
 //   Class declaration
 /////
 class EventInfoSelector : public baseTree{
  public:
-  EventInfoSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  EventInfoSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && iC);
   ~EventInfoSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
  private:
   EventInfoSelector(){};
+  edm::EDGetTokenT<GenEventInfoProduct> genEvtInfo_;
+  edm::EDGetTokenT<LHEEventProduct>     lheEventProduct_;
+  edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhotthHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralChargedPileUpHandle_;
+  edm::EDGetTokenT<double> fixedGridRhoFastjetCentralNeutralHandle_;
+  edm::EDGetTokenT<edm::TriggerResults> metFilterBits_;
+  edm::EDGetTokenT< bool >ecalBadCalibFilterUpdate_token;
+  edm::EDGetTokenT< double > prefweight_token;
+  edm::EDGetTokenT< double > prefweightup_token;
+  edm::EDGetTokenT< double > prefweightdown_token;
   void Initialise();
+  //Event quantities
   int EVENT_event_, EVENT_run_, EVENT_lumiBlock_;
-  double EVENT_genWeight_;
+  double EVENT_genWeight_, EVENT_genHT, EVENT_genPt;
   bool _is_data; 
+  bool _MC2016;
+  double EVENT_prefiringweight_, EVENT_prefiringweightup_, EVENT_prefiringweightdown_;
   double EVENT_rhopog_, EVENT_rhotth_; 
+  double EVENT_originalXWGTUP_, EVENT_scalePDF_;
+  double EVENT_PDFtthbbWeightUp_, EVENT_PDFtthbbWeightDown_, EVENT_Q2tthbbWeightUp_, EVENT_Q2tthbbWeightDown_;
+  vector<double> EVENT_genWeights_;
+  double EVENT_fixedGridRhoFastjetCentral, EVENT_fixedGridRhoFastjetCentralChargedPileUp, EVENT_fixedGridRhoFastjetCentralNeutral;
+  //Event filters
+  int Flag_goodVertices;
+  int Flag_globalSuperTightHalo2016Filter;
+  int Flag_HBHENoiseFilter;
+  int Flag_HBHENoiseIsoFilter;
+  int Flag_EcalDeadCellTriggerPrimitiveFilter;
+  int Flag_BadPFMuonFilter;
+  int Flag_BadChargedCandidateFilter;
+  int Flag_eeBadScFilter;
+  int Flag_ecalBadCalibFilter;
+  int Flag_ecalBadCalibReducedMINIAODFilter;
+  LHAPDF::PDFSet *read_PDFSet;
+  std::vector<LHAPDF::PDF*> _systPDFs;
 };
 #endif

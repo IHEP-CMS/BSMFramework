@@ -1,0 +1,967 @@
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockB/crab_Fall17V1_SEleBlockB
+Task name:			180504_065747:binghuan_crab_Fall17V1_SEleBlockB
+Grid scheduler:			crab3@vocms0107.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_065747%3Abinghuan_crab_Fall17V1_SEleBlockB
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_065747%3Abinghuan_crab_Fall17V1_SEleBlockB
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.4% (  3/807)
+				finished       99.0% (799/807)
+				running         0.6% (  5/807)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  3 jobs failed with exit code 8002
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1059MB min, 1690MB max, 1495MB ave
+ * Runtime: 0:09:53 min, 3:09:05 max, 1:03:05 ave
+ * CPU eff: 36% min, 97% max, 84% ave
+ * Waste: 19:12:56 (2% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockB/crab_Fall17V1_SEleBlockB/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockC/crab_Fall17V1_SEleBlockC
+Task name:			180504_065901:binghuan_crab_Fall17V1_SEleBlockC
+Grid scheduler:			crab3@vocms0196.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_065901%3Abinghuan_crab_Fall17V1_SEleBlockC
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_065901%3Abinghuan_crab_Fall17V1_SEleBlockC
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.3% (   6/1727)
+				finished       48.9% ( 844/1727)
+				running         7.5% ( 129/1727)
+				transferring   43.3% ( 748/1727)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   3 jobs failed in postprocessing step
+
+   2 jobs failed with exit code 8002
+
+   1 jobs failed with exit code 50660
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 2813MB max, 1508MB ave
+ * Runtime: 0:00:00 min, 3:39:30 max, 1:02:05 ave
+ * CPU eff: 25% min, 96% max, 87% ave
+ * Waste: 1349:44:09 (45% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockC/crab_Fall17V1_SEleBlockC/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockD/crab_Fall17V1_SEleBlockD
+Task name:			180504_070013:binghuan_crab_Fall17V1_SEleBlockD
+Grid scheduler:			crab3@vocms0194.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070013%3Abinghuan_crab_Fall17V1_SEleBlockD
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070013%3Abinghuan_crab_Fall17V1_SEleBlockD
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.2% (  2/902)
+				finished       99.6% (898/902)
+				running         0.2% (  2/902)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  2 jobs failed with exit code 8002
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 292MB min, 1687MB max, 1521MB ave
+ * Runtime: 0:05:08 min, 5:01:53 max, 0:53:56 ave
+ * CPU eff: 22% min, 97% max, 78% ave
+ * Waste: 103:20:16 (11% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockD/crab_Fall17V1_SEleBlockD/crab.log
+Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockF/crab_Fall17V1_SEleBlockF
+Task name:			180504_070243:binghuan_crab_Fall17V1_SEleBlockF
+Grid scheduler:			crab3@vocms0121.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070243%3Abinghuan_crab_Fall17V1_SEleBlockF
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070243%3Abinghuan_crab_Fall17V1_SEleBlockF
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.9% (  18/1950)
+				finished       42.9% ( 836/1950)
+				idle            1.5% (  29/1950)
+				running        12.3% ( 240/1950)
+				transferring   42.4% ( 827/1950)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   8 jobs failed in postprocessing step
+
+   8 jobs failed with exit code 8002
+
+Could not find exit code details for 2 jobs.
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1831MB max, 1541MB ave
+ * Runtime: 0:00:00 min, 4:50:46 max, 1:10:20 ave
+ * CPU eff: 21% min, 96% max, 81% ave
+ * Waste: 2036:53:58 (51% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockF/crab_Fall17V1_SEleBlockF/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockB/crab_Fall17V1_SMuBlockB
+Task name:			180504_070358:binghuan_crab_Fall17V1_SMuBlockB
+Grid scheduler:			crab3@vocms0107.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070358%3Abinghuan_crab_Fall17V1_SMuBlockB
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070358%3Abinghuan_crab_Fall17V1_SMuBlockB
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.4% (  3/807)
+				finished       51.8% (418/807)
+				running        13.5% (109/807)
+				transferring   34.3% (277/807)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  2 jobs failed in postprocessing step
+
+  1 jobs failed with exit code 8002
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 5MB min, 2536MB max, 1465MB ave
+ * Runtime: 0:04:21 min, 4:38:00 max, 1:51:05 ave
+ * CPU eff: 68% min, 97% max, 93% ave
+ * Waste: 1000:17:05 (44% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockB/crab_Fall17V1_SMuBlockB/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockC/crab_Fall17V1_SMuBlockC
+Task name:			180504_070516:binghuan_crab_Fall17V1_SMuBlockC
+Grid scheduler:			crab3@vocms0198.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070516%3Abinghuan_crab_Fall17V1_SMuBlockC
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070516%3Abinghuan_crab_Fall17V1_SMuBlockC
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.2% (   4/1727)
+				finished       87.7% (1514/1727)
+				running         2.0% (  35/1727)
+				transferring   10.1% ( 174/1727)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   3 jobs failed in postprocessing step
+
+   1 jobs failed with exit code 8002
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1156MB min, 1762MB max, 1505MB ave
+ * Runtime: 0:05:08 min, 2:56:37 max, 1:15:46 ave
+ * CPU eff: 49% min, 97% max, 85% ave
+ * Waste: 413:47:23 (16% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockC/crab_Fall17V1_SMuBlockC/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockD/crab_Fall17V1_SMuBlockD
+Task name:			180504_070633:binghuan_crab_Fall17V1_SMuBlockD
+Grid scheduler:			crab3@vocms0199.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070633%3Abinghuan_crab_Fall17V1_SMuBlockD
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070633%3Abinghuan_crab_Fall17V1_SMuBlockD
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    cooloff         3.3% ( 30/902)
+				failed          0.6% (  5/902)
+				finished       51.6% (465/902)
+				idle            0.2% (  2/902)
+				running         7.3% ( 66/902)
+				transferring   37.0% (334/902)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  2 jobs failed in postprocessing step
+
+  2 jobs failed with exit code 8002
+
+  1 jobs failed with exit code 8001
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1668MB max, 1384MB ave
+ * Runtime: 0:00:00 min, 2:59:28 max, 0:56:57 ave
+ * CPU eff: 0% min, 96% max, 88% ave
+ * Waste: 859:30:48 (52% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockD/crab_Fall17V1_SMuBlockD/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockE/crab_Fall17V1_SMuBlockE
+Task name:			180504_070749:binghuan_crab_Fall17V1_SMuBlockE
+Grid scheduler:			crab3@vocms0137.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070749%3Abinghuan_crab_Fall17V1_SMuBlockE
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070749%3Abinghuan_crab_Fall17V1_SMuBlockE
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    cooloff         0.1% (   1/1428)
+				failed          0.6% (   9/1428)
+				finished       67.3% ( 961/1428)
+				running         9.8% ( 140/1428)
+				transferring   22.2% ( 317/1428)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   8 jobs failed with exit code 8002
+
+   1 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 3MB min, 1758MB max, 1508MB ave
+ * Runtime: 0:00:09 min, 3:51:12 max, 1:39:34 ave
+ * CPU eff: 32% min, 96% max, 88% ave
+ * Waste: 1305:19:59 (38% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockE/crab_Fall17V1_SMuBlockE/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockF/crab_Fall17V1_SMuBlockF
+Task name:			180504_070909:binghuan_crab_Fall17V1_SMuBlockF
+Grid scheduler:			crab3@vocms0120.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_070909%3Abinghuan_crab_Fall17V1_SMuBlockF
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_070909%3Abinghuan_crab_Fall17V1_SMuBlockF
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.7% (  13/1950)
+				finished       48.7% ( 949/1950)
+				running        15.1% ( 295/1950)
+				transferring   35.5% ( 693/1950)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  11 jobs failed with exit code 8002
+
+   2 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 5MB min, 1923MB max, 1525MB ave
+ * Runtime: 0:00:08 min, 5:41:11 max, 1:53:38 ave
+ * CPU eff: 25% min, 97% max, 87% ave
+ * Waste: 2226:00:05 (42% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SMuBlockF/crab_Fall17V1_SMuBlockF/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTHnobb/crab_Fall17V1_TTHnobb
+Task name:			180504_071156:binghuan_crab_Fall17V1_TTHnobb
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071156%3Abinghuan_crab_Fall17V1_TTHnobb
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTHnobb/crab_Fall17V1_TTHnobb/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTWToLNu/crab_Fall17V1_TTWToLNu
+Task name:			180504_071311:binghuan_crab_Fall17V1_TTWToLNu
+Grid scheduler:			crab3@vocms0155.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071311%3Abinghuan_crab_Fall17V1_TTWToLNu
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_071311%3Abinghuan_crab_Fall17V1_TTWToLNu
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished       26.6% ( 29/109)
+				running         4.6% (  5/109)
+				transferring   68.8% ( 75/109)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1414MB min, 1585MB max, 1471MB ave
+ * Runtime: 0:05:54 min, 2:37:46 max, 1:28:10 ave
+ * CPU eff: 69% min, 95% max, 91% ave
+ * Waste: 149:14:46 (49% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTWToLNu/crab_Fall17V1_TTWToLNu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTW_PSwgt_ToLNu/crab_Fall17V1_TTW_PSwgt_ToLNu
+Task name:			180504_071429:binghuan_crab_Fall17V1_TTW_PSwgt_ToLNu
+Grid scheduler:			crab3@vocms0195.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071429%3Abinghuan_crab_Fall17V1_TTW_PSwgt_ToLNu
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_071429%3Abinghuan_crab_Fall17V1_TTW_PSwgt_ToLNu
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.8% (  1/122)
+				finished       29.5% ( 36/122)
+				running         5.7% (  7/122)
+				transferring   63.9% ( 78/122)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  1 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 18MB min, 1592MB max, 1455MB ave
+ * Runtime: 0:04:24 min, 2:39:54 max, 1:15:30 ave
+ * CPU eff: 61% min, 95% max, 90% ave
+ * Waste: 160:31:20 (53% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTW_PSwgt_ToLNu/crab_Fall17V1_TTW_PSwgt_ToLNu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTZToLLNuNu_M10/crab_Fall17V1_TTZToLLNuNu_M10
+Task name:			180504_071553:binghuan_crab_Fall17V1_TTZToLLNuNu_M10
+Grid scheduler:			crab3@vocms0122.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071553%3Abinghuan_crab_Fall17V1_TTZToLLNuNu_M10
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_071553%3Abinghuan_crab_Fall17V1_TTZToLLNuNu_M10
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished       98.0% (195/199)
+				running         1.5% (  3/199)
+				transferring    0.5% (  1/199)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 15MB min, 1662MB max, 1503MB ave
+ * Runtime: 0:04:11 min, 3:24:36 max, 1:14:02 ave
+ * CPU eff: 19% min, 95% max, 78% ave
+ * Waste: 181:34:21 (43% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTZToLLNuNu_M10/crab_Fall17V1_TTZToLLNuNu_M10/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTZToLL_M1to10/crab_Fall17V1_TTZToLL_M1to10
+Task name:			180504_071717:binghuan_crab_Fall17V1_TTZToLL_M1to10
+Grid scheduler:			crab3@vocms0144.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071717%3Abinghuan_crab_Fall17V1_TTZToLL_M1to10
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_071717%3Abinghuan_crab_Fall17V1_TTZToLL_M1to10
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (17/17)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 1581MB max, 1231MB ave
+ * Runtime: 0:03:54 min, 0:59:27 max, 0:24:23 ave
+ * CPU eff: 53% min, 93% max, 83% ave
+ * Waste: 0:35:51 (8% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTZToLL_M1to10/crab_Fall17V1_TTZToLL_M1to10/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTWW/crab_Fall17V1_TTWW
+Task name:			180504_071843:binghuan_crab_Fall17V1_TTWW
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_071843%3Abinghuan_crab_Fall17V1_TTWW
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTWW/crab_Fall17V1_TTWW/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_M10to50/crab_Fall17V1_DY_M10to50
+Task name:			180504_072008:binghuan_crab_Fall17V1_DY_M10to50
+Grid scheduler:			crab3@vocms0122.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072008%3Abinghuan_crab_Fall17V1_DY_M10to50
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_072008%3Abinghuan_crab_Fall17V1_DY_M10to50
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.4% (  2/508)
+				finished       11.8% ( 60/508)
+				running        11.6% ( 59/508)
+				transferring   76.2% (387/508)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  2 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 14MB min, 1486MB max, 1348MB ave
+ * Runtime: 0:05:08 min, 2:21:51 max, 1:08:20 ave
+ * CPU eff: 59% min, 95% max, 91% ave
+ * Waste: 682:45:38 (57% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_M10to50/crab_Fall17V1_DY_M10to50/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_M50/crab_Fall17V1_DY_M50
+Task name:			180504_072129:binghuan_crab_Fall17V1_DY_M50
+Grid scheduler:			crab3@vocms0197.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072129%3Abinghuan_crab_Fall17V1_DY_M50
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_072129%3Abinghuan_crab_Fall17V1_DY_M50
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.3% (  1/372)
+				finished       26.3% ( 98/372)
+				running         7.5% ( 28/372)
+				transferring   65.9% (245/372)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  1 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 14MB min, 1572MB max, 1404MB ave
+ * Runtime: 0:01:58 min, 3:15:51 max, 1:17:20 ave
+ * CPU eff: 42% min, 96% max, 91% ave
+ * Waste: 526:23:58 (54% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_M50/crab_Fall17V1_DY_M50/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_ext_M50/crab_Fall17V1_DY_ext_M50
+Task name:			180504_072251:binghuan_crab_Fall17V1_DY_ext_M50
+Grid scheduler:			crab3@vocms0198.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072251%3Abinghuan_crab_Fall17V1_DY_ext_M50
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_072251%3Abinghuan_crab_Fall17V1_DY_ext_M50
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.0% (   1/2752)
+				finished       23.4% ( 645/2752)
+				running        20.2% ( 557/2752)
+				transferring   56.3% (1549/2752)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   1 jobs failed with exit code 50660
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 2753MB max, 1450MB ave
+ * Runtime: 0:00:08 min, 2:58:16 max, 1:06:31 ave
+ * CPU eff: 20% min, 104% max, 89% ave
+ * Waste: 1272822:15:56 (100% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_DY_ext_M50/crab_Fall17V1_DY_ext_M50/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WJets/crab_Fall17V1_WJets
+Task name:			180504_072413:binghuan_crab_Fall17V1_WJets
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072413%3Abinghuan_crab_Fall17V1_WJets
+Failure message from the server:		CRAB refuses to proceed in getting the details of the dataset /WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM from DBS, because the dataset is not 'VALID' but 'PRODUCTION'. To allow CRAB to consider a dataset that is not 'VALID', set Data.allowNonValidInputDataset = True in the CRAB configuration. Notice that this will not force CRAB to run over all files in the dataset; CRAB will still check if there are any valid files in the dataset and run only over those files.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WJets/crab_Fall17V1_WJets/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWTo2L2Nu/crab_Fall17V1_WWTo2L2Nu
+Task name:			180504_072541:binghuan_crab_Fall17V1_WWTo2L2Nu
+Grid scheduler:			crab3@vocms0120.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072541%3Abinghuan_crab_Fall17V1_WWTo2L2Nu
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_072541%3Abinghuan_crab_Fall17V1_WWTo2L2Nu
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (50/50)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1344MB min, 1544MB max, 1440MB ave
+ * Runtime: 0:07:24 min, 1:43:52 max, 0:46:02 ave
+ * CPU eff: 56% min, 94% max, 89% ave
+ * Waste: 0:07:22 (0% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWTo2L2Nu/crab_Fall17V1_WWTo2L2Nu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WZTo3LNu/crab_Fall17V1_WZTo3LNu
+Task name:			180504_072712:binghuan_crab_Fall17V1_WZTo3LNu
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072712%3Abinghuan_crab_Fall17V1_WZTo3LNu
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WZTo3LNu/crab_Fall17V1_WZTo3LNu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZTo4L/crab_Fall17V1_ZZTo4L
+Task name:			180504_072841:binghuan_crab_Fall17V1_ZZTo4L
+Grid scheduler:			crab3@vocms0122.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_072841%3Abinghuan_crab_Fall17V1_ZZTo4L
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_072841%3Abinghuan_crab_Fall17V1_ZZTo4L
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.5% (  1/204)
+				finished       36.3% ( 74/204)
+				running         8.8% ( 18/204)
+				transferring   54.4% (111/204)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  1 jobs failed in postprocessing step
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 21MB min, 1708MB max, 1283MB ave
+ * Runtime: 0:02:10 min, 3:19:42 max, 0:35:33 ave
+ * CPU eff: 30% min, 96% max, 83% ave
+ * Waste: 120:38:45 (52% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZTo4L/crab_Fall17V1_ZZTo4L/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZ_ext_To4L/crab_Fall17V1_ZZ_ext_To4L
+Task name:			180504_073009:binghuan_crab_Fall17V1_ZZ_ext_To4L
+Grid scheduler:			crab3@vocms0120.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073009%3Abinghuan_crab_Fall17V1_ZZ_ext_To4L
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073009%3Abinghuan_crab_Fall17V1_ZZ_ext_To4L
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.1% (   2/1490)
+				finished       31.9% ( 475/1490)
+				running        27.7% ( 412/1490)
+				transferring   40.3% ( 601/1490)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   2 jobs failed with exit code 50660
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 2934MB max, 1411MB ave
+ * Runtime: 0:03:44 min, 3:20:30 max, 1:03:54 ave
+ * CPU eff: 21% min, 97% max, 88% ave
+ * Waste: 690:58:58 (38% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZ_ext_To4L/crab_Fall17V1_ZZ_ext_To4L/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_To2L2Nu/crab_Fall17V1_TT_PSwgt_To2L2Nu
+Task name:			180504_073131:binghuan_crab_Fall17V1_TT_PSwgt_To2L2Nu
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073131%3Abinghuan_crab_Fall17V1_TT_PSwgt_To2L2Nu
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_To2L2Nu/crab_Fall17V1_TT_PSwgt_To2L2Nu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTo2L2Nu/crab_Fall17V1_TTTo2L2Nu
+Task name:			180504_073253:binghuan_crab_Fall17V1_TTTo2L2Nu
+Grid scheduler:			crab3@vocms0197.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073253%3Abinghuan_crab_Fall17V1_TTTo2L2Nu
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073253%3Abinghuan_crab_Fall17V1_TTTo2L2Nu
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished       92.1% (151/164)
+				running         1.2% (  2/164)
+				transferring    6.7% ( 11/164)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1571MB min, 1661MB max, 1579MB ave
+ * Runtime: 0:05:31 min, 5:39:17 max, 1:00:20 ave
+ * CPU eff: 16% min, 97% max, 85% ave
+ * Waste: 2:10:07 (1% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTo2L2Nu/crab_Fall17V1_TTTo2L2Nu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_ToSemiLep/crab_Fall17V1_TT_PSwgt_ToSemiLep
+Task name:			180504_073416:binghuan_crab_Fall17V1_TT_PSwgt_ToSemiLep
+Grid scheduler:			crab3@vocms0119.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073416%3Abinghuan_crab_Fall17V1_TT_PSwgt_ToSemiLep
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073416%3Abinghuan_crab_Fall17V1_TT_PSwgt_ToSemiLep
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.0% (   1/2032)
+				finished       88.5% (1799/2032)
+				running         4.4% (  89/2032)
+				transferring    7.0% ( 143/2032)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   1 jobs failed with exit code 8001
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 2716MB max, 1485MB ave
+ * Runtime: 0:00:00 min, 4:28:01 max, 1:40:39 ave
+ * CPU eff: 9% min, 97% max, 87% ave
+ * Waste: 423914:18:58 (99% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_ToSemiLep/crab_Fall17V1_TT_PSwgt_ToSemiLep/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTToSemiLep/crab_Fall17V1_TTToSemiLep
+Task name:			180504_073535:binghuan_crab_Fall17V1_TTToSemiLep
+Grid scheduler:			crab3@vocms0119.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073535%3Abinghuan_crab_Fall17V1_TTToSemiLep
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073535%3Abinghuan_crab_Fall17V1_TTToSemiLep
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.3% (  2/743)
+				finished       11.3% ( 84/743)
+				running        23.1% (172/743)
+				transferring   65.3% (485/743)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  1 jobs failed in postprocessing step
+
+  1 jobs failed with exit code 8001
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 16MB min, 1658MB max, 1473MB ave
+ * Runtime: 0:00:21 min, 2:48:08 max, 1:21:39 ave
+ * CPU eff: 26% min, 97% max, 92% ave
+ * Waste: 775:18:57 (50% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTToSemiLep/crab_Fall17V1_TTToSemiLep/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_ToHadron/crab_Fall17V1_TT_PSwgt_ToHadron
+Task name:			180504_073656:binghuan_crab_Fall17V1_TT_PSwgt_ToHadron
+Grid scheduler:			crab3@vocms0196.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073656%3Abinghuan_crab_Fall17V1_TT_PSwgt_ToHadron
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073656%3Abinghuan_crab_Fall17V1_TT_PSwgt_ToHadron
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.1% (   2/2498)
+				finished        9.4% ( 235/2498)
+				idle           38.3% ( 957/2498)
+				running        37.6% ( 939/2498)
+				transferring    0.6% (  14/2498)
+				unsubmitted    14.1% ( 351/2498)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+   2 jobs failed with exit code 50660
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 2899MB max, 1498MB ave
+ * Runtime: 0:00:00 min, 3:55:52 max, 1:21:07 ave
+ * CPU eff: 43% min, 111% max, 88% ave
+ * Waste: 22:25:54 (6% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TT_PSwgt_ToHadron/crab_Fall17V1_TT_PSwgt_ToHadron/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTToHadron/crab_Fall17V1_TTToHadron
+Task name:			180504_073816:binghuan_crab_Fall17V1_TTToHadron
+Grid scheduler:			crab3@vocms0122.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073816%3Abinghuan_crab_Fall17V1_TTToHadron
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073816%3Abinghuan_crab_Fall17V1_TTToHadron
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    failed          0.1% (  1/765)
+				finished       42.0% (321/765)
+				idle            3.3% ( 25/765)
+				running        11.1% ( 85/765)
+				transferring   43.5% (333/765)
+
+No publication information available yet
+
+Error Summary: (use crab status --verboseErrors for details about the errors)
+
+  1 jobs failed with exit code 8001
+
+Have a look at https://twiki.cern.ch/twiki/bin/viewauth/CMSPublic/JobExitCodes for a description of the exit codes.
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1625MB max, 1471MB ave
+ * Runtime: 0:00:00 min, 3:31:15 max, 1:34:23 ave
+ * CPU eff: 50% min, 97% max, 92% ave
+ * Waste: 602:08:51 (37% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTToHadron/crab_Fall17V1_TTToHadron/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ST_tW_top/crab_Fall17V1_ST_tW_top
+Task name:			180504_073934:binghuan_crab_Fall17V1_ST_tW_top
+Grid scheduler:			crab3@vocms0198.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_073934%3Abinghuan_crab_Fall17V1_ST_tW_top
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_073934%3Abinghuan_crab_Fall17V1_ST_tW_top
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (183/183)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 1615MB max, 1469MB ave
+ * Runtime: 0:04:58 min, 2:42:20 max, 1:00:43 ave
+ * CPU eff: 76% min, 97% max, 94% ave
+ * Waste: 8:51:41 (5% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ST_tW_top/crab_Fall17V1_ST_tW_top/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ST_tW_antitop/crab_Fall17V1_ST_tW_antitop
+Task name:			180504_074051:binghuan_crab_Fall17V1_ST_tW_antitop
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074051%3Abinghuan_crab_Fall17V1_ST_tW_antitop
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ST_tW_antitop/crab_Fall17V1_ST_tW_antitop/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STt_top/crab_Fall17V1_STt_top
+Task name:			180504_074208:binghuan_crab_Fall17V1_STt_top
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074208%3Abinghuan_crab_Fall17V1_STt_top
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STt_top/crab_Fall17V1_STt_top/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STt_antitop/crab_Fall17V1_STt_antitop
+Task name:			180504_074320:binghuan_crab_Fall17V1_STt_antitop
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074320%3Abinghuan_crab_Fall17V1_STt_antitop
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STt_antitop/crab_Fall17V1_STt_antitop/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STs/crab_Fall17V1_STs
+Task name:			180504_074431:binghuan_crab_Fall17V1_STs
+Grid scheduler:			crab3@vocms0119.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074431%3Abinghuan_crab_Fall17V1_STs
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_074431%3Abinghuan_crab_Fall17V1_STs
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished        1.4% (  3/217)
+				running         0.9% (  2/217)
+				transferring   97.7% (212/217)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 1521MB max, 1378MB ave
+ * Runtime: 0:02:59 min, 2:14:54 max, 0:54:19 ave
+ * CPU eff: 19% min, 95% max, 91% ave
+ * Waste: 182:57:29 (48% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_STs/crab_Fall17V1_STs/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTGJets/crab_Fall17V1_TTGJets
+Task name:			180504_074544:binghuan_crab_Fall17V1_TTGJets
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074544%3Abinghuan_crab_Fall17V1_TTGJets
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTGJets/crab_Fall17V1_TTGJets/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_tZq/crab_Fall17V1_tZq
+Task name:			180504_074700:binghuan_crab_Fall17V1_tZq
+Grid scheduler:			crab3@vocms0122.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074700%3Abinghuan_crab_Fall17V1_tZq
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_074700%3Abinghuan_crab_Fall17V1_tZq
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished        1.4% (  4/292)
+				idle            2.4% (  7/292)
+				running        30.8% ( 90/292)
+				transferring   65.4% (191/292)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1560MB max, 1420MB ave
+ * Runtime: 0:00:00 min, 2:38:14 max, 1:06:08 ave
+ * CPU eff: 16% min, 95% max, 91% ave
+ * Waste: 67:06:34 (24% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_tZq/crab_Fall17V1_tZq/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WW_DoubleScatter/crab_Fall17V1_WW_DoubleScatter
+Task name:			180504_074816:binghuan_crab_Fall17V1_WW_DoubleScatter
+Grid scheduler:			crab3@vocms0155.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074816%3Abinghuan_crab_Fall17V1_WW_DoubleScatter
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_074816%3Abinghuan_crab_Fall17V1_WW_DoubleScatter
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (35/35)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 4MB min, 1604MB max, 1333MB ave
+ * Runtime: 0:03:25 min, 2:35:46 max, 0:40:43 ave
+ * CPU eff: 4% min, 93% max, 78% ave
+ * Waste: 0:08:29 (1% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WW_DoubleScatter/crab_Fall17V1_WW_DoubleScatter/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WW_DS_To2L2Nu/crab_Fall17V1_WW_DS_To2L2Nu
+Task name:			180504_074940:binghuan_crab_Fall17V1_WW_DS_To2L2Nu
+Grid scheduler:			crab3@vocms0196.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_074940%3Abinghuan_crab_Fall17V1_WW_DS_To2L2Nu
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_074940%3Abinghuan_crab_Fall17V1_WW_DS_To2L2Nu
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished       60.9% (14/23)
+				idle            4.3% ( 1/23)
+				running        17.4% ( 4/23)
+				transferring   17.4% ( 4/23)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 0MB min, 1518MB max, 1432MB ave
+ * Runtime: 0:00:00 min, 1:49:15 max, 0:57:21 ave
+ * CPU eff: 57% min, 94% max, 89% ave
+ * Waste: 0:02:43 (0% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WW_DS_To2L2Nu/crab_Fall17V1_WW_DS_To2L2Nu/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWW/crab_Fall17V1_WWW
+Task name:			180504_075055:binghuan_crab_Fall17V1_WWW
+Grid scheduler:			crab3@vocms0144.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_075055%3Abinghuan_crab_Fall17V1_WWW
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_075055%3Abinghuan_crab_Fall17V1_WWW
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (21/21)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 18MB min, 1517MB max, 1113MB ave
+ * Runtime: 0:02:54 min, 1:10:38 max, 0:18:04 ave
+ * CPU eff: 36% min, 92% max, 83% ave
+ * Waste: 0:02:56 (1% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWW/crab_Fall17V1_WWW/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWZ/crab_Fall17V1_WWZ
+Task name:			180504_075211:binghuan_crab_Fall17V1_WWZ
+Grid scheduler:			crab3@vocms0119.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_075211%3Abinghuan_crab_Fall17V1_WWZ
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_075211%3Abinghuan_crab_Fall17V1_WWZ
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (14/14)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 2MB min, 1652MB max, 816MB ave
+ * Runtime: 0:02:05 min, 0:55:53 max, 0:19:36 ave
+ * CPU eff: 50% min, 93% max, 84% ave
+ * Waste: 0:14:51 (5% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WWZ/crab_Fall17V1_WWZ/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WZZ/crab_Fall17V1_WZZ
+Task name:			180504_080748:binghuan_crab_Fall17V1_WZZ
+Grid scheduler:			crab3@vocms0119.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_080748%3Abinghuan_crab_Fall17V1_WZZ
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_080748%3Abinghuan_crab_Fall17V1_WZZ
+Status on the scheduler:	COMPLETED
+
+Jobs status:                    finished      100.0% (18/18)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 3MB min, 1557MB max, 1396MB ave
+ * Runtime: 0:04:59 min, 0:39:16 max, 0:24:10 ave
+ * CPU eff: 45% min, 88% max, 81% ave
+ * Waste: 0:02:36 (1% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_WZZ/crab_Fall17V1_WZZ/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZZ/crab_Fall17V1_ZZZ
+Task name:			180504_080906:binghuan_crab_Fall17V1_ZZZ
+Status on the CRAB server:	SUBMITFAILED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_080906%3Abinghuan_crab_Fall17V1_ZZZ
+Failure message from the server:		Impossible to retrieve proxy from myproxy.cern.ch for /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=binghuan/CN=780072/CN=Binghuan Li.
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_ZZZ/crab_Fall17V1_ZZZ/crab.log
+CRAB project directory:		/afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTT_Tune/crab_Fall17V1_TTTT_Tune
+Task name:			180504_081348:binghuan_crab_Fall17V1_TTTT_Tune
+Grid scheduler:			crab3@vocms0198.cern.ch
+Status on the CRAB server:	SUBMITTED
+Task URL to use for HELP:	https://cmsweb.cern.ch/crabserver/ui/task/180504_081348%3Abinghuan_crab_Fall17V1_TTTT_Tune
+Dashboard monitoring URL:	http://dashb-cms-job.cern.ch/dashboard/templates/task-analysis/#user=binghuan&refresh=0&table=Jobs&p=1&records=25&activemenu=2&status=&site=&tid=180504_081348%3Abinghuan_crab_Fall17V1_TTTT_Tune
+Status on the scheduler:	SUBMITTED
+
+Jobs status:                    finished       96.6% (28/29)
+				transferring    3.4% ( 1/29)
+
+No publication information available yet
+
+Warning: the max jobs runtime is less than 30% of the task requested value (1250 min), please consider to request a lower value (allowed through crab resubmit) and/or improve the jobs splitting (e.g. config.Data.splitting = 'Automatic') in a new task.
+
+Summary of run jobs:
+ * Memory: 1477MB min, 1708MB max, 1253MB ave
+ * Runtime: 0:27:41 min, 4:08:22 max, 2:52:03 ave
+ * CPU eff: 76% min, 89% max, 85% ave
+ * Waste: 15:32:26 (16% of total)
+
+Log file is /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTT_Tune/crab_Fall17V1_TTTT_Tune/crab.log

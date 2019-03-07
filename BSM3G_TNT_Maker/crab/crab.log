@@ -1,0 +1,1231 @@
+DEBUG 2018-05-04 10:05:14,826: 	 Executing command: 'submit'
+DEBUG 2018-05-04 10:05:14,831: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-04 10:05:14,852: 	 Checking credentials
+DEBUG 2018-05-04 10:05:14,854: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-04 10:05:14,854: 	 Getting proxy life time left
+DEBUG 2018-05-04 10:05:16,177: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 39020
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:17,295: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 39019
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:17,295: 	 Proxy valid for 10:50:20 hours
+DEBUG 2018-05-04 10:05:17,296: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-04 10:05:17,304: 	 Executing command: 'submit'
+DEBUG 2018-05-04 10:05:17,305: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-04 10:05:17,317: 	 Checking credentials
+DEBUG 2018-05-04 10:05:17,317: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-04 10:05:17,317: 	 Getting proxy life time left
+DEBUG 2018-05-04 10:05:18,431: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 39018
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:19,642: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 39017
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:19,642: 	 Proxy valid for 10:50:18 hours
+DEBUG 2018-05-04 10:05:19,644: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-04 10:05:19,648: 	 Executing command: 'submit'
+DEBUG 2018-05-04 10:05:19,648: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-04 10:05:19,660: 	 Checking credentials
+DEBUG 2018-05-04 10:05:19,661: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-04 10:05:19,661: 	 Getting proxy life time left
+DEBUG 2018-05-04 10:05:20,877: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 39016
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:21,991: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 39015
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:05:21,992: 	 Proxy valid for 10:50:16 hours
+DEBUG 2018-05-04 10:05:21,992: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-04 10:09:07,417: 	 Executing command: 'submit'
+DEBUG 2018-05-04 10:09:07,419: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-04 10:09:07,489: 	 Checking credentials
+DEBUG 2018-05-04 10:09:07,490: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-04 10:09:07,490: 	 Getting proxy life time left
+DEBUG 2018-05-04 10:09:08,804: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 38788
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:09:10,018: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 38787
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-04 10:09:10,019: 	 Proxy valid for 10:46:28 hours
+DEBUG 2018-05-04 10:09:10,020: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-04 10:11:10,705: 	 Executing command: 'kill'
+DEBUG 2018-05-04 10:11:10,705: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+ERROR 2018-05-04 10:11:10,706: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTT/crab_Fall17V1_TTTT
+ERROR 2018-05-04 10:11:10,706: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_TTTT/crab_Fall17V1_TTTT
+DEBUG 2018-05-05 06:05:39,436: 	 Executing command: 'submit'
+DEBUG 2018-05-05 06:05:39,440: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-05 06:05:39,452: 	 Checking credentials
+DEBUG 2018-05-05 06:05:39,453: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-05 06:05:39,453: 	 Getting proxy life time left
+DEBUG 2018-05-05 06:05:40,464: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 40468
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:05:41,175: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 40466
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:05:41,175: 	 Proxy valid for 11:14:28 hours
+DEBUG 2018-05-05 06:05:41,176: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-05 06:08:11,606: 	 Executing command: 'status'
+DEBUG 2018-05-05 06:08:11,606: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+ERROR 2018-05-05 06:08:11,607: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+ERROR 2018-05-05 06:08:11,607: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 39, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 1017, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+DEBUG 2018-05-05 06:21:03,091: 	 Executing command: 'status'
+DEBUG 2018-05-05 06:21:03,092: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+ERROR 2018-05-05 06:21:03,094: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+ERROR 2018-05-05 06:21:03,094: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 39, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 1017, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+DEBUG 2018-05-05 06:21:12,711: 	 Executing command: 'submit'
+DEBUG 2018-05-05 06:21:12,712: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-05 06:21:12,722: 	 Checking credentials
+DEBUG 2018-05-05 06:21:12,723: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-05 06:21:12,723: 	 Getting proxy life time left
+DEBUG 2018-05-05 06:21:13,528: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 39535
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:21:14,235: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 39533
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:21:14,235: 	 Proxy valid for 10:58:55 hours
+DEBUG 2018-05-05 06:21:14,236: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-05 06:23:06,283: 	 Executing command: 'submit'
+DEBUG 2018-05-05 06:23:06,288: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-05 06:23:06,299: 	 Checking credentials
+DEBUG 2018-05-05 06:23:06,300: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-05 06:23:06,300: 	 Getting proxy life time left
+DEBUG 2018-05-05 06:23:07,106: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 43195
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:23:07,814: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 43194
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 06:23:07,815: 	 Proxy valid for 11:59:55 hours
+DEBUG 2018-05-05 06:23:07,816: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-05 06:23:27,417: 	 Executing command: 'resubmit'
+DEBUG 2018-05-05 06:23:27,417: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+ERROR 2018-05-05 06:23:27,417: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+ERROR 2018-05-05 06:23:27,418: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 28, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 276, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/b/binghuan/private/TTHLep2017/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/Fall17V1_SEleBlockE/crab_Fall17V1_SEleBlockE
+DEBUG 2018-05-05 16:40:42,478: 	 Executing command: 'submit'
+DEBUG 2018-05-05 16:40:42,485: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-05 16:40:42,501: 	 Checking credentials
+DEBUG 2018-05-05 16:40:42,502: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-05 16:40:42,502: 	 Getting proxy life time left
+DEBUG 2018-05-05 16:40:43,508: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 85352
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 16:40:44,525: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 85350
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-05 16:40:44,525: 	 Proxy valid for 23:42:32 hours
+DEBUG 2018-05-05 16:40:44,526: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-06 04:25:11,437: 	 Executing command: 'submit'
+DEBUG 2018-05-06 04:25:11,441: 	 Found CRAB cache file /afs/cern.ch/user/b/binghuan/.crab3
+DEBUG 2018-05-06 04:25:11,456: 	 Checking credentials
+DEBUG 2018-05-06 04:25:11,458: 	 Found proxy file /tmp/x509up_u82542
+DEBUG 2018-05-06 04:25:11,458: 	 Getting proxy life time left
+DEBUG 2018-05-06 04:25:13,167: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -timeleft
+ output : 42498
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-06 04:25:14,775: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u82542 -actimeleft
+ output : 42497
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-06 04:25:14,776: 	 Proxy valid for 11:48:18 hours
+DEBUG 2018-05-06 04:25:14,777: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-23 04:54:39,536: 	 Executing command: 'submit'
+DEBUG 2018-05-23 04:54:39,540: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-05-23 04:54:39,549: 	 Checking credentials
+DEBUG 2018-05-23 04:54:39,550: 	 Found proxy file /tmp/x509up_u93266
+DEBUG 2018-05-23 04:54:39,550: 	 Getting proxy life time left
+DEBUG 2018-05-23 04:54:40,556: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 85049
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 04:54:41,683: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -actimeleft
+ output : 85048
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 04:54:41,683: 	 Proxy valid for 23:37:29 hours
+DEBUG 2018-05-23 04:54:41,684: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-23 04:54:41,717: 	 Executing command: 'submit'
+DEBUG 2018-05-23 04:54:41,717: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-05-23 04:54:41,725: 	 Checking credentials
+DEBUG 2018-05-23 04:54:41,725: 	 Found proxy file /tmp/x509up_u93266
+DEBUG 2018-05-23 04:54:41,725: 	 Getting proxy life time left
+DEBUG 2018-05-23 04:54:42,646: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 85047
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 04:54:43,456: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -actimeleft
+ output : 85046
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 04:54:43,457: 	 Proxy valid for 23:37:27 hours
+DEBUG 2018-05-23 04:54:43,458: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-23 05:47:59,032: 	 Executing command: 'submit'
+DEBUG 2018-05-23 05:47:59,033: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-05-23 05:47:59,118: 	 Checking credentials
+DEBUG 2018-05-23 05:47:59,120: 	 Found proxy file /tmp/x509up_u93266
+DEBUG 2018-05-23 05:47:59,120: 	 Getting proxy life time left
+DEBUG 2018-05-23 05:48:00,030: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 81850
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 05:48:00,742: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -actimeleft
+ output : 81849
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-23 05:48:00,742: 	 Proxy valid for 22:44:10 hours
+DEBUG 2018-05-23 05:48:00,743: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2018-05-30 14:12:47,993: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:12:47,994: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:12:47,994: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/t/tayu/private/Tprime/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab
+ERROR 2018-05-30 14:12:47,994: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/t/tayu/private/Tprime/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab
+DEBUG 2018-05-30 14:37:02,315: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:37:02,315: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:37:02,318: 	 Error: WToLNu_HT400to600/crab_WToLNu_HT400to600/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:37:02,319: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: WToLNu_HT400to600/crab_WToLNu_HT400to600/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:37:02,852: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:37:02,852: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:37:02,879: 	 Error: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:37:02,879: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:37:03,439: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:37:03,440: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:37:03,459: 	 Error: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:37:03,460: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:37:04,042: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:37:04,042: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:37:04,060: 	 Error: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:37:04,060: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:41:57,156: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:41:57,156: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:41:57,158: 	 Error: WToLNu_HT400to600/crab_WToLNu_HT400to600 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:41:57,158: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: WToLNu_HT400to600/crab_WToLNu_HT400to600 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:41:57,700: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:41:57,701: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:41:57,702: 	 Error: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:41:57,702: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:41:58,279: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:41:58,280: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:41:58,282: 	 Error: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:41:58,282: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:41:58,909: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:41:58,910: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:41:58,913: 	 Error: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:41:58,913: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:33,506: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:33,506: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:33,514: 	 Error: WToLNu_HT400to600/crab_WToLNu_HT400to600/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:33,514: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: WToLNu_HT400to600/crab_WToLNu_HT400to600/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:34,216: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:34,216: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:34,218: 	 Error: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:34,218: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT100to200/crab_ZToNuNu_HT100to200/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:34,788: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:34,788: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:34,790: 	 Error: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:34,790: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT200to400/crab_ZToNuNu_HT200to400/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:35,413: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:35,413: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:35,416: 	 Error: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:35,416: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT400to600/crab_ZToNuNu_HT400to600/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:44,901: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:44,901: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:44,927: 	 Error: ZToNuNu_HT800to1200/crab_ZToNuNu_HT800to1200/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:44,927: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT800to1200/crab_ZToNuNu_HT800to1200/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:45,484: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:45,484: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:45,516: 	 Error: ZToNuNu_HT1200to2500/crab_ZToNuNu_HT1200to2500/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:45,516: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT1200to2500/crab_ZToNuNu_HT1200to2500/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:46,101: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:46,101: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:46,127: 	 Error: ZToNuNu_HT2500toInf/crab_ZToNuNu_HT2500toInf/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:46,128: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT2500toInf/crab_ZToNuNu_HT2500toInf/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:46,777: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:46,777: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:46,781: 	 Error: QCD_HT200to300/crab_QCD_HT200to300/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:46,781: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT200to300/crab_QCD_HT200to300/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:47,386: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:47,386: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:47,406: 	 Error: QCD_HT300to500/crab_QCD_HT300to500/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:47,407: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT300to500/crab_QCD_HT300to500/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:48,093: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:48,093: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:48,251: 	 Error: QCD_HT500to700/crab_QCD_HT500to700/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:48,251: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT500to700/crab_QCD_HT500to700/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:49,368: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:49,368: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:49,400: 	 Error: QCD_HT700to1000/crab_QCD_HT700to1000/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:49,400: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT700to1000/crab_QCD_HT700to1000/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:50,027: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:50,028: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:50,041: 	 Error: QCD_HT1000to1500/crab_QCD_HT1000to1500/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:50,041: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT1000to1500/crab_QCD_HT1000to1500/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:50,657: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:50,657: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:50,724: 	 Error: QCD_HT1500to2000/crab_QCD_HT1500to2000/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:50,724: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT1500to2000/crab_QCD_HT1500to2000/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:51,333: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:51,333: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:51,358: 	 Error: QCD_HT2000toInf/crab_QCD_HT2000toInf/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:51,359: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT2000toInf/crab_QCD_HT2000toInf/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:52,023: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:52,024: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:52,028: 	 Error: ST_t-channel_antitop/crab_ST_t-channel_antitop/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:52,028: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ST_t-channel_antitop/crab_ST_t-channel_antitop/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:52,778: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:52,778: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:52,843: 	 Error: ST_t-channel_top/crab_ST_t-channel_top/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:52,844: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ST_t-channel_top/crab_ST_t-channel_top/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:53,420: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:53,420: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:53,423: 	 Error: ST_tW_antitop/crab_ST_tW_antitop/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:53,424: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ST_tW_antitop/crab_ST_tW_antitop/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:54,000: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:54,000: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:54,018: 	 Error: ST_tW_top/crab_ST_tW_top/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:54,018: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ST_tW_top/crab_ST_tW_top/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:54,656: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:54,657: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:54,676: 	 Error: ZZ/crab_ZZ/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:54,676: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZZ/crab_ZZ/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:55,232: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:55,232: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:55,262: 	 Error: WZ/crab_WZ/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:55,262: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: WZ/crab_WZ/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:55,861: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:55,861: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:55,865: 	 Error: WW/crab_WW/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:55,865: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: WW/crab_WW/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:56,454: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:56,455: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:56,484: 	 Error: Tprime_0700/crab_Tprime_0700/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:56,484: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_0700/crab_Tprime_0700/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:57,062: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:57,062: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:57,087: 	 Error: Tprime_0800/crab_Tprime_0800/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:57,087: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_0800/crab_Tprime_0800/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:57,679: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:57,679: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:57,735: 	 Error: Tprime_0900/crab_Tprime_0900/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:57,735: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_0900/crab_Tprime_0900/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:58,280: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:58,281: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:58,286: 	 Error: Tprime_1000/crab_Tprime_1000/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:58,286: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1000/crab_Tprime_1000/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:58,831: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:58,831: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:58,852: 	 Error: Tprime_1100/crab_Tprime_1100/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:58,853: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1100/crab_Tprime_1100/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:47:59,440: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:47:59,440: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:47:59,463: 	 Error: Tprime_1200/crab_Tprime_1200/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:47:59,464: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1200/crab_Tprime_1200/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:00,023: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:00,023: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:00,029: 	 Error: Tprime_1300/crab_Tprime_1300/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:00,029: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1300/crab_Tprime_1300/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:00,601: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:00,602: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:00,624: 	 Error: Tprime_1400/crab_Tprime_1400/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:00,625: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1400/crab_Tprime_1400/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:01,175: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:01,175: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:01,180: 	 Error: Tprime_1500/crab_Tprime_1500/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:01,180: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1500/crab_Tprime_1500/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:01,704: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:01,704: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:01,717: 	 Error: Tprime_1600/crab_Tprime_1600/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:01,717: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1600/crab_Tprime_1600/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:02,293: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:02,293: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:02,333: 	 Error: Tprime_1700/crab_Tprime_1700/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:02,334: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1700/crab_Tprime_1700/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:48:02,890: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:48:02,890: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:48:02,928: 	 Error: Tprime_1800/crab_Tprime_1800/ is not a valid CRAB project directory.
+ERROR 2018-05-30 14:48:02,929: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1800/crab_Tprime_1800/ is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:51:03,970: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:51:03,971: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:51:03,974: 	 Error: TTJets/crab_TTJets is not a valid CRAB project directory.
+ERROR 2018-05-30 14:51:03,975: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: TTJets/crab_TTJets is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:53:03,985: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:53:03,985: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:53:03,986: 	 Error: QCD_HT1500to2000/crab_QCD_HT1500to2000 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:53:03,986: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: QCD_HT1500to2000/crab_QCD_HT1500to2000 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:17,281: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:17,281: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:17,287: 	 Error: Tprime_1200/crab_Tprime_1200 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:17,287: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1200/crab_Tprime_1200 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:17,998: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:17,998: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:17,999: 	 Error: Tprime_1300/crab_Tprime_1300 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:18,000: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1300/crab_Tprime_1300 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:33,898: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:33,900: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:33,902: 	 Error: Tprime_1500/crab_Tprime_1500 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:33,902: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1500/crab_Tprime_1500 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:34,574: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:34,575: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:34,581: 	 Error: Tprime_1600/crab_Tprime_1600 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:34,581: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1600/crab_Tprime_1600 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:35,273: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:35,274: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:35,275: 	 Error: Tprime_1700/crab_Tprime_1700 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:35,275: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1700/crab_Tprime_1700 is not a valid CRAB project directory.
+DEBUG 2018-05-30 14:55:35,841: 	 Executing command: 'kill'
+DEBUG 2018-05-30 14:55:35,841: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-30 14:55:35,842: 	 Error: Tprime_1800/crab_Tprime_1800 is not a valid CRAB project directory.
+ERROR 2018-05-30 14:55:35,842: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: Tprime_1800/crab_Tprime_1800 is not a valid CRAB project directory.
+DEBUG 2018-05-31 04:45:03,001: 	 Executing command: 'kill'
+DEBUG 2018-05-31 04:45:03,002: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-05-31 04:45:03,002: 	 Error: ZToNuNu_HT1200to2500/crab_ZToNuNu_HT1200to2500 is not a valid CRAB project directory.
+ERROR 2018-05-31 04:45:03,003: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/kill.py", line 63, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: ZToNuNu_HT1200to2500/crab_ZToNuNu_HT1200to2500 is not a valid CRAB project directory.
+DEBUG 2018-06-05 04:28:09,112: 	 Executing command: 'submit'
+DEBUG 2018-06-05 04:28:09,122: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-06-05 04:28:09,158: 	 Checking credentials
+DEBUG 2018-06-05 04:28:09,159: 	 Proxy file /tmp/x509up_u93266 not found
+DEBUG 2018-06-05 04:28:09,159: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2018-06-05 04:28:15,707: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 1
+DEBUG 2018-06-05 04:28:16,518: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1
+ERROR 2018-06-05 04:28:16,519: 	 Error while checking proxy timeleft for /tmp/x509up_u93266
+DEBUG 2018-06-05 04:28:17,225: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u93266 voms-proxy-info -fqan
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1
+DEBUG 2018-06-06 09:09:09,831: 	 Executing command: 'resubmit'
+DEBUG 2018-06-06 09:09:09,831: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-06-06 09:09:09,833: 	 Error: May18V1_METB/crab_May18V1_METBxiyangyang-123 is not a valid CRAB project directory.
+ERROR 2018-06-06 09:09:09,834: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 28, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 276, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 575, in validateOptions
+    raise ConfigurationException(msg)
+ConfigurationException: [91mError[0m: May18V1_METB/crab_May18V1_METBxiyangyang-123 is not a valid CRAB project directory.
+DEBUG 2018-06-17 04:44:23,955: 	 Executing command: 'resubmit'
+DEBUG 2018-06-17 04:44:23,956: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+ERROR 2018-06-17 04:44:24,044: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/t/tayu/private/Tprime/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/WZTo1L1Nu2Q
+ERROR 2018-06-17 04:44:24,044: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 28, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/resubmit.py", line 276, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805.patch1/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/t/tayu/private/Tprime/CMSSW_9_4_2/src/BSMFramework/BSM3G_TNT_Maker/crab/WZTo1L1Nu2Q
+DEBUG 2018-07-02 09:53:16,138: 	 Executing command: 'submit'
+DEBUG 2018-07-02 09:53:16,144: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-07-02 09:53:16,164: 	 Checking credentials
+DEBUG 2018-07-02 09:53:16,165: 	 Proxy file /tmp/x509up_u93266 not found
+DEBUG 2018-07-02 09:53:16,165: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2018-07-02 09:53:25,437: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 1
+DEBUG 2018-07-02 09:53:26,145: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1
+ERROR 2018-07-02 09:53:26,146: 	 Error while checking proxy timeleft for /tmp/x509up_u93266
+DEBUG 2018-07-02 09:53:27,356: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u93266 voms-proxy-info -fqan
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1
+DEBUG 2018-07-02 09:53:27,420: 	 Executing command: 'submit'
+DEBUG 2018-07-02 09:53:27,420: 	 Found CRAB cache file /afs/cern.ch/user/t/tayu/.crab3
+DEBUG 2018-07-02 09:53:27,441: 	 Checking credentials
+DEBUG 2018-07-02 09:53:27,441: 	 Proxy file /tmp/x509up_u93266 not found
+DEBUG 2018-07-02 09:53:27,441: 	 Creating new proxy for 24:00 hours with VO group '' and VO role 'NULL'.
+DEBUG 2018-07-02 09:53:50,432: 	 Executing : 
+ command : voms-proxy-init -voms cms:/cms -valid 24:00 -rfc
+ output : None
+ error: None
+ retcode : 1
+DEBUG 2018-07-02 09:53:51,145: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u93266 -timeleft
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1
+ERROR 2018-07-02 09:53:51,145: 	 Error while checking proxy timeleft for /tmp/x509up_u93266
+DEBUG 2018-07-02 09:53:51,854: 	 Executing : 
+ command : env X509_USER_PROXY=/tmp/x509up_u93266 voms-proxy-info -fqan
+ output : 
+ error: Proxy not found: /tmp/x509up_u93266 (No such file or directory)
+
+ retcode : 1

@@ -13,7 +13,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "HLTrigger/Muon/interface/HLTMuonIsoFilter.h"
+//#include "HLTrigger/Muon/interface/HLTMuonIsoFilter.h"
 #include "DataFormats/HLTReco/interface/TriggerFilterObjectWithRefs.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Common/interface/TriggerResultsByName.h"
@@ -56,47 +56,55 @@ class TriggerSelector : public baseTree{
   HLTConfigProvider hltConfig_;
   edm::InputTag triggerBits_;
   double _maxtriggerversion;
-  /////
-  //   TTH
-  /////
-  //Common
-  //Electron
-  int HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
-  //Muon
-  int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
-  int HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ;
-  int HLT_IsoMu20;
-  int HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
-  int HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL;
-  //TTHbb
-  //Electron
-  int HLT_Ele105_CaloIdVT_GsfTrkIdT;
-  int HLT_Ele27_eta2p1_WP75_Gsf;
-  int HLT_Ele27_WP85_Gsf;
-  int HLT_Ele27_eta2p1_WPLoose_Gsf;
-  //Muon
-  int HLT_Mu45_eta2p1;
+  bool   _reduced;
+
+  //TAU
+  int HLT_DoubleMediumChargedIsoPFTau40_Trk1_TightID_eta2p1_Reg;
+  int HLT_DoubleTightChargedIsoPFTau35_Trk1_TightID_eta2p1_Reg;
+  int HLT_DoubleTightChargedIsoPFTau40_Trk1_eta2p1_Reg;
+  int HLT_Ele24_eta2p1_WPTight_Gsf_LooseChargedIsoPFTau30_eta2p1_CrossL1;
+  int HLT_Ele24_eta2p1_WPTight_Gsf_MediumChargedIsoPFTau30_eta2p1_CrossL1;
+  int HLT_Ele24_eta2p1_WPTight_Gsf_TightChargedIsoPFTau30_eta2p1_CrossL1;
+  int HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1;
+  int HLT_IsoMu20_eta2p1_MediumChargedIsoPFTau27_eta2p1_CrossL1;
+  int HLT_IsoMu20_eta2p1_TightChargedIsoPFTau27_eta2p1_CrossL1;
+  int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1_1pr;
+  int HLT_MediumChargedIsoPFTau180HighPtRelaxedIso_Trk50_eta2p1;
+  int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET100;
+  int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr_MET90;
+  int HLT_MediumChargedIsoPFTau50_Trk30_eta2p1_1pr;
+
+  //dineutrino trigger
+  int HLT_PFHT500_PFMET100_PFMHT100_IDTight;
+  int HLT_PFHT700_PFMET85_PFMHT85_IDTight;
+  int HLT_PFHT800_PFMET75_PFMHT75_IDTight;
+  int HLT_CaloJet500_NoJetID;
+  int HLT_PFHT1050;
+  int HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight;
+  int HLT_PFMET120_PFMHT120_IDTight;
+  int HLT_PFMETNoMu120_PFMHTNoMu120_IDTight;
+  int HLT_PFJet500;
+  int HLT_AK8PFJet500;
+  int HLT_Ele27_eta2p1_WPTight_Gsf;
+  int HLT_Ele27_WPTight_Gsf;
+  int HLT_Ele25_eta2p1_WPTight_Gsf;
+  int HLT_Ele115_CaloIdVT_GsfTrkIdT;
+  int HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf;
+  int HLT_DoubleEle33_CaloIdL_MW;
+  int HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW;
+  int HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+
+  int HLT_IsoMu22;
+  int HLT_IsoTkMu22;
+  int HLT_IsoMu24;
+  int HLT_IsoTkMu24;
+  int HLT_IsoMu22_eta2p1;
+  int HLT_IsoTkMu22_eta2p1;
   int HLT_Mu50;
-  int HLT_IsoMu17_eta2p1;
-  int HLT_IsoMu24_eta2p1;
-  int HLT_IsoMu18;
-  //TTHLep
-  //Electron
-  int HLT_Ele23_WPLoose_Gsf; //Data
-  int HLT_Ele23_CaloIdL_TrackIdL_IsoVL; //MC
-  //Muon
-  int HLT_IsoTkMu20;
-  //CrossEle-Mu
-  int HLT_DiMu9_Ele9_CaloIdL_TrackIdL;
-  int HLT_Mu8_DiEle12_CaloIdL_TrackIdL;
-  int HLT_TripleMu_12_10_5;
-  int HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL;
-  //Analysis
-  int TTHbb_SL;
-  int TTHbb_DL;
-  int TTHLep_2Mu;
-  int TTHLep_2Ele;
-  int TTHLep_MuEle;
-  int TTHLep_3L4L;
+  int HLT_TkMu50;
+  int HLT_DoubleMu33NoFiltersNoVtx;
+  int HLT_DoubleMu23NoFiltersNoVtxDisplaced;
+  int HLT_Mu30_TkMu11;
+  int HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ;
 };
 #endif

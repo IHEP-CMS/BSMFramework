@@ -1,14 +1,16 @@
 #include "BSMFramework/BSM3G_TNT_Maker/interface/PVSelector.h"
-PVSelector::PVSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug){
+PVSelector::PVSelector(std::string name, TTree* tree, bool debug, const pset& iConfig, edm::ConsumesCollector && ic):
+  baseTree(name,tree,debug)
+{
   if(debug) std::cout<<"in PVSelector constructor"<<std::endl;
   if(debug) std::cout<<"in pileup constructor: calling SetBrances()"<<std::endl;
+  vtx_             = ic.consumes<reco::VertexCollection>(edm::InputTag("offlineSlimmedPrimaryVertices"));
+  beamSpot_        = ic.consumes<reco::BeamSpot>(edm::InputTag("offlineBeamSpot"));
+  PUInfo_          = ic.consumes<std::vector< PileupSummaryInfo> >(edm::InputTag("slimmedAddPileupInfo")); 
   _Pvtx_ndof_min   = iConfig.getParameter<double>("Pvtx_ndof_min");
   _Pvtx_vtx_max    = iConfig.getParameter<double>("Pvtx_vtx_max");
   _Pvtx_vtxdxy_max = iConfig.getParameter<double>("Pvtx_vtxdxy_max");
   _is_data         = iConfig.getParameter<bool>("is_data");
-  _super_TNT       = iConfig.getParameter<bool>("super_TNT");
-  _beamSpot        = iConfig.getParameter<edm::InputTag>("beamSpot");
-  _MiniAODv2       = iConfig.getParameter<bool>("MiniAODv2");
   SetBranches();
 }
 PVSelector::~PVSelector(){
@@ -21,10 +23,10 @@ void PVSelector::Fill(const edm::Event& iEvent){
   //   Recall collections
   /////  
   edm::Handle<reco::VertexCollection> vtx;
-  iEvent.getByLabel("offlineSlimmedPrimaryVertices",vtx);
+  iEvent.getByToken(vtx_,vtx);
   reco::BeamSpot beamSpot;
   edm::Handle<reco::BeamSpot> beamSpotHandle;
-  iEvent.getByLabel(_beamSpot, beamSpotHandle);
+  iEvent.getByToken(beamSpot_, beamSpotHandle);
   /////
   //   Get vertex information
   /////  
@@ -51,12 +53,9 @@ void PVSelector::Fill(const edm::Event& iEvent){
   /////   
   std::vector<PileupSummaryInfo>::const_iterator PVI;
   if(!_is_data){
-    Handle<std::vector< PileupSummaryInfo > >  PupInfo;
-    string pileupinfo;
-    if(!_MiniAODv2) pileupinfo = "addPileupInfo";
-    if(_MiniAODv2)  pileupinfo = "slimmedAddPileupInfo";
-    iEvent.getByLabel(pileupinfo, PupInfo); 
-    for(PVI = PupInfo->begin(); PVI != PupInfo->end(); ++PVI){
+    Handle<std::vector< PileupSummaryInfo > >  PUInfo;
+    iEvent.getByToken(PUInfo_, PUInfo); 
+    for(PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI){
       if(PVI->getBunchCrossing() == -1){npuVerticesm1 += PVI->getPU_NumInteractions();}
       if(PVI->getBunchCrossing() ==  1){npuVerticesp1 += PVI->getPU_NumInteractions();}
       if(abs(PVI->getBunchCrossing()) >= 2){
@@ -87,9 +86,9 @@ void PVSelector::Fill(const edm::Event& iEvent){
 }
 void PVSelector::SetBranches(){
   if(debug_)    std::cout<<"setting branches: calling AddBranch of baseTree"<<std::endl;
-  AddBranch(&pvertex_notempty  ,"pvertex_notempty");
+  //AddBranch(&pvertex_notempty  ,"pvertex_notempty");
   AddBranch(&nBestVtx          ,"nBestVtx");
-  AddBranch(&npuVertices       ,"npuVertices");
+  /*AddBranch(&npuVertices       ,"npuVertices");
   AddBranch(&trueInteractions  ,"trueInteractions");
   AddBranch(&ootnpuVertices  ,"ootnpuVertices");
   AddBranch(&npuVerticesm1   ,"npuVerticesm1");
@@ -106,7 +105,7 @@ void PVSelector::SetBranches(){
   AddBranch(&beamSpot_y0     ,"beamSpot_y0");
   AddBranch(&beamSpot_z0     ,"beamSpot_z0");
   AddBranch(&beamSpot_xWidth ,"beamSpot_xWidth");
-  AddBranch(&beamSpot_yWidth ,"beamSpot_yWidth");
+  AddBranch(&beamSpot_yWidth ,"beamSpot_yWidth");*/
   if(debug_)    std::cout<<"set branches"<<std::endl;
 }
 void PVSelector::Clear(){

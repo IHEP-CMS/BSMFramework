@@ -10,6 +10,7 @@
 #include <TBranch.h>
 #include <TTree.h>
 #include <TFile.h>
+#include <TF1.h>
 #include <TH1.h>
 #include <TH2.h>
 #include <string>
@@ -42,6 +43,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -58,6 +60,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "baseTree.h"
 #include "DataFormats/BTauReco/interface/CATopJetTagInfo.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 using namespace std;
 using namespace pat;
 using namespace edm;
@@ -66,19 +69,23 @@ using namespace edm;
 /////
 class BoostedJetSelector : public  baseTree{
  public:
-  BoostedJetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg);
+  BoostedJetSelector(std::string name, TTree* tree, bool debug, const edm::ParameterSet& cfg, edm::ConsumesCollector && ic);
   ~BoostedJetSelector();
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void JECInitialization();
   void Clear();
+  void GetJER(pat::Jet jet, float JesSF, float rhoJER, bool AK8PFchs, float &JERScaleFactor, float &JERScaleFactorUP, float &JERScaleFactorDOWN);
+  float getPUPPIweight(float puppipt, float puppieta);
  private:
   BoostedJetSelector(){};
   /////
   //   Config variables
   /////
-  edm::InputTag fatjetToken_; 
-  edm::InputTag _vertexInputTag;
+  edm::EDGetTokenT<reco::VertexCollection> vtx_h_;
+  edm::EDGetTokenT<pat::JetCollection> fatjets_;
+  edm::EDGetTokenT<double> rhopogHandle_;
+  edm::EDGetTokenT<double> rhoJERHandle_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC1_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC2_;
   edm::FileInPath jecPayloadNamesAK8PFchsMC3_;
@@ -88,7 +95,14 @@ class BoostedJetSelector : public  baseTree{
   edm::FileInPath jecPayloadNamesAK8PFchsDATA3_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATA4_;
   edm::FileInPath jecPayloadNamesAK8PFchsDATAUnc_;
+  std::string jerAK8PFchs_;
+  std::string jerAK8PFchsSF_;
+  std::string jerAK8PFPuppi_;
+  std::string jerAK8PFPuppiSF_;
+  edm::FileInPath PuppiWeightFilePath_;
   bool _is_data;
+  bool _MC2016;
+  bool _reduced;
   /////
   //   JEC
   /////
@@ -99,15 +113,20 @@ class BoostedJetSelector : public  baseTree{
   /////
   //   IHEP methods/variables
   /////
-  vector <double> BoostedJet_pt, BoostedJet_eta, BoostedJet_phi, BoostedJet_energy, BoostedJet_mass, BoostedJet_Uncorr_pt, BoostedJet_combinedSecondaryVertexBJetTags, BoostedJet_pfCombinedSecondaryVertexV2BJetTags, BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags;
-  vector <double> BoostedJet_neutralHadEnergyFraction, BoostedJet_neutralEmEmEnergyFraction, BoostedJet_chargedHadronEnergyFraction;
+  vector <double> BoostedJet_pt, BoostedJet_eta, BoostedJet_phi, BoostedJet_energy, BoostedJet_mass, BoostedJet_Uncorr_pt, BoostedJet_pfJetProbabilityBJetTags, BoostedJet_pfCombinedMVAV2BJetTags, BoostedJet_pfCombinedInclusiveSecondaryVertexV2BJetTags, BoostedJet_pfCombinedCvsLJetTags, BoostedJet_pfCombinedCvsBJetTags;
+  vector <double> BoostedJet_neutralHadEnergyFraction, BoostedJet_neutralEmEnergyFraction, BoostedJet_chargedHadronEnergyFraction;
   vector <double> BoostedJet_chargedEmEnergyFraction, BoostedJet_muonEnergyFraction,BoostedJet_electronEnergy, BoostedJet_photonEnergy;
   vector <int>    BoostedJet_numberOfConstituents, BoostedJet_chargedMultiplicity;
   vector <double> BoostedJet_tau1, BoostedJet_tau2, BoostedJet_tau3;
-  vector <double> BoostedJet_softdrop_mass, BoostedJet_trimmed_mass, BoostedJet_pruned_mass, BoostedJet_filtered_mass;
-  vector <double> TopTagging_topMass, TopTagging_minMass, TopTagging_wMass;
+  vector <double> BoostedJet_softdrop_mass, BoostedJet_pruned_mass;
+
+  vector <double> BoostedJet_puppi_pt, BoostedJet_puppi_softdrop_mass, BoostedJet_puppi_eta, BoostedJet_puppi_phi, BoostedJet_puppi_tau1, BoostedJet_puppi_tau2, BoostedJet_puppi_tau3, BoostedJet_puppi_softdrop_masscorr;
   vector <int>    TopTagging_nSubJets;
   //Jet Energy Corrections and Uncertainties
-  vector<double> BoostedJet_JesSF, BoostedJet_JesSFup, BoostedJet_JesSFdown; 
+  vector<double> BoostedJet_JesSF, BoostedJet_JesSFup, BoostedJet_JesSFdown, BoostedJet_JerSF, BoostedJet_JerSFup, BoostedJet_JerSFdown; 
+  TFile* PuppiWeightFile;
+  TF1* puppisd_corrGEN;
+  TF1* puppisd_corrRECO_cen;
+  TF1* puppisd_corrRECO_for;
 };
 #endif

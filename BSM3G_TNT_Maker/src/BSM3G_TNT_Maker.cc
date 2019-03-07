@@ -16,48 +16,42 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   MaxN(200)
 {
   debug_                 = iConfig.getParameter<bool>("debug_");
+  _is_data               = iConfig.getParameter<bool>("is_data");
   _ifevtriggers          = iConfig.getParameter<bool>("ifevtriggers"); 
   _evtriggers            = iConfig.getParameter<vector<string> >("evtriggers");
-  _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo"); 
-  _fillgenHFCategoryinfo = iConfig.getParameter<bool>("fillgenHFCategoryinfo");
+  _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo");
+  _fillelectronpatinfo   = iConfig.getParameter<bool>("fillelectronpatinfo"); 
   _filleventinfo         = iConfig.getParameter<bool>("filleventinfo"); 
-  _filltriggerinfo       = iConfig.getParameter<bool>("filltriggerinfo");
-  _fillPVinfo            = iConfig.getParameter<bool>("fillPVinfo");  
-  _fillmuoninfo          = iConfig.getParameter<bool>("fillmuoninfo");
-  _fillelectronpatinfo   = iConfig.getParameter<bool>("fillelectronpatinfo");
-  _filltauinfo           = iConfig.getParameter<bool>("filltauinfo");
+  _fillgeninfo           = iConfig.getParameter<bool>("fillgeninfo"); 
   _filljetinfo           = iConfig.getParameter<bool>("filljetinfo"); 
-  _filltthjetinfo        = iConfig.getParameter<bool>("filltthjetinfo"); 
-  _fillBoostedJetinfo    = iConfig.getParameter<bool>("fillBoostedJetinfo"); 
-  _fillTopSubJetinfo     = iConfig.getParameter<bool>("fillTopSubJetinfo"); 
-  _fillBJetnessinfo      = iConfig.getParameter<bool>("fillBJetnessinfo"); 
-  _fillBJetnessFVinfo    = iConfig.getParameter<bool>("fillBJetnessFVinfo"); 
-  _fillBTagReweight      = iConfig.getParameter<bool>("fillBTagReweight");
-  _fillPileupReweight    = iConfig.getParameter<bool>("fillPileupReweight");
   _fillMETinfo           = iConfig.getParameter<bool>("fillMETinfo");
+  _fillmuoninfo          = iConfig.getParameter<bool>("fillmuoninfo");
+  _fillPVinfo            = iConfig.getParameter<bool>("fillPVinfo");  
+  _fillPileupReweight    = iConfig.getParameter<bool>("fillPileupReweight");
+  _filltriggerinfo       = iConfig.getParameter<bool>("filltriggerinfo");
+  _filltauinfo           = iConfig.getParameter<bool>("filltauinfo");
+  _filltauboostedinfo    = iConfig.getParameter<bool>("filltauboostedinfo");
   _fillphotoninfo        = iConfig.getParameter<bool>("fillphotoninfo");
+  lheEventProduct_ = consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"));
+  //lheEventProduct_(  consumes<LHERunInfoProduct,edm::InRun>(edm::InputTag("externalLHEProducer"))),
 
   edm::Service<TFileService> fs;
   evtree_ = fs->make<TTree>("evtree","evtree");
   evtree_->Branch("eventnum",&eventnum,"eventnum/I");
+  evtree_->Branch("eventnumnegative",&eventnumnegative,"eventnumnegative/I");
   tree_   = fs->make<TTree>("BOOM","BOOM");
-  if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillgenHFCategoryinfo) genhfselector      = new GenHFHadrMatchSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_filleventinfo)         eventinfoselector  = new EventInfoSelector("miniAOD", tree_, debug_, iConfig);
-  if(_filltriggerinfo)       trselector         = new TriggerSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillPVinfo)            pvselector         = new PVSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillmuoninfo)          muselector         = new MuonSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillelectronpatinfo)   elpatselector      = new ElectronPatSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_filltauinfo)           tauselector        = new TauSelector("miniAOD", tree_, debug_, iConfig);
-  if(_filljetinfo)           jetselector        = new JetSelector("miniAOD", tree_, debug_, iConfig);
-  if(_filltthjetinfo)        tthjetselector     = new TTHJetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_fillBoostedJetinfo)    BoostedJetselector = new BoostedJetSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillTopSubJetinfo)     TopSubJetselector  = new TopSubJetSelector("miniAOD", tree_, debug_, iConfig);
-  if(_fillBJetnessinfo)      BJetnessselector   = new BJetnessSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_fillBJetnessFVinfo)    BJetnessFVselector = new BJetnessFVSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_fillBTagReweight)      btagreweight       = new BTagReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
-  if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig);
-  if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig);
+  if(_filleventinfo)         eventinfoselector  = new EventInfoSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillgeninfo)           genselector        = new GenParticleSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_filljetinfo)           jetselector        = new JetSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillMETinfo)           metselector        = new METSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillmuoninfo)          muselector         = new MuonSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillPVinfo)            pvselector         = new PVSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_fillPileupReweight)    pileupreweight     = new PileupReweight("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_filltauinfo)           tauselector        = new TauSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_filltauboostedinfo)    tauboostedselector = new TauboostedSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
+  if(_filltriggerinfo)       trselector         = new TriggerSelector("miniAOD", tree_, debug_, iConfig);
   if(_fillphotoninfo)        photonselector     = new PhotonSelector("miniAOD", tree_, debug_, iConfig);
 }
 BSM3G_TNT_Maker::~BSM3G_TNT_Maker()
@@ -78,6 +72,12 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //Event info for all the events you read
   eventnum = -1;
   eventnum = iEvent.id().event();
+  eventnumnegative = 1;
+  if(!_is_data){
+    edm::Handle<GenEventInfoProduct> genEvtInfo;
+    iEvent.getByLabel("generator",genEvtInfo);
+    eventnumnegative = (genEvtInfo->weight())/abs(genEvtInfo->weight());
+  }
   evtree_->Fill();
   //Require trigger on the event
   bool evtriggered = false;
@@ -96,23 +96,18 @@ void BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   }
   //Call classes
   if((_ifevtriggers && evtriggered) || !_ifevtriggers){
-    if(_fillgeninfo)           genselector->Fill(iEvent); 
-    if(_fillgenHFCategoryinfo) genhfselector->Fill(iEvent);
-    if(_filleventinfo)         eventinfoselector->Fill(iEvent);
-    if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
-    if(_fillPVinfo)            pvselector->Fill(iEvent); 
-    if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
-    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
-    if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
-    if(_filljetinfo)           jetselector->Fill(iEvent);
-    if(_filltthjetinfo)        tthjetselector->Fill(iEvent,iSetup);
     if(_fillBoostedJetinfo)    BoostedJetselector->Fill(iEvent);
-    if(_fillTopSubJetinfo)     TopSubJetselector->Fill(iEvent);
-    if(_fillBJetnessinfo)      BJetnessselector->Fill(iEvent, iSetup);
-    if(_fillBJetnessFVinfo)    BJetnessFVselector->Fill(iEvent, iSetup);
-    if(_fillBTagReweight)      btagreweight->Fill(iEvent);
-    if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
+    if(_fillelectronpatinfo)   elpatselector->Fill(iEvent,iSetup); 
+    if(_filleventinfo)         eventinfoselector->Fill(iEvent);
+    if(_fillgeninfo)           genselector->Fill(iEvent); 
+    if(_filljetinfo)           jetselector->Fill(iEvent);
     if(_fillMETinfo)           metselector->Fill(iEvent);
+    if(_fillmuoninfo)          muselector->Fill(iEvent,iSetup);
+    if(_fillPVinfo)            pvselector->Fill(iEvent); 
+    if(_fillPileupReweight)    pileupreweight->Fill(iEvent);
+    if(_filltauinfo)           tauselector->Fill(iEvent,iSetup); 
+    if(_filltauboostedinfo)    tauboostedselector->Fill(iEvent,iSetup); 
+    if(_filltriggerinfo)       trselector->Fill(iEvent,iSetup);
     if(_fillphotoninfo)        photonselector->Fill(iEvent);
     tree_->Fill();
   }
@@ -131,9 +126,22 @@ void BSM3G_TNT_Maker::beginRun(edm::Run const & iRun, edm::EventSetup const& iSe
   if( _filltriggerinfo) trselector->startTrigger(iSetup, iRun);
 }
 // ------------ method called when ending the processing of a run  ------------
-//void BSM3G_TNT_Maker::endRun(edm::Run const&, edm::EventSetup const&)
-//{
-//}
+void BSM3G_TNT_Maker::endRun(edm::Run const & iRun, edm::EventSetup const&)
+{
+  //edm::Handle<LHERunInfoProduct> run;
+  //typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
+  //iRun.getByToken(lheEventProduct_, run);
+  //LHERunInfoProduct myLHERunInfoProduct = *(run.product());
+  //for (headers_const_iterator iter=myLHERunInfoProduct.headers_begin(); iter!=myLHERunInfoProduct.headers_end(); iter++){
+  //  std::cout << iter->tag() << std::endl;
+  //  std::string weightTag = "initrwgt";
+  //  if (iter->tag() != weightTag) continue;
+  //  std::vector<std::string> lines = iter->lines();
+  //  for (unsigned int iLine = 0; iLine<lines.size(); iLine++) {
+  //    std::cout << lines.at(iLine);
+  //  }
+  //}
+}
 // ------------ method called when starting to processes a luminosity block  ------------
 //void BSM3G_TNT_Maker::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 //{
